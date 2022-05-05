@@ -43,7 +43,7 @@ VKROOTS_DEFINE_LAYER_INTERFACES(vkroots::NoOverrides,
 You can either add this repo as a git submodule, copy the header from this repo directly, or generate it yourself with `gen/make_vkroots`.
 
 The vkroots header can be generated from any Vulkan Registry XML (even for unreleased/non-standard extensions).
-This was used, for example, in the sample [VK_FOOL_printed_surface](https://github.com/Joshua-Ashton/VkLayer_FOOL_printed_surface) implementation using CUPS.
+This was used, for example, in the sample [VK_FOOL_printed_surface](https://github.com/Joshua-Ashton/VkLayer_FOOL_printed_surface_cups) implementation using CUPS.
 
 ## Dependencies
 
@@ -57,7 +57,7 @@ If you find any issues with the project or have any feature requests, please fee
 
 ## Projects using vkroots
 
- - [VK_FOOL_printed_surface](https://github.com/Joshua-Ashton/VkLayer_FOOL_printed_surface)
+ - [VK_FOOL_printed_surface](https://github.com/Joshua-Ashton/VkLayer_FOOL_printed_surface_cups)
 
 ## License
 
