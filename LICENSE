@@ -1,0 +1,8 @@
+The python generator scripts: gen/make_vkroots, gen/vulkan_helpers.py, are
+licensed under LGPL v2.1 as they take a bunch of code from WineVulkan, see the header of
+make_vkroots and vulkan_helpers.py for more verbose license info.
+
+Everything else, vkroots.h header, other intermediate headers, and samples are licensed under Apache-2.0 OR MIT to be compatible
+with the Vulkan Registry XML.
+
+See the top of associated files for more information.

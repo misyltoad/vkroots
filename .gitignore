@@ -1,0 +1,9 @@
+*.xml
+
+*.so
+
+*.dll
+*.pdb
+
+__pycache__
+*/__pycache__
