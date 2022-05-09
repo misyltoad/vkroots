@@ -11,10 +11,10 @@
          "vkNegotiateLoaderLayerInterfaceVersion": "vkNegotiateLoaderLayerInterfaceVersion"
       },
       "enable_environment": {
-        "ENABLE_TEST": "1"
+        "ENABLE_VKROOTS_TEST_1": "1"
       },
       "disable_environment": {
-        "DISABLE_TEST": "1"
+        "ENABLE_VKROOTS_TEST_1": "1"
       }
     }
 }
