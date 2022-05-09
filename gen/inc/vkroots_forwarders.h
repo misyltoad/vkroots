@@ -93,7 +93,12 @@ namespace vkroots {
     while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO, const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
-    return { layerInfo->u.pLayerInfo->pfnNextGetInstanceProcAddr, layerInfo->u.pLayerInfo->pfnNextGetPhysicalDeviceProcAddr };
+    VkInstanceProcAddrFuncs funcs{ layerInfo->u.pLayerInfo->pfnNextGetInstanceProcAddr, layerInfo->u.pLayerInfo->pfnNextGetPhysicalDeviceProcAddr };
+    // Josh:
+    // It really sucks that we have to advance this ourselves given the const situation here... 
+    VkLayerInstanceCreateInfo* layerInfoMutable = const_cast<VkLayerInstanceCreateInfo *>(layerInfo);
+    layerInfoMutable->u.pLayerInfo = layerInfoMutable->u.pLayerInfo->pNext;
+    return funcs;
   }
 
   static inline PFN_vkGetDeviceProcAddr GetProcAddrs(const VkDeviceCreateInfo* pInfo) {
@@ -102,7 +107,12 @@ namespace vkroots {
     while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO, const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
-    return layerInfo->u.pLayerInfo->pfnNextGetDeviceProcAddr;
+    PFN_vkGetDeviceProcAddr gdpa = layerInfo->u.pLayerInfo->pfnNextGetDeviceProcAddr;
+    // Josh:
+    // It really sucks that we have to advance this ourselves given the const situation here... 
+    VkLayerDeviceCreateInfo* layerInfoMutable = const_cast<VkLayerDeviceCreateInfo *>(layerInfo);
+    layerInfoMutable->u.pLayerInfo = layerInfoMutable->u.pLayerInfo->pNext;
+    return gdpa;
   }
 
 }
