@@ -120,6 +120,10 @@ class VkGenerator(object):
                     f.write(f"    VkInstanceProcAddrFuncs instanceProcAddrFuncs = GetProcAddrs(pCreateInfo);\n")
                     f.write(f"    PFN_vkCreateInstance createInstanceProc = (PFN_vkCreateInstance) instanceProcAddrFuncs.NextGetInstanceProcAddr(NULL, \"vkCreateInstance\");\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(createInstanceProc, {args});\n")
+                elif func.name == "vkCreateDevice":
+                    f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({func.params[0].name});\n")
+                    f.write(f"    PFN_vkGetDeviceProcAddr deviceProcAddr = GetProcAddrs(pCreateInfo);\n")
+                    f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
                 else:
                     f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({func.params[0].name});\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
@@ -127,10 +131,8 @@ class VkGenerator(object):
                     f.write(f"    if (ret == VK_SUCCESS)\n")
                     f.write(f"      tables::CreateDispatchTable(instanceProcAddrFuncs.NextGetInstanceProcAddr, instanceProcAddrFuncs.NextGetPhysicalDeviceProcAddr, *pInstance);\n")
                 if func.name == "vkCreateDevice":
-                    f.write( "    if (ret == VK_SUCCESS) {\n")
-                    f.write(f"      PFN_vkGetDeviceProcAddr deviceProcAddr = GetProcAddrs(pCreateInfo);\n")
+                    f.write(f"    if (ret == VK_SUCCESS)\n")
                     f.write(f"      tables::CreateDispatchTable(pCreateInfo, deviceProcAddr, physicalDevice, *pDevice);\n")
-                    f.write( "    }\n")
                 if func.type != "void":
                     f.write(f"    return ret;\n")
                 f.write("  }\n\n")

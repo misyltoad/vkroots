@@ -6,11 +6,10 @@
       const VkAllocationCallbacks* pAllocator,
             VkDevice*              pDevice) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    PFN_vkGetDeviceProcAddr deviceProcAddr = GetProcAddrs(pCreateInfo);
     VkResult ret = dispatch->CreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
-    if (ret == VK_SUCCESS) {
-      PFN_vkGetDeviceProcAddr deviceProcAddr = GetProcAddrs(pCreateInfo);
+    if (ret == VK_SUCCESS)
       tables::CreateDispatchTable(pCreateInfo, deviceProcAddr, physicalDevice, *pDevice);
-    }
     return ret;
   }
 
