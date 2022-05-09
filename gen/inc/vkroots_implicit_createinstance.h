@@ -4,7 +4,10 @@
     const VkInstanceCreateInfo*  pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
           VkInstance*            pInstance) {
-    VkInstanceProcAddrFuncs instanceProcAddrFuncs = GetProcAddrs(pCreateInfo);
+    VkInstanceProcAddrFuncs instanceProcAddrFuncs;
+    VkResult procAddrRes = GetProcAddrs(pCreateInfo, &instanceProcAddrFuncs);
+    if (procAddrRes != VK_SUCCESS)
+      return procAddrRes;
     PFN_vkCreateInstance createInstanceProc = (PFN_vkCreateInstance) instanceProcAddrFuncs.NextGetInstanceProcAddr(nullptr, "vkCreateInstance");
     VkResult ret = createInstanceProc(pCreateInfo, pAllocator, pInstance);
     if (ret == VK_SUCCESS)

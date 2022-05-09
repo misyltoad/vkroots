@@ -117,12 +117,18 @@ class VkGenerator(object):
                 f.write( "  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>\n")
                 f.write(f"  static {func.type} wrap_{func_name_normalized}({params}) {{\n")
                 if func.name == "vkCreateInstance":
-                    f.write(f"    VkInstanceProcAddrFuncs instanceProcAddrFuncs = GetProcAddrs(pCreateInfo);\n")
+                    f.write(f"    VkInstanceProcAddrFuncs instanceProcAddrFuncs;\n");
+                    f.write(f"    VkResult procAddrRes = GetProcAddrs(pCreateInfo, &instanceProcAddrFuncs);\n");
+                    f.write(f"    if (procAddrRes != VK_SUCCESS)\n");
+                    f.write(f"      return procAddrRes;\n");
                     f.write(f"    PFN_vkCreateInstance createInstanceProc = (PFN_vkCreateInstance) instanceProcAddrFuncs.NextGetInstanceProcAddr(NULL, \"vkCreateInstance\");\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(createInstanceProc, {args});\n")
                 elif func.name == "vkCreateDevice":
                     f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({func.params[0].name});\n")
-                    f.write(f"    PFN_vkGetDeviceProcAddr deviceProcAddr = GetProcAddrs(pCreateInfo);\n")
+                    f.write(f"    PFN_vkGetDeviceProcAddr deviceProcAddr;\n")
+                    f.write(f"    VkResult procAddrRes = GetProcAddrs(pCreateInfo, &deviceProcAddr);\n")
+                    f.write(f"    if (procAddrRes != VK_SUCCESS)\n");
+                    f.write(f"      return procAddrRes;\n");
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
                 else:
                     f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({func.params[0].name});\n")

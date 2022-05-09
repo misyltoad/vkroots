@@ -87,32 +87,36 @@ namespace vkroots {
     PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr;
   };
 
-  static inline VkInstanceProcAddrFuncs GetProcAddrs(const VkInstanceCreateInfo* pInfo) {
+  static inline VkResult GetProcAddrs(const VkInstanceCreateInfo* pInfo, VkInstanceProcAddrFuncs *pOutFuncs) {
     const void* pNext = (const void*) pInfo;
     const VkLayerInstanceCreateInfo* layerInfo;
     while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO, const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
-    VkInstanceProcAddrFuncs funcs{ layerInfo->u.pLayerInfo->pfnNextGetInstanceProcAddr, layerInfo->u.pLayerInfo->pfnNextGetPhysicalDeviceProcAddr };
+    if (!layerInfo)
+      return VK_ERROR_INITIALIZATION_FAILED;
+    *pOutFuncs = VkInstanceProcAddrFuncs{ layerInfo->u.pLayerInfo->pfnNextGetInstanceProcAddr, layerInfo->u.pLayerInfo->pfnNextGetPhysicalDeviceProcAddr };
     // Josh:
     // It really sucks that we have to advance this ourselves given the const situation here... 
     VkLayerInstanceCreateInfo* layerInfoMutable = const_cast<VkLayerInstanceCreateInfo *>(layerInfo);
     layerInfoMutable->u.pLayerInfo = layerInfoMutable->u.pLayerInfo->pNext;
-    return funcs;
+    return VK_SUCCESS;
   }
 
-  static inline PFN_vkGetDeviceProcAddr GetProcAddrs(const VkDeviceCreateInfo* pInfo) {
+  static inline VkResult GetProcAddrs(const VkDeviceCreateInfo* pInfo, PFN_vkGetDeviceProcAddr *pOutAddr) {
     const void* pNext = (const void*) pInfo;
     const VkLayerDeviceCreateInfo* layerInfo;
     while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO, const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
-    PFN_vkGetDeviceProcAddr gdpa = layerInfo->u.pLayerInfo->pfnNextGetDeviceProcAddr;
+    if (!layerInfo)
+      return VK_ERROR_INITIALIZATION_FAILED;
+    *pOutAddr = layerInfo->u.pLayerInfo->pfnNextGetDeviceProcAddr;
     // Josh:
     // It really sucks that we have to advance this ourselves given the const situation here... 
     VkLayerDeviceCreateInfo* layerInfoMutable = const_cast<VkLayerDeviceCreateInfo *>(layerInfo);
     layerInfoMutable->u.pLayerInfo = layerInfoMutable->u.pLayerInfo->pNext;
-    return gdpa;
+    return VK_SUCCESS;
   }
 
 }
