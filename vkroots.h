@@ -505,6 +505,7 @@ namespace vkroots {
       CmdSetViewportWithCount = (PFN_vkCmdSetViewportWithCount) NextGetDeviceProcAddr(device, "vkCmdSetViewportWithCount");
       CmdSetViewportWithCountEXT = (PFN_vkCmdSetViewportWithCountEXT) NextGetDeviceProcAddr(device, "vkCmdSetViewportWithCountEXT");
       CmdSubpassShadingHUAWEI = (PFN_vkCmdSubpassShadingHUAWEI) NextGetDeviceProcAddr(device, "vkCmdSubpassShadingHUAWEI");
+      CmdTraceRaysIndirect2KHR = (PFN_vkCmdTraceRaysIndirect2KHR) NextGetDeviceProcAddr(device, "vkCmdTraceRaysIndirect2KHR");
       CmdTraceRaysIndirectKHR = (PFN_vkCmdTraceRaysIndirectKHR) NextGetDeviceProcAddr(device, "vkCmdTraceRaysIndirectKHR");
       CmdTraceRaysKHR = (PFN_vkCmdTraceRaysKHR) NextGetDeviceProcAddr(device, "vkCmdTraceRaysKHR");
       CmdTraceRaysNV = (PFN_vkCmdTraceRaysNV) NextGetDeviceProcAddr(device, "vkCmdTraceRaysNV");
@@ -649,6 +650,7 @@ namespace vkroots {
       GetImageSparseMemoryRequirements2 = (PFN_vkGetImageSparseMemoryRequirements2) NextGetDeviceProcAddr(device, "vkGetImageSparseMemoryRequirements2");
       GetImageSparseMemoryRequirements2KHR = (PFN_vkGetImageSparseMemoryRequirements2KHR) NextGetDeviceProcAddr(device, "vkGetImageSparseMemoryRequirements2KHR");
       GetImageSubresourceLayout = (PFN_vkGetImageSubresourceLayout) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout");
+      GetImageSubresourceLayout2EXT = (PFN_vkGetImageSubresourceLayout2EXT) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout2EXT");
       GetMemoryFdKHR = (PFN_vkGetMemoryFdKHR) NextGetDeviceProcAddr(device, "vkGetMemoryFdKHR");
       GetMemoryFdPropertiesKHR = (PFN_vkGetMemoryFdPropertiesKHR) NextGetDeviceProcAddr(device, "vkGetMemoryFdPropertiesKHR");
       GetMemoryHostPointerPropertiesEXT = (PFN_vkGetMemoryHostPointerPropertiesEXT) NextGetDeviceProcAddr(device, "vkGetMemoryHostPointerPropertiesEXT");
@@ -659,6 +661,7 @@ namespace vkroots {
       GetPipelineExecutableInternalRepresentationsKHR = (PFN_vkGetPipelineExecutableInternalRepresentationsKHR) NextGetDeviceProcAddr(device, "vkGetPipelineExecutableInternalRepresentationsKHR");
       GetPipelineExecutablePropertiesKHR = (PFN_vkGetPipelineExecutablePropertiesKHR) NextGetDeviceProcAddr(device, "vkGetPipelineExecutablePropertiesKHR");
       GetPipelineExecutableStatisticsKHR = (PFN_vkGetPipelineExecutableStatisticsKHR) NextGetDeviceProcAddr(device, "vkGetPipelineExecutableStatisticsKHR");
+      GetPipelinePropertiesEXT = (PFN_vkGetPipelinePropertiesEXT) NextGetDeviceProcAddr(device, "vkGetPipelinePropertiesEXT");
       GetPrivateData = (PFN_vkGetPrivateData) NextGetDeviceProcAddr(device, "vkGetPrivateData");
       GetPrivateDataEXT = (PFN_vkGetPrivateDataEXT) NextGetDeviceProcAddr(device, "vkGetPrivateDataEXT");
       GetQueryPoolResults = (PFN_vkGetQueryPoolResults) NextGetDeviceProcAddr(device, "vkGetQueryPoolResults");
@@ -674,6 +677,8 @@ namespace vkroots {
       GetSemaphoreCounterValueKHR = (PFN_vkGetSemaphoreCounterValueKHR) NextGetDeviceProcAddr(device, "vkGetSemaphoreCounterValueKHR");
       GetSemaphoreFdKHR = (PFN_vkGetSemaphoreFdKHR) NextGetDeviceProcAddr(device, "vkGetSemaphoreFdKHR");
       GetShaderInfoAMD = (PFN_vkGetShaderInfoAMD) NextGetDeviceProcAddr(device, "vkGetShaderInfoAMD");
+      GetShaderModuleCreateInfoIdentifierEXT = (PFN_vkGetShaderModuleCreateInfoIdentifierEXT) NextGetDeviceProcAddr(device, "vkGetShaderModuleCreateInfoIdentifierEXT");
+      GetShaderModuleIdentifierEXT = (PFN_vkGetShaderModuleIdentifierEXT) NextGetDeviceProcAddr(device, "vkGetShaderModuleIdentifierEXT");
       GetSwapchainCounterEXT = (PFN_vkGetSwapchainCounterEXT) NextGetDeviceProcAddr(device, "vkGetSwapchainCounterEXT");
       GetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR) NextGetDeviceProcAddr(device, "vkGetSwapchainImagesKHR");
       GetSwapchainStatusKHR = (PFN_vkGetSwapchainStatusKHR) NextGetDeviceProcAddr(device, "vkGetSwapchainStatusKHR");
@@ -910,6 +915,7 @@ namespace vkroots {
     PFN_vkCmdSetViewportWithCount CmdSetViewportWithCount;
     PFN_vkCmdSetViewportWithCountEXT CmdSetViewportWithCountEXT;
     PFN_vkCmdSubpassShadingHUAWEI CmdSubpassShadingHUAWEI;
+    PFN_vkCmdTraceRaysIndirect2KHR CmdTraceRaysIndirect2KHR;
     PFN_vkCmdTraceRaysIndirectKHR CmdTraceRaysIndirectKHR;
     PFN_vkCmdTraceRaysKHR CmdTraceRaysKHR;
     PFN_vkCmdTraceRaysNV CmdTraceRaysNV;
@@ -1054,6 +1060,7 @@ namespace vkroots {
     PFN_vkGetImageSparseMemoryRequirements2 GetImageSparseMemoryRequirements2;
     PFN_vkGetImageSparseMemoryRequirements2KHR GetImageSparseMemoryRequirements2KHR;
     PFN_vkGetImageSubresourceLayout GetImageSubresourceLayout;
+    PFN_vkGetImageSubresourceLayout2EXT GetImageSubresourceLayout2EXT;
     PFN_vkGetMemoryFdKHR GetMemoryFdKHR;
     PFN_vkGetMemoryFdPropertiesKHR GetMemoryFdPropertiesKHR;
     PFN_vkGetMemoryHostPointerPropertiesEXT GetMemoryHostPointerPropertiesEXT;
@@ -1064,6 +1071,7 @@ namespace vkroots {
     PFN_vkGetPipelineExecutableInternalRepresentationsKHR GetPipelineExecutableInternalRepresentationsKHR;
     PFN_vkGetPipelineExecutablePropertiesKHR GetPipelineExecutablePropertiesKHR;
     PFN_vkGetPipelineExecutableStatisticsKHR GetPipelineExecutableStatisticsKHR;
+    PFN_vkGetPipelinePropertiesEXT GetPipelinePropertiesEXT;
     PFN_vkGetPrivateData GetPrivateData;
     PFN_vkGetPrivateDataEXT GetPrivateDataEXT;
     PFN_vkGetQueryPoolResults GetQueryPoolResults;
@@ -1079,6 +1087,8 @@ namespace vkroots {
     PFN_vkGetSemaphoreCounterValueKHR GetSemaphoreCounterValueKHR;
     PFN_vkGetSemaphoreFdKHR GetSemaphoreFdKHR;
     PFN_vkGetShaderInfoAMD GetShaderInfoAMD;
+    PFN_vkGetShaderModuleCreateInfoIdentifierEXT GetShaderModuleCreateInfoIdentifierEXT;
+    PFN_vkGetShaderModuleIdentifierEXT GetShaderModuleIdentifierEXT;
     PFN_vkGetSwapchainCounterEXT GetSwapchainCounterEXT;
     PFN_vkGetSwapchainImagesKHR GetSwapchainImagesKHR;
     PFN_vkGetSwapchainStatusKHR GetSwapchainStatusKHR;
@@ -2764,6 +2774,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void wrap_CmdTraceRaysIndirect2KHR(VkCommandBuffer commandBuffer, VkDeviceAddress indirectDeviceAddress) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
+    DeviceOverrides::CmdTraceRaysIndirect2KHR(dispatch, commandBuffer, indirectDeviceAddress);
+  }
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysIndirectKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR *pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pCallableShaderBindingTable, VkDeviceAddress indirectDeviceAddress) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdTraceRaysIndirectKHR(dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, indirectDeviceAddress);
@@ -3696,6 +3712,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void wrap_GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2EXT *pSubresource, VkSubresourceLayout2EXT *pLayout) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
+    DeviceOverrides::GetImageSubresourceLayout2EXT(dispatch, device, image, pSubresource, pLayout);
+  }
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryFdKHR(dispatch, device, pGetFdInfo, pFd);
@@ -3762,6 +3784,13 @@ namespace vkroots {
   static VkResult wrap_GetPipelineExecutableStatisticsKHR(VkDevice device, const VkPipelineExecutableInfoKHR *pExecutableInfo, uint32_t *pStatisticCount, VkPipelineExecutableStatisticKHR *pStatistics) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineExecutableStatisticsKHR(dispatch, device, pExecutableInfo, pStatisticCount, pStatistics);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoEXT *pPipelineInfo, VkBaseOutStructure *pPipelineProperties) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
+    VkResult ret = DeviceOverrides::GetPipelinePropertiesEXT(dispatch, device, pPipelineInfo, pPipelineProperties);
     return ret;
   }
 
@@ -3863,6 +3892,18 @@ namespace vkroots {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetShaderInfoAMD(dispatch, device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
     return ret;
+  }
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void wrap_GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
+    DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT(dispatch, device, pCreateInfo, pIdentifier);
+  }
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void wrap_GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
+    DeviceOverrides::GetShaderModuleIdentifierEXT(dispatch, device, shaderModule, pIdentifier);
   }
 
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
@@ -5776,6 +5817,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdSubpassShadingHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdTraceRaysIndirect2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysIndirect2KHR; };
+    if constexpr (HasCmdTraceRaysIndirect2KHR) {
+      if (!std::strcmp("vkCmdTraceRaysIndirect2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysIndirect2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdTraceRaysIndirectKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysIndirectKHR; };
     if constexpr (HasCmdTraceRaysIndirectKHR) {
       if (!std::strcmp("vkCmdTraceRaysIndirectKHR", name))
@@ -6640,6 +6687,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasGetImageSubresourceLayout2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout2EXT; };
+    if constexpr (HasGetImageSubresourceLayout2EXT) {
+      if (!std::strcmp("vkGetImageSubresourceLayout2EXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasGetMemoryFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryFdKHR; };
     if constexpr (HasGetMemoryFdKHR) {
       if (!std::strcmp("vkGetMemoryFdKHR", name))
@@ -6698,6 +6751,12 @@ namespace vkroots {
     if constexpr (HasGetPipelineExecutableStatisticsKHR) {
       if (!std::strcmp("vkGetPipelineExecutableStatisticsKHR", name))
         return (PFN_vkVoidFunction) &wrap_GetPipelineExecutableStatisticsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPipelinePropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelinePropertiesEXT; };
+    if constexpr (HasGetPipelinePropertiesEXT) {
+      if (!std::strcmp("vkGetPipelinePropertiesEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPipelinePropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPrivateData = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPrivateData; };
@@ -6788,6 +6847,18 @@ namespace vkroots {
     if constexpr (HasGetShaderInfoAMD) {
       if (!std::strcmp("vkGetShaderInfoAMD", name))
         return (PFN_vkVoidFunction) &wrap_GetShaderInfoAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetShaderModuleCreateInfoIdentifierEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT; };
+    if constexpr (HasGetShaderModuleCreateInfoIdentifierEXT) {
+      if (!std::strcmp("vkGetShaderModuleCreateInfoIdentifierEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetShaderModuleCreateInfoIdentifierEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetShaderModuleIdentifierEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderModuleIdentifierEXT; };
+    if constexpr (HasGetShaderModuleIdentifierEXT) {
+      if (!std::strcmp("vkGetShaderModuleIdentifierEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetShaderModuleIdentifierEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSwapchainCounterEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainCounterEXT; };
