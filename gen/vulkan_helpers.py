@@ -218,13 +218,7 @@ class VkEnum(object):
 
     def create_alias(self, name, alias_name):
         """ Create an aliased value for this enum """
-        # Older GCC versions need a literal to initialize a static const uint64_t
-        # which is what we use for 64bit bitmasks.
-        if self.bitwidth == 64:
-            alias = next(x for x in self.values if x.name == alias_name)
-            self.add(VkEnumValue(name, self.bitwidth, value=alias.value, hex=alias.hex, alias=alias_name))
-        else:
-            self.add(VkEnumValue(name, self.bitwidth, alias=alias_name))
+        self.add(VkEnumValue(name, self.bitwidth, alias=alias_name))
 
     def create_value(self, name, value):
         """ Create a new value for this enum """
@@ -232,6 +226,19 @@ class VkEnum(object):
         # at least when we convert back to a string. Internally we want to use int.
         hex = "0x" in value
         self.add(VkEnumValue(name, self.bitwidth, value=int(value, 0), hex=hex))
+
+    def fixup_64bit_aliases(self):
+        """ Replace 64bit aliases with literal values """
+        # Older GCC versions need a literal to initialize a static const uint64_t
+        # which is what we use for 64bit bitmasks.
+        if self.bitwidth != 64:
+            return
+        for value in self.values:
+            if not value.is_alias():
+                continue
+            alias = next(x for x in self.values if x.name == value.alias)
+            value.hex = alias.hex
+            value.value = alias.value
 
     def create_bitpos(self, name, pos):
         """ Create a new bitmask value for this enum """
@@ -1236,6 +1243,9 @@ class VkRegistry(object):
         self._parse_features(root)
         self._parse_extensions(root)
 
+        for enum in self.enums.values():
+            enum.fixup_64bit_aliases()
+
         self._match_object_types()
 
         self.copyright = root.find('./comment').text
@@ -1272,7 +1282,7 @@ class VkRegistry(object):
                 if "data" in type_info:
                     types[m.type]["data"].required = True
 
-                if type_info["category"] == "struct":
+                if type_info["category"] == "struct" and struct.name != m.type:
                     # Yay, recurse
                     mark_struct_dependencies(type_info["data"], types)
                 elif type_info["category"] == "funcpointer":
@@ -1444,11 +1454,17 @@ class VkRegistry(object):
                 enum.create_alias(enum_elem.attrib["name"], enum_elem.attrib["alias"])
 
         elif "value" in enum_elem.keys():
-            # Constants are not aliased, no need to add them here, they'll get added later on.
+            # Constant with an explicit value
             if only_aliased:
                 return
 
             self.consts.append(VkConstant(enum_elem.attrib["name"], enum_elem.attrib["value"]))
+        elif "alias" in enum_elem.keys():
+            # Aliased constant
+            if not only_aliased:
+                return
+
+            self.consts.append(VkConstant(enum_elem.attrib["name"], enum_elem.attrib["alias"]))
 
     @staticmethod
     def _require_type(type_info):
