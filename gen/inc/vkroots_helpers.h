@@ -61,12 +61,20 @@ namespace vkroots::helpers {
       return true;
     }
 
-    Data* operator->() {
+    Data* get() {
       return &m_data;
     }
 
-    const Data* operator->() const {
+    const Data* get() const {
       return &m_data;
+    }
+
+    Data* operator->() {
+      return get();
+    }
+
+    const Data* operator->() const {
+      return get();
     }
   private:
     SynchronizedMapObject(Data& data, std::mutex& mutex)
