@@ -1218,6 +1218,7 @@ class VkRegistry(object):
         # We aggregate all types in here for cross-referencing.
         self.funcs = {}
         self.types = {}
+        self.platforms = {}
 
         self.version_regex = re.compile(
             r'^'
@@ -1237,6 +1238,7 @@ class VkRegistry(object):
         root = tree.getroot()
         self._parse_enums(root)
         self._parse_types(root)
+        self._parse_platforms(root)
         self._parse_commands(root)
 
         # Pull in any required types and functions.
@@ -1600,6 +1602,15 @@ class VkRegistry(object):
 
                         type_info = self.types[name]
                         type_info["data"].required = True
+
+    def _parse_platforms(self, root):
+        platforms = root.findall("./platforms/platform")
+        for p in platforms:
+            platform_info = {}
+            platform_info["name"] = p.attrib.get("name", None)
+            platform_info["protect"] = p.attrib.get("protect", None)
+
+            self.platforms[platform_info["name"]] = platform_info
 
     def _parse_types(self, root):
         """ Parse types section, which contains all data types e.g. structs, typedefs etcetera. """

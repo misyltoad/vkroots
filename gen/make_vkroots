@@ -62,6 +62,25 @@ class VkGenerator(object):
                 return None
         return platform
 
+    def get_function_platform_define(self, func):
+        platform = self.get_function_platform(func)
+        if platform != None:
+            if platform in self.registry.platforms:
+                return self.registry.platforms[platform]["protect"]
+            else:
+                return "VKROOTS_PLATFORM_UNSUPPORTED"
+        return None
+
+    def print_function_platform_ifdef(self, f, func):
+        plat_define = self.get_function_platform_define(func)
+        if plat_define != None:
+            f.write(f"#ifdef {plat_define}\n");
+
+    def print_function_platform_endif(self, f, func):
+        plat_define = self.get_function_platform_define(func)
+        if plat_define != None:
+            f.write(f"#endif\n");
+
     def write_dispatch_class(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         procaddr_normalized = f"Get{dispatch_type}ProcAddr"
         procaddr = f"vk{procaddr_normalized}"
@@ -82,12 +101,14 @@ class VkGenerator(object):
             f.write(f"      this->PhysicalDevice = PhysicalDevice;\n")
             f.write(f"      this->pPhysicalDeviceDispatch = pPhysicalDeviceDispatch;\n")
         for func in self.registry.funcs.values():
-            if func.get_func_type() == dispatch_type and self.get_function_platform(func) == None:
+            if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
+                self.print_function_platform_ifdef(f, func);
                 if func.name in ("vkGetInstanceProcAddr", "vkGetDeviceProcAddr"):
                     f.write(f"      {func_name_normalized} = Next{procaddr_normalized};\n")
                 else:
                     f.write(f"      {func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
+                self.print_function_platform_endif(f, func);
         f.write(f"    }}\n\n")
         f.write( "    mutable uint64_t UserData = 0;\n")
         if dispatch_type == "PhysicalDevice":
@@ -98,9 +119,11 @@ class VkGenerator(object):
             f.write( "    VkPhysicalDevice PhysicalDevice;\n")
             f.write( "    const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;\n")
         for func in self.registry.funcs.values():
-            if func.get_func_type() == dispatch_type and self.get_function_platform(func) == None:
+            if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
+                self.print_function_platform_ifdef(f, func);
                 f.write(f"    PFN_{func.name} {func_name_normalized};\n")
+                self.print_function_platform_endif(f, func);
         f.write( "  };\n\n")
         if dispatch_type == "PhysicalDevice":
             f.write( "  namespace tables {\n")
@@ -109,7 +132,8 @@ class VkGenerator(object):
 
     def write_dispatch_funcs(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         for func in self.registry.funcs.values():
-            if func.get_func_type() == dispatch_type and self.get_function_platform(func) == None:
+            if func.get_func_type() == dispatch_type:
+                self.print_function_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
                 params   = ", ".join([p.definition() for p in func.params])
                 args     = ", ".join([p.name for p in func.params])
@@ -142,6 +166,7 @@ class VkGenerator(object):
                 if func.type != "void":
                     f.write(f"    return ret;\n")
                 f.write("  }\n\n")
+                self.print_function_platform_endif(f, func);
 
         if dispatch_type == "Instance":
             write_include(f, "vkroots_implicit_createinstance.h")
@@ -155,9 +180,10 @@ class VkGenerator(object):
 
         f.write( "  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>\n")
         f.write(f"  static PFN_vkVoidFunction Get{dispatch_type}ProcAddr(Vk{procaddr_type} {procaddr_name}, const char* name) {{\n")
-        f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({procaddr_name});")
+        f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
-            if func.get_func_type() == dispatch_type and self.get_function_platform(func) == None:
+            if func.get_func_type() == dispatch_type:
+                self.print_function_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
                 f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {dispatch_type}Overrides& t) {{ &{dispatch_type}Overrides::{func_name_normalized}; }};\n")
                 f.write(f"    if constexpr (Has{func_name_normalized}) {{\n")
@@ -179,6 +205,7 @@ class VkGenerator(object):
                     f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
                     f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
                     f.write( "    }\n")
+                self.print_function_platform_endif(f, func);
                 f.write( "\n")
         # WHY DOES THIS EXIST????
         # PLEASE TELL ME.

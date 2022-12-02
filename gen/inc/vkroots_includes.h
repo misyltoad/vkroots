@@ -5,7 +5,7 @@
 #pragma once
 
 #include <vulkan/vk_layer.h>
-#include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.h>
 
 #include <cstring>
 #include <unordered_map>
