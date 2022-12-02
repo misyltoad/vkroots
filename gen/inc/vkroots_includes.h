@@ -16,6 +16,8 @@
 #include <cassert>
 #include <vector>
 #include <utility>
+#include <optional>
+#include <string_view>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1

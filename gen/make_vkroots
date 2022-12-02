@@ -277,6 +277,7 @@ def main():
         f.write( "}\n")
         f.write( "\n")
         write_include(f, "vkroots_dispatches.h")
+        write_include(f, "vkroots_helpers.h")
         # Implementations
         write_include(f, "vkroots_loader_layer_interface.h")
 
