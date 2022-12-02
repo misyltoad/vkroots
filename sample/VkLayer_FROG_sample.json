@@ -14,7 +14,7 @@
         "ENABLE_VKROOTS_TEST_1": "1"
       },
       "disable_environment": {
-        "ENABLE_VKROOTS_TEST_1": "1"
+        "DISABLE_VKROOTS_TEST_1": "1"
       }
     }
 }
