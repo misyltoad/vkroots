@@ -151,6 +151,7 @@ namespace vkroots {
   class VkInstanceDispatch {
   public:
     VkInstanceDispatch(PFN_vkGetInstanceProcAddr NextGetInstanceProcAddr, VkInstance instance) {
+      this->Instance = instance;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       CreateAndroidSurfaceKHR = (PFN_vkCreateAndroidSurfaceKHR) NextGetInstanceProcAddr(instance, "vkCreateAndroidSurfaceKHR");
 #endif
@@ -254,6 +255,7 @@ namespace vkroots {
     }
 
     mutable uint64_t UserData = 0;
+    VkInstance Instance;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR CreateAndroidSurfaceKHR;
 #endif
@@ -485,6 +487,7 @@ namespace vkroots {
   public:
     VkDeviceDispatch(PFN_vkGetDeviceProcAddr NextGetDeviceProcAddr, VkDevice device, VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch) {
       this->PhysicalDevice = PhysicalDevice;
+      this->Device = device;
       this->pPhysicalDeviceDispatch = pPhysicalDeviceDispatch;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       AcquireFullScreenExclusiveModeEXT = (PFN_vkAcquireFullScreenExclusiveModeEXT) NextGetDeviceProcAddr(device, "vkAcquireFullScreenExclusiveModeEXT");
@@ -1029,6 +1032,7 @@ namespace vkroots {
     }
 
     mutable uint64_t UserData = 0;
+    VkDevice Device;
     VkPhysicalDevice PhysicalDevice;
     const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;
 #ifdef VK_USE_PLATFORM_WIN32_KHR

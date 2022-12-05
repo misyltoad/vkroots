@@ -93,12 +93,15 @@ class VkGenerator(object):
         if dispatch_type == "Device":
             additional_args += ", VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch"
         f.write(f"    Vk{dispatch_type}Dispatch(PFN_{procaddr} Next{procaddr_normalized}, Vk{procaddr_type} {procaddr_name}{additional_args}) {{\n")
+        if dispatch_type == "Instance":
+            f.write(f"      this->Instance = instance;\n")
         if dispatch_type == "PhysicalDevice":
             f.write(f"      this->Instance = instance;\n")
             f.write(f"      this->pInstanceDispatch = pInstanceDispatch;\n")
             f.write(f"      this->GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;\n")
         if dispatch_type == "Device":
             f.write(f"      this->PhysicalDevice = PhysicalDevice;\n")
+            f.write(f"      this->Device = device;\n")
             f.write(f"      this->pPhysicalDeviceDispatch = pPhysicalDeviceDispatch;\n")
         for func in self.registry.funcs.values():
             if func.get_func_type() == dispatch_type:
@@ -111,11 +114,14 @@ class VkGenerator(object):
                 self.print_function_platform_endif(f, func);
         f.write(f"    }}\n\n")
         f.write( "    mutable uint64_t UserData = 0;\n")
+        if dispatch_type == "Instance":
+            f.write( "    VkInstance Instance;\n")
         if dispatch_type == "PhysicalDevice":
             f.write( "    VkInstance Instance;\n")
             f.write( "    const VkInstanceDispatch* pInstanceDispatch;\n")
             f.write( "    PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;\n")
         if dispatch_type == "Device":
+            f.write( "    VkDevice Device;\n")
             f.write( "    VkPhysicalDevice PhysicalDevice;\n")
             f.write( "    const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;\n")
         for func in self.registry.funcs.values():
