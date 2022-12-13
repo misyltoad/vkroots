@@ -18,6 +18,7 @@
 #include <utility>
 #include <optional>
 #include <string_view>
+#include <array>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1

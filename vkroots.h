@@ -18,6 +18,7 @@
 #include <utility>
 #include <optional>
 #include <string_view>
+#include <array>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1
@@ -8875,7 +8876,7 @@ namespace vkroots::helpers {
   }
 
   template <typename T, typename ArrType, typename Op>
-  inline VkResult vkarray(ArrType& arr, uint32_t *pCount, T* pOut, Op func) {
+  inline VkResult array(ArrType& arr, uint32_t *pCount, T* pOut, Op func) {
     const uint32_t count = uint32_t(arr.size());
 
     if (!pOut) {
@@ -8894,8 +8895,43 @@ namespace vkroots::helpers {
   }
 
   template <typename T, typename ArrType>
-  inline VkResult vkarray(ArrType& arr, uint32_t *pCount, T* pOut) {
-      return vkarray(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
+  inline VkResult array(ArrType& arr, uint32_t *pCount, T* pOut) {
+    return array(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
+  }
+
+  template <typename Func, typename OutArray, typename... Args>
+  uint32_t enumerate(Func function, OutArray& outArray, Args&&... arguments) {
+    uint32_t count = 0;
+    function(arguments..., &count, nullptr);
+
+    outArray.resize(count);
+    if (!count)
+        return 0;
+
+    function(std::forward<Args>(arguments)..., &count, outArray.data());
+    return count;
+  }
+
+  template <typename Func, typename InArray, typename OutType, typename... Args>
+  VkResult append(Func function, const InArray& inArray, uint32_t* pOutCount, OutType* pOut, Args&&... arguments) {
+    uint32_t baseCount = 0;
+    function(std::forward<Args>(arguments)..., &baseCount, nullptr);
+
+    const uint32_t totalCount = baseCount + uint32_t(inArray.size());
+    if (!pOut) {
+      *pOutCount = totalCount;
+      return VK_SUCCESS;
+    }
+
+    if (*pOutCount < totalCount) {
+      function(std::forward<Args>(arguments)..., pOutCount, pOut);
+      return VK_INCOMPLETE;
+    }
+
+    function(std::forward<Args>(arguments)..., &baseCount, pOut);
+    for (size_t i = 0; i < inArray.size(); i++)
+      pOut[baseCount + i] = inArray[i];
+    return VK_SUCCESS;
   }
 
   template <typename Key, typename Data>
