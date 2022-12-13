@@ -8822,6 +8822,3793 @@ namespace vkroots {
       return NULL;
   }
 
+  namespace helpers {
+    template <typename EnumType>
+    constexpr const char* enumString(EnumType type);
+
+    template <> constexpr const char* enumString<VkAccelerationStructureBuildTypeKHR>(VkAccelerationStructureBuildTypeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ACCELERATION_STRUCTURE_BUILD_TYPE_HOST_KHR";
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR";
+        case static_cast<uint64_t>(2): return "VK_ACCELERATION_STRUCTURE_BUILD_TYPE_HOST_OR_DEVICE_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_BUILD_TYPE_KHR_MAX_ENUM";
+        default: return "VkAccelerationStructureBuildTypeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccelerationStructureCompatibilityKHR>(VkAccelerationStructureCompatibilityKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ACCELERATION_STRUCTURE_COMPATIBILITY_COMPATIBLE_KHR";
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_COMPATIBILITY_INCOMPATIBLE_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_COMPATIBILITY_KHR_MAX_ENUM";
+        default: return "VkAccelerationStructureCompatibilityKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccelerationStructureCreateFlagBitsKHR>(VkAccelerationStructureCreateFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_CREATE_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(4): return "VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV";
+        default: return "VkAccelerationStructureCreateFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccelerationStructureMemoryRequirementsTypeNV>(VkAccelerationStructureMemoryRequirementsTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_OBJECT_NV";
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_BUILD_SCRATCH_NV";
+        case static_cast<uint64_t>(2): return "VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_UPDATE_SCRATCH_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_NV_MAX_ENUM";
+        default: return "VkAccelerationStructureMemoryRequirementsTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccelerationStructureMotionInstanceTypeNV>(VkAccelerationStructureMotionInstanceTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_STATIC_NV";
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_MATRIX_MOTION_NV";
+        case static_cast<uint64_t>(2): return "VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_SRT_MOTION_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_NV_MAX_ENUM";
+        default: return "VkAccelerationStructureMotionInstanceTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccelerationStructureTypeKHR>(VkAccelerationStructureTypeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR";
+        case static_cast<uint64_t>(1): return "VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR";
+        case static_cast<uint64_t>(2): return "VK_ACCELERATION_STRUCTURE_TYPE_GENERIC_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCELERATION_STRUCTURE_TYPE_KHR_MAX_ENUM";
+        default: return "VkAccelerationStructureTypeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAccessFlagBits>(VkAccessFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_ACCESS_INDIRECT_COMMAND_READ_BIT";
+        case static_cast<uint64_t>(2): return "VK_ACCESS_INDEX_READ_BIT";
+        case static_cast<uint64_t>(4): return "VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT";
+        case static_cast<uint64_t>(8): return "VK_ACCESS_UNIFORM_READ_BIT";
+        case static_cast<uint64_t>(16): return "VK_ACCESS_INPUT_ATTACHMENT_READ_BIT";
+        case static_cast<uint64_t>(32): return "VK_ACCESS_SHADER_READ_BIT";
+        case static_cast<uint64_t>(64): return "VK_ACCESS_SHADER_WRITE_BIT";
+        case static_cast<uint64_t>(128): return "VK_ACCESS_COLOR_ATTACHMENT_READ_BIT";
+        case static_cast<uint64_t>(256): return "VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT";
+        case static_cast<uint64_t>(512): return "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT";
+        case static_cast<uint64_t>(1024): return "VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT";
+        case static_cast<uint64_t>(2048): return "VK_ACCESS_TRANSFER_READ_BIT";
+        case static_cast<uint64_t>(4096): return "VK_ACCESS_TRANSFER_WRITE_BIT";
+        case static_cast<uint64_t>(8192): return "VK_ACCESS_HOST_READ_BIT";
+        case static_cast<uint64_t>(16384): return "VK_ACCESS_HOST_WRITE_BIT";
+        case static_cast<uint64_t>(32768): return "VK_ACCESS_MEMORY_READ_BIT";
+        case static_cast<uint64_t>(65536): return "VK_ACCESS_MEMORY_WRITE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_ACCESS_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(0): return "VK_ACCESS_NONE";
+        case static_cast<uint64_t>(33554432): return "VK_ACCESS_TRANSFORM_FEEDBACK_WRITE_BIT_EXT";
+        case static_cast<uint64_t>(67108864): return "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT";
+        case static_cast<uint64_t>(134217728): return "VK_ACCESS_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT";
+        case static_cast<uint64_t>(1048576): return "VK_ACCESS_CONDITIONAL_RENDERING_READ_BIT_EXT";
+        case static_cast<uint64_t>(524288): return "VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT";
+        case static_cast<uint64_t>(16777216): return "VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT";
+        case static_cast<uint64_t>(8388608): return "VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR";
+        case static_cast<uint64_t>(131072): return "VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV";
+        case static_cast<uint64_t>(262144): return "VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV";
+        case static_cast<uint64_t>(2097152): return "VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR";
+        case static_cast<uint64_t>(4194304): return "VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR";
+        default: return "VkAccessFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAttachmentDescriptionFlagBits>(VkAttachmentDescriptionFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_ATTACHMENT_DESCRIPTION_FLAG_BITS_MAX_ENUM";
+        default: return "VkAttachmentDescriptionFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAttachmentLoadOp>(VkAttachmentLoadOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ATTACHMENT_LOAD_OP_LOAD";
+        case static_cast<uint64_t>(1): return "VK_ATTACHMENT_LOAD_OP_CLEAR";
+        case static_cast<uint64_t>(2): return "VK_ATTACHMENT_LOAD_OP_DONT_CARE";
+        case static_cast<uint64_t>(2147483647): return "VK_ATTACHMENT_LOAD_OP_MAX_ENUM";
+        case static_cast<uint64_t>(1000400000): return "VK_ATTACHMENT_LOAD_OP_NONE_EXT";
+        default: return "VkAttachmentLoadOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkAttachmentStoreOp>(VkAttachmentStoreOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_ATTACHMENT_STORE_OP_STORE";
+        case static_cast<uint64_t>(1): return "VK_ATTACHMENT_STORE_OP_DONT_CARE";
+        case static_cast<uint64_t>(2147483647): return "VK_ATTACHMENT_STORE_OP_MAX_ENUM";
+        case static_cast<uint64_t>(1000301000): return "VK_ATTACHMENT_STORE_OP_NONE";
+        default: return "VkAttachmentStoreOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBlendFactor>(VkBlendFactor type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_BLEND_FACTOR_ZERO";
+        case static_cast<uint64_t>(1): return "VK_BLEND_FACTOR_ONE";
+        case static_cast<uint64_t>(2): return "VK_BLEND_FACTOR_SRC_COLOR";
+        case static_cast<uint64_t>(3): return "VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR";
+        case static_cast<uint64_t>(4): return "VK_BLEND_FACTOR_DST_COLOR";
+        case static_cast<uint64_t>(5): return "VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR";
+        case static_cast<uint64_t>(6): return "VK_BLEND_FACTOR_SRC_ALPHA";
+        case static_cast<uint64_t>(7): return "VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA";
+        case static_cast<uint64_t>(8): return "VK_BLEND_FACTOR_DST_ALPHA";
+        case static_cast<uint64_t>(9): return "VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA";
+        case static_cast<uint64_t>(10): return "VK_BLEND_FACTOR_CONSTANT_COLOR";
+        case static_cast<uint64_t>(11): return "VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR";
+        case static_cast<uint64_t>(12): return "VK_BLEND_FACTOR_CONSTANT_ALPHA";
+        case static_cast<uint64_t>(13): return "VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA";
+        case static_cast<uint64_t>(14): return "VK_BLEND_FACTOR_SRC_ALPHA_SATURATE";
+        case static_cast<uint64_t>(15): return "VK_BLEND_FACTOR_SRC1_COLOR";
+        case static_cast<uint64_t>(16): return "VK_BLEND_FACTOR_ONE_MINUS_SRC1_COLOR";
+        case static_cast<uint64_t>(17): return "VK_BLEND_FACTOR_SRC1_ALPHA";
+        case static_cast<uint64_t>(18): return "VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA";
+        case static_cast<uint64_t>(2147483647): return "VK_BLEND_FACTOR_MAX_ENUM";
+        default: return "VkBlendFactor_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBlendOp>(VkBlendOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_BLEND_OP_ADD";
+        case static_cast<uint64_t>(1): return "VK_BLEND_OP_SUBTRACT";
+        case static_cast<uint64_t>(2): return "VK_BLEND_OP_REVERSE_SUBTRACT";
+        case static_cast<uint64_t>(3): return "VK_BLEND_OP_MIN";
+        case static_cast<uint64_t>(4): return "VK_BLEND_OP_MAX";
+        case static_cast<uint64_t>(2147483647): return "VK_BLEND_OP_MAX_ENUM";
+        case static_cast<uint64_t>(1000148000): return "VK_BLEND_OP_ZERO_EXT";
+        case static_cast<uint64_t>(1000148001): return "VK_BLEND_OP_SRC_EXT";
+        case static_cast<uint64_t>(1000148002): return "VK_BLEND_OP_DST_EXT";
+        case static_cast<uint64_t>(1000148003): return "VK_BLEND_OP_SRC_OVER_EXT";
+        case static_cast<uint64_t>(1000148004): return "VK_BLEND_OP_DST_OVER_EXT";
+        case static_cast<uint64_t>(1000148005): return "VK_BLEND_OP_SRC_IN_EXT";
+        case static_cast<uint64_t>(1000148006): return "VK_BLEND_OP_DST_IN_EXT";
+        case static_cast<uint64_t>(1000148007): return "VK_BLEND_OP_SRC_OUT_EXT";
+        case static_cast<uint64_t>(1000148008): return "VK_BLEND_OP_DST_OUT_EXT";
+        case static_cast<uint64_t>(1000148009): return "VK_BLEND_OP_SRC_ATOP_EXT";
+        case static_cast<uint64_t>(1000148010): return "VK_BLEND_OP_DST_ATOP_EXT";
+        case static_cast<uint64_t>(1000148011): return "VK_BLEND_OP_XOR_EXT";
+        case static_cast<uint64_t>(1000148012): return "VK_BLEND_OP_MULTIPLY_EXT";
+        case static_cast<uint64_t>(1000148013): return "VK_BLEND_OP_SCREEN_EXT";
+        case static_cast<uint64_t>(1000148014): return "VK_BLEND_OP_OVERLAY_EXT";
+        case static_cast<uint64_t>(1000148015): return "VK_BLEND_OP_DARKEN_EXT";
+        case static_cast<uint64_t>(1000148016): return "VK_BLEND_OP_LIGHTEN_EXT";
+        case static_cast<uint64_t>(1000148017): return "VK_BLEND_OP_COLORDODGE_EXT";
+        case static_cast<uint64_t>(1000148018): return "VK_BLEND_OP_COLORBURN_EXT";
+        case static_cast<uint64_t>(1000148019): return "VK_BLEND_OP_HARDLIGHT_EXT";
+        case static_cast<uint64_t>(1000148020): return "VK_BLEND_OP_SOFTLIGHT_EXT";
+        case static_cast<uint64_t>(1000148021): return "VK_BLEND_OP_DIFFERENCE_EXT";
+        case static_cast<uint64_t>(1000148022): return "VK_BLEND_OP_EXCLUSION_EXT";
+        case static_cast<uint64_t>(1000148023): return "VK_BLEND_OP_INVERT_EXT";
+        case static_cast<uint64_t>(1000148024): return "VK_BLEND_OP_INVERT_RGB_EXT";
+        case static_cast<uint64_t>(1000148025): return "VK_BLEND_OP_LINEARDODGE_EXT";
+        case static_cast<uint64_t>(1000148026): return "VK_BLEND_OP_LINEARBURN_EXT";
+        case static_cast<uint64_t>(1000148027): return "VK_BLEND_OP_VIVIDLIGHT_EXT";
+        case static_cast<uint64_t>(1000148028): return "VK_BLEND_OP_LINEARLIGHT_EXT";
+        case static_cast<uint64_t>(1000148029): return "VK_BLEND_OP_PINLIGHT_EXT";
+        case static_cast<uint64_t>(1000148030): return "VK_BLEND_OP_HARDMIX_EXT";
+        case static_cast<uint64_t>(1000148031): return "VK_BLEND_OP_HSL_HUE_EXT";
+        case static_cast<uint64_t>(1000148032): return "VK_BLEND_OP_HSL_SATURATION_EXT";
+        case static_cast<uint64_t>(1000148033): return "VK_BLEND_OP_HSL_COLOR_EXT";
+        case static_cast<uint64_t>(1000148034): return "VK_BLEND_OP_HSL_LUMINOSITY_EXT";
+        case static_cast<uint64_t>(1000148035): return "VK_BLEND_OP_PLUS_EXT";
+        case static_cast<uint64_t>(1000148036): return "VK_BLEND_OP_PLUS_CLAMPED_EXT";
+        case static_cast<uint64_t>(1000148037): return "VK_BLEND_OP_PLUS_CLAMPED_ALPHA_EXT";
+        case static_cast<uint64_t>(1000148038): return "VK_BLEND_OP_PLUS_DARKER_EXT";
+        case static_cast<uint64_t>(1000148039): return "VK_BLEND_OP_MINUS_EXT";
+        case static_cast<uint64_t>(1000148040): return "VK_BLEND_OP_MINUS_CLAMPED_EXT";
+        case static_cast<uint64_t>(1000148041): return "VK_BLEND_OP_CONTRAST_EXT";
+        case static_cast<uint64_t>(1000148042): return "VK_BLEND_OP_INVERT_OVG_EXT";
+        case static_cast<uint64_t>(1000148043): return "VK_BLEND_OP_RED_EXT";
+        case static_cast<uint64_t>(1000148044): return "VK_BLEND_OP_GREEN_EXT";
+        case static_cast<uint64_t>(1000148045): return "VK_BLEND_OP_BLUE_EXT";
+        default: return "VkBlendOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBlendOverlapEXT>(VkBlendOverlapEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_BLEND_OVERLAP_UNCORRELATED_EXT";
+        case static_cast<uint64_t>(1): return "VK_BLEND_OVERLAP_DISJOINT_EXT";
+        case static_cast<uint64_t>(2): return "VK_BLEND_OVERLAP_CONJOINT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_BLEND_OVERLAP_EXT_MAX_ENUM";
+        default: return "VkBlendOverlapEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBorderColor>(VkBorderColor type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK";
+        case static_cast<uint64_t>(1): return "VK_BORDER_COLOR_INT_TRANSPARENT_BLACK";
+        case static_cast<uint64_t>(2): return "VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK";
+        case static_cast<uint64_t>(3): return "VK_BORDER_COLOR_INT_OPAQUE_BLACK";
+        case static_cast<uint64_t>(4): return "VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE";
+        case static_cast<uint64_t>(5): return "VK_BORDER_COLOR_INT_OPAQUE_WHITE";
+        case static_cast<uint64_t>(2147483647): return "VK_BORDER_COLOR_MAX_ENUM";
+        case static_cast<uint64_t>(1000287003): return "VK_BORDER_COLOR_FLOAT_CUSTOM_EXT";
+        case static_cast<uint64_t>(1000287004): return "VK_BORDER_COLOR_INT_CUSTOM_EXT";
+        default: return "VkBorderColor_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBufferCreateFlagBits>(VkBufferCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_BUFFER_CREATE_SPARSE_BINDING_BIT";
+        case static_cast<uint64_t>(2): return "VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT";
+        case static_cast<uint64_t>(4): return "VK_BUFFER_CREATE_SPARSE_ALIASED_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_BUFFER_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(8): return "VK_BUFFER_CREATE_PROTECTED_BIT";
+        case static_cast<uint64_t>(16): return "VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
+        default: return "VkBufferCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBufferUsageFlagBits>(VkBufferUsageFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_BUFFER_USAGE_TRANSFER_SRC_BIT";
+        case static_cast<uint64_t>(2): return "VK_BUFFER_USAGE_TRANSFER_DST_BIT";
+        case static_cast<uint64_t>(4): return "VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT";
+        case static_cast<uint64_t>(8): return "VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT";
+        case static_cast<uint64_t>(16): return "VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT";
+        case static_cast<uint64_t>(32): return "VK_BUFFER_USAGE_STORAGE_BUFFER_BIT";
+        case static_cast<uint64_t>(64): return "VK_BUFFER_USAGE_INDEX_BUFFER_BIT";
+        case static_cast<uint64_t>(128): return "VK_BUFFER_USAGE_VERTEX_BUFFER_BIT";
+        case static_cast<uint64_t>(256): return "VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(131072): return "VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT";
+        case static_cast<uint64_t>(8192): return "VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
+        case static_cast<uint64_t>(16384): return "VK_BUFFER_USAGE_VIDEO_DECODE_DST_BIT_KHR";
+        case static_cast<uint64_t>(2048): return "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT";
+        case static_cast<uint64_t>(4096): return "VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT";
+        case static_cast<uint64_t>(512): return "VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
+        case static_cast<uint64_t>(65536): return "VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
+        case static_cast<uint64_t>(524288): return "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR";
+        case static_cast<uint64_t>(1048576): return "VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR";
+        case static_cast<uint64_t>(1024): return "VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR";
+        default: return "VkBufferUsageFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBuildAccelerationStructureFlagBitsKHR>(VkBuildAccelerationStructureFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR";
+        case static_cast<uint64_t>(16): return "VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_BUILD_ACCELERATION_STRUCTURE_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(32): return "VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV";
+        default: return "VkBuildAccelerationStructureFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkBuildAccelerationStructureModeKHR>(VkBuildAccelerationStructureModeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR";
+        case static_cast<uint64_t>(1): return "VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_BUILD_ACCELERATION_STRUCTURE_MODE_KHR_MAX_ENUM";
+        default: return "VkBuildAccelerationStructureModeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkChromaLocation>(VkChromaLocation type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_CHROMA_LOCATION_COSITED_EVEN";
+        case static_cast<uint64_t>(1): return "VK_CHROMA_LOCATION_MIDPOINT";
+        case static_cast<uint64_t>(2147483647): return "VK_CHROMA_LOCATION_MAX_ENUM";
+        default: return "VkChromaLocation_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCoarseSampleOrderTypeNV>(VkCoarseSampleOrderTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COARSE_SAMPLE_ORDER_TYPE_DEFAULT_NV";
+        case static_cast<uint64_t>(1): return "VK_COARSE_SAMPLE_ORDER_TYPE_CUSTOM_NV";
+        case static_cast<uint64_t>(2): return "VK_COARSE_SAMPLE_ORDER_TYPE_PIXEL_MAJOR_NV";
+        case static_cast<uint64_t>(3): return "VK_COARSE_SAMPLE_ORDER_TYPE_SAMPLE_MAJOR_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_COARSE_SAMPLE_ORDER_TYPE_NV_MAX_ENUM";
+        default: return "VkCoarseSampleOrderTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkColorComponentFlagBits>(VkColorComponentFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COLOR_COMPONENT_R_BIT";
+        case static_cast<uint64_t>(2): return "VK_COLOR_COMPONENT_G_BIT";
+        case static_cast<uint64_t>(4): return "VK_COLOR_COMPONENT_B_BIT";
+        case static_cast<uint64_t>(8): return "VK_COLOR_COMPONENT_A_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_COLOR_COMPONENT_FLAG_BITS_MAX_ENUM";
+        default: return "VkColorComponentFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkColorSpaceKHR>(VkColorSpaceKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COLOR_SPACE_SRGB_NONLINEAR_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_COLOR_SPACE_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1000104001): return "VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT";
+        case static_cast<uint64_t>(1000104002): return "VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT";
+        case static_cast<uint64_t>(1000104003): return "VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT";
+        case static_cast<uint64_t>(1000104004): return "VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT";
+        case static_cast<uint64_t>(1000104005): return "VK_COLOR_SPACE_BT709_LINEAR_EXT";
+        case static_cast<uint64_t>(1000104006): return "VK_COLOR_SPACE_BT709_NONLINEAR_EXT";
+        case static_cast<uint64_t>(1000104007): return "VK_COLOR_SPACE_BT2020_LINEAR_EXT";
+        case static_cast<uint64_t>(1000104008): return "VK_COLOR_SPACE_HDR10_ST2084_EXT";
+        case static_cast<uint64_t>(1000104009): return "VK_COLOR_SPACE_DOLBYVISION_EXT";
+        case static_cast<uint64_t>(1000104010): return "VK_COLOR_SPACE_HDR10_HLG_EXT";
+        case static_cast<uint64_t>(1000104011): return "VK_COLOR_SPACE_ADOBERGB_LINEAR_EXT";
+        case static_cast<uint64_t>(1000104012): return "VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT";
+        case static_cast<uint64_t>(1000104013): return "VK_COLOR_SPACE_PASS_THROUGH_EXT";
+        case static_cast<uint64_t>(1000104014): return "VK_COLOR_SPACE_EXTENDED_SRGB_NONLINEAR_EXT";
+        case static_cast<uint64_t>(1000213000): return "VK_COLOR_SPACE_DISPLAY_NATIVE_AMD";
+        default: return "VkColorSpaceKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCommandBufferLevel>(VkCommandBufferLevel type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COMMAND_BUFFER_LEVEL_PRIMARY";
+        case static_cast<uint64_t>(1): return "VK_COMMAND_BUFFER_LEVEL_SECONDARY";
+        case static_cast<uint64_t>(2147483647): return "VK_COMMAND_BUFFER_LEVEL_MAX_ENUM";
+        default: return "VkCommandBufferLevel_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCommandBufferResetFlagBits>(VkCommandBufferResetFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_COMMAND_BUFFER_RESET_FLAG_BITS_MAX_ENUM";
+        default: return "VkCommandBufferResetFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCommandBufferUsageFlagBits>(VkCommandBufferUsageFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT";
+        case static_cast<uint64_t>(2): return "VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT";
+        case static_cast<uint64_t>(4): return "VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_COMMAND_BUFFER_USAGE_FLAG_BITS_MAX_ENUM";
+        default: return "VkCommandBufferUsageFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCommandPoolCreateFlagBits>(VkCommandPoolCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COMMAND_POOL_CREATE_TRANSIENT_BIT";
+        case static_cast<uint64_t>(2): return "VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_COMMAND_POOL_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(4): return "VK_COMMAND_POOL_CREATE_PROTECTED_BIT";
+        default: return "VkCommandPoolCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCommandPoolResetFlagBits>(VkCommandPoolResetFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_COMMAND_POOL_RESET_FLAG_BITS_MAX_ENUM";
+        default: return "VkCommandPoolResetFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCompareOp>(VkCompareOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COMPARE_OP_NEVER";
+        case static_cast<uint64_t>(1): return "VK_COMPARE_OP_LESS";
+        case static_cast<uint64_t>(2): return "VK_COMPARE_OP_EQUAL";
+        case static_cast<uint64_t>(3): return "VK_COMPARE_OP_LESS_OR_EQUAL";
+        case static_cast<uint64_t>(4): return "VK_COMPARE_OP_GREATER";
+        case static_cast<uint64_t>(5): return "VK_COMPARE_OP_NOT_EQUAL";
+        case static_cast<uint64_t>(6): return "VK_COMPARE_OP_GREATER_OR_EQUAL";
+        case static_cast<uint64_t>(7): return "VK_COMPARE_OP_ALWAYS";
+        case static_cast<uint64_t>(2147483647): return "VK_COMPARE_OP_MAX_ENUM";
+        default: return "VkCompareOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkComponentSwizzle>(VkComponentSwizzle type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COMPONENT_SWIZZLE_IDENTITY";
+        case static_cast<uint64_t>(1): return "VK_COMPONENT_SWIZZLE_ZERO";
+        case static_cast<uint64_t>(2): return "VK_COMPONENT_SWIZZLE_ONE";
+        case static_cast<uint64_t>(3): return "VK_COMPONENT_SWIZZLE_R";
+        case static_cast<uint64_t>(4): return "VK_COMPONENT_SWIZZLE_G";
+        case static_cast<uint64_t>(5): return "VK_COMPONENT_SWIZZLE_B";
+        case static_cast<uint64_t>(6): return "VK_COMPONENT_SWIZZLE_A";
+        case static_cast<uint64_t>(2147483647): return "VK_COMPONENT_SWIZZLE_MAX_ENUM";
+        default: return "VkComponentSwizzle_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkComponentTypeNV>(VkComponentTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COMPONENT_TYPE_FLOAT16_NV";
+        case static_cast<uint64_t>(1): return "VK_COMPONENT_TYPE_FLOAT32_NV";
+        case static_cast<uint64_t>(2): return "VK_COMPONENT_TYPE_FLOAT64_NV";
+        case static_cast<uint64_t>(3): return "VK_COMPONENT_TYPE_SINT8_NV";
+        case static_cast<uint64_t>(4): return "VK_COMPONENT_TYPE_SINT16_NV";
+        case static_cast<uint64_t>(5): return "VK_COMPONENT_TYPE_SINT32_NV";
+        case static_cast<uint64_t>(6): return "VK_COMPONENT_TYPE_SINT64_NV";
+        case static_cast<uint64_t>(7): return "VK_COMPONENT_TYPE_UINT8_NV";
+        case static_cast<uint64_t>(8): return "VK_COMPONENT_TYPE_UINT16_NV";
+        case static_cast<uint64_t>(9): return "VK_COMPONENT_TYPE_UINT32_NV";
+        case static_cast<uint64_t>(10): return "VK_COMPONENT_TYPE_UINT64_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_COMPONENT_TYPE_NV_MAX_ENUM";
+        default: return "VkComponentTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCompositeAlphaFlagBitsKHR>(VkCompositeAlphaFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_COMPOSITE_ALPHA_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkCompositeAlphaFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkConditionalRenderingFlagBitsEXT>(VkConditionalRenderingFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_CONDITIONAL_RENDERING_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkConditionalRenderingFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkConservativeRasterizationModeEXT>(VkConservativeRasterizationModeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_CONSERVATIVE_RASTERIZATION_MODE_DISABLED_EXT";
+        case static_cast<uint64_t>(1): return "VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT";
+        case static_cast<uint64_t>(2): return "VK_CONSERVATIVE_RASTERIZATION_MODE_UNDERESTIMATE_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_CONSERVATIVE_RASTERIZATION_MODE_EXT_MAX_ENUM";
+        default: return "VkConservativeRasterizationModeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCopyAccelerationStructureModeKHR>(VkCopyAccelerationStructureModeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COPY_ACCELERATION_STRUCTURE_MODE_CLONE_KHR";
+        case static_cast<uint64_t>(1): return "VK_COPY_ACCELERATION_STRUCTURE_MODE_COMPACT_KHR";
+        case static_cast<uint64_t>(2): return "VK_COPY_ACCELERATION_STRUCTURE_MODE_SERIALIZE_KHR";
+        case static_cast<uint64_t>(3): return "VK_COPY_ACCELERATION_STRUCTURE_MODE_DESERIALIZE_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_COPY_ACCELERATION_STRUCTURE_MODE_KHR_MAX_ENUM";
+        default: return "VkCopyAccelerationStructureModeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCoverageModulationModeNV>(VkCoverageModulationModeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COVERAGE_MODULATION_MODE_NONE_NV";
+        case static_cast<uint64_t>(1): return "VK_COVERAGE_MODULATION_MODE_RGB_NV";
+        case static_cast<uint64_t>(2): return "VK_COVERAGE_MODULATION_MODE_ALPHA_NV";
+        case static_cast<uint64_t>(3): return "VK_COVERAGE_MODULATION_MODE_RGBA_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_COVERAGE_MODULATION_MODE_NV_MAX_ENUM";
+        default: return "VkCoverageModulationModeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCoverageReductionModeNV>(VkCoverageReductionModeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COVERAGE_REDUCTION_MODE_MERGE_NV";
+        case static_cast<uint64_t>(1): return "VK_COVERAGE_REDUCTION_MODE_TRUNCATE_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_COVERAGE_REDUCTION_MODE_NV_MAX_ENUM";
+        default: return "VkCoverageReductionModeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkCullModeFlagBits>(VkCullModeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_CULL_MODE_NONE";
+        case static_cast<uint64_t>(1): return "VK_CULL_MODE_FRONT_BIT";
+        case static_cast<uint64_t>(2): return "VK_CULL_MODE_BACK_BIT";
+        case static_cast<uint64_t>(3): return "VK_CULL_MODE_FRONT_AND_BACK";
+        case static_cast<uint64_t>(2147483647): return "VK_CULL_MODE_FLAG_BITS_MAX_ENUM";
+        default: return "VkCullModeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDebugReportFlagBitsEXT>(VkDebugReportFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEBUG_REPORT_INFORMATION_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_DEBUG_REPORT_WARNING_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_DEBUG_REPORT_ERROR_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_DEBUG_REPORT_DEBUG_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEBUG_REPORT_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkDebugReportFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDebugReportObjectTypeEXT>(VkDebugReportObjectTypeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT";
+        case static_cast<uint64_t>(1): return "VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT";
+        case static_cast<uint64_t>(2): return "VK_DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT";
+        case static_cast<uint64_t>(3): return "VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT";
+        case static_cast<uint64_t>(4): return "VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT";
+        case static_cast<uint64_t>(5): return "VK_DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT";
+        case static_cast<uint64_t>(6): return "VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT";
+        case static_cast<uint64_t>(7): return "VK_DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT";
+        case static_cast<uint64_t>(8): return "VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT";
+        case static_cast<uint64_t>(9): return "VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT";
+        case static_cast<uint64_t>(10): return "VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT";
+        case static_cast<uint64_t>(11): return "VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT";
+        case static_cast<uint64_t>(12): return "VK_DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT";
+        case static_cast<uint64_t>(13): return "VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT";
+        case static_cast<uint64_t>(14): return "VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_VIEW_EXT";
+        case static_cast<uint64_t>(15): return "VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT";
+        case static_cast<uint64_t>(16): return "VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT";
+        case static_cast<uint64_t>(17): return "VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT";
+        case static_cast<uint64_t>(18): return "VK_DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT";
+        case static_cast<uint64_t>(19): return "VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT";
+        case static_cast<uint64_t>(20): return "VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT";
+        case static_cast<uint64_t>(21): return "VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT";
+        case static_cast<uint64_t>(22): return "VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_POOL_EXT";
+        case static_cast<uint64_t>(23): return "VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_EXT";
+        case static_cast<uint64_t>(24): return "VK_DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT";
+        case static_cast<uint64_t>(25): return "VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT";
+        case static_cast<uint64_t>(26): return "VK_DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT";
+        case static_cast<uint64_t>(27): return "VK_DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT";
+        case static_cast<uint64_t>(28): return "VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT_EXT";
+        case static_cast<uint64_t>(29): return "VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_KHR_EXT";
+        case static_cast<uint64_t>(30): return "VK_DEBUG_REPORT_OBJECT_TYPE_DISPLAY_MODE_KHR_EXT";
+        case static_cast<uint64_t>(33): return "VK_DEBUG_REPORT_OBJECT_TYPE_VALIDATION_CACHE_EXT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEBUG_REPORT_OBJECT_TYPE_EXT_MAX_ENUM";
+        case static_cast<uint64_t>(1000156000): return "VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_EXT";
+        case static_cast<uint64_t>(1000085000): return "VK_DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_EXT";
+        case static_cast<uint64_t>(1000165000): return "VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV_EXT";
+        case static_cast<uint64_t>(1000366000): return "VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_COLLECTION_FUCHSIA_EXT";
+        case static_cast<uint64_t>(1000150000): return "VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR_EXT";
+        default: return "VkDebugReportObjectTypeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDebugUtilsMessageSeverityFlagBitsEXT>(VkDebugUtilsMessageSeverityFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT";
+        case static_cast<uint64_t>(4096): return "VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkDebugUtilsMessageSeverityFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDebugUtilsMessageTypeFlagBitsEXT>(VkDebugUtilsMessageTypeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEBUG_UTILS_MESSAGE_TYPE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkDebugUtilsMessageTypeFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDependencyFlagBits>(VkDependencyFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEPENDENCY_BY_REGION_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEPENDENCY_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(4): return "VK_DEPENDENCY_DEVICE_GROUP_BIT";
+        case static_cast<uint64_t>(2): return "VK_DEPENDENCY_VIEW_LOCAL_BIT";
+        default: return "VkDependencyFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDescriptorBindingFlagBits>(VkDescriptorBindingFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT";
+        case static_cast<uint64_t>(2): return "VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT";
+        case static_cast<uint64_t>(4): return "VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT";
+        case static_cast<uint64_t>(8): return "VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_DESCRIPTOR_BINDING_FLAG_BITS_MAX_ENUM";
+        default: return "VkDescriptorBindingFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDescriptorPoolCreateFlagBits>(VkDescriptorPoolCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_DESCRIPTOR_POOL_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT";
+        case static_cast<uint64_t>(4): return "VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE";
+        default: return "VkDescriptorPoolCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDescriptorSetLayoutCreateFlagBits>(VkDescriptorSetLayoutCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_DESCRIPTOR_SET_LAYOUT_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT";
+        case static_cast<uint64_t>(1): return "VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_VALVE";
+        default: return "VkDescriptorSetLayoutCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDescriptorType>(VkDescriptorType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DESCRIPTOR_TYPE_SAMPLER";
+        case static_cast<uint64_t>(1): return "VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER";
+        case static_cast<uint64_t>(2): return "VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE";
+        case static_cast<uint64_t>(3): return "VK_DESCRIPTOR_TYPE_STORAGE_IMAGE";
+        case static_cast<uint64_t>(4): return "VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER";
+        case static_cast<uint64_t>(5): return "VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER";
+        case static_cast<uint64_t>(6): return "VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER";
+        case static_cast<uint64_t>(7): return "VK_DESCRIPTOR_TYPE_STORAGE_BUFFER";
+        case static_cast<uint64_t>(8): return "VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC";
+        case static_cast<uint64_t>(9): return "VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC";
+        case static_cast<uint64_t>(10): return "VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT";
+        case static_cast<uint64_t>(2147483647): return "VK_DESCRIPTOR_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1000138000): return "VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK";
+        case static_cast<uint64_t>(1000165000): return "VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV";
+        case static_cast<uint64_t>(1000351000): return "VK_DESCRIPTOR_TYPE_MUTABLE_VALVE";
+        case static_cast<uint64_t>(1000150000): return "VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR";
+        default: return "VkDescriptorType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDescriptorUpdateTemplateType>(VkDescriptorUpdateTemplateType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET";
+        case static_cast<uint64_t>(2147483647): return "VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR";
+        default: return "VkDescriptorUpdateTemplateType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDeviceDiagnosticsConfigFlagBitsNV>(VkDeviceDiagnosticsConfigFlagBitsNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV";
+        case static_cast<uint64_t>(2): return "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV";
+        case static_cast<uint64_t>(4): return "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV";
+        case static_cast<uint64_t>(8): return "VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_DEVICE_DIAGNOSTICS_CONFIG_FLAG_BITS_NV_MAX_ENUM";
+        default: return "VkDeviceDiagnosticsConfigFlagBitsNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDeviceEventTypeEXT>(VkDeviceEventTypeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DEVICE_EVENT_TYPE_DISPLAY_HOTPLUG_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEVICE_EVENT_TYPE_EXT_MAX_ENUM";
+        default: return "VkDeviceEventTypeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDeviceGroupPresentModeFlagBitsKHR>(VkDeviceGroupPresentModeFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_DEVICE_GROUP_PRESENT_MODE_REMOTE_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_DEVICE_GROUP_PRESENT_MODE_SUM_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_DEVICE_GROUP_PRESENT_MODE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkDeviceGroupPresentModeFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDeviceMemoryReportEventTypeEXT>(VkDeviceMemoryReportEventTypeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_ALLOCATE_EXT";
+        case static_cast<uint64_t>(1): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_FREE_EXT";
+        case static_cast<uint64_t>(2): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_IMPORT_EXT";
+        case static_cast<uint64_t>(3): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_UNIMPORT_EXT";
+        case static_cast<uint64_t>(4): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_ALLOCATION_FAILED_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_EXT_MAX_ENUM";
+        default: return "VkDeviceMemoryReportEventTypeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDeviceQueueCreateFlagBits>(VkDeviceQueueCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_DEVICE_QUEUE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT";
+        default: return "VkDeviceQueueCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDiscardRectangleModeEXT>(VkDiscardRectangleModeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DISCARD_RECTANGLE_MODE_INCLUSIVE_EXT";
+        case static_cast<uint64_t>(1): return "VK_DISCARD_RECTANGLE_MODE_EXCLUSIVE_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DISCARD_RECTANGLE_MODE_EXT_MAX_ENUM";
+        default: return "VkDiscardRectangleModeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDisplayEventTypeEXT>(VkDisplayEventTypeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DISPLAY_EVENT_TYPE_FIRST_PIXEL_OUT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DISPLAY_EVENT_TYPE_EXT_MAX_ENUM";
+        default: return "VkDisplayEventTypeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDisplayPlaneAlphaFlagBitsKHR>(VkDisplayPlaneAlphaFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_DISPLAY_PLANE_ALPHA_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkDisplayPlaneAlphaFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDisplayPowerStateEXT>(VkDisplayPowerStateEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DISPLAY_POWER_STATE_OFF_EXT";
+        case static_cast<uint64_t>(1): return "VK_DISPLAY_POWER_STATE_SUSPEND_EXT";
+        case static_cast<uint64_t>(2): return "VK_DISPLAY_POWER_STATE_ON_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_DISPLAY_POWER_STATE_EXT_MAX_ENUM";
+        default: return "VkDisplayPowerStateEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDriverId>(VkDriverId type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_DRIVER_ID_AMD_PROPRIETARY";
+        case static_cast<uint64_t>(2): return "VK_DRIVER_ID_AMD_OPEN_SOURCE";
+        case static_cast<uint64_t>(3): return "VK_DRIVER_ID_MESA_RADV";
+        case static_cast<uint64_t>(4): return "VK_DRIVER_ID_NVIDIA_PROPRIETARY";
+        case static_cast<uint64_t>(5): return "VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS";
+        case static_cast<uint64_t>(6): return "VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA";
+        case static_cast<uint64_t>(7): return "VK_DRIVER_ID_IMAGINATION_PROPRIETARY";
+        case static_cast<uint64_t>(8): return "VK_DRIVER_ID_QUALCOMM_PROPRIETARY";
+        case static_cast<uint64_t>(9): return "VK_DRIVER_ID_ARM_PROPRIETARY";
+        case static_cast<uint64_t>(10): return "VK_DRIVER_ID_GOOGLE_SWIFTSHADER";
+        case static_cast<uint64_t>(11): return "VK_DRIVER_ID_GGP_PROPRIETARY";
+        case static_cast<uint64_t>(12): return "VK_DRIVER_ID_BROADCOM_PROPRIETARY";
+        case static_cast<uint64_t>(13): return "VK_DRIVER_ID_MESA_LLVMPIPE";
+        case static_cast<uint64_t>(14): return "VK_DRIVER_ID_MOLTENVK";
+        case static_cast<uint64_t>(15): return "VK_DRIVER_ID_COREAVI_PROPRIETARY";
+        case static_cast<uint64_t>(16): return "VK_DRIVER_ID_JUICE_PROPRIETARY";
+        case static_cast<uint64_t>(17): return "VK_DRIVER_ID_VERISILICON_PROPRIETARY";
+        case static_cast<uint64_t>(18): return "VK_DRIVER_ID_MESA_TURNIP";
+        case static_cast<uint64_t>(19): return "VK_DRIVER_ID_MESA_V3DV";
+        case static_cast<uint64_t>(20): return "VK_DRIVER_ID_MESA_PANVK";
+        case static_cast<uint64_t>(21): return "VK_DRIVER_ID_SAMSUNG_PROPRIETARY";
+        case static_cast<uint64_t>(22): return "VK_DRIVER_ID_MESA_VENUS";
+        case static_cast<uint64_t>(23): return "VK_DRIVER_ID_MESA_DOZEN";
+        case static_cast<uint64_t>(2147483647): return "VK_DRIVER_ID_MAX_ENUM";
+        default: return "VkDriverId_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDynamicState>(VkDynamicState type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DYNAMIC_STATE_VIEWPORT";
+        case static_cast<uint64_t>(1): return "VK_DYNAMIC_STATE_SCISSOR";
+        case static_cast<uint64_t>(2): return "VK_DYNAMIC_STATE_LINE_WIDTH";
+        case static_cast<uint64_t>(3): return "VK_DYNAMIC_STATE_DEPTH_BIAS";
+        case static_cast<uint64_t>(4): return "VK_DYNAMIC_STATE_BLEND_CONSTANTS";
+        case static_cast<uint64_t>(5): return "VK_DYNAMIC_STATE_DEPTH_BOUNDS";
+        case static_cast<uint64_t>(6): return "VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK";
+        case static_cast<uint64_t>(7): return "VK_DYNAMIC_STATE_STENCIL_WRITE_MASK";
+        case static_cast<uint64_t>(8): return "VK_DYNAMIC_STATE_STENCIL_REFERENCE";
+        case static_cast<uint64_t>(2147483647): return "VK_DYNAMIC_STATE_MAX_ENUM";
+        case static_cast<uint64_t>(1000267000): return "VK_DYNAMIC_STATE_CULL_MODE";
+        case static_cast<uint64_t>(1000267001): return "VK_DYNAMIC_STATE_FRONT_FACE";
+        case static_cast<uint64_t>(1000267002): return "VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY";
+        case static_cast<uint64_t>(1000267003): return "VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT";
+        case static_cast<uint64_t>(1000267004): return "VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT";
+        case static_cast<uint64_t>(1000267005): return "VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE";
+        case static_cast<uint64_t>(1000267006): return "VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE";
+        case static_cast<uint64_t>(1000267007): return "VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE";
+        case static_cast<uint64_t>(1000267008): return "VK_DYNAMIC_STATE_DEPTH_COMPARE_OP";
+        case static_cast<uint64_t>(1000267009): return "VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE";
+        case static_cast<uint64_t>(1000267010): return "VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE";
+        case static_cast<uint64_t>(1000267011): return "VK_DYNAMIC_STATE_STENCIL_OP";
+        case static_cast<uint64_t>(1000377001): return "VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE";
+        case static_cast<uint64_t>(1000377002): return "VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE";
+        case static_cast<uint64_t>(1000377004): return "VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE";
+        case static_cast<uint64_t>(1000087000): return "VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV";
+        case static_cast<uint64_t>(1000099000): return "VK_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT";
+        case static_cast<uint64_t>(1000143000): return "VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT";
+        case static_cast<uint64_t>(1000164004): return "VK_DYNAMIC_STATE_VIEWPORT_SHADING_RATE_PALETTE_NV";
+        case static_cast<uint64_t>(1000164006): return "VK_DYNAMIC_STATE_VIEWPORT_COARSE_SAMPLE_ORDER_NV";
+        case static_cast<uint64_t>(1000205001): return "VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_NV";
+        case static_cast<uint64_t>(1000226000): return "VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR";
+        case static_cast<uint64_t>(1000259000): return "VK_DYNAMIC_STATE_LINE_STIPPLE_EXT";
+        case static_cast<uint64_t>(1000352000): return "VK_DYNAMIC_STATE_VERTEX_INPUT_EXT";
+        case static_cast<uint64_t>(1000377000): return "VK_DYNAMIC_STATE_PATCH_CONTROL_POINTS_EXT";
+        case static_cast<uint64_t>(1000377003): return "VK_DYNAMIC_STATE_LOGIC_OP_EXT";
+        case static_cast<uint64_t>(1000381000): return "VK_DYNAMIC_STATE_COLOR_WRITE_ENABLE_EXT";
+        case static_cast<uint64_t>(1000347000): return "VK_DYNAMIC_STATE_RAY_TRACING_PIPELINE_STACK_SIZE_KHR";
+        default: return "VkDynamicState_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkEventCreateFlagBits>(VkEventCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_EVENT_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_EVENT_CREATE_DEVICE_ONLY_BIT";
+        default: return "VkEventCreateFlagBits_UNKNOWN";
+      }
+    }
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+    template <> constexpr const char* enumString<VkExportMetalObjectTypeFlagBitsEXT>(VkExportMetalObjectTypeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_DEVICE_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_COMMAND_QUEUE_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_BUFFER_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_TEXTURE_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_IOSURFACE_BIT_EXT";
+        case static_cast<uint64_t>(32): return "VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXPORT_METAL_OBJECT_TYPE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkExportMetalObjectTypeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkExternalFenceFeatureFlagBits>(VkExternalFenceFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_FENCE_FEATURE_FLAG_BITS_MAX_ENUM";
+        default: return "VkExternalFenceFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalFenceHandleTypeFlagBits>(VkExternalFenceHandleTypeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+        case static_cast<uint64_t>(8): return "VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_FENCE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM";
+        default: return "VkExternalFenceHandleTypeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalMemoryFeatureFlagBits>(VkExternalMemoryFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM";
+        default: return "VkExternalMemoryFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalMemoryFeatureFlagBitsNV>(VkExternalMemoryFeatureFlagBitsNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT_NV";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT_NV";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_MEMORY_FEATURE_FLAG_BITS_NV_MAX_ENUM";
+        default: return "VkExternalMemoryFeatureFlagBitsNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalMemoryHandleTypeFlagBits>(VkExternalMemoryHandleTypeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+        case static_cast<uint64_t>(8): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_BIT";
+        case static_cast<uint64_t>(16): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_TEXTURE_KMT_BIT";
+        case static_cast<uint64_t>(32): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP_BIT";
+        case static_cast<uint64_t>(64): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(512): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID";
+        case static_cast<uint64_t>(128): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT";
+        case static_cast<uint64_t>(2048): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA";
+        case static_cast<uint64_t>(4096): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV";
+        default: return "VkExternalMemoryHandleTypeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalMemoryHandleTypeFlagBitsNV>(VkExternalMemoryHandleTypeFlagBitsNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT_NV";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_NV";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_BIT_NV";
+        case static_cast<uint64_t>(8): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_FLAG_BITS_NV_MAX_ENUM";
+        default: return "VkExternalMemoryHandleTypeFlagBitsNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalSemaphoreFeatureFlagBits>(VkExternalSemaphoreFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_SEMAPHORE_FEATURE_FLAG_BITS_MAX_ENUM";
+        default: return "VkExternalSemaphoreFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkExternalSemaphoreHandleTypeFlagBits>(VkExternalSemaphoreHandleTypeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT";
+        case static_cast<uint64_t>(2): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT";
+        case static_cast<uint64_t>(4): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT";
+        case static_cast<uint64_t>(8): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT";
+        case static_cast<uint64_t>(16): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(128): return "VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_ZIRCON_EVENT_BIT_FUCHSIA";
+        default: return "VkExternalSemaphoreHandleTypeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFenceCreateFlagBits>(VkFenceCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_FENCE_CREATE_SIGNALED_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_FENCE_CREATE_FLAG_BITS_MAX_ENUM";
+        default: return "VkFenceCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFenceImportFlagBits>(VkFenceImportFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_FENCE_IMPORT_TEMPORARY_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_FENCE_IMPORT_FLAG_BITS_MAX_ENUM";
+        default: return "VkFenceImportFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFilter>(VkFilter type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FILTER_NEAREST";
+        case static_cast<uint64_t>(1): return "VK_FILTER_LINEAR";
+        case static_cast<uint64_t>(2147483647): return "VK_FILTER_MAX_ENUM";
+        case static_cast<uint64_t>(1000015000): return "VK_FILTER_CUBIC_EXT";
+        default: return "VkFilter_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFormat>(VkFormat type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FORMAT_UNDEFINED";
+        case static_cast<uint64_t>(1): return "VK_FORMAT_R4G4_UNORM_PACK8";
+        case static_cast<uint64_t>(2): return "VK_FORMAT_R4G4B4A4_UNORM_PACK16";
+        case static_cast<uint64_t>(3): return "VK_FORMAT_B4G4R4A4_UNORM_PACK16";
+        case static_cast<uint64_t>(4): return "VK_FORMAT_R5G6B5_UNORM_PACK16";
+        case static_cast<uint64_t>(5): return "VK_FORMAT_B5G6R5_UNORM_PACK16";
+        case static_cast<uint64_t>(6): return "VK_FORMAT_R5G5B5A1_UNORM_PACK16";
+        case static_cast<uint64_t>(7): return "VK_FORMAT_B5G5R5A1_UNORM_PACK16";
+        case static_cast<uint64_t>(8): return "VK_FORMAT_A1R5G5B5_UNORM_PACK16";
+        case static_cast<uint64_t>(9): return "VK_FORMAT_R8_UNORM";
+        case static_cast<uint64_t>(10): return "VK_FORMAT_R8_SNORM";
+        case static_cast<uint64_t>(11): return "VK_FORMAT_R8_USCALED";
+        case static_cast<uint64_t>(12): return "VK_FORMAT_R8_SSCALED";
+        case static_cast<uint64_t>(13): return "VK_FORMAT_R8_UINT";
+        case static_cast<uint64_t>(14): return "VK_FORMAT_R8_SINT";
+        case static_cast<uint64_t>(15): return "VK_FORMAT_R8_SRGB";
+        case static_cast<uint64_t>(16): return "VK_FORMAT_R8G8_UNORM";
+        case static_cast<uint64_t>(17): return "VK_FORMAT_R8G8_SNORM";
+        case static_cast<uint64_t>(18): return "VK_FORMAT_R8G8_USCALED";
+        case static_cast<uint64_t>(19): return "VK_FORMAT_R8G8_SSCALED";
+        case static_cast<uint64_t>(20): return "VK_FORMAT_R8G8_UINT";
+        case static_cast<uint64_t>(21): return "VK_FORMAT_R8G8_SINT";
+        case static_cast<uint64_t>(22): return "VK_FORMAT_R8G8_SRGB";
+        case static_cast<uint64_t>(23): return "VK_FORMAT_R8G8B8_UNORM";
+        case static_cast<uint64_t>(24): return "VK_FORMAT_R8G8B8_SNORM";
+        case static_cast<uint64_t>(25): return "VK_FORMAT_R8G8B8_USCALED";
+        case static_cast<uint64_t>(26): return "VK_FORMAT_R8G8B8_SSCALED";
+        case static_cast<uint64_t>(27): return "VK_FORMAT_R8G8B8_UINT";
+        case static_cast<uint64_t>(28): return "VK_FORMAT_R8G8B8_SINT";
+        case static_cast<uint64_t>(29): return "VK_FORMAT_R8G8B8_SRGB";
+        case static_cast<uint64_t>(30): return "VK_FORMAT_B8G8R8_UNORM";
+        case static_cast<uint64_t>(31): return "VK_FORMAT_B8G8R8_SNORM";
+        case static_cast<uint64_t>(32): return "VK_FORMAT_B8G8R8_USCALED";
+        case static_cast<uint64_t>(33): return "VK_FORMAT_B8G8R8_SSCALED";
+        case static_cast<uint64_t>(34): return "VK_FORMAT_B8G8R8_UINT";
+        case static_cast<uint64_t>(35): return "VK_FORMAT_B8G8R8_SINT";
+        case static_cast<uint64_t>(36): return "VK_FORMAT_B8G8R8_SRGB";
+        case static_cast<uint64_t>(37): return "VK_FORMAT_R8G8B8A8_UNORM";
+        case static_cast<uint64_t>(38): return "VK_FORMAT_R8G8B8A8_SNORM";
+        case static_cast<uint64_t>(39): return "VK_FORMAT_R8G8B8A8_USCALED";
+        case static_cast<uint64_t>(40): return "VK_FORMAT_R8G8B8A8_SSCALED";
+        case static_cast<uint64_t>(41): return "VK_FORMAT_R8G8B8A8_UINT";
+        case static_cast<uint64_t>(42): return "VK_FORMAT_R8G8B8A8_SINT";
+        case static_cast<uint64_t>(43): return "VK_FORMAT_R8G8B8A8_SRGB";
+        case static_cast<uint64_t>(44): return "VK_FORMAT_B8G8R8A8_UNORM";
+        case static_cast<uint64_t>(45): return "VK_FORMAT_B8G8R8A8_SNORM";
+        case static_cast<uint64_t>(46): return "VK_FORMAT_B8G8R8A8_USCALED";
+        case static_cast<uint64_t>(47): return "VK_FORMAT_B8G8R8A8_SSCALED";
+        case static_cast<uint64_t>(48): return "VK_FORMAT_B8G8R8A8_UINT";
+        case static_cast<uint64_t>(49): return "VK_FORMAT_B8G8R8A8_SINT";
+        case static_cast<uint64_t>(50): return "VK_FORMAT_B8G8R8A8_SRGB";
+        case static_cast<uint64_t>(51): return "VK_FORMAT_A8B8G8R8_UNORM_PACK32";
+        case static_cast<uint64_t>(52): return "VK_FORMAT_A8B8G8R8_SNORM_PACK32";
+        case static_cast<uint64_t>(53): return "VK_FORMAT_A8B8G8R8_USCALED_PACK32";
+        case static_cast<uint64_t>(54): return "VK_FORMAT_A8B8G8R8_SSCALED_PACK32";
+        case static_cast<uint64_t>(55): return "VK_FORMAT_A8B8G8R8_UINT_PACK32";
+        case static_cast<uint64_t>(56): return "VK_FORMAT_A8B8G8R8_SINT_PACK32";
+        case static_cast<uint64_t>(57): return "VK_FORMAT_A8B8G8R8_SRGB_PACK32";
+        case static_cast<uint64_t>(58): return "VK_FORMAT_A2R10G10B10_UNORM_PACK32";
+        case static_cast<uint64_t>(59): return "VK_FORMAT_A2R10G10B10_SNORM_PACK32";
+        case static_cast<uint64_t>(60): return "VK_FORMAT_A2R10G10B10_USCALED_PACK32";
+        case static_cast<uint64_t>(61): return "VK_FORMAT_A2R10G10B10_SSCALED_PACK32";
+        case static_cast<uint64_t>(62): return "VK_FORMAT_A2R10G10B10_UINT_PACK32";
+        case static_cast<uint64_t>(63): return "VK_FORMAT_A2R10G10B10_SINT_PACK32";
+        case static_cast<uint64_t>(64): return "VK_FORMAT_A2B10G10R10_UNORM_PACK32";
+        case static_cast<uint64_t>(65): return "VK_FORMAT_A2B10G10R10_SNORM_PACK32";
+        case static_cast<uint64_t>(66): return "VK_FORMAT_A2B10G10R10_USCALED_PACK32";
+        case static_cast<uint64_t>(67): return "VK_FORMAT_A2B10G10R10_SSCALED_PACK32";
+        case static_cast<uint64_t>(68): return "VK_FORMAT_A2B10G10R10_UINT_PACK32";
+        case static_cast<uint64_t>(69): return "VK_FORMAT_A2B10G10R10_SINT_PACK32";
+        case static_cast<uint64_t>(70): return "VK_FORMAT_R16_UNORM";
+        case static_cast<uint64_t>(71): return "VK_FORMAT_R16_SNORM";
+        case static_cast<uint64_t>(72): return "VK_FORMAT_R16_USCALED";
+        case static_cast<uint64_t>(73): return "VK_FORMAT_R16_SSCALED";
+        case static_cast<uint64_t>(74): return "VK_FORMAT_R16_UINT";
+        case static_cast<uint64_t>(75): return "VK_FORMAT_R16_SINT";
+        case static_cast<uint64_t>(76): return "VK_FORMAT_R16_SFLOAT";
+        case static_cast<uint64_t>(77): return "VK_FORMAT_R16G16_UNORM";
+        case static_cast<uint64_t>(78): return "VK_FORMAT_R16G16_SNORM";
+        case static_cast<uint64_t>(79): return "VK_FORMAT_R16G16_USCALED";
+        case static_cast<uint64_t>(80): return "VK_FORMAT_R16G16_SSCALED";
+        case static_cast<uint64_t>(81): return "VK_FORMAT_R16G16_UINT";
+        case static_cast<uint64_t>(82): return "VK_FORMAT_R16G16_SINT";
+        case static_cast<uint64_t>(83): return "VK_FORMAT_R16G16_SFLOAT";
+        case static_cast<uint64_t>(84): return "VK_FORMAT_R16G16B16_UNORM";
+        case static_cast<uint64_t>(85): return "VK_FORMAT_R16G16B16_SNORM";
+        case static_cast<uint64_t>(86): return "VK_FORMAT_R16G16B16_USCALED";
+        case static_cast<uint64_t>(87): return "VK_FORMAT_R16G16B16_SSCALED";
+        case static_cast<uint64_t>(88): return "VK_FORMAT_R16G16B16_UINT";
+        case static_cast<uint64_t>(89): return "VK_FORMAT_R16G16B16_SINT";
+        case static_cast<uint64_t>(90): return "VK_FORMAT_R16G16B16_SFLOAT";
+        case static_cast<uint64_t>(91): return "VK_FORMAT_R16G16B16A16_UNORM";
+        case static_cast<uint64_t>(92): return "VK_FORMAT_R16G16B16A16_SNORM";
+        case static_cast<uint64_t>(93): return "VK_FORMAT_R16G16B16A16_USCALED";
+        case static_cast<uint64_t>(94): return "VK_FORMAT_R16G16B16A16_SSCALED";
+        case static_cast<uint64_t>(95): return "VK_FORMAT_R16G16B16A16_UINT";
+        case static_cast<uint64_t>(96): return "VK_FORMAT_R16G16B16A16_SINT";
+        case static_cast<uint64_t>(97): return "VK_FORMAT_R16G16B16A16_SFLOAT";
+        case static_cast<uint64_t>(98): return "VK_FORMAT_R32_UINT";
+        case static_cast<uint64_t>(99): return "VK_FORMAT_R32_SINT";
+        case static_cast<uint64_t>(100): return "VK_FORMAT_R32_SFLOAT";
+        case static_cast<uint64_t>(101): return "VK_FORMAT_R32G32_UINT";
+        case static_cast<uint64_t>(102): return "VK_FORMAT_R32G32_SINT";
+        case static_cast<uint64_t>(103): return "VK_FORMAT_R32G32_SFLOAT";
+        case static_cast<uint64_t>(104): return "VK_FORMAT_R32G32B32_UINT";
+        case static_cast<uint64_t>(105): return "VK_FORMAT_R32G32B32_SINT";
+        case static_cast<uint64_t>(106): return "VK_FORMAT_R32G32B32_SFLOAT";
+        case static_cast<uint64_t>(107): return "VK_FORMAT_R32G32B32A32_UINT";
+        case static_cast<uint64_t>(108): return "VK_FORMAT_R32G32B32A32_SINT";
+        case static_cast<uint64_t>(109): return "VK_FORMAT_R32G32B32A32_SFLOAT";
+        case static_cast<uint64_t>(110): return "VK_FORMAT_R64_UINT";
+        case static_cast<uint64_t>(111): return "VK_FORMAT_R64_SINT";
+        case static_cast<uint64_t>(112): return "VK_FORMAT_R64_SFLOAT";
+        case static_cast<uint64_t>(113): return "VK_FORMAT_R64G64_UINT";
+        case static_cast<uint64_t>(114): return "VK_FORMAT_R64G64_SINT";
+        case static_cast<uint64_t>(115): return "VK_FORMAT_R64G64_SFLOAT";
+        case static_cast<uint64_t>(116): return "VK_FORMAT_R64G64B64_UINT";
+        case static_cast<uint64_t>(117): return "VK_FORMAT_R64G64B64_SINT";
+        case static_cast<uint64_t>(118): return "VK_FORMAT_R64G64B64_SFLOAT";
+        case static_cast<uint64_t>(119): return "VK_FORMAT_R64G64B64A64_UINT";
+        case static_cast<uint64_t>(120): return "VK_FORMAT_R64G64B64A64_SINT";
+        case static_cast<uint64_t>(121): return "VK_FORMAT_R64G64B64A64_SFLOAT";
+        case static_cast<uint64_t>(122): return "VK_FORMAT_B10G11R11_UFLOAT_PACK32";
+        case static_cast<uint64_t>(123): return "VK_FORMAT_E5B9G9R9_UFLOAT_PACK32";
+        case static_cast<uint64_t>(124): return "VK_FORMAT_D16_UNORM";
+        case static_cast<uint64_t>(125): return "VK_FORMAT_X8_D24_UNORM_PACK32";
+        case static_cast<uint64_t>(126): return "VK_FORMAT_D32_SFLOAT";
+        case static_cast<uint64_t>(127): return "VK_FORMAT_S8_UINT";
+        case static_cast<uint64_t>(128): return "VK_FORMAT_D16_UNORM_S8_UINT";
+        case static_cast<uint64_t>(129): return "VK_FORMAT_D24_UNORM_S8_UINT";
+        case static_cast<uint64_t>(130): return "VK_FORMAT_D32_SFLOAT_S8_UINT";
+        case static_cast<uint64_t>(131): return "VK_FORMAT_BC1_RGB_UNORM_BLOCK";
+        case static_cast<uint64_t>(132): return "VK_FORMAT_BC1_RGB_SRGB_BLOCK";
+        case static_cast<uint64_t>(133): return "VK_FORMAT_BC1_RGBA_UNORM_BLOCK";
+        case static_cast<uint64_t>(134): return "VK_FORMAT_BC1_RGBA_SRGB_BLOCK";
+        case static_cast<uint64_t>(135): return "VK_FORMAT_BC2_UNORM_BLOCK";
+        case static_cast<uint64_t>(136): return "VK_FORMAT_BC2_SRGB_BLOCK";
+        case static_cast<uint64_t>(137): return "VK_FORMAT_BC3_UNORM_BLOCK";
+        case static_cast<uint64_t>(138): return "VK_FORMAT_BC3_SRGB_BLOCK";
+        case static_cast<uint64_t>(139): return "VK_FORMAT_BC4_UNORM_BLOCK";
+        case static_cast<uint64_t>(140): return "VK_FORMAT_BC4_SNORM_BLOCK";
+        case static_cast<uint64_t>(141): return "VK_FORMAT_BC5_UNORM_BLOCK";
+        case static_cast<uint64_t>(142): return "VK_FORMAT_BC5_SNORM_BLOCK";
+        case static_cast<uint64_t>(143): return "VK_FORMAT_BC6H_UFLOAT_BLOCK";
+        case static_cast<uint64_t>(144): return "VK_FORMAT_BC6H_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(145): return "VK_FORMAT_BC7_UNORM_BLOCK";
+        case static_cast<uint64_t>(146): return "VK_FORMAT_BC7_SRGB_BLOCK";
+        case static_cast<uint64_t>(147): return "VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK";
+        case static_cast<uint64_t>(148): return "VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK";
+        case static_cast<uint64_t>(149): return "VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK";
+        case static_cast<uint64_t>(150): return "VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK";
+        case static_cast<uint64_t>(151): return "VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK";
+        case static_cast<uint64_t>(152): return "VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK";
+        case static_cast<uint64_t>(153): return "VK_FORMAT_EAC_R11_UNORM_BLOCK";
+        case static_cast<uint64_t>(154): return "VK_FORMAT_EAC_R11_SNORM_BLOCK";
+        case static_cast<uint64_t>(155): return "VK_FORMAT_EAC_R11G11_UNORM_BLOCK";
+        case static_cast<uint64_t>(156): return "VK_FORMAT_EAC_R11G11_SNORM_BLOCK";
+        case static_cast<uint64_t>(157): return "VK_FORMAT_ASTC_4x4_UNORM_BLOCK";
+        case static_cast<uint64_t>(158): return "VK_FORMAT_ASTC_4x4_SRGB_BLOCK";
+        case static_cast<uint64_t>(159): return "VK_FORMAT_ASTC_5x4_UNORM_BLOCK";
+        case static_cast<uint64_t>(160): return "VK_FORMAT_ASTC_5x4_SRGB_BLOCK";
+        case static_cast<uint64_t>(161): return "VK_FORMAT_ASTC_5x5_UNORM_BLOCK";
+        case static_cast<uint64_t>(162): return "VK_FORMAT_ASTC_5x5_SRGB_BLOCK";
+        case static_cast<uint64_t>(163): return "VK_FORMAT_ASTC_6x5_UNORM_BLOCK";
+        case static_cast<uint64_t>(164): return "VK_FORMAT_ASTC_6x5_SRGB_BLOCK";
+        case static_cast<uint64_t>(165): return "VK_FORMAT_ASTC_6x6_UNORM_BLOCK";
+        case static_cast<uint64_t>(166): return "VK_FORMAT_ASTC_6x6_SRGB_BLOCK";
+        case static_cast<uint64_t>(167): return "VK_FORMAT_ASTC_8x5_UNORM_BLOCK";
+        case static_cast<uint64_t>(168): return "VK_FORMAT_ASTC_8x5_SRGB_BLOCK";
+        case static_cast<uint64_t>(169): return "VK_FORMAT_ASTC_8x6_UNORM_BLOCK";
+        case static_cast<uint64_t>(170): return "VK_FORMAT_ASTC_8x6_SRGB_BLOCK";
+        case static_cast<uint64_t>(171): return "VK_FORMAT_ASTC_8x8_UNORM_BLOCK";
+        case static_cast<uint64_t>(172): return "VK_FORMAT_ASTC_8x8_SRGB_BLOCK";
+        case static_cast<uint64_t>(173): return "VK_FORMAT_ASTC_10x5_UNORM_BLOCK";
+        case static_cast<uint64_t>(174): return "VK_FORMAT_ASTC_10x5_SRGB_BLOCK";
+        case static_cast<uint64_t>(175): return "VK_FORMAT_ASTC_10x6_UNORM_BLOCK";
+        case static_cast<uint64_t>(176): return "VK_FORMAT_ASTC_10x6_SRGB_BLOCK";
+        case static_cast<uint64_t>(177): return "VK_FORMAT_ASTC_10x8_UNORM_BLOCK";
+        case static_cast<uint64_t>(178): return "VK_FORMAT_ASTC_10x8_SRGB_BLOCK";
+        case static_cast<uint64_t>(179): return "VK_FORMAT_ASTC_10x10_UNORM_BLOCK";
+        case static_cast<uint64_t>(180): return "VK_FORMAT_ASTC_10x10_SRGB_BLOCK";
+        case static_cast<uint64_t>(181): return "VK_FORMAT_ASTC_12x10_UNORM_BLOCK";
+        case static_cast<uint64_t>(182): return "VK_FORMAT_ASTC_12x10_SRGB_BLOCK";
+        case static_cast<uint64_t>(183): return "VK_FORMAT_ASTC_12x12_UNORM_BLOCK";
+        case static_cast<uint64_t>(184): return "VK_FORMAT_ASTC_12x12_SRGB_BLOCK";
+        case static_cast<uint64_t>(2147483647): return "VK_FORMAT_MAX_ENUM";
+        case static_cast<uint64_t>(1000156000): return "VK_FORMAT_G8B8G8R8_422_UNORM";
+        case static_cast<uint64_t>(1000156001): return "VK_FORMAT_B8G8R8G8_422_UNORM";
+        case static_cast<uint64_t>(1000156002): return "VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM";
+        case static_cast<uint64_t>(1000156003): return "VK_FORMAT_G8_B8R8_2PLANE_420_UNORM";
+        case static_cast<uint64_t>(1000156004): return "VK_FORMAT_G8_B8_R8_3PLANE_422_UNORM";
+        case static_cast<uint64_t>(1000156005): return "VK_FORMAT_G8_B8R8_2PLANE_422_UNORM";
+        case static_cast<uint64_t>(1000156006): return "VK_FORMAT_G8_B8_R8_3PLANE_444_UNORM";
+        case static_cast<uint64_t>(1000156007): return "VK_FORMAT_R10X6_UNORM_PACK16";
+        case static_cast<uint64_t>(1000156008): return "VK_FORMAT_R10X6G10X6_UNORM_2PACK16";
+        case static_cast<uint64_t>(1000156009): return "VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156010): return "VK_FORMAT_G10X6B10X6G10X6R10X6_422_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156011): return "VK_FORMAT_B10X6G10X6R10X6G10X6_422_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156012): return "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156013): return "VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156014): return "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156015): return "VK_FORMAT_G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156016): return "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156017): return "VK_FORMAT_R12X4_UNORM_PACK16";
+        case static_cast<uint64_t>(1000156018): return "VK_FORMAT_R12X4G12X4_UNORM_2PACK16";
+        case static_cast<uint64_t>(1000156019): return "VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156020): return "VK_FORMAT_G12X4B12X4G12X4R12X4_422_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156021): return "VK_FORMAT_B12X4G12X4R12X4G12X4_422_UNORM_4PACK16";
+        case static_cast<uint64_t>(1000156022): return "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156023): return "VK_FORMAT_G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156024): return "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156025): return "VK_FORMAT_G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156026): return "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000156027): return "VK_FORMAT_G16B16G16R16_422_UNORM";
+        case static_cast<uint64_t>(1000156028): return "VK_FORMAT_B16G16R16G16_422_UNORM";
+        case static_cast<uint64_t>(1000156029): return "VK_FORMAT_G16_B16_R16_3PLANE_420_UNORM";
+        case static_cast<uint64_t>(1000156030): return "VK_FORMAT_G16_B16R16_2PLANE_420_UNORM";
+        case static_cast<uint64_t>(1000156031): return "VK_FORMAT_G16_B16_R16_3PLANE_422_UNORM";
+        case static_cast<uint64_t>(1000156032): return "VK_FORMAT_G16_B16R16_2PLANE_422_UNORM";
+        case static_cast<uint64_t>(1000156033): return "VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM";
+        case static_cast<uint64_t>(1000330000): return "VK_FORMAT_G8_B8R8_2PLANE_444_UNORM";
+        case static_cast<uint64_t>(1000330001): return "VK_FORMAT_G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000330002): return "VK_FORMAT_G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16";
+        case static_cast<uint64_t>(1000330003): return "VK_FORMAT_G16_B16R16_2PLANE_444_UNORM";
+        case static_cast<uint64_t>(1000340000): return "VK_FORMAT_A4R4G4B4_UNORM_PACK16";
+        case static_cast<uint64_t>(1000340001): return "VK_FORMAT_A4B4G4R4_UNORM_PACK16";
+        case static_cast<uint64_t>(1000066000): return "VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066001): return "VK_FORMAT_ASTC_5x4_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066002): return "VK_FORMAT_ASTC_5x5_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066003): return "VK_FORMAT_ASTC_6x5_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066004): return "VK_FORMAT_ASTC_6x6_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066005): return "VK_FORMAT_ASTC_8x5_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066006): return "VK_FORMAT_ASTC_8x6_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066007): return "VK_FORMAT_ASTC_8x8_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066008): return "VK_FORMAT_ASTC_10x5_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066009): return "VK_FORMAT_ASTC_10x6_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066010): return "VK_FORMAT_ASTC_10x8_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066011): return "VK_FORMAT_ASTC_10x10_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066012): return "VK_FORMAT_ASTC_12x10_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000066013): return "VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK";
+        case static_cast<uint64_t>(1000054000): return "VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054001): return "VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054002): return "VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054003): return "VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054004): return "VK_FORMAT_PVRTC1_2BPP_SRGB_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054005): return "VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054006): return "VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG";
+        case static_cast<uint64_t>(1000054007): return "VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG";
+        default: return "VkFormat_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFormatFeatureFlagBits>(VkFormatFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT";
+        case static_cast<uint64_t>(2): return "VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT";
+        case static_cast<uint64_t>(4): return "VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT";
+        case static_cast<uint64_t>(8): return "VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT";
+        case static_cast<uint64_t>(16): return "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT";
+        case static_cast<uint64_t>(32): return "VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT";
+        case static_cast<uint64_t>(64): return "VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT";
+        case static_cast<uint64_t>(128): return "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(256): return "VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT";
+        case static_cast<uint64_t>(512): return "VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(1024): return "VK_FORMAT_FEATURE_BLIT_SRC_BIT";
+        case static_cast<uint64_t>(2048): return "VK_FORMAT_FEATURE_BLIT_DST_BIT";
+        case static_cast<uint64_t>(4096): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_FORMAT_FEATURE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(16384): return "VK_FORMAT_FEATURE_TRANSFER_SRC_BIT";
+        case static_cast<uint64_t>(32768): return "VK_FORMAT_FEATURE_TRANSFER_DST_BIT";
+        case static_cast<uint64_t>(131072): return "VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT";
+        case static_cast<uint64_t>(262144): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT";
+        case static_cast<uint64_t>(524288): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT";
+        case static_cast<uint64_t>(1048576): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT";
+        case static_cast<uint64_t>(2097152): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT";
+        case static_cast<uint64_t>(4194304): return "VK_FORMAT_FEATURE_DISJOINT_BIT";
+        case static_cast<uint64_t>(8388608): return "VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT";
+        case static_cast<uint64_t>(65536): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT";
+        case static_cast<uint64_t>(33554432): return "VK_FORMAT_FEATURE_VIDEO_DECODE_OUTPUT_BIT_KHR";
+        case static_cast<uint64_t>(67108864): return "VK_FORMAT_FEATURE_VIDEO_DECODE_DPB_BIT_KHR";
+        case static_cast<uint64_t>(8192): return "VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT";
+        case static_cast<uint64_t>(16777216): return "VK_FORMAT_FEATURE_FRAGMENT_DENSITY_MAP_BIT_EXT";
+        case static_cast<uint64_t>(1073741824): return "VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+        case static_cast<uint64_t>(134217728): return "VK_FORMAT_FEATURE_VIDEO_ENCODE_INPUT_BIT_KHR";
+        case static_cast<uint64_t>(268435456): return "VK_FORMAT_FEATURE_VIDEO_ENCODE_DPB_BIT_KHR";
+        case static_cast<uint64_t>(536870912): return "VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR";
+        default: return "VkFormatFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFragmentShadingRateCombinerOpKHR>(VkFragmentShadingRateCombinerOpKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR";
+        case static_cast<uint64_t>(1): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR";
+        case static_cast<uint64_t>(2): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR";
+        case static_cast<uint64_t>(3): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR";
+        case static_cast<uint64_t>(4): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KHR_MAX_ENUM";
+        default: return "VkFragmentShadingRateCombinerOpKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFragmentShadingRateNV>(VkFragmentShadingRateNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_PIXEL_NV";
+        case static_cast<uint64_t>(1): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_1X2_PIXELS_NV";
+        case static_cast<uint64_t>(4): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_2X1_PIXELS_NV";
+        case static_cast<uint64_t>(5): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_2X2_PIXELS_NV";
+        case static_cast<uint64_t>(6): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_2X4_PIXELS_NV";
+        case static_cast<uint64_t>(9): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_4X2_PIXELS_NV";
+        case static_cast<uint64_t>(10): return "VK_FRAGMENT_SHADING_RATE_1_INVOCATION_PER_4X4_PIXELS_NV";
+        case static_cast<uint64_t>(11): return "VK_FRAGMENT_SHADING_RATE_2_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(12): return "VK_FRAGMENT_SHADING_RATE_4_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(13): return "VK_FRAGMENT_SHADING_RATE_8_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(14): return "VK_FRAGMENT_SHADING_RATE_16_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(15): return "VK_FRAGMENT_SHADING_RATE_NO_INVOCATIONS_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_FRAGMENT_SHADING_RATE_NV_MAX_ENUM";
+        default: return "VkFragmentShadingRateNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFragmentShadingRateTypeNV>(VkFragmentShadingRateTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FRAGMENT_SHADING_RATE_TYPE_FRAGMENT_SIZE_NV";
+        case static_cast<uint64_t>(1): return "VK_FRAGMENT_SHADING_RATE_TYPE_ENUMS_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_FRAGMENT_SHADING_RATE_TYPE_NV_MAX_ENUM";
+        default: return "VkFragmentShadingRateTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFramebufferCreateFlagBits>(VkFramebufferCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_FRAMEBUFFER_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT";
+        default: return "VkFramebufferCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkFrontFace>(VkFrontFace type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FRONT_FACE_COUNTER_CLOCKWISE";
+        case static_cast<uint64_t>(1): return "VK_FRONT_FACE_CLOCKWISE";
+        case static_cast<uint64_t>(2147483647): return "VK_FRONT_FACE_MAX_ENUM";
+        default: return "VkFrontFace_UNKNOWN";
+      }
+    }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    template <> constexpr const char* enumString<VkFullScreenExclusiveEXT>(VkFullScreenExclusiveEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_FULL_SCREEN_EXCLUSIVE_DEFAULT_EXT";
+        case static_cast<uint64_t>(1): return "VK_FULL_SCREEN_EXCLUSIVE_ALLOWED_EXT";
+        case static_cast<uint64_t>(2): return "VK_FULL_SCREEN_EXCLUSIVE_DISALLOWED_EXT";
+        case static_cast<uint64_t>(3): return "VK_FULL_SCREEN_EXCLUSIVE_APPLICATION_CONTROLLED_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_FULL_SCREEN_EXCLUSIVE_EXT_MAX_ENUM";
+        default: return "VkFullScreenExclusiveEXT_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkGeometryFlagBitsKHR>(VkGeometryFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_GEOMETRY_OPAQUE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_GEOMETRY_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkGeometryFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkGeometryInstanceFlagBitsKHR>(VkGeometryInstanceFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_GEOMETRY_INSTANCE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkGeometryInstanceFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkGeometryTypeKHR>(VkGeometryTypeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_GEOMETRY_TYPE_TRIANGLES_KHR";
+        case static_cast<uint64_t>(1): return "VK_GEOMETRY_TYPE_AABBS_KHR";
+        case static_cast<uint64_t>(2): return "VK_GEOMETRY_TYPE_INSTANCES_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_GEOMETRY_TYPE_KHR_MAX_ENUM";
+        default: return "VkGeometryTypeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkGraphicsPipelineLibraryFlagBitsEXT>(VkGraphicsPipelineLibraryFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_GRAPHICS_PIPELINE_LIBRARY_VERTEX_INPUT_INTERFACE_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_GRAPHICS_PIPELINE_LIBRARY_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkGraphicsPipelineLibraryFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageAspectFlagBits>(VkImageAspectFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_IMAGE_ASPECT_COLOR_BIT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_ASPECT_DEPTH_BIT";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_ASPECT_STENCIL_BIT";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_ASPECT_METADATA_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(16): return "VK_IMAGE_ASPECT_PLANE_0_BIT";
+        case static_cast<uint64_t>(32): return "VK_IMAGE_ASPECT_PLANE_1_BIT";
+        case static_cast<uint64_t>(64): return "VK_IMAGE_ASPECT_PLANE_2_BIT";
+        case static_cast<uint64_t>(0): return "VK_IMAGE_ASPECT_NONE";
+        case static_cast<uint64_t>(128): return "VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT";
+        case static_cast<uint64_t>(512): return "VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT";
+        default: return "VkImageAspectFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageCompressionFixedRateFlagBitsEXT>(VkImageCompressionFixedRateFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_COMPRESSION_FIXED_RATE_NONE_EXT";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_COMPRESSION_FIXED_RATE_1BPC_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_COMPRESSION_FIXED_RATE_2BPC_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_COMPRESSION_FIXED_RATE_3BPC_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_COMPRESSION_FIXED_RATE_4BPC_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_IMAGE_COMPRESSION_FIXED_RATE_5BPC_BIT_EXT";
+        case static_cast<uint64_t>(32): return "VK_IMAGE_COMPRESSION_FIXED_RATE_6BPC_BIT_EXT";
+        case static_cast<uint64_t>(64): return "VK_IMAGE_COMPRESSION_FIXED_RATE_7BPC_BIT_EXT";
+        case static_cast<uint64_t>(128): return "VK_IMAGE_COMPRESSION_FIXED_RATE_8BPC_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_IMAGE_COMPRESSION_FIXED_RATE_9BPC_BIT_EXT";
+        case static_cast<uint64_t>(512): return "VK_IMAGE_COMPRESSION_FIXED_RATE_10BPC_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_IMAGE_COMPRESSION_FIXED_RATE_11BPC_BIT_EXT";
+        case static_cast<uint64_t>(2048): return "VK_IMAGE_COMPRESSION_FIXED_RATE_12BPC_BIT_EXT";
+        case static_cast<uint64_t>(4096): return "VK_IMAGE_COMPRESSION_FIXED_RATE_13BPC_BIT_EXT";
+        case static_cast<uint64_t>(8192): return "VK_IMAGE_COMPRESSION_FIXED_RATE_14BPC_BIT_EXT";
+        case static_cast<uint64_t>(16384): return "VK_IMAGE_COMPRESSION_FIXED_RATE_15BPC_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_IMAGE_COMPRESSION_FIXED_RATE_16BPC_BIT_EXT";
+        case static_cast<uint64_t>(65536): return "VK_IMAGE_COMPRESSION_FIXED_RATE_17BPC_BIT_EXT";
+        case static_cast<uint64_t>(131072): return "VK_IMAGE_COMPRESSION_FIXED_RATE_18BPC_BIT_EXT";
+        case static_cast<uint64_t>(262144): return "VK_IMAGE_COMPRESSION_FIXED_RATE_19BPC_BIT_EXT";
+        case static_cast<uint64_t>(524288): return "VK_IMAGE_COMPRESSION_FIXED_RATE_20BPC_BIT_EXT";
+        case static_cast<uint64_t>(1048576): return "VK_IMAGE_COMPRESSION_FIXED_RATE_21BPC_BIT_EXT";
+        case static_cast<uint64_t>(2097152): return "VK_IMAGE_COMPRESSION_FIXED_RATE_22BPC_BIT_EXT";
+        case static_cast<uint64_t>(4194304): return "VK_IMAGE_COMPRESSION_FIXED_RATE_23BPC_BIT_EXT";
+        case static_cast<uint64_t>(8388608): return "VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_COMPRESSION_FIXED_RATE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkImageCompressionFixedRateFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageCompressionFlagBitsEXT>(VkImageCompressionFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_COMPRESSION_DEFAULT_EXT";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_COMPRESSION_FIXED_RATE_DEFAULT_EXT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_COMPRESSION_FIXED_RATE_EXPLICIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_COMPRESSION_DISABLED_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_COMPRESSION_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkImageCompressionFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+    template <> constexpr const char* enumString<VkImageConstraintsInfoFlagBitsFUCHSIA>(VkImageConstraintsInfoFlagBitsFUCHSIA type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_RARELY_FUCHSIA";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_CONSTRAINTS_INFO_CPU_READ_OFTEN_FUCHSIA";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_RARELY_FUCHSIA";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_CONSTRAINTS_INFO_CPU_WRITE_OFTEN_FUCHSIA";
+        case static_cast<uint64_t>(16): return "VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_CONSTRAINTS_INFO_FLAG_BITS_FUCHSIA_MAX_ENUM";
+        default: return "VkImageConstraintsInfoFlagBitsFUCHSIA_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkImageCreateFlagBits>(VkImageCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_IMAGE_CREATE_SPARSE_BINDING_BIT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_CREATE_SPARSE_ALIASED_BIT";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT";
+        case static_cast<uint64_t>(16): return "VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1024): return "VK_IMAGE_CREATE_ALIAS_BIT";
+        case static_cast<uint64_t>(64): return "VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT";
+        case static_cast<uint64_t>(32): return "VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT";
+        case static_cast<uint64_t>(128): return "VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT";
+        case static_cast<uint64_t>(256): return "VK_IMAGE_CREATE_EXTENDED_USAGE_BIT";
+        case static_cast<uint64_t>(2048): return "VK_IMAGE_CREATE_PROTECTED_BIT";
+        case static_cast<uint64_t>(512): return "VK_IMAGE_CREATE_DISJOINT_BIT";
+        case static_cast<uint64_t>(8192): return "VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV";
+        case static_cast<uint64_t>(4096): return "VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT";
+        case static_cast<uint64_t>(16384): return "VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT";
+        case static_cast<uint64_t>(262144): return "VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT";
+        case static_cast<uint64_t>(131072): return "VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_QCOM";
+        default: return "VkImageCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageLayout>(VkImageLayout type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_LAYOUT_UNDEFINED";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_LAYOUT_GENERAL";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(3): return "VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(5): return "VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(6): return "VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL";
+        case static_cast<uint64_t>(7): return "VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_LAYOUT_PREINITIALIZED";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_LAYOUT_MAX_ENUM";
+        case static_cast<uint64_t>(1000117000): return "VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(1000117001): return "VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(1000241000): return "VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(1000241001): return "VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(1000241002): return "VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(1000241003): return "VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(1000314000): return "VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL";
+        case static_cast<uint64_t>(1000314001): return "VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL";
+        case static_cast<uint64_t>(1000001002): return "VK_IMAGE_LAYOUT_PRESENT_SRC_KHR";
+        case static_cast<uint64_t>(1000024000): return "VK_IMAGE_LAYOUT_VIDEO_DECODE_DST_KHR";
+        case static_cast<uint64_t>(1000024001): return "VK_IMAGE_LAYOUT_VIDEO_DECODE_SRC_KHR";
+        case static_cast<uint64_t>(1000024002): return "VK_IMAGE_LAYOUT_VIDEO_DECODE_DPB_KHR";
+        case static_cast<uint64_t>(1000111000): return "VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR";
+        case static_cast<uint64_t>(1000218000): return "VK_IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT";
+        case static_cast<uint64_t>(1000164003): return "VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR";
+        case static_cast<uint64_t>(1000299000): return "VK_IMAGE_LAYOUT_VIDEO_ENCODE_DST_KHR";
+        case static_cast<uint64_t>(1000299001): return "VK_IMAGE_LAYOUT_VIDEO_ENCODE_SRC_KHR";
+        case static_cast<uint64_t>(1000299002): return "VK_IMAGE_LAYOUT_VIDEO_ENCODE_DPB_KHR";
+        default: return "VkImageLayout_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageTiling>(VkImageTiling type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_TILING_OPTIMAL";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_TILING_LINEAR";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_TILING_MAX_ENUM";
+        case static_cast<uint64_t>(1000158000): return "VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT";
+        default: return "VkImageTiling_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageType>(VkImageType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_TYPE_1D";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_TYPE_2D";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_TYPE_3D";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_TYPE_MAX_ENUM";
+        default: return "VkImageType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageUsageFlagBits>(VkImageUsageFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_IMAGE_USAGE_TRANSFER_SRC_BIT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_USAGE_TRANSFER_DST_BIT";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_USAGE_SAMPLED_BIT";
+        case static_cast<uint64_t>(8): return "VK_IMAGE_USAGE_STORAGE_BIT";
+        case static_cast<uint64_t>(16): return "VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(32): return "VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(64): return "VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(128): return "VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_USAGE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1024): return "VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR";
+        case static_cast<uint64_t>(2048): return "VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR";
+        case static_cast<uint64_t>(4096): return "VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR";
+        case static_cast<uint64_t>(512): return "VK_IMAGE_USAGE_FRAGMENT_DENSITY_MAP_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+        case static_cast<uint64_t>(8192): return "VK_IMAGE_USAGE_VIDEO_ENCODE_DST_BIT_KHR";
+        case static_cast<uint64_t>(16384): return "VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR";
+        case static_cast<uint64_t>(32768): return "VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR";
+        case static_cast<uint64_t>(262144): return "VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI";
+        default: return "VkImageUsageFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageViewCreateFlagBits>(VkImageViewCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_VIEW_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT";
+        default: return "VkImageViewCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkImageViewType>(VkImageViewType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_IMAGE_VIEW_TYPE_1D";
+        case static_cast<uint64_t>(1): return "VK_IMAGE_VIEW_TYPE_2D";
+        case static_cast<uint64_t>(2): return "VK_IMAGE_VIEW_TYPE_3D";
+        case static_cast<uint64_t>(3): return "VK_IMAGE_VIEW_TYPE_CUBE";
+        case static_cast<uint64_t>(4): return "VK_IMAGE_VIEW_TYPE_1D_ARRAY";
+        case static_cast<uint64_t>(5): return "VK_IMAGE_VIEW_TYPE_2D_ARRAY";
+        case static_cast<uint64_t>(6): return "VK_IMAGE_VIEW_TYPE_CUBE_ARRAY";
+        case static_cast<uint64_t>(2147483647): return "VK_IMAGE_VIEW_TYPE_MAX_ENUM";
+        default: return "VkImageViewType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkIndexType>(VkIndexType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_INDEX_TYPE_UINT16";
+        case static_cast<uint64_t>(1): return "VK_INDEX_TYPE_UINT32";
+        case static_cast<uint64_t>(2147483647): return "VK_INDEX_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1000265000): return "VK_INDEX_TYPE_UINT8_EXT";
+        case static_cast<uint64_t>(1000165000): return "VK_INDEX_TYPE_NONE_KHR";
+        default: return "VkIndexType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkIndirectCommandsLayoutUsageFlagBitsNV>(VkIndirectCommandsLayoutUsageFlagBitsNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_EXPLICIT_PREPROCESS_BIT_NV";
+        case static_cast<uint64_t>(2): return "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_INDEXED_SEQUENCES_BIT_NV";
+        case static_cast<uint64_t>(4): return "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_INDIRECT_COMMANDS_LAYOUT_USAGE_FLAG_BITS_NV_MAX_ENUM";
+        default: return "VkIndirectCommandsLayoutUsageFlagBitsNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkIndirectCommandsTokenTypeNV>(VkIndirectCommandsTokenTypeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_SHADER_GROUP_NV";
+        case static_cast<uint64_t>(1): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_STATE_FLAGS_NV";
+        case static_cast<uint64_t>(2): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_INDEX_BUFFER_NV";
+        case static_cast<uint64_t>(3): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_VERTEX_BUFFER_NV";
+        case static_cast<uint64_t>(4): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_PUSH_CONSTANT_NV";
+        case static_cast<uint64_t>(5): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_INDEXED_NV";
+        case static_cast<uint64_t>(6): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_NV";
+        case static_cast<uint64_t>(7): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_TASKS_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_INDIRECT_COMMANDS_TOKEN_TYPE_NV_MAX_ENUM";
+        default: return "VkIndirectCommandsTokenTypeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkIndirectStateFlagBitsNV>(VkIndirectStateFlagBitsNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_INDIRECT_STATE_FLAG_BITS_NV_MAX_ENUM";
+        default: return "VkIndirectStateFlagBitsNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkInstanceCreateFlagBits>(VkInstanceCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_INSTANCE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR";
+        default: return "VkInstanceCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkInternalAllocationType>(VkInternalAllocationType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_INTERNAL_ALLOCATION_TYPE_EXECUTABLE";
+        case static_cast<uint64_t>(2147483647): return "VK_INTERNAL_ALLOCATION_TYPE_MAX_ENUM";
+        default: return "VkInternalAllocationType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkLineRasterizationModeEXT>(VkLineRasterizationModeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT";
+        case static_cast<uint64_t>(1): return "VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT";
+        case static_cast<uint64_t>(2): return "VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT";
+        case static_cast<uint64_t>(3): return "VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_LINE_RASTERIZATION_MODE_EXT_MAX_ENUM";
+        default: return "VkLineRasterizationModeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkLogicOp>(VkLogicOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_LOGIC_OP_CLEAR";
+        case static_cast<uint64_t>(1): return "VK_LOGIC_OP_AND";
+        case static_cast<uint64_t>(2): return "VK_LOGIC_OP_AND_REVERSE";
+        case static_cast<uint64_t>(3): return "VK_LOGIC_OP_COPY";
+        case static_cast<uint64_t>(4): return "VK_LOGIC_OP_AND_INVERTED";
+        case static_cast<uint64_t>(5): return "VK_LOGIC_OP_NO_OP";
+        case static_cast<uint64_t>(6): return "VK_LOGIC_OP_XOR";
+        case static_cast<uint64_t>(7): return "VK_LOGIC_OP_OR";
+        case static_cast<uint64_t>(8): return "VK_LOGIC_OP_NOR";
+        case static_cast<uint64_t>(9): return "VK_LOGIC_OP_EQUIVALENT";
+        case static_cast<uint64_t>(10): return "VK_LOGIC_OP_INVERT";
+        case static_cast<uint64_t>(11): return "VK_LOGIC_OP_OR_REVERSE";
+        case static_cast<uint64_t>(12): return "VK_LOGIC_OP_COPY_INVERTED";
+        case static_cast<uint64_t>(13): return "VK_LOGIC_OP_OR_INVERTED";
+        case static_cast<uint64_t>(14): return "VK_LOGIC_OP_NAND";
+        case static_cast<uint64_t>(15): return "VK_LOGIC_OP_SET";
+        case static_cast<uint64_t>(2147483647): return "VK_LOGIC_OP_MAX_ENUM";
+        default: return "VkLogicOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkMemoryAllocateFlagBits>(VkMemoryAllocateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_MEMORY_ALLOCATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT";
+        case static_cast<uint64_t>(4): return "VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT";
+        default: return "VkMemoryAllocateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkMemoryHeapFlagBits>(VkMemoryHeapFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT";
+        default: return "VkMemoryHeapFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkMemoryOverallocationBehaviorAMD>(VkMemoryOverallocationBehaviorAMD type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_MEMORY_OVERALLOCATION_BEHAVIOR_DEFAULT_AMD";
+        case static_cast<uint64_t>(1): return "VK_MEMORY_OVERALLOCATION_BEHAVIOR_ALLOWED_AMD";
+        case static_cast<uint64_t>(2): return "VK_MEMORY_OVERALLOCATION_BEHAVIOR_DISALLOWED_AMD";
+        case static_cast<uint64_t>(2147483647): return "VK_MEMORY_OVERALLOCATION_BEHAVIOR_AMD_MAX_ENUM";
+        default: return "VkMemoryOverallocationBehaviorAMD_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkMemoryPropertyFlagBits>(VkMemoryPropertyFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
+        case static_cast<uint64_t>(2): return "VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
+        case static_cast<uint64_t>(4): return "VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
+        case static_cast<uint64_t>(8): return "VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
+        case static_cast<uint64_t>(16): return "VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(32): return "VK_MEMORY_PROPERTY_PROTECTED_BIT";
+        case static_cast<uint64_t>(64): return "VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD";
+        case static_cast<uint64_t>(128): return "VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD";
+        case static_cast<uint64_t>(256): return "VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV";
+        default: return "VkMemoryPropertyFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkObjectType>(VkObjectType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_OBJECT_TYPE_UNKNOWN";
+        case static_cast<uint64_t>(1): return "VK_OBJECT_TYPE_INSTANCE";
+        case static_cast<uint64_t>(2): return "VK_OBJECT_TYPE_PHYSICAL_DEVICE";
+        case static_cast<uint64_t>(3): return "VK_OBJECT_TYPE_DEVICE";
+        case static_cast<uint64_t>(4): return "VK_OBJECT_TYPE_QUEUE";
+        case static_cast<uint64_t>(5): return "VK_OBJECT_TYPE_SEMAPHORE";
+        case static_cast<uint64_t>(6): return "VK_OBJECT_TYPE_COMMAND_BUFFER";
+        case static_cast<uint64_t>(7): return "VK_OBJECT_TYPE_FENCE";
+        case static_cast<uint64_t>(8): return "VK_OBJECT_TYPE_DEVICE_MEMORY";
+        case static_cast<uint64_t>(9): return "VK_OBJECT_TYPE_BUFFER";
+        case static_cast<uint64_t>(10): return "VK_OBJECT_TYPE_IMAGE";
+        case static_cast<uint64_t>(11): return "VK_OBJECT_TYPE_EVENT";
+        case static_cast<uint64_t>(12): return "VK_OBJECT_TYPE_QUERY_POOL";
+        case static_cast<uint64_t>(13): return "VK_OBJECT_TYPE_BUFFER_VIEW";
+        case static_cast<uint64_t>(14): return "VK_OBJECT_TYPE_IMAGE_VIEW";
+        case static_cast<uint64_t>(15): return "VK_OBJECT_TYPE_SHADER_MODULE";
+        case static_cast<uint64_t>(16): return "VK_OBJECT_TYPE_PIPELINE_CACHE";
+        case static_cast<uint64_t>(17): return "VK_OBJECT_TYPE_PIPELINE_LAYOUT";
+        case static_cast<uint64_t>(18): return "VK_OBJECT_TYPE_RENDER_PASS";
+        case static_cast<uint64_t>(19): return "VK_OBJECT_TYPE_PIPELINE";
+        case static_cast<uint64_t>(20): return "VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT";
+        case static_cast<uint64_t>(21): return "VK_OBJECT_TYPE_SAMPLER";
+        case static_cast<uint64_t>(22): return "VK_OBJECT_TYPE_DESCRIPTOR_POOL";
+        case static_cast<uint64_t>(23): return "VK_OBJECT_TYPE_DESCRIPTOR_SET";
+        case static_cast<uint64_t>(24): return "VK_OBJECT_TYPE_FRAMEBUFFER";
+        case static_cast<uint64_t>(25): return "VK_OBJECT_TYPE_COMMAND_POOL";
+        case static_cast<uint64_t>(2147483647): return "VK_OBJECT_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1000156000): return "VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION";
+        case static_cast<uint64_t>(1000085000): return "VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE";
+        case static_cast<uint64_t>(1000295000): return "VK_OBJECT_TYPE_PRIVATE_DATA_SLOT";
+        case static_cast<uint64_t>(1000000000): return "VK_OBJECT_TYPE_SURFACE_KHR";
+        case static_cast<uint64_t>(1000001000): return "VK_OBJECT_TYPE_SWAPCHAIN_KHR";
+        case static_cast<uint64_t>(1000002000): return "VK_OBJECT_TYPE_DISPLAY_KHR";
+        case static_cast<uint64_t>(1000002001): return "VK_OBJECT_TYPE_DISPLAY_MODE_KHR";
+        case static_cast<uint64_t>(1000011000): return "VK_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT";
+        case static_cast<uint64_t>(1000023000): return "VK_OBJECT_TYPE_VIDEO_SESSION_KHR";
+        case static_cast<uint64_t>(1000023001): return "VK_OBJECT_TYPE_VIDEO_SESSION_PARAMETERS_KHR";
+        case static_cast<uint64_t>(1000128000): return "VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT";
+        case static_cast<uint64_t>(1000160000): return "VK_OBJECT_TYPE_VALIDATION_CACHE_EXT";
+        case static_cast<uint64_t>(1000165000): return "VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV";
+        case static_cast<uint64_t>(1000210000): return "VK_OBJECT_TYPE_PERFORMANCE_CONFIGURATION_INTEL";
+        case static_cast<uint64_t>(1000268000): return "VK_OBJECT_TYPE_DEFERRED_OPERATION_KHR";
+        case static_cast<uint64_t>(1000277000): return "VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NV";
+        case static_cast<uint64_t>(1000366000): return "VK_OBJECT_TYPE_BUFFER_COLLECTION_FUCHSIA";
+        case static_cast<uint64_t>(1000150000): return "VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR";
+        default: return "VkObjectType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPeerMemoryFeatureFlagBits>(VkPeerMemoryFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT";
+        case static_cast<uint64_t>(2): return "VK_PEER_MEMORY_FEATURE_COPY_DST_BIT";
+        case static_cast<uint64_t>(4): return "VK_PEER_MEMORY_FEATURE_GENERIC_SRC_BIT";
+        case static_cast<uint64_t>(8): return "VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_PEER_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM";
+        default: return "VkPeerMemoryFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceConfigurationTypeINTEL>(VkPerformanceConfigurationTypeINTEL type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_CONFIGURATION_TYPE_COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED_INTEL";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_CONFIGURATION_TYPE_INTEL_MAX_ENUM";
+        default: return "VkPerformanceConfigurationTypeINTEL_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceCounterDescriptionFlagBitsKHR>(VkPerformanceCounterDescriptionFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_COUNTER_DESCRIPTION_PERFORMANCE_IMPACTING_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_COUNTER_DESCRIPTION_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkPerformanceCounterDescriptionFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceCounterScopeKHR>(VkPerformanceCounterScopeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_BUFFER_KHR";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_COUNTER_SCOPE_RENDER_PASS_KHR";
+        case static_cast<uint64_t>(2): return "VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_COUNTER_SCOPE_KHR_MAX_ENUM";
+        default: return "VkPerformanceCounterScopeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceCounterStorageKHR>(VkPerformanceCounterStorageKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_COUNTER_STORAGE_INT32_KHR";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_COUNTER_STORAGE_INT64_KHR";
+        case static_cast<uint64_t>(2): return "VK_PERFORMANCE_COUNTER_STORAGE_UINT32_KHR";
+        case static_cast<uint64_t>(3): return "VK_PERFORMANCE_COUNTER_STORAGE_UINT64_KHR";
+        case static_cast<uint64_t>(4): return "VK_PERFORMANCE_COUNTER_STORAGE_FLOAT32_KHR";
+        case static_cast<uint64_t>(5): return "VK_PERFORMANCE_COUNTER_STORAGE_FLOAT64_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_COUNTER_STORAGE_KHR_MAX_ENUM";
+        default: return "VkPerformanceCounterStorageKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceCounterUnitKHR>(VkPerformanceCounterUnitKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_COUNTER_UNIT_GENERIC_KHR";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_COUNTER_UNIT_PERCENTAGE_KHR";
+        case static_cast<uint64_t>(2): return "VK_PERFORMANCE_COUNTER_UNIT_NANOSECONDS_KHR";
+        case static_cast<uint64_t>(3): return "VK_PERFORMANCE_COUNTER_UNIT_BYTES_KHR";
+        case static_cast<uint64_t>(4): return "VK_PERFORMANCE_COUNTER_UNIT_BYTES_PER_SECOND_KHR";
+        case static_cast<uint64_t>(5): return "VK_PERFORMANCE_COUNTER_UNIT_KELVIN_KHR";
+        case static_cast<uint64_t>(6): return "VK_PERFORMANCE_COUNTER_UNIT_WATTS_KHR";
+        case static_cast<uint64_t>(7): return "VK_PERFORMANCE_COUNTER_UNIT_VOLTS_KHR";
+        case static_cast<uint64_t>(8): return "VK_PERFORMANCE_COUNTER_UNIT_AMPS_KHR";
+        case static_cast<uint64_t>(9): return "VK_PERFORMANCE_COUNTER_UNIT_HERTZ_KHR";
+        case static_cast<uint64_t>(10): return "VK_PERFORMANCE_COUNTER_UNIT_CYCLES_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_COUNTER_UNIT_KHR_MAX_ENUM";
+        default: return "VkPerformanceCounterUnitKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceOverrideTypeINTEL>(VkPerformanceOverrideTypeINTEL type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_OVERRIDE_TYPE_NULL_HARDWARE_INTEL";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_OVERRIDE_TYPE_FLUSH_GPU_CACHES_INTEL";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_OVERRIDE_TYPE_INTEL_MAX_ENUM";
+        default: return "VkPerformanceOverrideTypeINTEL_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceParameterTypeINTEL>(VkPerformanceParameterTypeINTEL type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_PARAMETER_TYPE_HW_COUNTERS_SUPPORTED_INTEL";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_PARAMETER_TYPE_STREAM_MARKER_VALID_BITS_INTEL";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_PARAMETER_TYPE_INTEL_MAX_ENUM";
+        default: return "VkPerformanceParameterTypeINTEL_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPerformanceValueTypeINTEL>(VkPerformanceValueTypeINTEL type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PERFORMANCE_VALUE_TYPE_UINT32_INTEL";
+        case static_cast<uint64_t>(1): return "VK_PERFORMANCE_VALUE_TYPE_UINT64_INTEL";
+        case static_cast<uint64_t>(2): return "VK_PERFORMANCE_VALUE_TYPE_FLOAT_INTEL";
+        case static_cast<uint64_t>(3): return "VK_PERFORMANCE_VALUE_TYPE_BOOL_INTEL";
+        case static_cast<uint64_t>(4): return "VK_PERFORMANCE_VALUE_TYPE_STRING_INTEL";
+        case static_cast<uint64_t>(2147483647): return "VK_PERFORMANCE_VALUE_TYPE_INTEL_MAX_ENUM";
+        default: return "VkPerformanceValueTypeINTEL_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPhysicalDeviceType>(VkPhysicalDeviceType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PHYSICAL_DEVICE_TYPE_OTHER";
+        case static_cast<uint64_t>(1): return "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
+        case static_cast<uint64_t>(2): return "VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU";
+        case static_cast<uint64_t>(3): return "VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU";
+        case static_cast<uint64_t>(4): return "VK_PHYSICAL_DEVICE_TYPE_CPU";
+        case static_cast<uint64_t>(2147483647): return "VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM";
+        default: return "VkPhysicalDeviceType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineBindPoint>(VkPipelineBindPoint type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PIPELINE_BIND_POINT_GRAPHICS";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_BIND_POINT_COMPUTE";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_BIND_POINT_MAX_ENUM";
+        case static_cast<uint64_t>(1000369003): return "VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI";
+        case static_cast<uint64_t>(1000165000): return "VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR";
+        default: return "VkPipelineBindPoint_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineCacheCreateFlagBits>(VkPipelineCacheCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CACHE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT";
+        default: return "VkPipelineCacheCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineCacheHeaderVersion>(VkPipelineCacheHeaderVersion type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_CACHE_HEADER_VERSION_ONE";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CACHE_HEADER_VERSION_MAX_ENUM";
+        default: return "VkPipelineCacheHeaderVersion_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineColorBlendStateCreateFlagBits>(VkPipelineColorBlendStateCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_COLOR_BLEND_STATE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_ARM";
+        default: return "VkPipelineColorBlendStateCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineCreateFlagBits>(VkPipelineCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT";
+        case static_cast<uint64_t>(4): return "VK_PIPELINE_CREATE_DERIVATIVE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(8): return "VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
+        case static_cast<uint64_t>(16): return "VK_PIPELINE_CREATE_DISPATCH_BASE_BIT";
+        case static_cast<uint64_t>(256): return "VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
+        case static_cast<uint64_t>(512): return "VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT";
+        case static_cast<uint64_t>(2097152): return "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+        case static_cast<uint64_t>(4194304): return "VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
+        case static_cast<uint64_t>(32): return "VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV";
+        case static_cast<uint64_t>(64): return "VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR";
+        case static_cast<uint64_t>(128): return "VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR";
+        case static_cast<uint64_t>(262144): return "VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV";
+        case static_cast<uint64_t>(2048): return "VK_PIPELINE_CREATE_LIBRARY_BIT_KHR";
+        case static_cast<uint64_t>(8388608): return "VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT";
+        case static_cast<uint64_t>(1048576): return "VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV";
+        case static_cast<uint64_t>(16384): return "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR";
+        case static_cast<uint64_t>(32768): return "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR";
+        case static_cast<uint64_t>(65536): return "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR";
+        case static_cast<uint64_t>(131072): return "VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR";
+        case static_cast<uint64_t>(4096): return "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR";
+        case static_cast<uint64_t>(8192): return "VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR";
+        case static_cast<uint64_t>(524288): return "VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR";
+        default: return "VkPipelineCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineCreationFeedbackFlagBits>(VkPipelineCreationFeedbackFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_CREATION_FEEDBACK_VALID_BIT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_CREATION_FEEDBACK_APPLICATION_PIPELINE_CACHE_HIT_BIT";
+        case static_cast<uint64_t>(4): return "VK_PIPELINE_CREATION_FEEDBACK_BASE_PIPELINE_ACCELERATION_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CREATION_FEEDBACK_FLAG_BITS_MAX_ENUM";
+        default: return "VkPipelineCreationFeedbackFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineDepthStencilStateCreateFlagBits>(VkPipelineDepthStencilStateCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_ARM";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM";
+        default: return "VkPipelineDepthStencilStateCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineExecutableStatisticFormatKHR>(VkPipelineExecutableStatisticFormatKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_BOOL32_KHR";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_INT64_KHR";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_UINT64_KHR";
+        case static_cast<uint64_t>(3): return "VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_FLOAT64_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_KHR_MAX_ENUM";
+        default: return "VkPipelineExecutableStatisticFormatKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineLayoutCreateFlagBits>(VkPipelineLayoutCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_LAYOUT_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT";
+        default: return "VkPipelineLayoutCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineRobustnessBufferBehaviorEXT>(VkPipelineRobustnessBufferBehaviorEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT_EXT";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DISABLED_EXT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_EXT";
+        case static_cast<uint64_t>(3): return "VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_EXT_MAX_ENUM";
+        default: return "VkPipelineRobustnessBufferBehaviorEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineRobustnessImageBehaviorEXT>(VkPipelineRobustnessImageBehaviorEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DEVICE_DEFAULT_EXT";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DISABLED_EXT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_EXT";
+        case static_cast<uint64_t>(3): return "VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_EXT_MAX_ENUM";
+        default: return "VkPipelineRobustnessImageBehaviorEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineShaderStageCreateFlagBits>(VkPipelineShaderStageCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_SHADER_STAGE_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_SHADER_STAGE_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT";
+        default: return "VkPipelineShaderStageCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPipelineStageFlagBits>(VkPipelineStageFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT";
+        case static_cast<uint64_t>(2): return "VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT";
+        case static_cast<uint64_t>(4): return "VK_PIPELINE_STAGE_VERTEX_INPUT_BIT";
+        case static_cast<uint64_t>(8): return "VK_PIPELINE_STAGE_VERTEX_SHADER_BIT";
+        case static_cast<uint64_t>(16): return "VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT";
+        case static_cast<uint64_t>(32): return "VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT";
+        case static_cast<uint64_t>(64): return "VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT";
+        case static_cast<uint64_t>(128): return "VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT";
+        case static_cast<uint64_t>(256): return "VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT";
+        case static_cast<uint64_t>(512): return "VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT";
+        case static_cast<uint64_t>(1024): return "VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT";
+        case static_cast<uint64_t>(2048): return "VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT";
+        case static_cast<uint64_t>(4096): return "VK_PIPELINE_STAGE_TRANSFER_BIT";
+        case static_cast<uint64_t>(8192): return "VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT";
+        case static_cast<uint64_t>(16384): return "VK_PIPELINE_STAGE_HOST_BIT";
+        case static_cast<uint64_t>(32768): return "VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT";
+        case static_cast<uint64_t>(65536): return "VK_PIPELINE_STAGE_ALL_COMMANDS_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(0): return "VK_PIPELINE_STAGE_NONE";
+        case static_cast<uint64_t>(16777216): return "VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT";
+        case static_cast<uint64_t>(262144): return "VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT";
+        case static_cast<uint64_t>(524288): return "VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV";
+        case static_cast<uint64_t>(1048576): return "VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV";
+        case static_cast<uint64_t>(8388608): return "VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT";
+        case static_cast<uint64_t>(4194304): return "VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR";
+        case static_cast<uint64_t>(131072): return "VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV";
+        case static_cast<uint64_t>(33554432): return "VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR";
+        case static_cast<uint64_t>(2097152): return "VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR";
+        default: return "VkPipelineStageFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPointClippingBehavior>(VkPointClippingBehavior type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES";
+        case static_cast<uint64_t>(1): return "VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY";
+        case static_cast<uint64_t>(2147483647): return "VK_POINT_CLIPPING_BEHAVIOR_MAX_ENUM";
+        default: return "VkPointClippingBehavior_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPolygonMode>(VkPolygonMode type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_POLYGON_MODE_FILL";
+        case static_cast<uint64_t>(1): return "VK_POLYGON_MODE_LINE";
+        case static_cast<uint64_t>(2): return "VK_POLYGON_MODE_POINT";
+        case static_cast<uint64_t>(2147483647): return "VK_POLYGON_MODE_MAX_ENUM";
+        case static_cast<uint64_t>(1000153000): return "VK_POLYGON_MODE_FILL_RECTANGLE_NV";
+        default: return "VkPolygonMode_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPresentModeKHR>(VkPresentModeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PRESENT_MODE_IMMEDIATE_KHR";
+        case static_cast<uint64_t>(1): return "VK_PRESENT_MODE_MAILBOX_KHR";
+        case static_cast<uint64_t>(2): return "VK_PRESENT_MODE_FIFO_KHR";
+        case static_cast<uint64_t>(3): return "VK_PRESENT_MODE_FIFO_RELAXED_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_PRESENT_MODE_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1000111000): return "VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR";
+        case static_cast<uint64_t>(1000111001): return "VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR";
+        default: return "VkPresentModeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPrimitiveTopology>(VkPrimitiveTopology type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PRIMITIVE_TOPOLOGY_POINT_LIST";
+        case static_cast<uint64_t>(1): return "VK_PRIMITIVE_TOPOLOGY_LINE_LIST";
+        case static_cast<uint64_t>(2): return "VK_PRIMITIVE_TOPOLOGY_LINE_STRIP";
+        case static_cast<uint64_t>(3): return "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST";
+        case static_cast<uint64_t>(4): return "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP";
+        case static_cast<uint64_t>(5): return "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN";
+        case static_cast<uint64_t>(6): return "VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY";
+        case static_cast<uint64_t>(7): return "VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY";
+        case static_cast<uint64_t>(8): return "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY";
+        case static_cast<uint64_t>(9): return "VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY";
+        case static_cast<uint64_t>(10): return "VK_PRIMITIVE_TOPOLOGY_PATCH_LIST";
+        case static_cast<uint64_t>(2147483647): return "VK_PRIMITIVE_TOPOLOGY_MAX_ENUM";
+        default: return "VkPrimitiveTopology_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkProvokingVertexModeEXT>(VkProvokingVertexModeEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_PROVOKING_VERTEX_MODE_FIRST_VERTEX_EXT";
+        case static_cast<uint64_t>(1): return "VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PROVOKING_VERTEX_MODE_EXT_MAX_ENUM";
+        default: return "VkProvokingVertexModeEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueryControlFlagBits>(VkQueryControlFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_QUERY_CONTROL_PRECISE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_CONTROL_FLAG_BITS_MAX_ENUM";
+        default: return "VkQueryControlFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueryPipelineStatisticFlagBits>(VkQueryPipelineStatisticFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT";
+        case static_cast<uint64_t>(2): return "VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT";
+        case static_cast<uint64_t>(4): return "VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(8): return "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(16): return "VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT";
+        case static_cast<uint64_t>(32): return "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(64): return "VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT";
+        case static_cast<uint64_t>(128): return "VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(256): return "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT";
+        case static_cast<uint64_t>(512): return "VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(1024): return "VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_PIPELINE_STATISTIC_FLAG_BITS_MAX_ENUM";
+        default: return "VkQueryPipelineStatisticFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueryPoolSamplingModeINTEL>(VkQueryPoolSamplingModeINTEL type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_QUERY_POOL_SAMPLING_MODE_MANUAL_INTEL";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_POOL_SAMPLING_MODE_INTEL_MAX_ENUM";
+        default: return "VkQueryPoolSamplingModeINTEL_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueryResultFlagBits>(VkQueryResultFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_QUERY_RESULT_64_BIT";
+        case static_cast<uint64_t>(2): return "VK_QUERY_RESULT_WAIT_BIT";
+        case static_cast<uint64_t>(4): return "VK_QUERY_RESULT_WITH_AVAILABILITY_BIT";
+        case static_cast<uint64_t>(8): return "VK_QUERY_RESULT_PARTIAL_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_RESULT_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(16): return "VK_QUERY_RESULT_WITH_STATUS_BIT_KHR";
+        default: return "VkQueryResultFlagBits_UNKNOWN";
+      }
+    }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkQueryResultStatusKHR>(VkQueryResultStatusKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(-1): return "VK_QUERY_RESULT_STATUS_ERROR_KHR";
+        case static_cast<uint64_t>(0): return "VK_QUERY_RESULT_STATUS_NOT_READY_KHR";
+        case static_cast<uint64_t>(1): return "VK_QUERY_RESULT_STATUS_COMPLETE_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_RESULT_STATUS_KHR_MAX_ENUM";
+        default: return "VkQueryResultStatusKHR_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkQueryType>(VkQueryType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_QUERY_TYPE_OCCLUSION";
+        case static_cast<uint64_t>(1): return "VK_QUERY_TYPE_PIPELINE_STATISTICS";
+        case static_cast<uint64_t>(2): return "VK_QUERY_TYPE_TIMESTAMP";
+        case static_cast<uint64_t>(2147483647): return "VK_QUERY_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1000023000): return "VK_QUERY_TYPE_RESULT_STATUS_ONLY_KHR";
+        case static_cast<uint64_t>(1000028004): return "VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT";
+        case static_cast<uint64_t>(1000116000): return "VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR";
+        case static_cast<uint64_t>(1000165000): return "VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV";
+        case static_cast<uint64_t>(1000210000): return "VK_QUERY_TYPE_PERFORMANCE_QUERY_INTEL";
+        case static_cast<uint64_t>(1000299000): return "VK_QUERY_TYPE_VIDEO_ENCODE_BITSTREAM_BUFFER_RANGE_KHR";
+        case static_cast<uint64_t>(1000382000): return "VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT";
+        case static_cast<uint64_t>(1000386000): return "VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR";
+        case static_cast<uint64_t>(1000386001): return "VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SIZE_KHR";
+        case static_cast<uint64_t>(1000150000): return "VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR";
+        case static_cast<uint64_t>(1000150001): return "VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR";
+        default: return "VkQueryType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueueFlagBits>(VkQueueFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_QUEUE_GRAPHICS_BIT";
+        case static_cast<uint64_t>(2): return "VK_QUEUE_COMPUTE_BIT";
+        case static_cast<uint64_t>(4): return "VK_QUEUE_TRANSFER_BIT";
+        case static_cast<uint64_t>(8): return "VK_QUEUE_SPARSE_BINDING_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_QUEUE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(16): return "VK_QUEUE_PROTECTED_BIT";
+        case static_cast<uint64_t>(32): return "VK_QUEUE_VIDEO_DECODE_BIT_KHR";
+        case static_cast<uint64_t>(64): return "VK_QUEUE_VIDEO_ENCODE_BIT_KHR";
+        default: return "VkQueueFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkQueueGlobalPriorityKHR>(VkQueueGlobalPriorityKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(128): return "VK_QUEUE_GLOBAL_PRIORITY_LOW_KHR";
+        case static_cast<uint64_t>(256): return "VK_QUEUE_GLOBAL_PRIORITY_MEDIUM_KHR";
+        case static_cast<uint64_t>(512): return "VK_QUEUE_GLOBAL_PRIORITY_HIGH_KHR";
+        case static_cast<uint64_t>(1024): return "VK_QUEUE_GLOBAL_PRIORITY_REALTIME_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_QUEUE_GLOBAL_PRIORITY_KHR_MAX_ENUM";
+        default: return "VkQueueGlobalPriorityKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkRasterizationOrderAMD>(VkRasterizationOrderAMD type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_RASTERIZATION_ORDER_STRICT_AMD";
+        case static_cast<uint64_t>(1): return "VK_RASTERIZATION_ORDER_RELAXED_AMD";
+        case static_cast<uint64_t>(2147483647): return "VK_RASTERIZATION_ORDER_AMD_MAX_ENUM";
+        default: return "VkRasterizationOrderAMD_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkRayTracingShaderGroupTypeKHR>(VkRayTracingShaderGroupTypeKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR";
+        case static_cast<uint64_t>(1): return "VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR";
+        case static_cast<uint64_t>(2): return "VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_RAY_TRACING_SHADER_GROUP_TYPE_KHR_MAX_ENUM";
+        default: return "VkRayTracingShaderGroupTypeKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkRenderPassCreateFlagBits>(VkRenderPassCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_RENDER_PASS_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM";
+        default: return "VkRenderPassCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkRenderingFlagBits>(VkRenderingFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT";
+        case static_cast<uint64_t>(2): return "VK_RENDERING_SUSPENDING_BIT";
+        case static_cast<uint64_t>(4): return "VK_RENDERING_RESUMING_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_RENDERING_FLAG_BITS_MAX_ENUM";
+        default: return "VkRenderingFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkResolveModeFlagBits>(VkResolveModeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_RESOLVE_MODE_NONE";
+        case static_cast<uint64_t>(1): return "VK_RESOLVE_MODE_SAMPLE_ZERO_BIT";
+        case static_cast<uint64_t>(2): return "VK_RESOLVE_MODE_AVERAGE_BIT";
+        case static_cast<uint64_t>(4): return "VK_RESOLVE_MODE_MIN_BIT";
+        case static_cast<uint64_t>(8): return "VK_RESOLVE_MODE_MAX_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_RESOLVE_MODE_FLAG_BITS_MAX_ENUM";
+        default: return "VkResolveModeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkResult>(VkResult type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SUCCESS";
+        case static_cast<uint64_t>(1): return "VK_NOT_READY";
+        case static_cast<uint64_t>(2): return "VK_TIMEOUT";
+        case static_cast<uint64_t>(3): return "VK_EVENT_SET";
+        case static_cast<uint64_t>(4): return "VK_EVENT_RESET";
+        case static_cast<uint64_t>(5): return "VK_INCOMPLETE";
+        case static_cast<uint64_t>(-1): return "VK_ERROR_OUT_OF_HOST_MEMORY";
+        case static_cast<uint64_t>(-2): return "VK_ERROR_OUT_OF_DEVICE_MEMORY";
+        case static_cast<uint64_t>(-3): return "VK_ERROR_INITIALIZATION_FAILED";
+        case static_cast<uint64_t>(-4): return "VK_ERROR_DEVICE_LOST";
+        case static_cast<uint64_t>(-5): return "VK_ERROR_MEMORY_MAP_FAILED";
+        case static_cast<uint64_t>(-6): return "VK_ERROR_LAYER_NOT_PRESENT";
+        case static_cast<uint64_t>(-7): return "VK_ERROR_EXTENSION_NOT_PRESENT";
+        case static_cast<uint64_t>(-8): return "VK_ERROR_FEATURE_NOT_PRESENT";
+        case static_cast<uint64_t>(-9): return "VK_ERROR_INCOMPATIBLE_DRIVER";
+        case static_cast<uint64_t>(-10): return "VK_ERROR_TOO_MANY_OBJECTS";
+        case static_cast<uint64_t>(-11): return "VK_ERROR_FORMAT_NOT_SUPPORTED";
+        case static_cast<uint64_t>(-12): return "VK_ERROR_FRAGMENTED_POOL";
+        case static_cast<uint64_t>(-13): return "VK_ERROR_UNKNOWN";
+        case static_cast<uint64_t>(2147483647): return "VK_RESULT_MAX_ENUM";
+        case static_cast<uint64_t>(-1000069000): return "VK_ERROR_OUT_OF_POOL_MEMORY";
+        case static_cast<uint64_t>(-1000072003): return "VK_ERROR_INVALID_EXTERNAL_HANDLE";
+        case static_cast<uint64_t>(-1000161000): return "VK_ERROR_FRAGMENTATION";
+        case static_cast<uint64_t>(-1000257000): return "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS";
+        case static_cast<uint64_t>(1000297000): return "VK_PIPELINE_COMPILE_REQUIRED";
+        case static_cast<uint64_t>(-1000000000): return "VK_ERROR_SURFACE_LOST_KHR";
+        case static_cast<uint64_t>(-1000000001): return "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR";
+        case static_cast<uint64_t>(1000001003): return "VK_SUBOPTIMAL_KHR";
+        case static_cast<uint64_t>(-1000001004): return "VK_ERROR_OUT_OF_DATE_KHR";
+        case static_cast<uint64_t>(-1000003001): return "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR";
+        case static_cast<uint64_t>(-1000011001): return "VK_ERROR_VALIDATION_FAILED_EXT";
+        case static_cast<uint64_t>(-1000012000): return "VK_ERROR_INVALID_SHADER_NV";
+        case static_cast<uint64_t>(-1000023000): return "VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000023001): return "VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000023002): return "VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000023003): return "VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000023004): return "VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000023005): return "VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR";
+        case static_cast<uint64_t>(-1000158000): return "VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT";
+        case static_cast<uint64_t>(-1000174001): return "VK_ERROR_NOT_PERMITTED_KHR";
+        case static_cast<uint64_t>(-1000255000): return "VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT";
+        case static_cast<uint64_t>(1000268000): return "VK_THREAD_IDLE_KHR";
+        case static_cast<uint64_t>(1000268001): return "VK_THREAD_DONE_KHR";
+        case static_cast<uint64_t>(1000268002): return "VK_OPERATION_DEFERRED_KHR";
+        case static_cast<uint64_t>(1000268003): return "VK_OPERATION_NOT_DEFERRED_KHR";
+        case static_cast<uint64_t>(-1000338000): return "VK_ERROR_COMPRESSION_EXHAUSTED_EXT";
+        default: return "VkResult_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSampleCountFlagBits>(VkSampleCountFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SAMPLE_COUNT_1_BIT";
+        case static_cast<uint64_t>(2): return "VK_SAMPLE_COUNT_2_BIT";
+        case static_cast<uint64_t>(4): return "VK_SAMPLE_COUNT_4_BIT";
+        case static_cast<uint64_t>(8): return "VK_SAMPLE_COUNT_8_BIT";
+        case static_cast<uint64_t>(16): return "VK_SAMPLE_COUNT_16_BIT";
+        case static_cast<uint64_t>(32): return "VK_SAMPLE_COUNT_32_BIT";
+        case static_cast<uint64_t>(64): return "VK_SAMPLE_COUNT_64_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM";
+        default: return "VkSampleCountFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerAddressMode>(VkSamplerAddressMode type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SAMPLER_ADDRESS_MODE_REPEAT";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT";
+        case static_cast<uint64_t>(2): return "VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE";
+        case static_cast<uint64_t>(3): return "VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_ADDRESS_MODE_MAX_ENUM";
+        case static_cast<uint64_t>(4): return "VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE";
+        default: return "VkSamplerAddressMode_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerCreateFlagBits>(VkSamplerCreateFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_CREATE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT";
+        default: return "VkSamplerCreateFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerMipmapMode>(VkSamplerMipmapMode type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SAMPLER_MIPMAP_MODE_NEAREST";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_MIPMAP_MODE_LINEAR";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_MIPMAP_MODE_MAX_ENUM";
+        default: return "VkSamplerMipmapMode_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerReductionMode>(VkSamplerReductionMode type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SAMPLER_REDUCTION_MODE_WEIGHTED_AVERAGE";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_REDUCTION_MODE_MIN";
+        case static_cast<uint64_t>(2): return "VK_SAMPLER_REDUCTION_MODE_MAX";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_REDUCTION_MODE_MAX_ENUM";
+        default: return "VkSamplerReductionMode_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerYcbcrModelConversion>(VkSamplerYcbcrModelConversion type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY";
+        case static_cast<uint64_t>(2): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_709";
+        case static_cast<uint64_t>(3): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601";
+        case static_cast<uint64_t>(4): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_YCBCR_MODEL_CONVERSION_MAX_ENUM";
+        default: return "VkSamplerYcbcrModelConversion_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSamplerYcbcrRange>(VkSamplerYcbcrRange type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SAMPLER_YCBCR_RANGE_ITU_FULL";
+        case static_cast<uint64_t>(1): return "VK_SAMPLER_YCBCR_RANGE_ITU_NARROW";
+        case static_cast<uint64_t>(2147483647): return "VK_SAMPLER_YCBCR_RANGE_MAX_ENUM";
+        default: return "VkSamplerYcbcrRange_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkScopeNV>(VkScopeNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SCOPE_DEVICE_NV";
+        case static_cast<uint64_t>(2): return "VK_SCOPE_WORKGROUP_NV";
+        case static_cast<uint64_t>(3): return "VK_SCOPE_SUBGROUP_NV";
+        case static_cast<uint64_t>(5): return "VK_SCOPE_QUEUE_FAMILY_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_SCOPE_NV_MAX_ENUM";
+        default: return "VkScopeNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSemaphoreImportFlagBits>(VkSemaphoreImportFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SEMAPHORE_IMPORT_TEMPORARY_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SEMAPHORE_IMPORT_FLAG_BITS_MAX_ENUM";
+        default: return "VkSemaphoreImportFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSemaphoreType>(VkSemaphoreType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SEMAPHORE_TYPE_BINARY";
+        case static_cast<uint64_t>(1): return "VK_SEMAPHORE_TYPE_TIMELINE";
+        case static_cast<uint64_t>(2147483647): return "VK_SEMAPHORE_TYPE_MAX_ENUM";
+        default: return "VkSemaphoreType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSemaphoreWaitFlagBits>(VkSemaphoreWaitFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SEMAPHORE_WAIT_ANY_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SEMAPHORE_WAIT_FLAG_BITS_MAX_ENUM";
+        default: return "VkSemaphoreWaitFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkShaderFloatControlsIndependence>(VkShaderFloatControlsIndependence type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY";
+        case static_cast<uint64_t>(1): return "VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL";
+        case static_cast<uint64_t>(2): return "VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE";
+        case static_cast<uint64_t>(2147483647): return "VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_MAX_ENUM";
+        default: return "VkShaderFloatControlsIndependence_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkShaderGroupShaderKHR>(VkShaderGroupShaderKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SHADER_GROUP_SHADER_GENERAL_KHR";
+        case static_cast<uint64_t>(1): return "VK_SHADER_GROUP_SHADER_CLOSEST_HIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_SHADER_GROUP_SHADER_ANY_HIT_KHR";
+        case static_cast<uint64_t>(3): return "VK_SHADER_GROUP_SHADER_INTERSECTION_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_SHADER_GROUP_SHADER_KHR_MAX_ENUM";
+        default: return "VkShaderGroupShaderKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkShaderInfoTypeAMD>(VkShaderInfoTypeAMD type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SHADER_INFO_TYPE_STATISTICS_AMD";
+        case static_cast<uint64_t>(1): return "VK_SHADER_INFO_TYPE_BINARY_AMD";
+        case static_cast<uint64_t>(2): return "VK_SHADER_INFO_TYPE_DISASSEMBLY_AMD";
+        case static_cast<uint64_t>(2147483647): return "VK_SHADER_INFO_TYPE_AMD_MAX_ENUM";
+        default: return "VkShaderInfoTypeAMD_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkShaderStageFlagBits>(VkShaderStageFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SHADER_STAGE_VERTEX_BIT";
+        case static_cast<uint64_t>(2): return "VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT";
+        case static_cast<uint64_t>(4): return "VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT";
+        case static_cast<uint64_t>(8): return "VK_SHADER_STAGE_GEOMETRY_BIT";
+        case static_cast<uint64_t>(16): return "VK_SHADER_STAGE_FRAGMENT_BIT";
+        case static_cast<uint64_t>(32): return "VK_SHADER_STAGE_COMPUTE_BIT";
+        case static_cast<uint64_t>(31): return "VK_SHADER_STAGE_ALL_GRAPHICS";
+        case static_cast<uint64_t>(2147483647): return "VK_SHADER_STAGE_ALL";
+        case static_cast<uint64_t>(64): return "VK_SHADER_STAGE_TASK_BIT_NV";
+        case static_cast<uint64_t>(128): return "VK_SHADER_STAGE_MESH_BIT_NV";
+        case static_cast<uint64_t>(16384): return "VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI";
+        case static_cast<uint64_t>(256): return "VK_SHADER_STAGE_RAYGEN_BIT_KHR";
+        case static_cast<uint64_t>(512): return "VK_SHADER_STAGE_ANY_HIT_BIT_KHR";
+        case static_cast<uint64_t>(1024): return "VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR";
+        case static_cast<uint64_t>(2048): return "VK_SHADER_STAGE_MISS_BIT_KHR";
+        case static_cast<uint64_t>(4096): return "VK_SHADER_STAGE_INTERSECTION_BIT_KHR";
+        case static_cast<uint64_t>(8192): return "VK_SHADER_STAGE_CALLABLE_BIT_KHR";
+        default: return "VkShaderStageFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkShadingRatePaletteEntryNV>(VkShadingRatePaletteEntryNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SHADING_RATE_PALETTE_ENTRY_NO_INVOCATIONS_NV";
+        case static_cast<uint64_t>(1): return "VK_SHADING_RATE_PALETTE_ENTRY_16_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(2): return "VK_SHADING_RATE_PALETTE_ENTRY_8_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(3): return "VK_SHADING_RATE_PALETTE_ENTRY_4_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(4): return "VK_SHADING_RATE_PALETTE_ENTRY_2_INVOCATIONS_PER_PIXEL_NV";
+        case static_cast<uint64_t>(5): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_PIXEL_NV";
+        case static_cast<uint64_t>(6): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_2X1_PIXELS_NV";
+        case static_cast<uint64_t>(7): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_1X2_PIXELS_NV";
+        case static_cast<uint64_t>(8): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_2X2_PIXELS_NV";
+        case static_cast<uint64_t>(9): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_4X2_PIXELS_NV";
+        case static_cast<uint64_t>(10): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_2X4_PIXELS_NV";
+        case static_cast<uint64_t>(11): return "VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_4X4_PIXELS_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_SHADING_RATE_PALETTE_ENTRY_NV_MAX_ENUM";
+        default: return "VkShadingRatePaletteEntryNV_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSharingMode>(VkSharingMode type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SHARING_MODE_EXCLUSIVE";
+        case static_cast<uint64_t>(1): return "VK_SHARING_MODE_CONCURRENT";
+        case static_cast<uint64_t>(2147483647): return "VK_SHARING_MODE_MAX_ENUM";
+        default: return "VkSharingMode_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSparseImageFormatFlagBits>(VkSparseImageFormatFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT";
+        case static_cast<uint64_t>(2): return "VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT";
+        case static_cast<uint64_t>(4): return "VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SPARSE_IMAGE_FORMAT_FLAG_BITS_MAX_ENUM";
+        default: return "VkSparseImageFormatFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSparseMemoryBindFlagBits>(VkSparseMemoryBindFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SPARSE_MEMORY_BIND_METADATA_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SPARSE_MEMORY_BIND_FLAG_BITS_MAX_ENUM";
+        default: return "VkSparseMemoryBindFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkStencilFaceFlagBits>(VkStencilFaceFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_STENCIL_FACE_FRONT_BIT";
+        case static_cast<uint64_t>(2): return "VK_STENCIL_FACE_BACK_BIT";
+        case static_cast<uint64_t>(3): return "VK_STENCIL_FACE_FRONT_AND_BACK";
+        case static_cast<uint64_t>(2147483647): return "VK_STENCIL_FACE_FLAG_BITS_MAX_ENUM";
+        default: return "VkStencilFaceFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkStencilOp>(VkStencilOp type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_STENCIL_OP_KEEP";
+        case static_cast<uint64_t>(1): return "VK_STENCIL_OP_ZERO";
+        case static_cast<uint64_t>(2): return "VK_STENCIL_OP_REPLACE";
+        case static_cast<uint64_t>(3): return "VK_STENCIL_OP_INCREMENT_AND_CLAMP";
+        case static_cast<uint64_t>(4): return "VK_STENCIL_OP_DECREMENT_AND_CLAMP";
+        case static_cast<uint64_t>(5): return "VK_STENCIL_OP_INVERT";
+        case static_cast<uint64_t>(6): return "VK_STENCIL_OP_INCREMENT_AND_WRAP";
+        case static_cast<uint64_t>(7): return "VK_STENCIL_OP_DECREMENT_AND_WRAP";
+        case static_cast<uint64_t>(2147483647): return "VK_STENCIL_OP_MAX_ENUM";
+        default: return "VkStencilOp_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkStructureType>(VkStructureType type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_STRUCTURE_TYPE_APPLICATION_INFO";
+        case static_cast<uint64_t>(1): return "VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO";
+        case static_cast<uint64_t>(2): return "VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO";
+        case static_cast<uint64_t>(3): return "VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO";
+        case static_cast<uint64_t>(4): return "VK_STRUCTURE_TYPE_SUBMIT_INFO";
+        case static_cast<uint64_t>(5): return "VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO";
+        case static_cast<uint64_t>(6): return "VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE";
+        case static_cast<uint64_t>(7): return "VK_STRUCTURE_TYPE_BIND_SPARSE_INFO";
+        case static_cast<uint64_t>(8): return "VK_STRUCTURE_TYPE_FENCE_CREATE_INFO";
+        case static_cast<uint64_t>(9): return "VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO";
+        case static_cast<uint64_t>(10): return "VK_STRUCTURE_TYPE_EVENT_CREATE_INFO";
+        case static_cast<uint64_t>(11): return "VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO";
+        case static_cast<uint64_t>(12): return "VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO";
+        case static_cast<uint64_t>(13): return "VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO";
+        case static_cast<uint64_t>(14): return "VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO";
+        case static_cast<uint64_t>(15): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO";
+        case static_cast<uint64_t>(16): return "VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO";
+        case static_cast<uint64_t>(17): return "VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO";
+        case static_cast<uint64_t>(18): return "VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO";
+        case static_cast<uint64_t>(19): return "VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(20): return "VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(21): return "VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(22): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(23): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(24): return "VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(25): return "VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(26): return "VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(27): return "VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(28): return "VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO";
+        case static_cast<uint64_t>(29): return "VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO";
+        case static_cast<uint64_t>(30): return "VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO";
+        case static_cast<uint64_t>(31): return "VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO";
+        case static_cast<uint64_t>(32): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO";
+        case static_cast<uint64_t>(33): return "VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO";
+        case static_cast<uint64_t>(34): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO";
+        case static_cast<uint64_t>(35): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET";
+        case static_cast<uint64_t>(36): return "VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET";
+        case static_cast<uint64_t>(37): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO";
+        case static_cast<uint64_t>(38): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO";
+        case static_cast<uint64_t>(39): return "VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO";
+        case static_cast<uint64_t>(40): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO";
+        case static_cast<uint64_t>(41): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO";
+        case static_cast<uint64_t>(42): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO";
+        case static_cast<uint64_t>(43): return "VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO";
+        case static_cast<uint64_t>(44): return "VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER";
+        case static_cast<uint64_t>(45): return "VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER";
+        case static_cast<uint64_t>(46): return "VK_STRUCTURE_TYPE_MEMORY_BARRIER";
+        case static_cast<uint64_t>(47): return "VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO";
+        case static_cast<uint64_t>(48): return "VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO";
+        case static_cast<uint64_t>(2147483647): return "VK_STRUCTURE_TYPE_MAX_ENUM";
+        case static_cast<uint64_t>(1000094000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES";
+        case static_cast<uint64_t>(1000157000): return "VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO";
+        case static_cast<uint64_t>(1000157001): return "VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO";
+        case static_cast<uint64_t>(1000083000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES";
+        case static_cast<uint64_t>(1000127000): return "VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS";
+        case static_cast<uint64_t>(1000127001): return "VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO";
+        case static_cast<uint64_t>(1000060000): return "VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO";
+        case static_cast<uint64_t>(1000060003): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO";
+        case static_cast<uint64_t>(1000060004): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO";
+        case static_cast<uint64_t>(1000060005): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO";
+        case static_cast<uint64_t>(1000060006): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_BIND_SPARSE_INFO";
+        case static_cast<uint64_t>(1000060013): return "VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO";
+        case static_cast<uint64_t>(1000060014): return "VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO";
+        case static_cast<uint64_t>(1000070000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES";
+        case static_cast<uint64_t>(1000070001): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO";
+        case static_cast<uint64_t>(1000146000): return "VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2";
+        case static_cast<uint64_t>(1000146001): return "VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2";
+        case static_cast<uint64_t>(1000146002): return "VK_STRUCTURE_TYPE_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2";
+        case static_cast<uint64_t>(1000146003): return "VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2";
+        case static_cast<uint64_t>(1000146004): return "VK_STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2";
+        case static_cast<uint64_t>(1000059000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2";
+        case static_cast<uint64_t>(1000059001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059002): return "VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059003): return "VK_STRUCTURE_TYPE_IMAGE_FORMAT_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2";
+        case static_cast<uint64_t>(1000059005): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059006): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059007): return "VK_STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2";
+        case static_cast<uint64_t>(1000059008): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2";
+        case static_cast<uint64_t>(1000117000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES";
+        case static_cast<uint64_t>(1000117001): return "VK_STRUCTURE_TYPE_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO";
+        case static_cast<uint64_t>(1000117002): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO";
+        case static_cast<uint64_t>(1000117003): return "VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(1000053000): return "VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO";
+        case static_cast<uint64_t>(1000053001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES";
+        case static_cast<uint64_t>(1000053002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES";
+        case static_cast<uint64_t>(1000120000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES";
+        case static_cast<uint64_t>(1000145000): return "VK_STRUCTURE_TYPE_PROTECTED_SUBMIT_INFO";
+        case static_cast<uint64_t>(1000145001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES";
+        case static_cast<uint64_t>(1000145002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES";
+        case static_cast<uint64_t>(1000145003): return "VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2";
+        case static_cast<uint64_t>(1000156000): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO";
+        case static_cast<uint64_t>(1000156001): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO";
+        case static_cast<uint64_t>(1000156002): return "VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO";
+        case static_cast<uint64_t>(1000156003): return "VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO";
+        case static_cast<uint64_t>(1000156004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES";
+        case static_cast<uint64_t>(1000156005): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES";
+        case static_cast<uint64_t>(1000085000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO";
+        case static_cast<uint64_t>(1000071000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO";
+        case static_cast<uint64_t>(1000071001): return "VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES";
+        case static_cast<uint64_t>(1000071002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO";
+        case static_cast<uint64_t>(1000071003): return "VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES";
+        case static_cast<uint64_t>(1000071004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES";
+        case static_cast<uint64_t>(1000072000): return "VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO";
+        case static_cast<uint64_t>(1000072001): return "VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO";
+        case static_cast<uint64_t>(1000072002): return "VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO";
+        case static_cast<uint64_t>(1000112000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO";
+        case static_cast<uint64_t>(1000112001): return "VK_STRUCTURE_TYPE_EXTERNAL_FENCE_PROPERTIES";
+        case static_cast<uint64_t>(1000113000): return "VK_STRUCTURE_TYPE_EXPORT_FENCE_CREATE_INFO";
+        case static_cast<uint64_t>(1000077000): return "VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO";
+        case static_cast<uint64_t>(1000076000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO";
+        case static_cast<uint64_t>(1000076001): return "VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES";
+        case static_cast<uint64_t>(1000168000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES";
+        case static_cast<uint64_t>(1000168001): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT";
+        case static_cast<uint64_t>(1000063000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES";
+        case static_cast<uint64_t>(49): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES";
+        case static_cast<uint64_t>(50): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES";
+        case static_cast<uint64_t>(51): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES";
+        case static_cast<uint64_t>(52): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES";
+        case static_cast<uint64_t>(1000147000): return "VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO";
+        case static_cast<uint64_t>(1000109000): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2";
+        case static_cast<uint64_t>(1000109001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2";
+        case static_cast<uint64_t>(1000109002): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2";
+        case static_cast<uint64_t>(1000109003): return "VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2";
+        case static_cast<uint64_t>(1000109004): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2";
+        case static_cast<uint64_t>(1000109005): return "VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO";
+        case static_cast<uint64_t>(1000109006): return "VK_STRUCTURE_TYPE_SUBPASS_END_INFO";
+        case static_cast<uint64_t>(1000177000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES";
+        case static_cast<uint64_t>(1000196000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES";
+        case static_cast<uint64_t>(1000180000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES";
+        case static_cast<uint64_t>(1000082000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES";
+        case static_cast<uint64_t>(1000197000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES";
+        case static_cast<uint64_t>(1000161000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO";
+        case static_cast<uint64_t>(1000161001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES";
+        case static_cast<uint64_t>(1000161002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES";
+        case static_cast<uint64_t>(1000161003): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO";
+        case static_cast<uint64_t>(1000161004): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT";
+        case static_cast<uint64_t>(1000199000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES";
+        case static_cast<uint64_t>(1000199001): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE";
+        case static_cast<uint64_t>(1000221000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES";
+        case static_cast<uint64_t>(1000246000): return "VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO";
+        case static_cast<uint64_t>(1000130000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES";
+        case static_cast<uint64_t>(1000130001): return "VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO";
+        case static_cast<uint64_t>(1000211000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES";
+        case static_cast<uint64_t>(1000108000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES";
+        case static_cast<uint64_t>(1000108001): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO";
+        case static_cast<uint64_t>(1000108002): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO";
+        case static_cast<uint64_t>(1000108003): return "VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO";
+        case static_cast<uint64_t>(1000253000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES";
+        case static_cast<uint64_t>(1000175000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES";
+        case static_cast<uint64_t>(1000241000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES";
+        case static_cast<uint64_t>(1000241001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT";
+        case static_cast<uint64_t>(1000241002): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT";
+        case static_cast<uint64_t>(1000261000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES";
+        case static_cast<uint64_t>(1000207000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES";
+        case static_cast<uint64_t>(1000207001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES";
+        case static_cast<uint64_t>(1000207002): return "VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO";
+        case static_cast<uint64_t>(1000207003): return "VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO";
+        case static_cast<uint64_t>(1000207004): return "VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO";
+        case static_cast<uint64_t>(1000207005): return "VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO";
+        case static_cast<uint64_t>(1000257000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES";
+        case static_cast<uint64_t>(1000244001): return "VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO";
+        case static_cast<uint64_t>(1000257002): return "VK_STRUCTURE_TYPE_BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO";
+        case static_cast<uint64_t>(1000257003): return "VK_STRUCTURE_TYPE_MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO";
+        case static_cast<uint64_t>(1000257004): return "VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO";
+        case static_cast<uint64_t>(53): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES";
+        case static_cast<uint64_t>(54): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES";
+        case static_cast<uint64_t>(1000192000): return "VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO";
+        case static_cast<uint64_t>(1000215000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES";
+        case static_cast<uint64_t>(1000245000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES";
+        case static_cast<uint64_t>(1000276000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES";
+        case static_cast<uint64_t>(1000295000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES";
+        case static_cast<uint64_t>(1000295001): return "VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO";
+        case static_cast<uint64_t>(1000295002): return "VK_STRUCTURE_TYPE_PRIVATE_DATA_SLOT_CREATE_INFO";
+        case static_cast<uint64_t>(1000297000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES";
+        case static_cast<uint64_t>(1000314000): return "VK_STRUCTURE_TYPE_MEMORY_BARRIER_2";
+        case static_cast<uint64_t>(1000314001): return "VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2";
+        case static_cast<uint64_t>(1000314002): return "VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2";
+        case static_cast<uint64_t>(1000314003): return "VK_STRUCTURE_TYPE_DEPENDENCY_INFO";
+        case static_cast<uint64_t>(1000314004): return "VK_STRUCTURE_TYPE_SUBMIT_INFO_2";
+        case static_cast<uint64_t>(1000314005): return "VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO";
+        case static_cast<uint64_t>(1000314006): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO";
+        case static_cast<uint64_t>(1000314007): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES";
+        case static_cast<uint64_t>(1000325000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES";
+        case static_cast<uint64_t>(1000335000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES";
+        case static_cast<uint64_t>(1000337000): return "VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2";
+        case static_cast<uint64_t>(1000337001): return "VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337002): return "VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337003): return "VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2";
+        case static_cast<uint64_t>(1000337004): return "VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337005): return "VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337006): return "VK_STRUCTURE_TYPE_BUFFER_COPY_2";
+        case static_cast<uint64_t>(1000337007): return "VK_STRUCTURE_TYPE_IMAGE_COPY_2";
+        case static_cast<uint64_t>(1000337008): return "VK_STRUCTURE_TYPE_IMAGE_BLIT_2";
+        case static_cast<uint64_t>(1000337009): return "VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2";
+        case static_cast<uint64_t>(1000337010): return "VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2";
+        case static_cast<uint64_t>(1000225000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES";
+        case static_cast<uint64_t>(1000225001): return "VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO";
+        case static_cast<uint64_t>(1000225002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES";
+        case static_cast<uint64_t>(1000138000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES";
+        case static_cast<uint64_t>(1000138001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES";
+        case static_cast<uint64_t>(1000138002): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK";
+        case static_cast<uint64_t>(1000138003): return "VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO";
+        case static_cast<uint64_t>(1000066000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES";
+        case static_cast<uint64_t>(1000044000): return "VK_STRUCTURE_TYPE_RENDERING_INFO";
+        case static_cast<uint64_t>(1000044001): return "VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO";
+        case static_cast<uint64_t>(1000044002): return "VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO";
+        case static_cast<uint64_t>(1000044003): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES";
+        case static_cast<uint64_t>(1000044004): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO";
+        case static_cast<uint64_t>(1000280000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES";
+        case static_cast<uint64_t>(1000280001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES";
+        case static_cast<uint64_t>(1000281001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES";
+        case static_cast<uint64_t>(1000360000): return "VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3";
+        case static_cast<uint64_t>(1000413000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES";
+        case static_cast<uint64_t>(1000413001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES";
+        case static_cast<uint64_t>(1000413002): return "VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS";
+        case static_cast<uint64_t>(1000413003): return "VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS";
+        case static_cast<uint64_t>(1000001000): return "VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000001001): return "VK_STRUCTURE_TYPE_PRESENT_INFO_KHR";
+        case static_cast<uint64_t>(1000060007): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000060008): return "VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000060009): return "VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR";
+        case static_cast<uint64_t>(1000060010): return "VK_STRUCTURE_TYPE_ACQUIRE_NEXT_IMAGE_INFO_KHR";
+        case static_cast<uint64_t>(1000060011): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_INFO_KHR";
+        case static_cast<uint64_t>(1000060012): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000002000): return "VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000002001): return "VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000003000): return "VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR";
+        case static_cast<uint64_t>(1000004000): return "VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000005000): return "VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000006000): return "VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000008000): return "VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000009000): return "VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000011000): return "VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000018000): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD";
+        case static_cast<uint64_t>(1000022000): return "VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT";
+        case static_cast<uint64_t>(1000022001): return "VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT";
+        case static_cast<uint64_t>(1000022002): return "VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT";
+        case static_cast<uint64_t>(1000023000): return "VK_STRUCTURE_TYPE_VIDEO_PROFILE_KHR";
+        case static_cast<uint64_t>(1000023001): return "VK_STRUCTURE_TYPE_VIDEO_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000023002): return "VK_STRUCTURE_TYPE_VIDEO_PICTURE_RESOURCE_KHR";
+        case static_cast<uint64_t>(1000023003): return "VK_STRUCTURE_TYPE_VIDEO_GET_MEMORY_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000023004): return "VK_STRUCTURE_TYPE_VIDEO_BIND_MEMORY_KHR";
+        case static_cast<uint64_t>(1000023005): return "VK_STRUCTURE_TYPE_VIDEO_SESSION_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000023006): return "VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000023007): return "VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_UPDATE_INFO_KHR";
+        case static_cast<uint64_t>(1000023008): return "VK_STRUCTURE_TYPE_VIDEO_BEGIN_CODING_INFO_KHR";
+        case static_cast<uint64_t>(1000023009): return "VK_STRUCTURE_TYPE_VIDEO_END_CODING_INFO_KHR";
+        case static_cast<uint64_t>(1000023010): return "VK_STRUCTURE_TYPE_VIDEO_CODING_CONTROL_INFO_KHR";
+        case static_cast<uint64_t>(1000023011): return "VK_STRUCTURE_TYPE_VIDEO_REFERENCE_SLOT_KHR";
+        case static_cast<uint64_t>(1000023012): return "VK_STRUCTURE_TYPE_VIDEO_QUEUE_FAMILY_PROPERTIES_2_KHR";
+        case static_cast<uint64_t>(1000023013): return "VK_STRUCTURE_TYPE_VIDEO_PROFILES_KHR";
+        case static_cast<uint64_t>(1000023014): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_FORMAT_INFO_KHR";
+        case static_cast<uint64_t>(1000023015): return "VK_STRUCTURE_TYPE_VIDEO_FORMAT_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000023016): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_QUERY_RESULT_STATUS_PROPERTIES_2_KHR";
+        case static_cast<uint64_t>(1000024000): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_INFO_KHR";
+        case static_cast<uint64_t>(1000024001): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000026000): return "VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000026001): return "VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000026002): return "VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV";
+        case static_cast<uint64_t>(1000028000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT";
+        case static_cast<uint64_t>(1000028001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000028002): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000038000): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_CAPABILITIES_EXT";
+        case static_cast<uint64_t>(1000038001): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000038002): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT";
+        case static_cast<uint64_t>(1000038003): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_VCL_FRAME_INFO_EXT";
+        case static_cast<uint64_t>(1000038004): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_DPB_SLOT_INFO_EXT";
+        case static_cast<uint64_t>(1000038005): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_NALU_SLICE_EXT";
+        case static_cast<uint64_t>(1000038006): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_EMIT_PICTURE_PARAMETERS_EXT";
+        case static_cast<uint64_t>(1000038007): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PROFILE_EXT";
+        case static_cast<uint64_t>(1000038008): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_INFO_EXT";
+        case static_cast<uint64_t>(1000038009): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_LAYER_INFO_EXT";
+        case static_cast<uint64_t>(1000038010): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_REFERENCE_LISTS_EXT";
+        case static_cast<uint64_t>(1000039000): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_CAPABILITIES_EXT";
+        case static_cast<uint64_t>(1000039001): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000039002): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT";
+        case static_cast<uint64_t>(1000039003): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_VCL_FRAME_INFO_EXT";
+        case static_cast<uint64_t>(1000039004): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_DPB_SLOT_INFO_EXT";
+        case static_cast<uint64_t>(1000039005): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_NALU_SLICE_SEGMENT_EXT";
+        case static_cast<uint64_t>(1000039006): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_EMIT_PICTURE_PARAMETERS_EXT";
+        case static_cast<uint64_t>(1000039007): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PROFILE_EXT";
+        case static_cast<uint64_t>(1000039008): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_REFERENCE_LISTS_EXT";
+        case static_cast<uint64_t>(1000039009): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_INFO_EXT";
+        case static_cast<uint64_t>(1000039010): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_LAYER_INFO_EXT";
+        case static_cast<uint64_t>(1000040000): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_CAPABILITIES_EXT";
+        case static_cast<uint64_t>(1000040001): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PICTURE_INFO_EXT";
+        case static_cast<uint64_t>(1000040002): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_MVC_EXT";
+        case static_cast<uint64_t>(1000040003): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PROFILE_EXT";
+        case static_cast<uint64_t>(1000040004): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000040005): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT";
+        case static_cast<uint64_t>(1000040006): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_DPB_SLOT_INFO_EXT";
+        case static_cast<uint64_t>(1000041000): return "VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD";
+        case static_cast<uint64_t>(1000044006): return "VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR";
+        case static_cast<uint64_t>(1000044007): return "VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT";
+        case static_cast<uint64_t>(1000044008): return "VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD";
+        case static_cast<uint64_t>(1000044009): return "VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX";
+        case static_cast<uint64_t>(1000049000): return "VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP";
+        case static_cast<uint64_t>(1000050000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV";
+        case static_cast<uint64_t>(1000056000): return "VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000056001): return "VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV";
+        case static_cast<uint64_t>(1000057000): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV";
+        case static_cast<uint64_t>(1000057001): return "VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV";
+        case static_cast<uint64_t>(1000058000): return "VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV";
+        case static_cast<uint64_t>(1000061000): return "VK_STRUCTURE_TYPE_VALIDATION_FLAGS_EXT";
+        case static_cast<uint64_t>(1000062000): return "VK_STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN";
+        case static_cast<uint64_t>(1000067000): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_ASTC_DECODE_MODE_EXT";
+        case static_cast<uint64_t>(1000067001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000068000): return "VK_STRUCTURE_TYPE_PIPELINE_ROBUSTNESS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000068001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000068002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000073000): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000073001): return "VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000073002): return "VK_STRUCTURE_TYPE_MEMORY_WIN32_HANDLE_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000073003): return "VK_STRUCTURE_TYPE_MEMORY_GET_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000074000): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000074001): return "VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000074002): return "VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000075000): return "VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR";
+        case static_cast<uint64_t>(1000078000): return "VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000078001): return "VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000078002): return "VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR";
+        case static_cast<uint64_t>(1000078003): return "VK_STRUCTURE_TYPE_SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000079000): return "VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000079001): return "VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000080000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000081000): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT";
+        case static_cast<uint64_t>(1000081001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT";
+        case static_cast<uint64_t>(1000081002): return "VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT";
+        case static_cast<uint64_t>(1000084000): return "VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR";
+        case static_cast<uint64_t>(1000087000): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000090000): return "VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_EXT";
+        case static_cast<uint64_t>(1000091000): return "VK_STRUCTURE_TYPE_DISPLAY_POWER_INFO_EXT";
+        case static_cast<uint64_t>(1000091001): return "VK_STRUCTURE_TYPE_DEVICE_EVENT_INFO_EXT";
+        case static_cast<uint64_t>(1000091002): return "VK_STRUCTURE_TYPE_DISPLAY_EVENT_INFO_EXT";
+        case static_cast<uint64_t>(1000091003): return "VK_STRUCTURE_TYPE_SWAPCHAIN_COUNTER_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000092000): return "VK_STRUCTURE_TYPE_PRESENT_TIMES_INFO_GOOGLE";
+        case static_cast<uint64_t>(1000098000): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000099000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000099001): return "VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000101000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000101001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000102000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000102001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000105000): return "VK_STRUCTURE_TYPE_HDR_METADATA_EXT";
+        case static_cast<uint64_t>(1000111000): return "VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000114000): return "VK_STRUCTURE_TYPE_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000114001): return "VK_STRUCTURE_TYPE_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000114002): return "VK_STRUCTURE_TYPE_FENCE_GET_WIN32_HANDLE_INFO_KHR";
+        case static_cast<uint64_t>(1000115000): return "VK_STRUCTURE_TYPE_IMPORT_FENCE_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000115001): return "VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR";
+        case static_cast<uint64_t>(1000116000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR";
+        case static_cast<uint64_t>(1000116001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000116002): return "VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000116003): return "VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR";
+        case static_cast<uint64_t>(1000116004): return "VK_STRUCTURE_TYPE_ACQUIRE_PROFILING_LOCK_INFO_KHR";
+        case static_cast<uint64_t>(1000116005): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR";
+        case static_cast<uint64_t>(1000116006): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR";
+        case static_cast<uint64_t>(1000119000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR";
+        case static_cast<uint64_t>(1000119001): return "VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR";
+        case static_cast<uint64_t>(1000119002): return "VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR";
+        case static_cast<uint64_t>(1000121000): return "VK_STRUCTURE_TYPE_DISPLAY_PROPERTIES_2_KHR";
+        case static_cast<uint64_t>(1000121001): return "VK_STRUCTURE_TYPE_DISPLAY_PLANE_PROPERTIES_2_KHR";
+        case static_cast<uint64_t>(1000121002): return "VK_STRUCTURE_TYPE_DISPLAY_MODE_PROPERTIES_2_KHR";
+        case static_cast<uint64_t>(1000121003): return "VK_STRUCTURE_TYPE_DISPLAY_PLANE_INFO_2_KHR";
+        case static_cast<uint64_t>(1000121004): return "VK_STRUCTURE_TYPE_DISPLAY_PLANE_CAPABILITIES_2_KHR";
+        case static_cast<uint64_t>(1000122000): return "VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK";
+        case static_cast<uint64_t>(1000123000): return "VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK";
+        case static_cast<uint64_t>(1000128000): return "VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT";
+        case static_cast<uint64_t>(1000128001): return "VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT";
+        case static_cast<uint64_t>(1000128002): return "VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT";
+        case static_cast<uint64_t>(1000128003): return "VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT";
+        case static_cast<uint64_t>(1000128004): return "VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000129000): return "VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID";
+        case static_cast<uint64_t>(1000129001): return "VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID";
+        case static_cast<uint64_t>(1000129002): return "VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID";
+        case static_cast<uint64_t>(1000129003): return "VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID";
+        case static_cast<uint64_t>(1000129004): return "VK_STRUCTURE_TYPE_MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID";
+        case static_cast<uint64_t>(1000129005): return "VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID";
+        case static_cast<uint64_t>(1000129006): return "VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID";
+        case static_cast<uint64_t>(1000143000): return "VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT";
+        case static_cast<uint64_t>(1000143001): return "VK_STRUCTURE_TYPE_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT";
+        case static_cast<uint64_t>(1000143002): return "VK_STRUCTURE_TYPE_PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000143003): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000143004): return "VK_STRUCTURE_TYPE_MULTISAMPLE_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000148000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT";
+        case static_cast<uint64_t>(1000148001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000148002): return "VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000149000): return "VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000152000): return "VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000154000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV";
+        case static_cast<uint64_t>(1000154001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000158000): return "VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT";
+        case static_cast<uint64_t>(1000158002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT";
+        case static_cast<uint64_t>(1000158003): return "VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000158004): return "VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000158005): return "VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000158006): return "VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT";
+        case static_cast<uint64_t>(1000160000): return "VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000160001): return "VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000163000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR";
+        case static_cast<uint64_t>(1000163001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000164000): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000164001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV";
+        case static_cast<uint64_t>(1000164002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000164005): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000165000): return "VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000165001): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000165003): return "VK_STRUCTURE_TYPE_GEOMETRY_NV";
+        case static_cast<uint64_t>(1000165004): return "VK_STRUCTURE_TYPE_GEOMETRY_TRIANGLES_NV";
+        case static_cast<uint64_t>(1000165005): return "VK_STRUCTURE_TYPE_GEOMETRY_AABB_NV";
+        case static_cast<uint64_t>(1000165006): return "VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV";
+        case static_cast<uint64_t>(1000165007): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV";
+        case static_cast<uint64_t>(1000165008): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV";
+        case static_cast<uint64_t>(1000165009): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000165011): return "VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000165012): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_NV";
+        case static_cast<uint64_t>(1000166000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV";
+        case static_cast<uint64_t>(1000166001): return "VK_STRUCTURE_TYPE_PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000170000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT";
+        case static_cast<uint64_t>(1000170001): return "VK_STRUCTURE_TYPE_FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000178000): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT";
+        case static_cast<uint64_t>(1000178001): return "VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000178002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000181000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR";
+        case static_cast<uint64_t>(1000183000): return "VK_STRUCTURE_TYPE_PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD";
+        case static_cast<uint64_t>(1000184000): return "VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT";
+        case static_cast<uint64_t>(1000185000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD";
+        case static_cast<uint64_t>(1000187000): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_CAPABILITIES_EXT";
+        case static_cast<uint64_t>(1000187001): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000187002): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT";
+        case static_cast<uint64_t>(1000187003): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PROFILE_EXT";
+        case static_cast<uint64_t>(1000187004): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PICTURE_INFO_EXT";
+        case static_cast<uint64_t>(1000187005): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_DPB_SLOT_INFO_EXT";
+        case static_cast<uint64_t>(1000174000): return "VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000388000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR";
+        case static_cast<uint64_t>(1000388001): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000189000): return "VK_STRUCTURE_TYPE_DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD";
+        case static_cast<uint64_t>(1000190000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000190001): return "VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000190002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT";
+        case static_cast<uint64_t>(1000191000): return "VK_STRUCTURE_TYPE_PRESENT_FRAME_TOKEN_GGP";
+        case static_cast<uint64_t>(1000201000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV";
+        case static_cast<uint64_t>(1000202000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV";
+        case static_cast<uint64_t>(1000202001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000204000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV";
+        case static_cast<uint64_t>(1000205000): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000205002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV";
+        case static_cast<uint64_t>(1000206000): return "VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV";
+        case static_cast<uint64_t>(1000206001): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000209000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL";
+        case static_cast<uint64_t>(1000210000): return "VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL";
+        case static_cast<uint64_t>(1000210001): return "VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL";
+        case static_cast<uint64_t>(1000210002): return "VK_STRUCTURE_TYPE_PERFORMANCE_MARKER_INFO_INTEL";
+        case static_cast<uint64_t>(1000210003): return "VK_STRUCTURE_TYPE_PERFORMANCE_STREAM_MARKER_INFO_INTEL";
+        case static_cast<uint64_t>(1000210004): return "VK_STRUCTURE_TYPE_PERFORMANCE_OVERRIDE_INFO_INTEL";
+        case static_cast<uint64_t>(1000210005): return "VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL";
+        case static_cast<uint64_t>(1000212000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000213000): return "VK_STRUCTURE_TYPE_DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD";
+        case static_cast<uint64_t>(1000213001): return "VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD";
+        case static_cast<uint64_t>(1000214000): return "VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000217000): return "VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000218000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT";
+        case static_cast<uint64_t>(1000218001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000218002): return "VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000226000): return "VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR";
+        case static_cast<uint64_t>(1000226001): return "VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000226002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000226003): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR";
+        case static_cast<uint64_t>(1000226004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR";
+        case static_cast<uint64_t>(1000227000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD";
+        case static_cast<uint64_t>(1000229000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD";
+        case static_cast<uint64_t>(1000234000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT";
+        case static_cast<uint64_t>(1000237000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000238000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT";
+        case static_cast<uint64_t>(1000238001): return "VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT";
+        case static_cast<uint64_t>(1000239000): return "VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000240000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV";
+        case static_cast<uint64_t>(1000244000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000244002): return "VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000247000): return "VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT";
+        case static_cast<uint64_t>(1000248000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR";
+        case static_cast<uint64_t>(1000249000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV";
+        case static_cast<uint64_t>(1000249001): return "VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000249002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000250000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV";
+        case static_cast<uint64_t>(1000250001): return "VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000250002): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV";
+        case static_cast<uint64_t>(1000251000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT";
+        case static_cast<uint64_t>(1000252000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000254000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT";
+        case static_cast<uint64_t>(1000254001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000254002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000255000): return "VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT";
+        case static_cast<uint64_t>(1000255002): return "VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT";
+        case static_cast<uint64_t>(1000255001): return "VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT";
+        case static_cast<uint64_t>(1000256000): return "VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000259000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT";
+        case static_cast<uint64_t>(1000259001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000259002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000260000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT";
+        case static_cast<uint64_t>(1000265000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT";
+        case static_cast<uint64_t>(1000267000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000269000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR";
+        case static_cast<uint64_t>(1000269001): return "VK_STRUCTURE_TYPE_PIPELINE_INFO_KHR";
+        case static_cast<uint64_t>(1000269002): return "VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000269003): return "VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INFO_KHR";
+        case static_cast<uint64_t>(1000269004): return "VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_STATISTIC_KHR";
+        case static_cast<uint64_t>(1000269005): return "VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR";
+        case static_cast<uint64_t>(1000273000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT";
+        case static_cast<uint64_t>(1000277000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000277001): return "VK_STRUCTURE_TYPE_GRAPHICS_SHADER_GROUP_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000277002): return "VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000277003): return "VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_TOKEN_NV";
+        case static_cast<uint64_t>(1000277004): return "VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000277005): return "VK_STRUCTURE_TYPE_GENERATED_COMMANDS_INFO_NV";
+        case static_cast<uint64_t>(1000277006): return "VK_STRUCTURE_TYPE_GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV";
+        case static_cast<uint64_t>(1000277007): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV";
+        case static_cast<uint64_t>(1000278000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV";
+        case static_cast<uint64_t>(1000278001): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV";
+        case static_cast<uint64_t>(1000281000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT";
+        case static_cast<uint64_t>(1000282000): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM";
+        case static_cast<uint64_t>(1000282001): return "VK_STRUCTURE_TYPE_RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM";
+        case static_cast<uint64_t>(1000284000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT";
+        case static_cast<uint64_t>(1000284001): return "VK_STRUCTURE_TYPE_DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000284002): return "VK_STRUCTURE_TYPE_DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT";
+        case static_cast<uint64_t>(1000286000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT";
+        case static_cast<uint64_t>(1000286001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000287000): return "VK_STRUCTURE_TYPE_SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000287001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000287002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT";
+        case static_cast<uint64_t>(1000290000): return "VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000294000): return "VK_STRUCTURE_TYPE_PRESENT_ID_KHR";
+        case static_cast<uint64_t>(1000294001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR";
+        case static_cast<uint64_t>(1000299000): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_INFO_KHR";
+        case static_cast<uint64_t>(1000299001): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_INFO_KHR";
+        case static_cast<uint64_t>(1000299002): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR";
+        case static_cast<uint64_t>(1000299003): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_CAPABILITIES_KHR";
+        case static_cast<uint64_t>(1000300000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV";
+        case static_cast<uint64_t>(1000300001): return "VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000311000): return "VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECT_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000311001): return "VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECTS_INFO_EXT";
+        case static_cast<uint64_t>(1000311002): return "VK_STRUCTURE_TYPE_EXPORT_METAL_DEVICE_INFO_EXT";
+        case static_cast<uint64_t>(1000311003): return "VK_STRUCTURE_TYPE_EXPORT_METAL_COMMAND_QUEUE_INFO_EXT";
+        case static_cast<uint64_t>(1000311004): return "VK_STRUCTURE_TYPE_EXPORT_METAL_BUFFER_INFO_EXT";
+        case static_cast<uint64_t>(1000311005): return "VK_STRUCTURE_TYPE_IMPORT_METAL_BUFFER_INFO_EXT";
+        case static_cast<uint64_t>(1000311006): return "VK_STRUCTURE_TYPE_EXPORT_METAL_TEXTURE_INFO_EXT";
+        case static_cast<uint64_t>(1000311007): return "VK_STRUCTURE_TYPE_IMPORT_METAL_TEXTURE_INFO_EXT";
+        case static_cast<uint64_t>(1000311008): return "VK_STRUCTURE_TYPE_EXPORT_METAL_IO_SURFACE_INFO_EXT";
+        case static_cast<uint64_t>(1000311009): return "VK_STRUCTURE_TYPE_IMPORT_METAL_IO_SURFACE_INFO_EXT";
+        case static_cast<uint64_t>(1000311010): return "VK_STRUCTURE_TYPE_EXPORT_METAL_SHARED_EVENT_INFO_EXT";
+        case static_cast<uint64_t>(1000311011): return "VK_STRUCTURE_TYPE_IMPORT_METAL_SHARED_EVENT_INFO_EXT";
+        case static_cast<uint64_t>(1000314008): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV";
+        case static_cast<uint64_t>(1000314009): return "VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV";
+        case static_cast<uint64_t>(1000320000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT";
+        case static_cast<uint64_t>(1000320001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000320002): return "VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000321000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD";
+        case static_cast<uint64_t>(1000203000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR";
+        case static_cast<uint64_t>(1000322000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000323000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR";
+        case static_cast<uint64_t>(1000326000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV";
+        case static_cast<uint64_t>(1000326001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV";
+        case static_cast<uint64_t>(1000326002): return "VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV";
+        case static_cast<uint64_t>(1000327000): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV";
+        case static_cast<uint64_t>(1000327001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV";
+        case static_cast<uint64_t>(1000327002): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MOTION_INFO_NV";
+        case static_cast<uint64_t>(1000330000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000332000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT";
+        case static_cast<uint64_t>(1000332001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000333000): return "VK_STRUCTURE_TYPE_COPY_COMMAND_TRANSFORM_INFO_QCOM";
+        case static_cast<uint64_t>(1000336000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR";
+        case static_cast<uint64_t>(1000338000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT";
+        case static_cast<uint64_t>(1000338001): return "VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_CONTROL_EXT";
+        case static_cast<uint64_t>(1000338002): return "VK_STRUCTURE_TYPE_SUBRESOURCE_LAYOUT_2_EXT";
+        case static_cast<uint64_t>(1000338003): return "VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2_EXT";
+        case static_cast<uint64_t>(1000338004): return "VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000340000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000342000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM";
+        case static_cast<uint64_t>(1000344000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT";
+        case static_cast<uint64_t>(1000346000): return "VK_STRUCTURE_TYPE_DIRECTFB_SURFACE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000351000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE";
+        case static_cast<uint64_t>(1000351002): return "VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE";
+        case static_cast<uint64_t>(1000352000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000352001): return "VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT";
+        case static_cast<uint64_t>(1000352002): return "VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT";
+        case static_cast<uint64_t>(1000353000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000355000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT";
+        case static_cast<uint64_t>(1000355001): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000356000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT";
+        case static_cast<uint64_t>(1000364000): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000364001): return "VK_STRUCTURE_TYPE_MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA";
+        case static_cast<uint64_t>(1000364002): return "VK_STRUCTURE_TYPE_MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000365000): return "VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000365001): return "VK_STRUCTURE_TYPE_SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366000): return "VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CREATE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366001): return "VK_STRUCTURE_TYPE_IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA";
+        case static_cast<uint64_t>(1000366002): return "VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366003): return "VK_STRUCTURE_TYPE_BUFFER_COLLECTION_PROPERTIES_FUCHSIA";
+        case static_cast<uint64_t>(1000366004): return "VK_STRUCTURE_TYPE_BUFFER_CONSTRAINTS_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366005): return "VK_STRUCTURE_TYPE_BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366006): return "VK_STRUCTURE_TYPE_IMAGE_CONSTRAINTS_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366007): return "VK_STRUCTURE_TYPE_IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000366008): return "VK_STRUCTURE_TYPE_SYSMEM_COLOR_SPACE_FUCHSIA";
+        case static_cast<uint64_t>(1000366009): return "VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA";
+        case static_cast<uint64_t>(1000369000): return "VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI";
+        case static_cast<uint64_t>(1000369001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI";
+        case static_cast<uint64_t>(1000369002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI";
+        case static_cast<uint64_t>(1000370000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI";
+        case static_cast<uint64_t>(1000371000): return "VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV";
+        case static_cast<uint64_t>(1000371001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV";
+        case static_cast<uint64_t>(1000372000): return "VK_STRUCTURE_TYPE_PIPELINE_PROPERTIES_IDENTIFIER_EXT";
+        case static_cast<uint64_t>(1000372001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT";
+        case static_cast<uint64_t>(1000376000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT";
+        case static_cast<uint64_t>(1000376001): return "VK_STRUCTURE_TYPE_SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT";
+        case static_cast<uint64_t>(1000376002): return "VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT";
+        case static_cast<uint64_t>(1000377000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT";
+        case static_cast<uint64_t>(1000378000): return "VK_STRUCTURE_TYPE_SCREEN_SURFACE_CREATE_INFO_QNX";
+        case static_cast<uint64_t>(1000381000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000381001): return "VK_STRUCTURE_TYPE_PIPELINE_COLOR_WRITE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000382000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT";
+        case static_cast<uint64_t>(1000386000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR";
+        case static_cast<uint64_t>(1000391000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT";
+        case static_cast<uint64_t>(1000391001): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000392000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT";
+        case static_cast<uint64_t>(1000392001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000393000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT";
+        case static_cast<uint64_t>(1000411000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000411001): return "VK_STRUCTURE_TYPE_SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000412000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT";
+        case static_cast<uint64_t>(1000420000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE";
+        case static_cast<uint64_t>(1000420001): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_BINDING_REFERENCE_VALVE";
+        case static_cast<uint64_t>(1000420002): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE";
+        case static_cast<uint64_t>(1000422000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT";
+        case static_cast<uint64_t>(1000425000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM";
+        case static_cast<uint64_t>(1000425001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM";
+        case static_cast<uint64_t>(1000425002): return "VK_STRUCTURE_TYPE_SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM";
+        case static_cast<uint64_t>(1000430000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV";
+        case static_cast<uint64_t>(1000437000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT";
+        case static_cast<uint64_t>(1000458000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT";
+        case static_cast<uint64_t>(1000458001): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_CONTROL_EXT";
+        case static_cast<uint64_t>(1000458002): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000458003): return "VK_STRUCTURE_TYPE_RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000462000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT";
+        case static_cast<uint64_t>(1000462001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000462002): return "VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000462003): return "VK_STRUCTURE_TYPE_SHADER_MODULE_IDENTIFIER_EXT";
+        case static_cast<uint64_t>(1000150007): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR";
+        case static_cast<uint64_t>(1000150000): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR";
+        case static_cast<uint64_t>(1000150002): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR";
+        case static_cast<uint64_t>(1000150003): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR";
+        case static_cast<uint64_t>(1000150004): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR";
+        case static_cast<uint64_t>(1000150005): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR";
+        case static_cast<uint64_t>(1000150006): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR";
+        case static_cast<uint64_t>(1000150009): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_VERSION_INFO_KHR";
+        case static_cast<uint64_t>(1000150010): return "VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR";
+        case static_cast<uint64_t>(1000150011): return "VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR";
+        case static_cast<uint64_t>(1000150012): return "VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR";
+        case static_cast<uint64_t>(1000150013): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR";
+        case static_cast<uint64_t>(1000150014): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000150017): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000150020): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR";
+        case static_cast<uint64_t>(1000347000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR";
+        case static_cast<uint64_t>(1000347001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000150015): return "VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000150016): return "VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000150018): return "VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR";
+        case static_cast<uint64_t>(1000348013): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR";
+        default: return "VkStructureType_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSubgroupFeatureFlagBits>(VkSubgroupFeatureFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SUBGROUP_FEATURE_BASIC_BIT";
+        case static_cast<uint64_t>(2): return "VK_SUBGROUP_FEATURE_VOTE_BIT";
+        case static_cast<uint64_t>(4): return "VK_SUBGROUP_FEATURE_ARITHMETIC_BIT";
+        case static_cast<uint64_t>(8): return "VK_SUBGROUP_FEATURE_BALLOT_BIT";
+        case static_cast<uint64_t>(16): return "VK_SUBGROUP_FEATURE_SHUFFLE_BIT";
+        case static_cast<uint64_t>(32): return "VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT";
+        case static_cast<uint64_t>(64): return "VK_SUBGROUP_FEATURE_CLUSTERED_BIT";
+        case static_cast<uint64_t>(128): return "VK_SUBGROUP_FEATURE_QUAD_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SUBGROUP_FEATURE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(256): return "VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV";
+        default: return "VkSubgroupFeatureFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSubmitFlagBits>(VkSubmitFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SUBMIT_PROTECTED_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_SUBMIT_FLAG_BITS_MAX_ENUM";
+        default: return "VkSubmitFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSubpassContents>(VkSubpassContents type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SUBPASS_CONTENTS_INLINE";
+        case static_cast<uint64_t>(1): return "VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS";
+        case static_cast<uint64_t>(2147483647): return "VK_SUBPASS_CONTENTS_MAX_ENUM";
+        default: return "VkSubpassContents_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSubpassDescriptionFlagBits>(VkSubpassDescriptionFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_SUBPASS_DESCRIPTION_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(4): return "VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM";
+        case static_cast<uint64_t>(8): return "VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM";
+        case static_cast<uint64_t>(16): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_ARM";
+        case static_cast<uint64_t>(32): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_ARM";
+        case static_cast<uint64_t>(64): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM";
+        default: return "VkSubpassDescriptionFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSubpassMergeStatusEXT>(VkSubpassMergeStatusEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SUBPASS_MERGE_STATUS_MERGED_EXT";
+        case static_cast<uint64_t>(1): return "VK_SUBPASS_MERGE_STATUS_DISALLOWED_EXT";
+        case static_cast<uint64_t>(2): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_SIDE_EFFECTS_EXT";
+        case static_cast<uint64_t>(3): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_SAMPLES_MISMATCH_EXT";
+        case static_cast<uint64_t>(4): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_VIEWS_MISMATCH_EXT";
+        case static_cast<uint64_t>(5): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_ALIASING_EXT";
+        case static_cast<uint64_t>(6): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_DEPENDENCIES_EXT";
+        case static_cast<uint64_t>(7): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_INCOMPATIBLE_INPUT_ATTACHMENT_EXT";
+        case static_cast<uint64_t>(8): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_TOO_MANY_ATTACHMENTS_EXT";
+        case static_cast<uint64_t>(9): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_INSUFFICIENT_STORAGE_EXT";
+        case static_cast<uint64_t>(10): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_DEPTH_STENCIL_COUNT_EXT";
+        case static_cast<uint64_t>(11): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_RESOLVE_ATTACHMENT_REUSE_EXT";
+        case static_cast<uint64_t>(12): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_SINGLE_SUBPASS_EXT";
+        case static_cast<uint64_t>(13): return "VK_SUBPASS_MERGE_STATUS_NOT_MERGED_UNSPECIFIED_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_SUBPASS_MERGE_STATUS_EXT_MAX_ENUM";
+        default: return "VkSubpassMergeStatusEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSurfaceCounterFlagBitsEXT>(VkSurfaceCounterFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SURFACE_COUNTER_VBLANK_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_SURFACE_COUNTER_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkSurfaceCounterFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSurfaceTransformFlagBitsKHR>(VkSurfaceTransformFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR";
+        case static_cast<uint64_t>(16): return "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR";
+        case static_cast<uint64_t>(32): return "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR";
+        case static_cast<uint64_t>(64): return "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR";
+        case static_cast<uint64_t>(128): return "VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR";
+        case static_cast<uint64_t>(256): return "VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_SURFACE_TRANSFORM_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkSurfaceTransformFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkSwapchainCreateFlagBitsKHR>(VkSwapchainCreateFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_SWAPCHAIN_CREATE_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR";
+        default: return "VkSwapchainCreateFlagBitsKHR_UNKNOWN";
+      }
+    }
+
+#ifdef VKROOTS_PLATFORM_UNSUPPORTED
+    template <> constexpr const char* enumString<VkSwapchainImageUsageFlagBitsANDROID>(VkSwapchainImageUsageFlagBitsANDROID type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SWAPCHAIN_IMAGE_USAGE_SHARED_BIT_ANDROID";
+        case static_cast<uint64_t>(2147483647): return "VK_SWAPCHAIN_IMAGE_USAGE_FLAG_BITS_ANDROID_MAX_ENUM";
+        default: return "VkSwapchainImageUsageFlagBitsANDROID_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkSystemAllocationScope>(VkSystemAllocationScope type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_SYSTEM_ALLOCATION_SCOPE_COMMAND";
+        case static_cast<uint64_t>(1): return "VK_SYSTEM_ALLOCATION_SCOPE_OBJECT";
+        case static_cast<uint64_t>(2): return "VK_SYSTEM_ALLOCATION_SCOPE_CACHE";
+        case static_cast<uint64_t>(3): return "VK_SYSTEM_ALLOCATION_SCOPE_DEVICE";
+        case static_cast<uint64_t>(4): return "VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE";
+        case static_cast<uint64_t>(2147483647): return "VK_SYSTEM_ALLOCATION_SCOPE_MAX_ENUM";
+        default: return "VkSystemAllocationScope_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkTessellationDomainOrigin>(VkTessellationDomainOrigin type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_TESSELLATION_DOMAIN_ORIGIN_UPPER_LEFT";
+        case static_cast<uint64_t>(1): return "VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT";
+        case static_cast<uint64_t>(2147483647): return "VK_TESSELLATION_DOMAIN_ORIGIN_MAX_ENUM";
+        default: return "VkTessellationDomainOrigin_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkTimeDomainEXT>(VkTimeDomainEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_TIME_DOMAIN_DEVICE_EXT";
+        case static_cast<uint64_t>(1): return "VK_TIME_DOMAIN_CLOCK_MONOTONIC_EXT";
+        case static_cast<uint64_t>(2): return "VK_TIME_DOMAIN_CLOCK_MONOTONIC_RAW_EXT";
+        case static_cast<uint64_t>(3): return "VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_TIME_DOMAIN_EXT_MAX_ENUM";
+        default: return "VkTimeDomainEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkToolPurposeFlagBits>(VkToolPurposeFlagBits type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_TOOL_PURPOSE_VALIDATION_BIT";
+        case static_cast<uint64_t>(2): return "VK_TOOL_PURPOSE_PROFILING_BIT";
+        case static_cast<uint64_t>(4): return "VK_TOOL_PURPOSE_TRACING_BIT";
+        case static_cast<uint64_t>(8): return "VK_TOOL_PURPOSE_ADDITIONAL_FEATURES_BIT";
+        case static_cast<uint64_t>(16): return "VK_TOOL_PURPOSE_MODIFYING_FEATURES_BIT";
+        case static_cast<uint64_t>(2147483647): return "VK_TOOL_PURPOSE_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(32): return "VK_TOOL_PURPOSE_DEBUG_REPORTING_BIT_EXT";
+        case static_cast<uint64_t>(64): return "VK_TOOL_PURPOSE_DEBUG_MARKERS_BIT_EXT";
+        default: return "VkToolPurposeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkValidationCacheHeaderVersionEXT>(VkValidationCacheHeaderVersionEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VALIDATION_CACHE_HEADER_VERSION_ONE_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VALIDATION_CACHE_HEADER_VERSION_EXT_MAX_ENUM";
+        default: return "VkValidationCacheHeaderVersionEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkValidationCheckEXT>(VkValidationCheckEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VALIDATION_CHECK_ALL_EXT";
+        case static_cast<uint64_t>(1): return "VK_VALIDATION_CHECK_SHADERS_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VALIDATION_CHECK_EXT_MAX_ENUM";
+        default: return "VkValidationCheckEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkValidationFeatureDisableEXT>(VkValidationFeatureDisableEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VALIDATION_FEATURE_DISABLE_ALL_EXT";
+        case static_cast<uint64_t>(1): return "VK_VALIDATION_FEATURE_DISABLE_SHADERS_EXT";
+        case static_cast<uint64_t>(2): return "VK_VALIDATION_FEATURE_DISABLE_THREAD_SAFETY_EXT";
+        case static_cast<uint64_t>(3): return "VK_VALIDATION_FEATURE_DISABLE_API_PARAMETERS_EXT";
+        case static_cast<uint64_t>(4): return "VK_VALIDATION_FEATURE_DISABLE_OBJECT_LIFETIMES_EXT";
+        case static_cast<uint64_t>(5): return "VK_VALIDATION_FEATURE_DISABLE_CORE_CHECKS_EXT";
+        case static_cast<uint64_t>(6): return "VK_VALIDATION_FEATURE_DISABLE_UNIQUE_HANDLES_EXT";
+        case static_cast<uint64_t>(7): return "VK_VALIDATION_FEATURE_DISABLE_SHADER_VALIDATION_CACHE_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VALIDATION_FEATURE_DISABLE_EXT_MAX_ENUM";
+        default: return "VkValidationFeatureDisableEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkValidationFeatureEnableEXT>(VkValidationFeatureEnableEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT";
+        case static_cast<uint64_t>(1): return "VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT";
+        case static_cast<uint64_t>(3): return "VK_VALIDATION_FEATURE_ENABLE_DEBUG_PRINTF_EXT";
+        case static_cast<uint64_t>(4): return "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VALIDATION_FEATURE_ENABLE_EXT_MAX_ENUM";
+        default: return "VkValidationFeatureEnableEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkVendorId>(VkVendorId type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(65537): return "VK_VENDOR_ID_VIV";
+        case static_cast<uint64_t>(65538): return "VK_VENDOR_ID_VSI";
+        case static_cast<uint64_t>(65539): return "VK_VENDOR_ID_KAZAN";
+        case static_cast<uint64_t>(65540): return "VK_VENDOR_ID_CODEPLAY";
+        case static_cast<uint64_t>(65541): return "VK_VENDOR_ID_MESA";
+        case static_cast<uint64_t>(65542): return "VK_VENDOR_ID_POCL";
+        case static_cast<uint64_t>(2147483647): return "VK_VENDOR_ID_MAX_ENUM";
+        default: return "VkVendorId_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkVertexInputRate>(VkVertexInputRate type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VERTEX_INPUT_RATE_VERTEX";
+        case static_cast<uint64_t>(1): return "VK_VERTEX_INPUT_RATE_INSTANCE";
+        case static_cast<uint64_t>(2147483647): return "VK_VERTEX_INPUT_RATE_MAX_ENUM";
+        default: return "VkVertexInputRate_UNKNOWN";
+      }
+    }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoCapabilityFlagBitsKHR>(VkVideoCapabilityFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_CAPABILITY_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoCapabilityFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoChromaSubsamplingFlagBitsKHR>(VkVideoChromaSubsamplingFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_CHROMA_SUBSAMPLING_INVALID_BIT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_CHROMA_SUBSAMPLING_MONOCHROME_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_CHROMA_SUBSAMPLING_420_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_CHROMA_SUBSAMPLING_422_BIT_KHR";
+        case static_cast<uint64_t>(8): return "VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_CHROMA_SUBSAMPLING_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoChromaSubsamplingFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoCodecOperationFlagBitsKHR>(VkVideoCodecOperationFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_CODEC_OPERATION_INVALID_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_CODEC_OPERATION_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(65536): return "VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_EXT";
+        case static_cast<uint64_t>(131072): return "VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_EXT";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_EXT";
+        default: return "VkVideoCodecOperationFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoCodingControlFlagBitsKHR>(VkVideoCodingControlFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_CODING_CONTROL_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_CODING_CONTROL_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoCodingControlFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoCodingQualityPresetFlagBitsKHR>(VkVideoCodingQualityPresetFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_CODING_QUALITY_PRESET_NORMAL_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_CODING_QUALITY_PRESET_POWER_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_CODING_QUALITY_PRESET_QUALITY_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_CODING_QUALITY_PRESET_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoCodingQualityPresetFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoComponentBitDepthFlagBitsKHR>(VkVideoComponentBitDepthFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_COMPONENT_BIT_DEPTH_INVALID_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_COMPONENT_BIT_DEPTH_8_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_COMPONENT_BIT_DEPTH_10_BIT_KHR";
+        case static_cast<uint64_t>(16): return "VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_COMPONENT_BIT_DEPTH_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoComponentBitDepthFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoDecodeCapabilityFlagBitsKHR>(VkVideoDecodeCapabilityFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_DECODE_CAPABILITY_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_DECODE_CAPABILITY_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoDecodeCapabilityFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoDecodeFlagBitsKHR>(VkVideoDecodeFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_DECODE_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_DECODE_RESERVED_0_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_DECODE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoDecodeFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoDecodeH264PictureLayoutFlagBitsEXT>(VkVideoDecodeH264PictureLayoutFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_EXT";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_DECODE_H2_64_PICTURE_LAYOUT_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoDecodeH264PictureLayoutFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeCapabilityFlagBitsKHR>(VkVideoEncodeCapabilityFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_CAPABILITY_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_CAPABILITY_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoEncodeCapabilityFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeFlagBitsKHR>(VkVideoEncodeFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RESERVED_0_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoEncodeFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH264CapabilityFlagBitsEXT>(VkVideoEncodeH264CapabilityFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DIRECT_8X8_INFERENCE_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DIRECT_8X8_INFERENCE_DISABLED_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H264_CAPABILITY_SEPARATE_COLOUR_PLANE_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_VIDEO_ENCODE_H264_CAPABILITY_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_VIDEO_ENCODE_H264_CAPABILITY_SCALING_LISTS_BIT_EXT";
+        case static_cast<uint64_t>(32): return "VK_VIDEO_ENCODE_H264_CAPABILITY_HRD_COMPLIANCE_BIT_EXT";
+        case static_cast<uint64_t>(64): return "VK_VIDEO_ENCODE_H264_CAPABILITY_CHROMA_QP_OFFSET_BIT_EXT";
+        case static_cast<uint64_t>(128): return "VK_VIDEO_ENCODE_H264_CAPABILITY_SECOND_CHROMA_QP_OFFSET_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_VIDEO_ENCODE_H264_CAPABILITY_PIC_INIT_QP_MINUS26_BIT_EXT";
+        case static_cast<uint64_t>(512): return "VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_PRED_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_BIPRED_EXPLICIT_BIT_EXT";
+        case static_cast<uint64_t>(2048): return "VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_BIPRED_IMPLICIT_BIT_EXT";
+        case static_cast<uint64_t>(4096): return "VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_PRED_NO_TABLE_BIT_EXT";
+        case static_cast<uint64_t>(8192): return "VK_VIDEO_ENCODE_H264_CAPABILITY_TRANSFORM_8X8_BIT_EXT";
+        case static_cast<uint64_t>(16384): return "VK_VIDEO_ENCODE_H264_CAPABILITY_CABAC_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_VIDEO_ENCODE_H264_CAPABILITY_CAVLC_BIT_EXT";
+        case static_cast<uint64_t>(65536): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_DISABLED_BIT_EXT";
+        case static_cast<uint64_t>(131072): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(262144): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_PARTIAL_BIT_EXT";
+        case static_cast<uint64_t>(524288): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DISABLE_DIRECT_SPATIAL_MV_PRED_BIT_EXT";
+        case static_cast<uint64_t>(1048576): return "VK_VIDEO_ENCODE_H264_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(2097152): return "VK_VIDEO_ENCODE_H264_CAPABILITY_SLICE_MB_COUNT_BIT_EXT";
+        case static_cast<uint64_t>(4194304): return "VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_EXT";
+        case static_cast<uint64_t>(8388608): return "VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_EXT";
+        case static_cast<uint64_t>(16777216): return "VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_64_CAPABILITY_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH264CapabilityFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH264InputModeFlagBitsEXT>(VkVideoEncodeH264InputModeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H264_INPUT_MODE_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H264_INPUT_MODE_SLICE_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H264_INPUT_MODE_NON_VCL_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_64_INPUT_MODE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH264InputModeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH264OutputModeFlagBitsEXT>(VkVideoEncodeH264OutputModeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H264_OUTPUT_MODE_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H264_OUTPUT_MODE_SLICE_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H264_OUTPUT_MODE_NON_VCL_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_64_OUTPUT_MODE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH264OutputModeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH264RateControlStructureFlagBitsEXT>(VkVideoEncodeH264RateControlStructureFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_UNKNOWN_EXT";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_FLAT_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_64_RATE_CONTROL_STRUCTURE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH264RateControlStructureFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265CapabilityFlagBitsEXT>(VkVideoEncodeH265CapabilityFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SEPARATE_COLOUR_PLANE_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SCALING_LISTS_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SAMPLE_ADAPTIVE_OFFSET_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_VIDEO_ENCODE_H265_CAPABILITY_PCM_ENABLE_BIT_EXT";
+        case static_cast<uint64_t>(16): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SPS_TEMPORAL_MVP_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(32): return "VK_VIDEO_ENCODE_H265_CAPABILITY_HRD_COMPLIANCE_BIT_EXT";
+        case static_cast<uint64_t>(64): return "VK_VIDEO_ENCODE_H265_CAPABILITY_INIT_QP_MINUS26_BIT_EXT";
+        case static_cast<uint64_t>(128): return "VK_VIDEO_ENCODE_H265_CAPABILITY_LOG2_PARALLEL_MERGE_LEVEL_MINUS2_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SIGN_DATA_HIDING_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(512): return "VK_VIDEO_ENCODE_H265_CAPABILITY_TRANSFORM_SKIP_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(1024): return "VK_VIDEO_ENCODE_H265_CAPABILITY_TRANSFORM_SKIP_DISABLED_BIT_EXT";
+        case static_cast<uint64_t>(2048): return "VK_VIDEO_ENCODE_H265_CAPABILITY_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT_BIT_EXT";
+        case static_cast<uint64_t>(4096): return "VK_VIDEO_ENCODE_H265_CAPABILITY_WEIGHTED_PRED_BIT_EXT";
+        case static_cast<uint64_t>(8192): return "VK_VIDEO_ENCODE_H265_CAPABILITY_WEIGHTED_BIPRED_BIT_EXT";
+        case static_cast<uint64_t>(16384): return "VK_VIDEO_ENCODE_H265_CAPABILITY_WEIGHTED_PRED_NO_TABLE_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_VIDEO_ENCODE_H265_CAPABILITY_TRANSQUANT_BYPASS_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(65536): return "VK_VIDEO_ENCODE_H265_CAPABILITY_ENTROPY_CODING_SYNC_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(131072): return "VK_VIDEO_ENCODE_H265_CAPABILITY_DEBLOCKING_FILTER_OVERRIDE_ENABLED_BIT_EXT";
+        case static_cast<uint64_t>(262144): return "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILE_PER_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(524288): return "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_PER_TILE_BIT_EXT";
+        case static_cast<uint64_t>(1048576): return "VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_TILE_PER_SLICE_BIT_EXT";
+        case static_cast<uint64_t>(2097152): return "VK_VIDEO_ENCODE_H265_CAPABILITY_SLICE_SEGMENT_CTB_COUNT_BIT_EXT";
+        case static_cast<uint64_t>(4194304): return "VK_VIDEO_ENCODE_H265_CAPABILITY_ROW_UNALIGNED_SLICE_SEGMENT_BIT_EXT";
+        case static_cast<uint64_t>(8388608): return "VK_VIDEO_ENCODE_H265_CAPABILITY_DEPENDENT_SLICE_SEGMENT_BIT_EXT";
+        case static_cast<uint64_t>(16777216): return "VK_VIDEO_ENCODE_H265_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_EXT";
+        case static_cast<uint64_t>(33554432): return "VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_CAPABILITY_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265CapabilityFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265CtbSizeFlagBitsEXT>(VkVideoEncodeH265CtbSizeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_CTB_SIZE_16_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_CTB_SIZE_32_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_CTB_SIZE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265CtbSizeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265InputModeFlagBitsEXT>(VkVideoEncodeH265InputModeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_INPUT_MODE_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_INPUT_MODE_SLICE_SEGMENT_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H265_INPUT_MODE_NON_VCL_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_INPUT_MODE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265InputModeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265OutputModeFlagBitsEXT>(VkVideoEncodeH265OutputModeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_OUTPUT_MODE_FRAME_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_OUTPUT_MODE_SLICE_SEGMENT_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H265_OUTPUT_MODE_NON_VCL_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_OUTPUT_MODE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265OutputModeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265RateControlStructureFlagBitsEXT>(VkVideoEncodeH265RateControlStructureFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_UNKNOWN_EXT";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_FLAT_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_RATE_CONTROL_STRUCTURE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265RateControlStructureFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeH265TransformBlockSizeFlagBitsEXT>(VkVideoEncodeH265TransformBlockSizeFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_4_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_8_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_16_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_H2_65_TRANSFORM_BLOCK_SIZE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkVideoEncodeH265TransformBlockSizeFlagBitsEXT_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeRateControlFlagBitsKHR>(VkVideoEncodeRateControlFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_RATE_CONTROL_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RATE_CONTROL_RESERVED_0_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_RATE_CONTROL_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoEncodeRateControlFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoEncodeRateControlModeFlagBitsKHR>(VkVideoEncodeRateControlModeFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_NONE_BIT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_CBR_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_RATE_CONTROL_MODE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoEncodeRateControlModeFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkVideoSessionCreateFlagBitsKHR>(VkVideoSessionCreateFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIDEO_SESSION_CREATE_DEFAULT_KHR";
+        case static_cast<uint64_t>(1): return "VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_SESSION_CREATE_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkVideoSessionCreateFlagBitsKHR_UNKNOWN";
+      }
+    }
+#endif
+
+    template <> constexpr const char* enumString<VkViewportCoordinateSwizzleNV>(VkViewportCoordinateSwizzleNV type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_VIEWPORT_COORDINATE_SWIZZLE_POSITIVE_X_NV";
+        case static_cast<uint64_t>(1): return "VK_VIEWPORT_COORDINATE_SWIZZLE_NEGATIVE_X_NV";
+        case static_cast<uint64_t>(2): return "VK_VIEWPORT_COORDINATE_SWIZZLE_POSITIVE_Y_NV";
+        case static_cast<uint64_t>(3): return "VK_VIEWPORT_COORDINATE_SWIZZLE_NEGATIVE_Y_NV";
+        case static_cast<uint64_t>(4): return "VK_VIEWPORT_COORDINATE_SWIZZLE_POSITIVE_Z_NV";
+        case static_cast<uint64_t>(5): return "VK_VIEWPORT_COORDINATE_SWIZZLE_NEGATIVE_Z_NV";
+        case static_cast<uint64_t>(6): return "VK_VIEWPORT_COORDINATE_SWIZZLE_POSITIVE_W_NV";
+        case static_cast<uint64_t>(7): return "VK_VIEWPORT_COORDINATE_SWIZZLE_NEGATIVE_W_NV";
+        case static_cast<uint64_t>(2147483647): return "VK_VIEWPORT_COORDINATE_SWIZZLE_NV_MAX_ENUM";
+        default: return "VkViewportCoordinateSwizzleNV_UNKNOWN";
+      }
+    }
+  }
 }
 
 namespace vkroots::tables {

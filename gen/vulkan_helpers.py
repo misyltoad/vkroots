@@ -173,6 +173,7 @@ class VkEnum(object):
     def __init__(self, name, bitwidth, alias=None):
         if not bitwidth in [32, 64]:
             LOGGER.error("unknown bitwidth {0} for {1}".format(bitwidth, name))
+        self.extensions = []
         self.name = name
         self.bitwidth = bitwidth
         self.values = [] if alias == None else alias.values
@@ -1500,6 +1501,13 @@ class VkRegistry(object):
                 # file we pre-populate from <commands> before we check if a command is enabled.
                 if cmd_name in self.funcs:
                     self.funcs[cmd_name].extensions.append(ext_name)
+
+            # Enum
+            vk_types = ext.findall("require/type")
+            for vk_type in vk_types:
+                type_name = vk_type.attrib["name"]
+                if type_name in self.enums:
+                    self.enums[type_name].extensions.append(ext_name)
 
             # Some extensions are not ready or have numbers reserved as a place holder.
             if ext.attrib["supported"] == "disabled":

@@ -51,7 +51,7 @@ class VkGenerator(object):
                 return ext
         return None
 
-    def get_function_platform(self, func):
+    def get_object_platform(self, func):
         platform = None
         for ext in func.extensions:
             ext_info = self.find_ext_info(ext)
@@ -62,8 +62,8 @@ class VkGenerator(object):
                 return None
         return platform
 
-    def get_function_platform_define(self, func):
-        platform = self.get_function_platform(func)
+    def get_object_platform_define(self, func):
+        platform = self.get_object_platform(func)
         if platform != None:
             if platform in self.registry.platforms:
                 return self.registry.platforms[platform]["protect"]
@@ -71,13 +71,13 @@ class VkGenerator(object):
                 return "VKROOTS_PLATFORM_UNSUPPORTED"
         return None
 
-    def print_function_platform_ifdef(self, f, func):
-        plat_define = self.get_function_platform_define(func)
+    def print_object_platform_ifdef(self, f, func):
+        plat_define = self.get_object_platform_define(func)
         if plat_define != None:
             f.write(f"#ifdef {plat_define}\n");
 
-    def print_function_platform_endif(self, f, func):
-        plat_define = self.get_function_platform_define(func)
+    def print_object_platform_endif(self, f, func):
+        plat_define = self.get_object_platform_define(func)
         if plat_define != None:
             f.write(f"#endif\n");
 
@@ -106,12 +106,12 @@ class VkGenerator(object):
         for func in self.registry.funcs.values():
             if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
-                self.print_function_platform_ifdef(f, func);
+                self.print_object_platform_ifdef(f, func);
                 if func.name in ("vkGetInstanceProcAddr", "vkGetDeviceProcAddr"):
                     f.write(f"      {func_name_normalized} = Next{procaddr_normalized};\n")
                 else:
                     f.write(f"      {func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
-                self.print_function_platform_endif(f, func);
+                self.print_object_platform_endif(f, func);
         f.write(f"    }}\n\n")
         f.write( "    mutable uint64_t UserData = 0;\n")
         if dispatch_type == "Instance":
@@ -127,9 +127,9 @@ class VkGenerator(object):
         for func in self.registry.funcs.values():
             if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
-                self.print_function_platform_ifdef(f, func);
+                self.print_object_platform_ifdef(f, func);
                 f.write(f"    PFN_{func.name} {func_name_normalized};\n")
-                self.print_function_platform_endif(f, func);
+                self.print_object_platform_endif(f, func);
         f.write( "  };\n\n")
         if dispatch_type == "PhysicalDevice":
             f.write( "  namespace tables {\n")
@@ -139,7 +139,7 @@ class VkGenerator(object):
     def write_dispatch_funcs(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         for func in self.registry.funcs.values():
             if func.get_func_type() == dispatch_type:
-                self.print_function_platform_ifdef(f, func);
+                self.print_object_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
                 params   = ", ".join([p.definition() for p in func.params])
                 args     = ", ".join([p.name for p in func.params])
@@ -172,7 +172,7 @@ class VkGenerator(object):
                 if func.type != "void":
                     f.write(f"    return ret;\n")
                 f.write("  }\n\n")
-                self.print_function_platform_endif(f, func);
+                self.print_object_platform_endif(f, func);
 
         if dispatch_type == "Instance":
             write_include(f, "vkroots_implicit_createinstance.h")
@@ -189,7 +189,7 @@ class VkGenerator(object):
         f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
             if func.get_func_type() == dispatch_type:
-                self.print_function_platform_ifdef(f, func);
+                self.print_object_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
                 f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {dispatch_type}Overrides& t) {{ &{dispatch_type}Overrides::{func_name_normalized}; }};\n")
                 f.write(f"    if constexpr (Has{func_name_normalized}) {{\n")
@@ -211,7 +211,7 @@ class VkGenerator(object):
                     f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
                     f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
                     f.write( "    }\n")
-                self.print_function_platform_endif(f, func);
+                self.print_object_platform_endif(f, func);
                 f.write( "\n")
         # WHY DOES THIS EXIST????
         # PLEASE TELL ME.
@@ -240,6 +240,25 @@ class VkGenerator(object):
         self.write_dispatch_impls(f, "Instance", "instance",             "Instance", "instance")
         self.write_dispatch_impls(f, "PhysicalDevice", "physicalDevice", "Instance", "instance")
         self.write_dispatch_impls(f, "Device", "device",                 "Device",   "device")
+
+    def write_enum_string_helpers(self, f):
+        f.write( "  namespace helpers {\n")
+        f.write(f"    template <typename EnumType>\n")
+        f.write(f"    constexpr const char* enumString(EnumType type);\n")
+        for enum in self.registry.enums.values():
+            if not enum.is_alias() and enum.bitwidth == 32 and len(enum.values) > 1: # 1 for MAX_ENUM crap
+                f.write(f"\n")
+                self.print_object_platform_ifdef(f, enum)
+                f.write(f"    template <> constexpr const char* enumString<{enum.name}>({enum.name} type) {{\n")
+                f.write(f"      switch(static_cast<uint64_t>(type)) {{\n")
+                for enum_value in enum.values:
+                    if not enum_value.is_alias():
+                        f.write(f"        case static_cast<uint64_t>({enum_value.value}): return \"{enum_value.name}\";\n")
+                f.write(f"        default: return \"{enum.name}_UNKNOWN\";\n")
+                f.write(f"      }}\n")
+                f.write(f"    }}\n")
+                self.print_object_platform_endif(f, enum)
+        f.write( "  }\n")
 
 def download_vk_xml(filename):
     url = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v{0}/xml/vk.xml".format(VK_XML_VERSION)
@@ -280,6 +299,7 @@ def main():
         write_include(f, "vkroots_forwarders.h")
         f.write( "namespace vkroots {\n")
         generator.write_dispatch_classes(f)
+        generator.write_enum_string_helpers(f)
         f.write( "}\n")
         f.write( "\n")
         write_include(f, "vkroots_dispatches.h")
