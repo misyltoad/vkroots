@@ -72,6 +72,15 @@ namespace vkroots::helpers {
     return VK_SUCCESS;
   }
 
+  template <typename SearchType, VkStructureType StructureTypeEnum, typename ChainBaseType>
+  SearchType *chain(ChainBaseType* pNext) {
+    for (VkBaseOutStructure* pBaseOut = reinterpret_cast<VkBaseOutStructure*>(pNext); pBaseOut; pBaseOut = pBaseOut->pNext) {
+      if (pBaseOut->sType == StructureTypeEnum)
+        return reinterpret_cast<SearchType*>(pBaseOut);
+    }
+    return nullptr;
+  }
+
   template <typename Key, typename Data>
   class SynchronizedMapObject {
   public:
