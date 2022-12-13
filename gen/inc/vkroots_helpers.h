@@ -3,33 +3,38 @@ namespace vkroots::helpers {
 
   template <typename Func>
   inline void delimitStringView(std::string_view view, std::string_view delim, Func func) {
-      size_t pos = 0;
-      while ((pos = view.find(delim)) != std::string_view::npos) {
-          std::string_view token = view.substr(0, pos);
-          if (!func(token))
-              return;
-          view = view.substr(pos + 1);
-      }
-      func(view);
+    size_t pos = 0;
+    while ((pos = view.find(delim)) != std::string_view::npos) {
+      std::string_view token = view.substr(0, pos);
+      if (!func(token))
+        return;
+      view = view.substr(pos + 1);
+    }
+    func(view);
   }
 
   template <typename T, typename ArrType, typename Op>
   inline VkResult vkarray(ArrType& arr, uint32_t *pCount, T* pOut, Op func) {
-      const uint32_t count = uint32_t(arr.size());
+    const uint32_t count = uint32_t(arr.size());
 
-      if (!pOut) {
-          *pCount = count;
-          return VK_SUCCESS;
-      }
+    if (!pOut) {
+      *pCount = count;
+      return VK_SUCCESS;
+    }
 
-      const uint32_t outCount = std::min(*pCount, count);
-      for (uint32_t i = 0; i < outCount; i++)
-          func(pOut[i], arr[i]);
+    const uint32_t outCount = std::min(*pCount, count);
+    for (uint32_t i = 0; i < outCount; i++)
+      func(pOut[i], arr[i]);
 
-      *pCount = outCount;
-      return count != outCount
-          ? VK_INCOMPLETE
-          : VK_SUCCESS;
+    *pCount = outCount;
+    return count != outCount
+      ? VK_INCOMPLETE
+      : VK_SUCCESS;
+  }
+
+  template <typename T, typename ArrType>
+  inline VkResult vkarray(ArrType& arr, uint32_t *pCount, T* pOut) {
+      return vkarray(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
   }
 
   template <typename Key, typename Data>
