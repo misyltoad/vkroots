@@ -4472,13 +4472,6 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static PFN_vkVoidFunction wrap_GetDeviceProcAddr(VkDevice device, const char *pName) {
-    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
-    PFN_vkVoidFunction ret = DeviceOverrides::GetDeviceProcAddr(dispatch, device, pName);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceQueue(VkDevice device, uint32_t queueFamilyIndex, uint32_t queueIndex, VkQueue *pQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceQueue(dispatch, device, queueFamilyIndex, queueIndex, pQueue);
@@ -5563,11 +5556,8 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneSupportedDisplaysKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetInstanceProcAddr = requires(const InstanceOverrides& t) { &InstanceOverrides::GetInstanceProcAddr; };
-    if constexpr (HasGetInstanceProcAddr) {
-      if (!std::strcmp("vkGetInstanceProcAddr", name))
-        return (PFN_vkVoidFunction) &wrap_GetInstanceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
-    }
+    if (!std::strcmp("vkGetInstanceProcAddr", name))
+      return (PFN_vkVoidFunction) &GetInstanceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
 
     constexpr bool HasGetPhysicalDeviceDisplayPlanePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceDisplayPlanePropertiesKHR) {
@@ -8046,11 +8036,8 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryOpaqueCaptureAddressKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetDeviceProcAddr = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceProcAddr; };
-    if constexpr (HasGetDeviceProcAddr) {
-      if (!std::strcmp("vkGetDeviceProcAddr", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
-    }
+    if (!std::strcmp("vkGetDeviceProcAddr", name))
+      return (PFN_vkVoidFunction) &GetDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
 
     constexpr bool HasGetDeviceQueue = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceQueue; };
     if constexpr (HasGetDeviceQueue) {

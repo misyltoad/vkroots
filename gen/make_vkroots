@@ -34,6 +34,9 @@ def remove_vk_prefix(name):
         return name[len("vk"):]
     return name
 
+def is_proc_addr_func(name):
+    return name == "vkGetInstanceProcAddr" or name == "vkGetPhysicalDeviceProcAddr" or name == "vkGetDeviceProcAddr"
+
 def write_include(out, filename):
     with open("inc/" + filename, "r") as f:
         contents = f.read()
@@ -138,7 +141,7 @@ class VkGenerator(object):
 
     def write_dispatch_funcs(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         for func in self.registry.funcs.values():
-            if func.get_func_type() == dispatch_type:
+            if func.get_func_type() == dispatch_type and func.name != "vkGetDeviceProcAddr":
                 self.print_object_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
                 params   = ", ".join([p.definition() for p in func.params])
@@ -191,26 +194,30 @@ class VkGenerator(object):
             if func.get_func_type() == dispatch_type:
                 self.print_object_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
-                f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {dispatch_type}Overrides& t) {{ &{dispatch_type}Overrides::{func_name_normalized}; }};\n")
-                f.write(f"    if constexpr (Has{func_name_normalized}) {{\n")
-                # VS is smart enough to make stateless lambdas with the right calling conventions.
-                # if you simply just cast them to the right function pointer type!
-                # Versions which are unused are elimated by the linker.
-                # TODO: Is this enough for MinGW?
-                f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                f.write(f"        return (PFN_vkVoidFunction) &wrap_{func_name_normalized}<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
-                f.write( "    }\n")
-                if func.name == "vkCreateInstance":
-                    f.write( "    else {\n")
+                if is_proc_addr_func(func.name):
+                    f.write(f"    if (!std::strcmp(\"{func.name}\", name))\n")
+                    f.write(f"      return (PFN_vkVoidFunction) &{func_name_normalized}<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                else:
+                    f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {dispatch_type}Overrides& t) {{ &{dispatch_type}Overrides::{func_name_normalized}; }};\n")
+                    f.write(f"    if constexpr (Has{func_name_normalized}) {{\n")
+                    # VS is smart enough to make stateless lambdas with the right calling conventions.
+                    # if you simply just cast them to the right function pointer type!
+                    # Versions which are unused are elimated by the linker.
+                    # TODO: Is this enough for MinGW?
                     f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                    f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                    f.write(f"        return (PFN_vkVoidFunction) &wrap_{func_name_normalized}<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
                     f.write( "    }\n")
-                if func.name == "vkCreateDevice":
-                    f.write( "    else {\n")
-                    # If we don't have any overrides, don't hook this to make a dispatch table.
-                    f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
-                    f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
-                    f.write( "    }\n")
+                    if func.name == "vkCreateInstance":
+                        f.write( "    else {\n")
+                        f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
+                        f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                        f.write( "    }\n")
+                    if func.name == "vkCreateDevice":
+                        f.write( "    else {\n")
+                        # If we don't have any overrides, don't hook this to make a dispatch table.
+                        f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
+                        f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                        f.write( "    }\n")
                 self.print_object_platform_endif(f, func);
                 f.write( "\n")
         # WHY DOES THIS EXIST????
