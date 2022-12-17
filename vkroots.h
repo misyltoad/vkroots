@@ -12723,18 +12723,18 @@ namespace vkroots::helpers {
     using MapKey = Key;
     using MapData = Data;
 
-    static std::optional<SynchronizedMapObject> get(const Key& key) {
+    static SynchronizedMapObject get(const Key& key) {
       std::unique_lock lock{ s_mutex };
       auto iter = s_map.find(key);
       if (iter == s_map.end())
-        return std::nullopt;
-      return SynchronizedMapObject{ iter->second, s_mutex, std::adopt_lock };
+        return SynchronizedMapObject{ nullptr };
+      return SynchronizedMapObject{ iter->second, std::move(lock) };
     }
 
     static SynchronizedMapObject create(const Key& key, Data data) {
       std::unique_lock lock{ s_mutex };
       auto val = s_map.insert(std::make_pair(key, std::move(data)));
-      return SynchronizedMapObject{ val.first->second, s_mutex, std::adopt_lock };
+      return SynchronizedMapObject{ val.first->second, std::move(lock) };
     }
 
     static bool remove(const Key& key) {
@@ -12747,11 +12747,11 @@ namespace vkroots::helpers {
     }
 
     Data* get() {
-      return &m_data;
+      return m_data;
     }
 
     const Data* get() const {
-      return &m_data;
+      return m_data;
     }
 
     Data* operator->() {
@@ -12761,14 +12761,32 @@ namespace vkroots::helpers {
     const Data* operator->() const {
       return get();
     }
+
+    bool has() const {
+      return m_data != nullptr;
+    }
+
+    operator bool() const {
+      return has();
+    }
+
+    void clear() {
+      m_data = nullptr;
+      m_lock = {};
+    }
+
+    SynchronizedMapObject(SynchronizedMapObject&& other)
+      : m_data{ other.m_data }, m_lock{ std::move(other.m_lock) } {
+    }
+
   private:
-    SynchronizedMapObject(Data& data, std::mutex& mutex)
-        : m_data{ data }, m_lock{ mutex } {}
+    SynchronizedMapObject(std::nullptr_t)
+        : m_data{ nullptr }, m_lock{} {}
 
-    SynchronizedMapObject(Data& data, std::mutex& mutex, std::adopt_lock_t adopt) noexcept
-        : m_data{ data }, m_lock{ mutex, adopt } {}
+    SynchronizedMapObject(Data& data, std::unique_lock<std::mutex> lock) noexcept
+        : m_data{ &data }, m_lock{ std::move(lock) } {}
 
-    Data &m_data;
+    Data *m_data;
     std::unique_lock<std::mutex> m_lock;
 
     static std::mutex s_mutex;
