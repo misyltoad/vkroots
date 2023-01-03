@@ -108,6 +108,8 @@ namespace vkroots {
 
     static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance);
     static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device);
+    static inline void DestroyDispatchTable(VkInstance instance);
+    static inline void DestroyDispatchTable(VkDevice device);
   }
 
   struct VkInstanceProcAddrFuncs {
@@ -202,7 +204,8 @@ namespace vkroots {
       DebugReportMessageEXT = (PFN_vkDebugReportMessageEXT) NextGetInstanceProcAddr(instance, "vkDebugReportMessageEXT");
       DestroyDebugReportCallbackEXT = (PFN_vkDestroyDebugReportCallbackEXT) NextGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
       DestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT) NextGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-      DestroyInstance = (PFN_vkDestroyInstance) NextGetInstanceProcAddr(instance, "vkDestroyInstance");
+      DestroyInstanceReal = (PFN_vkDestroyInstance) NextGetInstanceProcAddr(instance, "vkDestroyInstance");
+      DestroyInstance = (PFN_vkDestroyInstance) DestroyInstanceWrapper;
       DestroySurfaceKHR = (PFN_vkDestroySurfaceKHR) NextGetInstanceProcAddr(instance, "vkDestroySurfaceKHR");
       EnumerateDeviceExtensionProperties = (PFN_vkEnumerateDeviceExtensionProperties) NextGetInstanceProcAddr(instance, "vkEnumerateDeviceExtensionProperties");
       EnumerateDeviceLayerProperties = (PFN_vkEnumerateDeviceLayerProperties) NextGetInstanceProcAddr(instance, "vkEnumerateDeviceLayerProperties");
@@ -357,6 +360,14 @@ namespace vkroots {
     PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR GetPhysicalDeviceXlibPresentationSupportKHR;
 #endif
     PFN_vkSubmitDebugUtilsMessageEXT SubmitDebugUtilsMessageEXT;
+  private:
+    PFN_vkDestroyInstance DestroyInstanceReal;
+    static void DestroyInstanceWrapper(VkInstance object, const VkAllocationCallbacks* pAllocator) {
+      auto dispatch = vkroots::tables::LookupInstanceDispatch(object);
+      auto destroyFunc = dispatch->DestroyInstanceReal;
+      vkroots::tables::DestroyDispatchTable(object);
+      destroyFunc(object, pAllocator);
+    }
   };
 
   class VkPhysicalDeviceDispatch {
@@ -479,6 +490,7 @@ namespace vkroots {
     PFN_vkGetWinrtDisplayNV GetWinrtDisplayNV;
 #endif
     PFN_vkReleaseDisplayEXT ReleaseDisplayEXT;
+  private:
   };
 
   namespace tables {
@@ -486,10 +498,15 @@ namespace vkroots {
   }
   class VkDeviceDispatch {
   public:
-    VkDeviceDispatch(PFN_vkGetDeviceProcAddr NextGetDeviceProcAddr, VkDevice device, VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch) {
+    VkDeviceDispatch(PFN_vkGetDeviceProcAddr NextGetDeviceProcAddr, VkDevice device, VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch, const VkDeviceCreateInfo* pCreateInfo) {
       this->PhysicalDevice = PhysicalDevice;
       this->Device = device;
       this->pPhysicalDeviceDispatch = pPhysicalDeviceDispatch;
+      for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {
+        VkDeviceQueueCreateInfo queueInfo = pCreateInfo->pQueueCreateInfos[i];
+        queueInfo.pNext = nullptr;
+        DeviceQueueInfos.push_back(queueInfo);
+      }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       AcquireFullScreenExclusiveModeEXT = (PFN_vkAcquireFullScreenExclusiveModeEXT) NextGetDeviceProcAddr(device, "vkAcquireFullScreenExclusiveModeEXT");
 #endif
@@ -786,7 +803,8 @@ namespace vkroots {
       DestroyDescriptorSetLayout = (PFN_vkDestroyDescriptorSetLayout) NextGetDeviceProcAddr(device, "vkDestroyDescriptorSetLayout");
       DestroyDescriptorUpdateTemplate = (PFN_vkDestroyDescriptorUpdateTemplate) NextGetDeviceProcAddr(device, "vkDestroyDescriptorUpdateTemplate");
       DestroyDescriptorUpdateTemplateKHR = (PFN_vkDestroyDescriptorUpdateTemplateKHR) NextGetDeviceProcAddr(device, "vkDestroyDescriptorUpdateTemplateKHR");
-      DestroyDevice = (PFN_vkDestroyDevice) NextGetDeviceProcAddr(device, "vkDestroyDevice");
+      DestroyDeviceReal = (PFN_vkDestroyDevice) NextGetDeviceProcAddr(device, "vkDestroyDevice");
+      DestroyDevice = (PFN_vkDestroyDevice) DestroyDeviceWrapper;
       DestroyEvent = (PFN_vkDestroyEvent) NextGetDeviceProcAddr(device, "vkDestroyEvent");
       DestroyFence = (PFN_vkDestroyFence) NextGetDeviceProcAddr(device, "vkDestroyFence");
       DestroyFramebuffer = (PFN_vkDestroyFramebuffer) NextGetDeviceProcAddr(device, "vkDestroyFramebuffer");
@@ -1036,6 +1054,7 @@ namespace vkroots {
     VkDevice Device;
     VkPhysicalDevice PhysicalDevice;
     const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;
+    std::vector<VkDeviceQueueCreateInfo> DeviceQueueInfos;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkAcquireFullScreenExclusiveModeEXT AcquireFullScreenExclusiveModeEXT;
 #endif
@@ -1576,6 +1595,14 @@ namespace vkroots {
     PFN_vkWaitSemaphores WaitSemaphores;
     PFN_vkWaitSemaphoresKHR WaitSemaphoresKHR;
     PFN_vkWriteAccelerationStructuresPropertiesKHR WriteAccelerationStructuresPropertiesKHR;
+  private:
+    PFN_vkDestroyDevice DestroyDeviceReal;
+    static void DestroyDeviceWrapper(VkDevice object, const VkAllocationCallbacks* pAllocator) {
+      auto dispatch = vkroots::tables::LookupDeviceDispatch(object);
+      auto destroyFunc = dispatch->DestroyDeviceReal;
+      vkroots::tables::DestroyDispatchTable(object);
+      destroyFunc(object, pAllocator);
+    }
   };
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
@@ -2080,6 +2107,17 @@ namespace vkroots {
     if (ret == VK_SUCCESS)
       tables::CreateDispatchTable(instanceProcAddrFuncs.NextGetInstanceProcAddr, instanceProcAddrFuncs.NextGetPhysicalDeviceProcAddr, *pInstance);
     return ret;
+  }
+
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void implicit_wrap_DestroyInstance(
+          VkInstance             instance,
+    const VkAllocationCallbacks* pAllocator) {
+    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
+    // Implemented in the Dispatch class, goes to DestroyInstanceWrapper.
+    // Make sure we call ours here.
+    dispatch->DestroyInstance(instance, pAllocator);
   }
 
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
@@ -5321,6 +5359,17 @@ namespace vkroots {
     return ret;
   }
 
+
+  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  static void implicit_wrap_DestroyDevice(
+          VkDevice               device,
+    const VkAllocationCallbacks* pAllocator) {
+    const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
+    // Implemented in the Dispatch class, goes to DestroyDeviceWrapper.
+    // Make sure we call ours here.
+    dispatch->DestroyDevice(device, pAllocator);
+  }
+
   template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction GetInstanceProcAddr(VkInstance instance, const char* name) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
@@ -5500,6 +5549,10 @@ namespace vkroots {
     if constexpr (HasDestroyInstance) {
       if (!std::strcmp("vkDestroyInstance", name))
         return (PFN_vkVoidFunction) &wrap_DestroyInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+    else {
+      if (!std::strcmp("vkDestroyInstance", name))
+        return (PFN_vkVoidFunction) &implicit_wrap_DestroyInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::DestroySurfaceKHR; };
@@ -7626,6 +7679,10 @@ namespace vkroots {
     if constexpr (HasDestroyDevice) {
       if (!std::strcmp("vkDestroyDevice", name))
         return (PFN_vkVoidFunction) &wrap_DestroyDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    }
+    else {
+      if (!std::strcmp("vkDestroyDevice", name))
+        return (PFN_vkVoidFunction) &implicit_wrap_DestroyDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyEvent; };
@@ -12619,7 +12676,7 @@ namespace vkroots::tables {
 
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
     auto physicalDeviceDispatch = vkroots::tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    auto deviceDispatch = DeviceDispatches.insert(device, std::make_unique<VkDeviceDispatch>(nextProcAddr, device, physicalDevice, physicalDeviceDispatch));
+    auto deviceDispatch = DeviceDispatches.insert(device, std::make_unique<VkDeviceDispatch>(nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo));
 
     for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {
       const auto &queueInfo = pCreateInfo->pQueueCreateInfos[i];
@@ -12630,6 +12687,46 @@ namespace vkroots::tables {
         QueueDispatches.insert(queue, RawPointer(deviceDispatch));
       }
     }
+  }
+
+  static inline void DestroyDispatchTable(VkInstance instance) {
+    const VkInstanceDispatch* instanceDispatch = InstanceDispatches.find(instance);
+    assert(instanceDispatch);
+    if (!instanceDispatch)
+      return;
+
+    uint32_t physicalDeviceCount;
+    VkResult res = instanceDispatch->EnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr);
+    assert(res == VK_SUCCESS); // Not like we can do anything else with the result lol.
+    if (res == VK_SUCCESS) {
+      std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+      res = instanceDispatch->EnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices.data());
+      assert(res == VK_SUCCESS); // Not like we can do anything else with the result lol.
+      if (res == VK_SUCCESS) {
+        for (VkPhysicalDevice physicalDevice : physicalDevices)
+          PhysicalDeviceDispatches.remove(physicalDevice);
+      }
+    }
+
+    PhysicalDeviceInstanceDispatches.remove(instance);
+    InstanceDispatches.remove(instance);
+  }
+
+  static inline void DestroyDispatchTable(VkDevice device) {
+    const VkDeviceDispatch* deviceDispatch = DeviceDispatches.find(device);
+    assert(deviceDispatch);
+    if (!deviceDispatch)
+      return;
+
+    for (const auto& queueInfo : deviceDispatch->DeviceQueueInfos) {
+      for (uint32_t i = 0; i < queueInfo.queueCount; i++) {
+        VkQueue queue;
+        deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, i, &queue);
+        QueueDispatches.remove(queue);
+      }
+    }
+
+    DeviceDispatches.remove(device);
   }
 
 }

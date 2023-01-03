@@ -80,6 +80,8 @@ namespace vkroots {
 
     static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance);
     static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device);
+    static inline void DestroyDispatchTable(VkInstance instance);
+    static inline void DestroyDispatchTable(VkDevice device);
   }
 
   struct VkInstanceProcAddrFuncs {
