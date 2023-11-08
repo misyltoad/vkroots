@@ -25,7 +25,7 @@ import argparse
 import os
 import urllib.request
 
-VK_XML_VERSION = "1.3.221"
+VK_XML_VERSION = "1.3.253"
 
 from vulkan_helpers import *
 
@@ -112,6 +112,8 @@ class VkGenerator(object):
             f.write(f"        DeviceQueueInfos.push_back(queueInfo);\n")
             f.write(f"      }}\n")
         for func in self.registry.funcs.values():
+            if not func.is_required():
+                continue
             if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
                 self.print_object_platform_ifdef(f, func);
@@ -137,6 +139,8 @@ class VkGenerator(object):
             f.write( "    const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;\n")
             f.write( "    std::vector<VkDeviceQueueCreateInfo> DeviceQueueInfos;\n") # mutable hack TODO: remove
         for func in self.registry.funcs.values():
+            if not func.is_required():
+                continue
             if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
                 self.print_object_platform_ifdef(f, func);
@@ -159,6 +163,8 @@ class VkGenerator(object):
 
     def write_dispatch_funcs(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         for func in self.registry.funcs.values():
+            if not func.is_required():
+                continue
             if func.get_func_type() == dispatch_type and func.name != "vkGetDeviceProcAddr":
                 self.print_object_platform_ifdef(f, func);
                 func_name_normalized = remove_vk_prefix(func.name)
@@ -215,8 +221,10 @@ class VkGenerator(object):
         f.write(f"  static PFN_vkVoidFunction Get{dispatch_type}ProcAddr(Vk{procaddr_type} {procaddr_name}, const char* name) {{\n")
         f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
+            if not func.is_required():
+                continue
             if func.get_func_type() == dispatch_type:
-                self.print_object_platform_ifdef(f, func);
+                self.print_object_platform_ifdef(f, func)
                 func_name_normalized = remove_vk_prefix(func.name)
                 if is_proc_addr_func(func.name):
                     f.write(f"    if (!std::strcmp(\"{func.name}\", name))\n")
@@ -287,6 +295,8 @@ class VkGenerator(object):
         f.write(f"    template <typename EnumType>\n")
         f.write(f"    constexpr const char* enumString(EnumType type);\n")
         for enum in self.registry.enums.values():
+            if not enum.required:
+                continue
             if not enum.is_alias() and enum.bitwidth == 32 and len(enum.values) > 1: # 1 for MAX_ENUM crap
                 f.write(f"\n")
                 self.print_object_platform_ifdef(f, enum)

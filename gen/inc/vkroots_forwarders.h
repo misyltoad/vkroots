@@ -15,8 +15,17 @@ namespace vkroots {
   };
 
   template <VkStructureType SType, typename Type, typename AnyStruct>
-  Type* FindInChain(AnyStruct* obj) {
+  const Type* FindInChain(const AnyStruct* obj) {
     for (const VkStructHeader* header = reinterpret_cast<const VkStructHeader*>(obj); header; header = reinterpret_cast<const VkStructHeader*>(header->pNext)) {
+      if (header->sType == SType)
+        return reinterpret_cast<const Type*>(header);
+    }
+    return nullptr;
+  }
+
+  template <VkStructureType SType, typename Type, typename AnyStruct>
+  Type* FindInChainMutable(AnyStruct* obj) {
+    for (VkStructHeader* header = reinterpret_cast<VkStructHeader*>(obj); header; header = reinterpret_cast<VkStructHeader*>(header->pNext)) {
       if (header->sType == SType)
         return reinterpret_cast<Type*>(header);
     }

@@ -64,6 +64,9 @@ class Direction(Enum):
     OUTPUT = 2
     INPUT_OUTPUT = 3
 
+def api_is_vulkan(obj):
+    return "vulkan" in obj.get("api", "vulkan").split(",")
+
 class VkBaseType(object):
     def __init__(self, name, _type, alias=None, requires=None):
         """ Vulkan base type class.
@@ -113,6 +116,9 @@ class VkDefine(object):
 
     @staticmethod
     def from_xml(define):
+        if not api_is_vulkan(define):
+            return None
+
         name_elem = define.find("name")
 
         if name_elem is None:
@@ -191,6 +197,9 @@ class VkEnum(object):
 
     @staticmethod
     def from_xml(enum):
+        if not api_is_vulkan(enum):
+            return None
+
         name = enum.attrib.get("name")
         bitwidth = int(enum.attrib.get("bitwidth", "32"))
         result = VkEnum(name, bitwidth)
@@ -331,6 +340,10 @@ class VkFunction(object):
         self.params = params
         self.alias = alias
 
+        # Required is set while parsing which APIs and types are required
+        # and is used by the code generation.
+        self.required = False
+
     @staticmethod
     def from_alias(command, alias):
         """ Create VkFunction from an alias command.
@@ -342,6 +355,8 @@ class VkFunction(object):
         Returns:
             VkFunction
         """
+        if not api_is_vulkan(command):
+            return None
         func_name = command.attrib.get("name")
         func_type = alias.type
         params = alias.params
@@ -350,6 +365,8 @@ class VkFunction(object):
 
     @staticmethod
     def from_xml(command, types):
+        if not api_is_vulkan(command):
+            return None
         proto = command.find("proto")
         func_name = proto.find("name").text
         func_type = proto.find("type").text
@@ -357,7 +374,8 @@ class VkFunction(object):
         params = []
         for param in command.findall("param"):
             vk_param = VkParam.from_xml(param, types)
-            params.append(vk_param)
+            if vk_param:
+                params.append(vk_param)
 
         return VkFunction(_type=func_type, name=func_name, params=params)
 
@@ -403,6 +421,9 @@ class VkFunction(object):
         if not self.is_core_func() and self.params[0].type == "VkPhysicalDevice":
             return True
         return False
+
+    def is_required(self):
+        return self.required
 
     def get_func_type(self):
         if self.is_instance_func():
@@ -461,6 +482,9 @@ class VkFunctionPointer(object):
 
     @staticmethod
     def from_xml(funcpointer):
+        if not api_is_vulkan(funcpointer):
+            return None
+
         members = []
         begin = None
 
@@ -541,6 +565,8 @@ class VkHandle(object):
 
     @staticmethod
     def from_xml(handle):
+        if not api_is_vulkan(handle):
+            return None
         name = handle.find("name").text
         _type = handle.find("type").text
         parent = handle.attrib.get("parent") # Most objects have a parent e.g. VkQueue has VkDevice.
@@ -627,36 +653,258 @@ class VkHandle(object):
     def is_wrapped(self):
         return self.native_handle("test") is not None
 
-class VkMember(object):
-    def __init__(self, const=False, struct_fwd_decl=False,_type=None, pointer=None, name=None, array_len=None,
-            dyn_array_len=None, optional=False, values=None):
+class VkVariable(object):
+    def __init__(self, const=False, type_info=None, type=None, name=None, pointer=None, array_len=None,
+                 dyn_array_len=None, object_type=None, optional=False, returnedonly=False, parent=None,
+                 selection=None, selector=None):
         self.const = const
-        self.struct_fwd_decl = struct_fwd_decl
+        self.type_info = type_info
+        self.type = type
         self.name = name
+        self.parent = parent
+        self.object_type = object_type
+        self.optional = optional
+        self.returnedonly = returnedonly
+        self.selection = selection
+        self.selector = selector
+
         self.pointer = pointer
-        self.type = _type
-        self.type_info = None
         self.array_len = array_len
         self.dyn_array_len = dyn_array_len
-        self.optional = optional
-        self.values = values
+        self.pointer_array = False
+        if isinstance(dyn_array_len, str):
+            i = dyn_array_len.find(",")
+            if i != -1:
+                self.dyn_array_len = dyn_array_len[0:i]
+                self.pointer_array = True
+
+        if type_info:
+            self.set_type_info(type_info)
 
     def __eq__(self, other):
-        """ Compare member based on name against a string.
+        """ Compare member based on name against a string. """
+        return self.name == other
 
-        This method is for convenience by VkStruct, which holds a number of members and needs quick checking
-        if certain members exist.
+    def set_type_info(self, type_info):
+        """ Helper function to set type information from the type registry.
+        This is needed, because not all type data is available at time of
+        parsing.
+        """
+        self.type_info = type_info
+        self.handle = type_info["data"] if type_info["category"] == "handle" else None
+        self.struct = type_info["data"] if type_info["category"] == "struct" or type_info["category"] == "union" else None
+
+    def get_dyn_array_len(self, prefix, conv):
+        if isinstance(self.dyn_array_len, int):
+            return self.dyn_array_len
+
+        len_str = self.dyn_array_len
+        parent = self.parent
+        len = prefix
+
+        # check if length is a member of another struct (for example pAllocateInfo->commandBufferCount)
+        i = len_str.find("->")
+        if i != -1:
+            var = parent[parent.index(len_str[0:i])]
+            len_str = len_str[i+2:]
+            len = "({0})->".format(var.value(len, conv))
+            parent = var.struct
+
+        if len_str in parent:
+            var = parent[parent.index(len_str)]
+            len = var.value(len, conv);
+            if var.is_pointer():
+                len = "*" + len
+        else:
+            len += len_str
+
+        if isinstance(self.parent, VkStruct) and self.parent.name in MEMBER_LENGTH_EXPRESSIONS:
+            exprs = MEMBER_LENGTH_EXPRESSIONS[self.parent.name]
+            if self.name in exprs:
+                len = exprs[self.name].format(struct=prefix, len=len)
+
+        return len
+
+    def is_const(self):
+        return self.const
+
+    def is_pointer(self):
+        return self.pointer is not None
+
+    def is_pointer_size(self):
+        if self.type in ["size_t", "HWND", "HINSTANCE"]:
+            return True
+        if self.is_handle() and self.handle.is_dispatchable():
+            return True
+        return False
+
+    def is_handle(self):
+        return self.handle is not None
+
+    def is_struct(self):
+        return self.type_info["category"] == "struct"
+
+    def is_union(self):
+        return self.type_info["category"] == "union"
+
+    def is_bitmask(self):
+        return self.type_info["category"] == "bitmask"
+
+    def is_enum(self):
+        return self.type_info["category"] == "enum"
+
+    def is_dynamic_array(self):
+        """ Returns if the member is an array element.
+        Vulkan uses this for dynamically sized arrays for which
+        there is a 'count' parameter.
+        """
+        return self.dyn_array_len is not None
+
+    def is_static_array(self):
+        """ Returns if the member is an array.
+        Vulkan uses this often for fixed size arrays in which the
+        length is part of the member.
+        """
+        return self.array_len is not None
+
+    def is_generic_handle(self):
+        """ Returns True if the member is a unit64_t containing
+        a handle with a separate object type
+        """
+        return self.object_type != None and self.type == "uint64_t"
+
+    def needs_alignment(self):
+        """ Check if this member needs alignment for 64-bit data.
+        Various structures need alignment on 64-bit variables due
+        to compiler differences on 32-bit between Win32 and Linux.
         """
 
-        return self.name == other
+        if self.is_pointer():
+            return False
+        elif self.type == "size_t":
+            return False
+        elif self.type in ["uint64_t", "VkDeviceAddress", "VkDeviceSize"]:
+            return True
+        elif self.is_bitmask():
+            return self.type_info["data"].type == "VkFlags64"
+        elif self.is_enum():
+            return self.type_info["data"].bitwidth == 64
+        elif self.is_struct() or self.is_union():
+            return self.type_info["data"].needs_alignment()
+        elif self.is_handle():
+            # Dispatchable handles are pointers to objects, while
+            # non-dispatchable are uint64_t and hence need alignment.
+            return not self.handle.is_dispatchable()
+        return False
+
+    def needs_unwrapping(self):
+        """ Returns if variable needs unwrapping of handle. """
+
+        if self.is_struct():
+            return self.struct.needs_unwrapping()
+
+        if self.is_handle():
+            return self.handle.needs_unwrapping()
+
+        if self.is_generic_handle():
+            return True
+
+        return False
+
+    def needs_alloc(self, conv, unwrap):
+        """ Returns True if conversion needs allocation """
+        if self.is_dynamic_array():
+            return self.needs_conversion(conv, unwrap, Direction.INPUT, False) \
+                or self.needs_conversion(conv, unwrap, Direction.OUTPUT, False)
+
+        return (self.is_struct() or (self.is_union() and self.selector)) and self.struct.needs_alloc(conv, unwrap)
+
+    def needs_win32_type(self):
+        return (self.is_struct() or (self.is_union() and self.selector)) and self.struct.needs_win32_type()
+
+    def get_conversions(self, unwrap, parent_const=False):
+        """ Get a list of conversions required for this parameter if any.
+        Parameters which are structures may require conversion between win32
+        and the host platform. This function returns a list of conversions
+        required.
+        """
+
+        conversions = []
+
+        # Collect any member conversions first, so we can guarantee
+        # those functions will be defined prior to usage by the
+        # 'parent' param requiring conversion.
+        if self.is_struct() or (self.is_union() and self.selector):
+            struct = self.struct
+            is_const = self.is_const() if self.is_pointer() else parent_const
+
+            conversions.extend(struct.get_conversions(unwrap, is_const))
+
+            for conv in [False, True]:
+                if struct.needs_conversion(conv, unwrap, Direction.INPUT, is_const):
+                    conversions.append(StructConversionFunction(struct, Direction.INPUT, conv, unwrap, is_const))
+                if struct.needs_conversion(conv, unwrap, Direction.OUTPUT, is_const):
+                    conversions.append(StructConversionFunction(struct, Direction.OUTPUT, conv, unwrap, is_const))
+
+        if self.is_static_array() or self.is_dynamic_array():
+            for conv in [False, True]:
+                if self.needs_conversion(conv, unwrap, Direction.INPUT, parent_const):
+                    conversions.append(ArrayConversionFunction(self, Direction.INPUT, conv, unwrap))
+                if self.needs_conversion(conv, unwrap, Direction.OUTPUT, parent_const):
+                    conversions.append(ArrayConversionFunction(self, Direction.OUTPUT, conv, unwrap))
+
+        return conversions
+
+    def needs_ptr32_type(self):
+        """ Check if variable needs to use PTR32 type. """
+
+        return self.is_pointer() or self.is_pointer_size() or self.is_static_array()
+
+    def value(self, prefix, conv):
+        """ Returns code accessing member value, casting 32-bit pointers when needed. """
+
+        if not conv or not self.needs_ptr32_type() or (not self.is_pointer() and self.type == "size_t"):
+            return prefix + self.name
+
+        cast_type = ""
+        if self.const:
+            cast_type += "const "
+
+        if self.pointer_array or ((self.is_pointer() or self.is_static_array()) and self.is_pointer_size()):
+            cast_type += "PTR32 *"
+        else:
+            cast_type += self.type
+            if self.needs_win32_type():
+                cast_type += "32"
+
+            if self.is_pointer():
+                cast_type += " {0}".format(self.pointer)
+            elif self.is_static_array():
+                cast_type += " *"
+
+        return "({0})UlongToPtr({1}{2})".format(cast_type, prefix, self.name)
+
+class VkMember(VkVariable):
+    def __init__(self, const=False, struct_fwd_decl=False,_type=None, pointer=None, name=None, array_len=None,
+                 dyn_array_len=None, optional=False, values=None, object_type=None, bit_width=None,
+                 returnedonly=False, parent=None, selection=None, selector=None):
+        VkVariable.__init__(self, const=const, type=_type, name=name, pointer=pointer, array_len=array_len,
+                            dyn_array_len=dyn_array_len, object_type=object_type, optional=optional,
+                            returnedonly=returnedonly, parent=parent, selection=selection, selector=selector)
+        self.struct_fwd_decl = struct_fwd_decl
+        self.values = values
+        self.bit_width = bit_width
 
     def __repr__(self):
         return "{0} {1} {2} {3} {4} {5} {6}".format(self.const, self.struct_fwd_decl, self.type, self.pointer,
                 self.name, self.array_len, self.dyn_array_len)
 
     @staticmethod
-    def from_xml(member):
+    def from_xml(member, returnedonly, parent):
         """ Helper function for parsing a member tag within a struct or union. """
+
+        if not api_is_vulkan(member):
+            return None
 
         name_elem = member.find("name")
         type_elem = member.find("type")
@@ -666,6 +914,7 @@ class VkMember(object):
         member_type = None
         pointer = None
         array_len = None
+        bit_width = None
 
         values = member.get("values")
 
@@ -709,15 +958,80 @@ class VkMember(object):
                 # Remove brackets around length
                 array_len = name_elem.tail.strip("[]")
 
-        return VkMember(const=const, struct_fwd_decl=struct_fwd_decl, _type=member_type, pointer=pointer, name=name_elem.text,
-                array_len=array_len, dyn_array_len=dyn_array_len, optional=optional, values=values)
+        object_type = member.get("objecttype", None)
 
-    def copy(self, input, output, direction):
-        """ Helper method for use by conversion logic to generate a C-code statement to copy this member. """
+        # Some members are bit field values:
+        # <member><type>uint32_t</type> <name>mask</name>:8</member>
+        if name_elem.tail and name_elem.tail[0] == ':':
+            LOGGER.debug("Found bit field")
+            bit_width = int(name_elem.tail[1:])
 
-        if self.is_static_array():
+        selection = member.get("selection").split(',') if member.get("selection") else None
+        selector = member.get("selector", None)
+
+        return VkMember(const=const, struct_fwd_decl=struct_fwd_decl, _type=member_type, pointer=pointer,
+                        name=name_elem.text, array_len=array_len, dyn_array_len=dyn_array_len, optional=optional,
+                        values=values, object_type=object_type, bit_width=bit_width, returnedonly=returnedonly,
+                        parent=parent, selection=selection, selector=selector)
+
+    def copy(self, input, output, direction, conv, unwrap):
+        """ Helper method for use by conversion logic to generate a C-code statement to copy this member.
+            - `conv` indicates whether the statement is in a struct alignment conversion path. """
+
+        win_type = "win32" if conv else "win64"
+        if self.needs_conversion(conv, unwrap, direction, False):
+            if self.is_dynamic_array():
+                # Array length is either a variable name (string) or an int.
+                count = self.get_dyn_array_len(input, conv)
+                host_part = "host" if unwrap else "unwrapped_host"
+                pointer_part = "pointer_" if self.pointer_array else ""
+                if direction == Direction.OUTPUT:
+                    return "convert_{2}_{7}array_{6}_to_{5}({3}{1}, {0}, {4});\n".format(
+                        self.value(output, conv), self.name, self.type, input, count, win_type,
+                        host_part, pointer_part)
+                else:
+                    return "{0}{1} = convert_{2}_{7}array_{5}_to_{6}(ctx, {3}, {4});\n".format(
+                        output, self.name, self.type, self.value(input, conv), count, win_type,
+                        host_part, pointer_part)
+            elif self.is_static_array():
+                count = self.array_len
+                if direction == Direction.OUTPUT:
+                    # Needed by VkMemoryHeap.memoryHeaps
+                    host_part = "host" if unwrap else "unwrapped_host"
+                    return "convert_{0}_array_{6}_to_{5}({2}{1}, {3}{1}, {4});\n".format(
+                        self.type, self.name, input, output, count, win_type, host_part)
+                else:
+                    # Nothing needed this yet.
+                    LOGGER.warn("TODO: implement copying of static array for {0}.{1}".format(self.type, self.name))
+            elif self.is_handle() and self.needs_unwrapping():
+                handle = self.type_info["data"]
+                if direction == Direction.OUTPUT:
+                    LOGGER.err("OUTPUT parameter {0}.{1} cannot be unwrapped".format(self.type, self.name))
+                elif self.optional:
+                    return "{0}{1} = {2} ? {3} : 0;\n".format(output, self.name,
+                        self.value(input, conv), handle.driver_handle(self.value(input, conv)))
+                else:
+                    return "{0}{1} = {2};\n".format(output, self.name, handle.driver_handle(self.value(input, conv)))
+            elif self.is_generic_handle():
+                if direction == Direction.OUTPUT:
+                    LOGGER.err("OUTPUT parameter {0}.{1} cannot be unwrapped".format(self.type, self.name))
+                else:
+                    return "{0}{1} = wine_vk_unwrap_handle({2}{3}, {2}{1});\n".format(output, self.name, input, self.object_type)
+            else:
+                selector_part = ", {0}{1}".format(input, self.selector) if self.selector else ""
+                if direction == Direction.OUTPUT:
+                    return "convert_{0}_host_to_{4}(&{2}{1}, &{3}{1}{5});\n".format(self.type, self.name, input, output, win_type, selector_part)
+                else:
+                    ctx_param = "ctx, " if self.needs_alloc(conv, unwrap) else ""
+                    host_part = "host" if unwrap else "unwrapped_host"
+                    return "convert_{0}_{4}_to_{6}({5}&{2}{1}, &{3}{1}{7});\n".format(self.type, self.name, input, output, win_type, ctx_param, host_part, selector_part)
+        elif self.is_static_array():
             bytes_count = "{0} * sizeof({1})".format(self.array_len, self.type)
             return "memcpy({0}{1}, {2}{1}, {3});\n".format(output, self.name, input, bytes_count)
+        elif direction == Direction.INPUT:
+            return "{0}{1} = {2};\n".format(output, self.name, self.value(input, conv))
+        elif conv and direction == Direction.OUTPUT and self.is_pointer():
+            return "{0}{1} = PtrToUlong({2}{1});\n".format(output, self.name, input)
         else:
             return "{0}{1} = {2}{1};\n".format(output, self.name, input)
 
@@ -729,6 +1043,12 @@ class VkMember(object):
             conv (bool, optional): Enable conversion if a type needs it. This appends '_host' to the name.
         """
 
+        if conv and (self.is_pointer() or self.is_pointer_size()):
+            text = "PTR32 " + self.name
+            if self.is_static_array():
+                text += "[{0}]".format(self.array_len)
+            return text
+
         text = ""
         if self.is_const():
             text += "const "
@@ -736,59 +1056,75 @@ class VkMember(object):
         if self.is_struct_forward_declaration():
             text += "struct "
 
-        if conv and self.is_struct():
-            text += "{0}_host".format(self.type)
-        else:
-            text += self.type
+        text += self.type
+        if conv and self.needs_win32_type():
+            text += "32"
 
         if self.is_pointer():
             text += " {0}{1}".format(self.pointer, self.name)
         else:
-            text += " " + self.name
+            if align and self.needs_alignment():
+                if conv:
+                    text += " DECLSPEC_ALIGN(8) " + self.name
+                else:
+                    text += " WINE_VK_ALIGN(8) " + self.name
+            else:
+                text += " " + self.name
 
         if self.is_static_array():
             text += "[{0}]".format(self.array_len)
 
+        if self.is_bit_field():
+            text += ":{}".format(self.bit_width)
+
         return text
-
-    def is_const(self):
-        return self.const
-
-    def is_dynamic_array(self):
-        """ Returns if the member is an array element.
-        Vulkan uses this for dynamically sized arrays for which
-        there is a 'count' parameter.
-        """
-        return self.dyn_array_len is not None
-
-    def is_handle(self):
-        return self.type_info["category"] == "handle"
-
-    def is_pointer(self):
-        return self.pointer is not None
-
-    def is_static_array(self):
-        """ Returns if the member is an array.
-        Vulkan uses this often for fixed size arrays in which the
-        length is part of the member.
-        """
-        return self.array_len is not None
-
-    def is_struct(self):
-        return self.type_info["category"] == "struct"
 
     def is_struct_forward_declaration(self):
         return self.struct_fwd_decl
 
-    def is_union(self):
-        return self.type_info["category"] == "union"
+    def is_bit_field(self):
+        return self.bit_width is not None
 
-    def set_type_info(self, type_info):
-        """ Helper function to set type information from the type registry.
-        This is needed, because not all type data is available at time of
-        parsing.
-        """
-        self.type_info = type_info
+    def needs_conversion(self, conv, unwrap, direction, struct_const):
+        """ Check if member needs conversion. """
+
+        # we can't convert unions if we don't have a selector
+        if self.is_union() and not self.selector:
+            return False
+
+        is_const = self.is_const() if self.is_pointer() else struct_const
+
+        # const members don't needs output conversion unless they are structs with non-const pointers
+        if direction == Direction.OUTPUT and is_const and not self.is_struct():
+            return False
+
+        if direction == Direction.INPUT:
+            # returnedonly members don't needs input conversions
+            if not self.is_pointer() and self.returnedonly:
+                return False
+            # pointer arrays always need input conversion
+            if conv and self.is_dynamic_array() and self.pointer_array:
+                return True
+
+        if self.is_handle():
+            if unwrap and self.handle.is_wrapped():
+                return True
+            if conv and self.handle.is_dispatchable():
+                return True
+        elif self.is_generic_handle():
+            if unwrap:
+                return True
+        elif self.is_struct() or self.is_union():
+            if self.struct.needs_conversion(conv, unwrap, direction, is_const):
+                return True
+
+        # if pointer member needs output conversion, it also needs input conversion
+        # to allocate the pointer
+        if direction == Direction.INPUT and self.is_pointer() and \
+           self.needs_conversion(conv, unwrap, Direction.OUTPUT, struct_const):
+            return True
+
+        return False
 
 
 class VkParam(object):
@@ -814,6 +1150,9 @@ class VkParam(object):
     @staticmethod
     def from_xml(param, types):
         """ Helper function to create VkParam from xml. """
+
+        if not api_is_vulkan(param):
+            return None
 
         # Parameter parsing is slightly tricky. All the data is contained within
         # a param tag, but some data is within subtags while others are text
@@ -1079,6 +1418,9 @@ class VkStruct(Sequence):
 
     @staticmethod
     def from_xml(struct):
+        if not api_is_vulkan(struct):
+            return None
+
         # Unions and structs are the same parsing wise, but we need to
         # know which one we are dealing with later on for code generation.
         union = True if struct.attrib["category"] == "union" else False
@@ -1089,15 +1431,28 @@ class VkStruct(Sequence):
         # marked as 'returnedonly'.
         returnedonly = True if struct.attrib.get("returnedonly") else False
 
+        # Those structs seem to be broken in spec, they are specified as
+        # returned only, but documented as input structs.
+        if name in ["VkSubpassShadingPipelineCreateInfoHUAWEI",
+                    "VkPipelineShaderStageRequiredSubgroupSizeCreateInfo"]:
+            returnedonly = False
+
+        # Those structs don't have returnedonly in spec, but they could (should?).
+        if name in ["VkSurfaceCapabilitiesPresentBarrierNV",
+                    "VkCooperativeMatrixPropertiesNV",
+                    "VkPerformanceValueINTEL"]:
+            returnedonly = True
+
         structextends = struct.attrib.get("structextends")
         structextends = structextends.split(",") if structextends else []
 
-        members = []
+        s = VkStruct(name, [], returnedonly, structextends, union=union)
         for member in struct.findall("member"):
-            vk_member = VkMember.from_xml(member)
-            members.append(vk_member)
+            vk_member = VkMember.from_xml(member, returnedonly, s)
+            if vk_member:
+                s.members.append(vk_member)
 
-        return VkStruct(name, members, returnedonly, structextends, union=union)
+        return s
 
     @staticmethod
     def decouple_structs(structs):
@@ -1350,13 +1705,15 @@ class VkRegistry(object):
                 continue
 
             func = VkFunction.from_xml(command, self.types)
-            funcs[func.name] = func
+            if func:
+                funcs[func.name] = func
 
         for command in alias_commands:
             alias_name = command.attrib.get("alias")
             alias = funcs[alias_name]
             func = VkFunction.from_alias(command, alias)
-            funcs[func.name] = func
+            if func:
+                funcs[func.name] = func
 
         # To make life easy for the code generation, separate all function
         # calls out in the 4 types of Vulkan functions:
@@ -1509,8 +1866,9 @@ class VkRegistry(object):
                 if type_name in self.enums:
                     self.enums[type_name].extensions.append(ext_name)
 
-            # Some extensions are not ready or have numbers reserved as a place holder.
-            if ext.attrib["supported"] == "disabled":
+            # Some extensions are not ready or have numbers reserved as a place holder
+            # or are only supported for VulkanSC.
+            if not "vulkan" in ext.attrib["supported"].split(","):
                 LOGGER.debug("Skipping disabled extension: {0}".format(ext_name))
                 skipped_exts.append(ext_name)
                 return
@@ -1588,6 +1946,8 @@ class VkRegistry(object):
         """ Parse the feature section, which describes Core commands and types needed. """
 
         for feature in root.findall("./feature"):
+            if not api_is_vulkan(feature):
+                continue
             feature_name = feature.attrib["name"]
             for require in feature.findall("require"):
                 LOGGER.info("Including features for {0}".format(require.attrib.get("comment")))
@@ -1652,9 +2012,15 @@ class VkRegistry(object):
                 _type = None
                 if not t.find("type") is None:
                     _type = t.find("type").text
+                    tail = t.find("type").tail
+                    if tail is not None:
+                        _type += tail.strip()
                 basetype = VkBaseType(name, _type)
-                base_types.append(basetype)
-                type_info["data"] = basetype
+                if basetype:
+                    base_types.append(basetype)
+                    type_info["data"] = basetype
+                else:
+                    continue
 
             # Basic C types don't need us to define them, but we do need data for them
             if type_info["requires"] == "vk_platform":
@@ -1675,8 +2041,11 @@ class VkRegistry(object):
 
             if type_info["category"] == "define":
                 define = VkDefine.from_xml(t)
-                defines.append(define)
-                type_info["data"] = define
+                if define:
+                    defines.append(define)
+                    type_info["data"] = define
+                else:
+                    continue
 
             if type_info["category"] == "enum":
                 name = t.attrib.get("name")
@@ -1692,13 +2061,19 @@ class VkRegistry(object):
 
             if type_info["category"] == "funcpointer":
                 funcpointer = VkFunctionPointer.from_xml(t)
-                funcpointers.append(funcpointer)
-                type_info["data"] = funcpointer
+                if funcpointer:
+                    funcpointers.append(funcpointer)
+                    type_info["data"] = funcpointer
+                else:
+                    continue
 
             if type_info["category"] == "handle":
                 handle = VkHandle.from_xml(t)
-                handles.append(handle)
-                type_info["data"] = handle
+                if handle:
+                    handles.append(handle)
+                    type_info["data"] = handle
+                else:
+                    continue
 
             if type_info["category"] in ["struct", "union"]:
                 # We store unions among structs as some structs depend
@@ -1706,8 +2081,11 @@ class VkRegistry(object):
                 # generation anyway. The official Vulkan scripts use
                 # a similar kind of hack.
                 struct = VkStruct.from_xml(t)
-                structs.append(struct)
-                type_info["data"] = struct
+                if struct:
+                    structs.append(struct)
+                    type_info["data"] = struct
+                else:
+                    continue
 
             # Name is in general within a name tag else it is an optional
             # attribute on the type tag.
