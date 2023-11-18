@@ -9,14 +9,9 @@ namespace vkroots {
 
   class NoOverrides { static constexpr bool IsNoOverrides = true; };
 
-  struct VkStructHeader {
-    VkStructureType sType;
-    void*           pNext;
-  };
-
   template <VkStructureType SType, typename Type, typename AnyStruct>
   const Type* FindInChain(const AnyStruct* obj) {
-    for (const VkStructHeader* header = reinterpret_cast<const VkStructHeader*>(obj); header; header = reinterpret_cast<const VkStructHeader*>(header->pNext)) {
+    for (const VkBaseInStructure* header = reinterpret_cast<const VkBaseInStructure*>(obj); header; header = header->pNext) {
       if (header->sType == SType)
         return reinterpret_cast<const Type*>(header);
     }
@@ -25,7 +20,7 @@ namespace vkroots {
 
   template <VkStructureType SType, typename Type, typename AnyStruct>
   Type* FindInChainMutable(AnyStruct* obj) {
-    for (VkStructHeader* header = reinterpret_cast<VkStructHeader*>(obj); header; header = reinterpret_cast<VkStructHeader*>(header->pNext)) {
+    for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
       if (header->sType == SType)
         return reinterpret_cast<Type*>(header);
     }
