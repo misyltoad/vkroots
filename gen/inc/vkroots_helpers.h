@@ -165,3 +165,32 @@ namespace vkroots::helpers {
   template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {};
 
 }
+
+namespace vkroots {
+  template <typename Type, typename UserData = uint64_t>
+  class ChainPatcher {
+  public:
+    template <typename AnyStruct>
+    ChainPatcher(const AnyStruct *obj, std::function<bool(UserData&, Type *)> func) {
+      const Type *type = vkroots::FindInChain<Type>(obj);
+      if (type) {
+        func(m_ctx, const_cast<Type *>(type));
+      } else {
+        if (func(m_ctx, &m_value)) {
+          AnyStruct *mutObj = const_cast<AnyStruct*>(obj);
+          m_value.sType = ResolveSType<Type>();
+          m_value.pNext = const_cast<void*>(std::exchange(mutObj->pNext, reinterpret_cast<const void*>(&m_value)));
+        }
+      }
+    }
+
+    template <typename AnyStruct>
+    ChainPatcher(const AnyStruct *obj, std::function<bool(Type *)> func)
+      : ChainPatcher(obj, [&](UserData& ctx, Type *obj) { return func(obj); }) {
+    }
+
+  private:
+    Type m_value{};
+    UserData m_ctx;
+  };
+}
