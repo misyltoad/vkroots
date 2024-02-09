@@ -9,19 +9,27 @@ namespace vkroots {
 
   class NoOverrides { static constexpr bool IsNoOverrides = true; };
 
-  template <VkStructureType SType, typename Type, typename AnyStruct>
+  template <typename Type>
+  constexpr VkStructureType ResolveSType();
+
+  template <> constexpr VkStructureType ResolveSType<VkLayerInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkLayerInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
+
+  template <typename Type, typename AnyStruct>
   const Type* FindInChain(const AnyStruct* obj) {
     for (const VkBaseInStructure* header = reinterpret_cast<const VkBaseInStructure*>(obj); header; header = header->pNext) {
-      if (header->sType == SType)
+      if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<const Type*>(header);
     }
     return nullptr;
   }
 
-  template <VkStructureType SType, typename Type, typename AnyStruct>
+  template <typename Type, typename AnyStruct>
   Type* FindInChainMutable(AnyStruct* obj) {
     for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
-      if (header->sType == SType)
+      if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<Type*>(header);
     }
     return nullptr;
@@ -96,7 +104,7 @@ namespace vkroots {
   static inline VkResult GetProcAddrs(const VkInstanceCreateInfo* pInfo, VkInstanceProcAddrFuncs *pOutFuncs) {
     const void* pNext = (const void*) pInfo;
     const VkLayerInstanceCreateInfo* layerInfo;
-    while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO, const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
+    while ((layerInfo = FindInChain<const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
     if (!layerInfo)
@@ -112,7 +120,7 @@ namespace vkroots {
   static inline VkResult GetProcAddrs(const VkDeviceCreateInfo* pInfo, PFN_vkGetDeviceProcAddr *pOutAddr) {
     const void* pNext = (const void*) pInfo;
     const VkLayerDeviceCreateInfo* layerInfo;
-    while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO, const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
+    while ((layerInfo = FindInChain<const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
     if (!layerInfo)

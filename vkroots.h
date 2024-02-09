@@ -37,19 +37,27 @@ namespace vkroots {
 
   class NoOverrides { static constexpr bool IsNoOverrides = true; };
 
-  template <VkStructureType SType, typename Type, typename AnyStruct>
+  template <typename Type>
+  constexpr VkStructureType ResolveSType();
+
+  template <> constexpr VkStructureType ResolveSType<VkLayerInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkLayerInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
+
+  template <typename Type, typename AnyStruct>
   const Type* FindInChain(const AnyStruct* obj) {
     for (const VkBaseInStructure* header = reinterpret_cast<const VkBaseInStructure*>(obj); header; header = header->pNext) {
-      if (header->sType == SType)
+      if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<const Type*>(header);
     }
     return nullptr;
   }
 
-  template <VkStructureType SType, typename Type, typename AnyStruct>
+  template <typename Type, typename AnyStruct>
   Type* FindInChainMutable(AnyStruct* obj) {
     for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
-      if (header->sType == SType)
+      if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<Type*>(header);
     }
     return nullptr;
@@ -124,7 +132,7 @@ namespace vkroots {
   static inline VkResult GetProcAddrs(const VkInstanceCreateInfo* pInfo, VkInstanceProcAddrFuncs *pOutFuncs) {
     const void* pNext = (const void*) pInfo;
     const VkLayerInstanceCreateInfo* layerInfo;
-    while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO, const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
+    while ((layerInfo = FindInChain<const VkLayerInstanceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
     if (!layerInfo)
@@ -140,7 +148,7 @@ namespace vkroots {
   static inline VkResult GetProcAddrs(const VkDeviceCreateInfo* pInfo, PFN_vkGetDeviceProcAddr *pOutAddr) {
     const void* pNext = (const void*) pInfo;
     const VkLayerDeviceCreateInfo* layerInfo;
-    while ((layerInfo = FindInChain<VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO, const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
+    while ((layerInfo = FindInChain<const VkLayerDeviceCreateInfo>(pNext)) && layerInfo->function != VK_LAYER_LINK_INFO)
       pNext = layerInfo->pNext;
     assert(layerInfo);
     if (!layerInfo)
@@ -13006,7 +13014,6 @@ namespace vkroots {
         case static_cast<uint64_t>(1000116004): return "VK_STRUCTURE_TYPE_ACQUIRE_PROFILING_LOCK_INFO_KHR";
         case static_cast<uint64_t>(1000116005): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR";
         case static_cast<uint64_t>(1000116006): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR";
-        case static_cast<uint64_t>(1000116007): return "VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_RESERVATION_INFO_KHR";
         case static_cast<uint64_t>(1000119000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR";
         case static_cast<uint64_t>(1000119001): return "VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR";
         case static_cast<uint64_t>(1000119002): return "VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR";
@@ -13968,6 +13975,2550 @@ namespace vkroots {
       }
     }
   }
+  template <typename Type>
+  constexpr VkStructureType ResolveSType();
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureBuildGeometryInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureBuildGeometryInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureBuildSizesInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureBuildSizesInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureCreateInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureCreateInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureCreateInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureCreateInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureDeviceAddressInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureDeviceAddressInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureGeometryAabbsDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureGeometryAabbsDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureGeometryInstancesDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureGeometryInstancesDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureGeometryKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureGeometryKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureGeometryMotionTrianglesDataNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureGeometryMotionTrianglesDataNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureGeometryTrianglesDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureGeometryTrianglesDataKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureMemoryRequirementsInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureMemoryRequirementsInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureMotionInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MOTION_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureMotionInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MOTION_INFO_NV; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureTrianglesDisplacementMicromapNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureTrianglesDisplacementMicromapNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureTrianglesOpacityMicromapEXT>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureTrianglesOpacityMicromapEXT>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureVersionInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_VERSION_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureVersionInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_VERSION_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAcquireNextImageInfoKHR>() { return VK_STRUCTURE_TYPE_ACQUIRE_NEXT_IMAGE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAcquireNextImageInfoKHR>() { return VK_STRUCTURE_TYPE_ACQUIRE_NEXT_IMAGE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAcquireProfilingLockInfoKHR>() { return VK_STRUCTURE_TYPE_ACQUIRE_PROFILING_LOCK_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAcquireProfilingLockInfoKHR>() { return VK_STRUCTURE_TYPE_ACQUIRE_PROFILING_LOCK_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAmigoProfilingSubmitInfoSEC>() { return VK_STRUCTURE_TYPE_AMIGO_PROFILING_SUBMIT_INFO_SEC; }
+  template <> constexpr VkStructureType ResolveSType<const VkAmigoProfilingSubmitInfoSEC>() { return VK_STRUCTURE_TYPE_AMIGO_PROFILING_SUBMIT_INFO_SEC; }
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkAndroidHardwareBufferFormatProperties2ANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkAndroidHardwareBufferFormatProperties2ANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID; }
+#endif
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkAndroidHardwareBufferFormatPropertiesANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkAndroidHardwareBufferFormatPropertiesANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID; }
+#endif
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkAndroidHardwareBufferPropertiesANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkAndroidHardwareBufferPropertiesANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID; }
+#endif
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkAndroidHardwareBufferUsageANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkAndroidHardwareBufferUsageANDROID>() { return VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_USAGE_ANDROID; }
+#endif
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkAndroidSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkAndroidSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkApplicationInfo>() { return VK_STRUCTURE_TYPE_APPLICATION_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkApplicationInfo>() { return VK_STRUCTURE_TYPE_APPLICATION_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAttachmentDescription2>() { return VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkAttachmentDescription2>() { return VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAttachmentDescriptionStencilLayout>() { return VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT; }
+  template <> constexpr VkStructureType ResolveSType<const VkAttachmentDescriptionStencilLayout>() { return VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAttachmentReference2>() { return VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkAttachmentReference2>() { return VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAttachmentReferenceStencilLayout>() { return VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT; }
+  template <> constexpr VkStructureType ResolveSType<const VkAttachmentReferenceStencilLayout>() { return VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkAttachmentSampleCountInfoAMD>() { return VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkAttachmentSampleCountInfoAMD>() { return VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindAccelerationStructureMemoryInfoNV>() { return VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindAccelerationStructureMemoryInfoNV>() { return VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindBufferMemoryDeviceGroupInfo>() { return VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindBufferMemoryDeviceGroupInfo>() { return VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindBufferMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindBufferMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindImageMemoryDeviceGroupInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindImageMemoryDeviceGroupInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindImageMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindImageMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindImageMemorySwapchainInfoKHR>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindImageMemorySwapchainInfoKHR>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindImagePlaneMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindImagePlaneMemoryInfo>() { return VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindSparseInfo>() { return VK_STRUCTURE_TYPE_BIND_SPARSE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindSparseInfo>() { return VK_STRUCTURE_TYPE_BIND_SPARSE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBindVideoSessionMemoryInfoKHR>() { return VK_STRUCTURE_TYPE_BIND_VIDEO_SESSION_MEMORY_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkBindVideoSessionMemoryInfoKHR>() { return VK_STRUCTURE_TYPE_BIND_VIDEO_SESSION_MEMORY_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBlitImageInfo2>() { return VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkBlitImageInfo2>() { return VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferCollectionBufferCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCollectionBufferCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferCollectionConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCollectionConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferCollectionCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CREATE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCollectionCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_CREATE_INFO_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferCollectionImageCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCollectionImageCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferCollectionPropertiesFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_PROPERTIES_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCollectionPropertiesFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_COLLECTION_PROPERTIES_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkBufferConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_CONSTRAINTS_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_BUFFER_CONSTRAINTS_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferCopy2>() { return VK_STRUCTURE_TYPE_BUFFER_COPY_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCopy2>() { return VK_STRUCTURE_TYPE_BUFFER_COPY_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferDeviceAddressCreateInfoEXT>() { return VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferDeviceAddressCreateInfoEXT>() { return VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferDeviceAddressInfo>() { return VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferDeviceAddressInfo>() { return VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferImageCopy2>() { return VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferImageCopy2>() { return VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferMemoryBarrier>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferMemoryBarrier>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferMemoryBarrier2>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferMemoryBarrier2>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferOpaqueCaptureAddressCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferOpaqueCaptureAddressCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBufferViewCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkBufferViewCreateInfo>() { return VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCalibratedTimestampInfoEXT>() { return VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCalibratedTimestampInfoEXT>() { return VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCheckpointData2NV>() { return VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkCheckpointData2NV>() { return VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCheckpointDataNV>() { return VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkCheckpointDataNV>() { return VK_STRUCTURE_TYPE_CHECKPOINT_DATA_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferAllocateInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferAllocateInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferBeginInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferBeginInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferInheritanceConditionalRenderingInfoEXT>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferInheritanceConditionalRenderingInfoEXT>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferInheritanceInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferInheritanceInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferInheritanceRenderPassTransformInfoQCOM>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferInheritanceRenderPassTransformInfoQCOM>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferInheritanceRenderingInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferInheritanceRenderingInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferInheritanceViewportScissorInfoNV>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferInheritanceViewportScissorInfoNV>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandBufferSubmitInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandBufferSubmitInfo>() { return VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCommandPoolCreateInfo>() { return VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkCommandPoolCreateInfo>() { return VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkComputePipelineCreateInfo>() { return VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkComputePipelineCreateInfo>() { return VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkConditionalRenderingBeginInfoEXT>() { return VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkConditionalRenderingBeginInfoEXT>() { return VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCooperativeMatrixPropertiesNV>() { return VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkCooperativeMatrixPropertiesNV>() { return VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyAccelerationStructureToMemoryInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyAccelerationStructureToMemoryInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyBufferInfo2>() { return VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyBufferInfo2>() { return VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyBufferToImageInfo2>() { return VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyBufferToImageInfo2>() { return VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyCommandTransformInfoQCOM>() { return VK_STRUCTURE_TYPE_COPY_COMMAND_TRANSFORM_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyCommandTransformInfoQCOM>() { return VK_STRUCTURE_TYPE_COPY_COMMAND_TRANSFORM_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyDescriptorSet>() { return VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyDescriptorSet>() { return VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyImageInfo2>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyImageInfo2>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyImageToBufferInfo2>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyImageToBufferInfo2>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyMemoryToAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryToAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyMemoryToMicromapInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_MICROMAP_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryToMicromapInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_MICROMAP_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyMicromapInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MICROMAP_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMicromapInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MICROMAP_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyMicromapToMemoryInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MICROMAP_TO_MEMORY_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMicromapToMemoryInfoEXT>() { return VK_STRUCTURE_TYPE_COPY_MICROMAP_TO_MEMORY_INFO_EXT; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkD3D12FenceSubmitInfoKHR>() { return VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkD3D12FenceSubmitInfoKHR>() { return VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugMarkerMarkerInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugMarkerMarkerInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugMarkerObjectNameInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugMarkerObjectNameInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugMarkerObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugMarkerObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugReportCallbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugReportCallbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugUtilsLabelEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsLabelEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugUtilsMessengerCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsMessengerCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugUtilsMessengerCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsMessengerCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugUtilsObjectNameInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsObjectNameInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDebugUtilsObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDedicatedAllocationBufferCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkDedicatedAllocationBufferCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDedicatedAllocationImageCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkDedicatedAllocationImageCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDedicatedAllocationMemoryAllocateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkDedicatedAllocationMemoryAllocateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDependencyInfo>() { return VK_STRUCTURE_TYPE_DEPENDENCY_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDependencyInfo>() { return VK_STRUCTURE_TYPE_DEPENDENCY_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorAddressInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_ADDRESS_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorAddressInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_ADDRESS_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorBufferBindingInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorBufferBindingInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorBufferBindingPushDescriptorBufferHandleEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorBufferBindingPushDescriptorBufferHandleEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorGetInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_GET_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorGetInfoEXT>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_GET_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorPoolCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorPoolCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorPoolInlineUniformBlockCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorPoolInlineUniformBlockCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetAllocateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetAllocateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetBindingReferenceVALVE>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_BINDING_REFERENCE_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetBindingReferenceVALVE>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_BINDING_REFERENCE_VALVE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetLayoutBindingFlagsCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetLayoutBindingFlagsCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetLayoutCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetLayoutCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetLayoutHostMappingInfoVALVE>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetLayoutHostMappingInfoVALVE>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetLayoutSupport>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetLayoutSupport>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetVariableDescriptorCountAllocateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetVariableDescriptorCountAllocateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorSetVariableDescriptorCountLayoutSupport>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorSetVariableDescriptorCountLayoutSupport>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDescriptorUpdateTemplateCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDescriptorUpdateTemplateCreateInfo>() { return VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceAddressBindingCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEVICE_ADDRESS_BINDING_CALLBACK_DATA_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceAddressBindingCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEVICE_ADDRESS_BINDING_CALLBACK_DATA_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceBufferMemoryRequirements>() { return VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceBufferMemoryRequirements>() { return VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceDeviceMemoryReportCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceDeviceMemoryReportCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceDiagnosticsConfigCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceDiagnosticsConfigCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceEventInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_EVENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceEventInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_EVENT_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceFaultCountsEXT>() { return VK_STRUCTURE_TYPE_DEVICE_FAULT_COUNTS_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceFaultCountsEXT>() { return VK_STRUCTURE_TYPE_DEVICE_FAULT_COUNTS_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceFaultInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_FAULT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceFaultInfoEXT>() { return VK_STRUCTURE_TYPE_DEVICE_FAULT_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupBindSparseInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_BIND_SPARSE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupBindSparseInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_BIND_SPARSE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupCommandBufferBeginInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupCommandBufferBeginInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupPresentCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupPresentCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupPresentInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupPresentInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupRenderPassBeginInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupRenderPassBeginInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupSubmitInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupSubmitInfo>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceGroupSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceGroupSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceImageMemoryRequirements>() { return VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceImageMemoryRequirements>() { return VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceMemoryOpaqueCaptureAddressInfo>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceMemoryOpaqueCaptureAddressInfo>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceMemoryOverallocationCreateInfoAMD>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceMemoryOverallocationCreateInfoAMD>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceMemoryReportCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceMemoryReportCallbackDataEXT>() { return VK_STRUCTURE_TYPE_DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDevicePrivateDataCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDevicePrivateDataCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceQueueCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceQueueCreateInfo>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceQueueGlobalPriorityCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceQueueGlobalPriorityCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDeviceQueueInfo2>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkDeviceQueueInfo2>() { return VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDirectDriverLoadingInfoLUNARG>() { return VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_INFO_LUNARG; }
+  template <> constexpr VkStructureType ResolveSType<const VkDirectDriverLoadingInfoLUNARG>() { return VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_INFO_LUNARG; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDirectDriverLoadingListLUNARG>() { return VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_LIST_LUNARG; }
+  template <> constexpr VkStructureType ResolveSType<const VkDirectDriverLoadingListLUNARG>() { return VK_STRUCTURE_TYPE_DIRECT_DRIVER_LOADING_LIST_LUNARG; }
+
+#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+  template <> constexpr VkStructureType ResolveSType<VkDirectFBSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DIRECTFB_SURFACE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDirectFBSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_DIRECTFB_SURFACE_CREATE_INFO_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayEventInfoEXT>() { return VK_STRUCTURE_TYPE_DISPLAY_EVENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayEventInfoEXT>() { return VK_STRUCTURE_TYPE_DISPLAY_EVENT_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayModeCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayModeCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayModeProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_MODE_PROPERTIES_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayModeProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_MODE_PROPERTIES_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayNativeHdrSurfaceCapabilitiesAMD>() { return VK_STRUCTURE_TYPE_DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayNativeHdrSurfaceCapabilitiesAMD>() { return VK_STRUCTURE_TYPE_DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayPlaneCapabilities2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_CAPABILITIES_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayPlaneCapabilities2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_CAPABILITIES_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayPlaneInfo2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_INFO_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayPlaneInfo2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_INFO_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayPlaneProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_PROPERTIES_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayPlaneProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PLANE_PROPERTIES_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayPowerInfoEXT>() { return VK_STRUCTURE_TYPE_DISPLAY_POWER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayPowerInfoEXT>() { return VK_STRUCTURE_TYPE_DISPLAY_POWER_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayPresentInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayPresentInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplayProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PROPERTIES_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplayProperties2KHR>() { return VK_STRUCTURE_TYPE_DISPLAY_PROPERTIES_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDisplaySurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkDisplaySurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDrmFormatModifierPropertiesList2EXT>() { return VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDrmFormatModifierPropertiesList2EXT>() { return VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDrmFormatModifierPropertiesListEXT>() { return VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDrmFormatModifierPropertiesListEXT>() { return VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkEventCreateInfo>() { return VK_STRUCTURE_TYPE_EVENT_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkEventCreateInfo>() { return VK_STRUCTURE_TYPE_EVENT_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExportFenceCreateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_FENCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportFenceCreateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_FENCE_CREATE_INFO; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkExportFenceWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportFenceWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_FENCE_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkExportMemoryAllocateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMemoryAllocateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExportMemoryAllocateInfoNV>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMemoryAllocateInfoNV>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkExportMemoryWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMemoryWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkExportMemoryWin32HandleInfoNV>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMemoryWin32HandleInfoNV>() { return VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalBufferInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_BUFFER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalBufferInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_BUFFER_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalCommandQueueInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_COMMAND_QUEUE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalCommandQueueInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_COMMAND_QUEUE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalDeviceInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_DEVICE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalDeviceInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_DEVICE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalIOSurfaceInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_IO_SURFACE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalIOSurfaceInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_IO_SURFACE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalObjectCreateInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECT_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalObjectCreateInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECT_CREATE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalObjectsInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECTS_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalObjectsInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECTS_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalSharedEventInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_SHARED_EVENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalSharedEventInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_SHARED_EVENT_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkExportMetalTextureInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_TEXTURE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportMetalTextureInfoEXT>() { return VK_STRUCTURE_TYPE_EXPORT_METAL_TEXTURE_INFO_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkExportSemaphoreCreateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportSemaphoreCreateInfo>() { return VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkExportSemaphoreWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkExportSemaphoreWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalBufferProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalBufferProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalFenceProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_FENCE_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalFenceProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_FENCE_PROPERTIES; }
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkExternalFormatANDROID>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalFormatANDROID>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalImageFormatProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalImageFormatProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalMemoryAcquireUnmodifiedEXT>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalMemoryAcquireUnmodifiedEXT>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalMemoryBufferCreateInfo>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalMemoryBufferCreateInfo>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalMemoryImageCreateInfo>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalMemoryImageCreateInfo>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalMemoryImageCreateInfoNV>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalMemoryImageCreateInfoNV>() { return VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkExternalSemaphoreProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalSemaphoreProperties>() { return VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFenceCreateInfo>() { return VK_STRUCTURE_TYPE_FENCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkFenceCreateInfo>() { return VK_STRUCTURE_TYPE_FENCE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFenceGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkFenceGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_FENCE_GET_FD_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkFenceGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_FENCE_GET_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkFenceGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_FENCE_GET_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkFilterCubicImageViewImageFormatPropertiesEXT>() { return VK_STRUCTURE_TYPE_FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkFilterCubicImageViewImageFormatPropertiesEXT>() { return VK_STRUCTURE_TYPE_FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFormatProperties2>() { return VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkFormatProperties2>() { return VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFormatProperties3>() { return VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3; }
+  template <> constexpr VkStructureType ResolveSType<const VkFormatProperties3>() { return VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFragmentShadingRateAttachmentInfoKHR>() { return VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkFragmentShadingRateAttachmentInfoKHR>() { return VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFramebufferAttachmentImageInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkFramebufferAttachmentImageInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFramebufferAttachmentsCreateInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkFramebufferAttachmentsCreateInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFramebufferCreateInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkFramebufferCreateInfo>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkFramebufferMixedSamplesCombinationNV>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkFramebufferMixedSamplesCombinationNV>() { return VK_STRUCTURE_TYPE_FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGeneratedCommandsInfoNV>() { return VK_STRUCTURE_TYPE_GENERATED_COMMANDS_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGeneratedCommandsInfoNV>() { return VK_STRUCTURE_TYPE_GENERATED_COMMANDS_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGeneratedCommandsMemoryRequirementsInfoNV>() { return VK_STRUCTURE_TYPE_GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGeneratedCommandsMemoryRequirementsInfoNV>() { return VK_STRUCTURE_TYPE_GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGeometryAABBNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_AABB_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGeometryAABBNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_AABB_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGeometryNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGeometryNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGeometryTrianglesNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_TRIANGLES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGeometryTrianglesNV>() { return VK_STRUCTURE_TYPE_GEOMETRY_TRIANGLES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGraphicsPipelineCreateInfo>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkGraphicsPipelineCreateInfo>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGraphicsPipelineLibraryCreateInfoEXT>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkGraphicsPipelineLibraryCreateInfoEXT>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGraphicsPipelineShaderGroupsCreateInfoNV>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGraphicsPipelineShaderGroupsCreateInfoNV>() { return VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkGraphicsShaderGroupCreateInfoNV>() { return VK_STRUCTURE_TYPE_GRAPHICS_SHADER_GROUP_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkGraphicsShaderGroupCreateInfoNV>() { return VK_STRUCTURE_TYPE_GRAPHICS_SHADER_GROUP_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkHdrMetadataEXT>() { return VK_STRUCTURE_TYPE_HDR_METADATA_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkHdrMetadataEXT>() { return VK_STRUCTURE_TYPE_HDR_METADATA_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkHeadlessSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkHeadlessSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT; }
+
+#ifdef VK_USE_PLATFORM_IOS_MVK
+  template <> constexpr VkStructureType ResolveSType<VkIOSSurfaceCreateInfoMVK>() { return VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK; }
+  template <> constexpr VkStructureType ResolveSType<const VkIOSSurfaceCreateInfoMVK>() { return VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImageBlit2>() { return VK_STRUCTURE_TYPE_IMAGE_BLIT_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageBlit2>() { return VK_STRUCTURE_TYPE_IMAGE_BLIT_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageCompressionControlEXT>() { return VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_CONTROL_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageCompressionControlEXT>() { return VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_CONTROL_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageCompressionPropertiesEXT>() { return VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageCompressionPropertiesEXT>() { return VK_STRUCTURE_TYPE_IMAGE_COMPRESSION_PROPERTIES_EXT; }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImageConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGE_CONSTRAINTS_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGE_CONSTRAINTS_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImageCopy2>() { return VK_STRUCTURE_TYPE_IMAGE_COPY_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageCopy2>() { return VK_STRUCTURE_TYPE_IMAGE_COPY_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageDrmFormatModifierExplicitCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageDrmFormatModifierExplicitCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageDrmFormatModifierListCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageDrmFormatModifierListCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageDrmFormatModifierPropertiesEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageDrmFormatModifierPropertiesEXT>() { return VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT; }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImageFormatConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageFormatConstraintsInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImageFormatListCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageFormatListCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageFormatProperties2>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageFormatProperties2>() { return VK_STRUCTURE_TYPE_IMAGE_FORMAT_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageMemoryBarrier>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageMemoryBarrier>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageMemoryBarrier2>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageMemoryBarrier2>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2; }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImagePipeSurfaceCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImagePipeSurfaceCreateInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImagePlaneMemoryRequirementsInfo>() { return VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImagePlaneMemoryRequirementsInfo>() { return VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageResolve2>() { return VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageResolve2>() { return VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageSparseMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageSparseMemoryRequirementsInfo2>() { return VK_STRUCTURE_TYPE_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageStencilUsageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageStencilUsageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageSubresource2EXT>() { return VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageSubresource2EXT>() { return VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_IMAGE_SWAPCHAIN_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewASTCDecodeModeEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_ASTC_DECODE_MODE_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewASTCDecodeModeEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_ASTC_DECODE_MODE_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewMinLodCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewMinLodCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewSampleWeightCreateInfoQCOM>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewSampleWeightCreateInfoQCOM>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewSlicedCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_SLICED_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewSlicedCreateInfoEXT>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_SLICED_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImageViewUsageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkImageViewUsageCreateInfo>() { return VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO; }
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkImportAndroidHardwareBufferInfoANDROID>() { return VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportAndroidHardwareBufferInfoANDROID>() { return VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImportFenceFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_FENCE_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportFenceFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_FENCE_FD_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkImportFenceWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportFenceWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_FENCE_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryBufferCollectionFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryBufferCollectionFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryHostPointerInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryHostPointerInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryWin32HandleInfoNV>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryWin32HandleInfoNV>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImportMemoryZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMemoryZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkImportMetalBufferInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_BUFFER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMetalBufferInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_BUFFER_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkImportMetalIOSurfaceInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_IO_SURFACE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMetalIOSurfaceInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_IO_SURFACE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkImportMetalSharedEventInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_SHARED_EVENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMetalSharedEventInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_SHARED_EVENT_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkImportMetalTextureInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_TEXTURE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportMetalTextureInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_TEXTURE_INFO_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkImportSemaphoreFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportSemaphoreFdInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FD_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkImportSemaphoreWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportSemaphoreWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkImportSemaphoreZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportSemaphoreZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkIndirectCommandsLayoutCreateInfoNV>() { return VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkIndirectCommandsLayoutCreateInfoNV>() { return VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkIndirectCommandsLayoutTokenNV>() { return VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_TOKEN_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkIndirectCommandsLayoutTokenNV>() { return VK_STRUCTURE_TYPE_INDIRECT_COMMANDS_LAYOUT_TOKEN_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkInitializePerformanceApiInfoINTEL>() { return VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkInitializePerformanceApiInfoINTEL>() { return VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkInstanceCreateInfo>() { return VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO; }
+
+#ifdef VK_USE_PLATFORM_MACOS_MVK
+  template <> constexpr VkStructureType ResolveSType<VkMacOSSurfaceCreateInfoMVK>() { return VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK; }
+  template <> constexpr VkStructureType ResolveSType<const VkMacOSSurfaceCreateInfoMVK>() { return VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkMappedMemoryRange>() { return VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE; }
+  template <> constexpr VkStructureType ResolveSType<const VkMappedMemoryRange>() { return VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryAllocateFlagsInfo>() { return VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryAllocateFlagsInfo>() { return VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryBarrier>() { return VK_STRUCTURE_TYPE_MEMORY_BARRIER; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryBarrier>() { return VK_STRUCTURE_TYPE_MEMORY_BARRIER; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryBarrier2>() { return VK_STRUCTURE_TYPE_MEMORY_BARRIER_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryBarrier2>() { return VK_STRUCTURE_TYPE_MEMORY_BARRIER_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryDedicatedAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryDedicatedAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryDedicatedRequirements>() { return VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryDedicatedRequirements>() { return VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryFdPropertiesKHR>() { return VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryFdPropertiesKHR>() { return VK_STRUCTURE_TYPE_MEMORY_FD_PROPERTIES_KHR; }
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetAndroidHardwareBufferInfoANDROID>() { return VK_STRUCTURE_TYPE_MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetAndroidHardwareBufferInfoANDROID>() { return VK_STRUCTURE_TYPE_MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetRemoteAddressInfoNV>() { return VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetRemoteAddressInfoNV>() { return VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_GET_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_GET_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryHostPointerPropertiesEXT>() { return VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryHostPointerPropertiesEXT>() { return VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryMapInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_MAP_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryMapInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_MAP_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryOpaqueCaptureAddressAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryOpaqueCaptureAddressAllocateInfo>() { return VK_STRUCTURE_TYPE_MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryPriorityAllocateInfoEXT>() { return VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryPriorityAllocateInfoEXT>() { return VK_STRUCTURE_TYPE_MEMORY_PRIORITY_ALLOCATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryRequirements2>() { return VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryRequirements2>() { return VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMemoryUnmapInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_UNMAP_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryUnmapInfoKHR>() { return VK_STRUCTURE_TYPE_MEMORY_UNMAP_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkMemoryWin32HandlePropertiesKHR>() { return VK_STRUCTURE_TYPE_MEMORY_WIN32_HANDLE_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryWin32HandlePropertiesKHR>() { return VK_STRUCTURE_TYPE_MEMORY_WIN32_HANDLE_PROPERTIES_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkMemoryZirconHandlePropertiesFUCHSIA>() { return VK_STRUCTURE_TYPE_MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryZirconHandlePropertiesFUCHSIA>() { return VK_STRUCTURE_TYPE_MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA; }
+#endif
+
+#ifdef VK_USE_PLATFORM_METAL_EXT
+  template <> constexpr VkStructureType ResolveSType<VkMetalSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMetalSurfaceCreateInfoEXT>() { return VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkMicromapBuildInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_BUILD_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMicromapBuildInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_BUILD_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMicromapBuildSizesInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_BUILD_SIZES_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMicromapBuildSizesInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_BUILD_SIZES_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMicromapCreateInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMicromapCreateInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMicromapVersionInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_VERSION_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMicromapVersionInfoEXT>() { return VK_STRUCTURE_TYPE_MICROMAP_VERSION_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMultisamplePropertiesEXT>() { return VK_STRUCTURE_TYPE_MULTISAMPLE_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMultisamplePropertiesEXT>() { return VK_STRUCTURE_TYPE_MULTISAMPLE_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMultisampledRenderToSingleSampledInfoEXT>() { return VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMultisampledRenderToSingleSampledInfoEXT>() { return VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMultiviewPerViewAttributesInfoNVX>() { return VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX; }
+  template <> constexpr VkStructureType ResolveSType<const VkMultiviewPerViewAttributesInfoNVX>() { return VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkMutableDescriptorTypeCreateInfoEXT>() { return VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkMutableDescriptorTypeCreateInfoEXT>() { return VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpaqueCaptureDescriptorDataCreateInfoEXT>() { return VK_STRUCTURE_TYPE_OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpaqueCaptureDescriptorDataCreateInfoEXT>() { return VK_STRUCTURE_TYPE_OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpticalFlowExecuteInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_EXECUTE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpticalFlowExecuteInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_EXECUTE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpticalFlowImageFormatInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_IMAGE_FORMAT_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpticalFlowImageFormatInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_IMAGE_FORMAT_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpticalFlowImageFormatPropertiesNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpticalFlowImageFormatPropertiesNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpticalFlowSessionCreateInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_SESSION_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpticalFlowSessionCreateInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_SESSION_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkOpticalFlowSessionCreatePrivateDataInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkOpticalFlowSessionCreatePrivateDataInfoNV>() { return VK_STRUCTURE_TYPE_OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceConfigurationAcquireInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceConfigurationAcquireInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceCounterDescriptionKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceCounterDescriptionKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceCounterKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceCounterKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceMarkerInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_MARKER_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceMarkerInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_MARKER_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceOverrideInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_OVERRIDE_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceOverrideInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_OVERRIDE_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceQuerySubmitInfoKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceQuerySubmitInfoKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_QUERY_SUBMIT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceStreamMarkerInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_STREAM_MARKER_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceStreamMarkerInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_STREAM_MARKER_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevice16BitStorageFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevice16BitStorageFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevice4444FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevice4444FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevice8BitStorageFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevice8BitStorageFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceASTCDecodeFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceASTCDecodeFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAccelerationStructureFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAccelerationStructureFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAccelerationStructurePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAccelerationStructurePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAddressBindingReportFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ADDRESS_BINDING_REPORT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAddressBindingReportFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ADDRESS_BINDING_REPORT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAmigoProfilingFeaturesSEC>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAmigoProfilingFeaturesSEC>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceBorderColorSwizzleFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceBorderColorSwizzleFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceBufferDeviceAddressFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceBufferDeviceAddressFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceBufferDeviceAddressFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceBufferDeviceAddressFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceClusterCullingShaderPropertiesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceClusterCullingShaderPropertiesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCoherentMemoryFeaturesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCoherentMemoryFeaturesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceColorWriteEnableFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceColorWriteEnableFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceComputeShaderDerivativesFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceComputeShaderDerivativesFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceConditionalRenderingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceConditionalRenderingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceConservativeRasterizationPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceConservativeRasterizationPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCooperativeMatrixFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCooperativeMatrixFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCooperativeMatrixPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCooperativeMatrixPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCornerSampledImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCornerSampledImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCoverageReductionModeFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCoverageReductionModeFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCustomBorderColorFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCustomBorderColorFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCustomBorderColorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCustomBorderColorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDepthClampZeroOneFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDepthClampZeroOneFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDepthClipControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDepthClipControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDepthClipEnableFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDepthClipEnableFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDepthStencilResolveProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDepthStencilResolveProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorBufferFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorBufferFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorBufferPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorBufferPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorIndexingFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorIndexingFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorIndexingProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorIndexingProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDescriptorSetHostMappingFeaturesVALVE>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDescriptorSetHostMappingFeaturesVALVE>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDeviceGeneratedCommandsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDeviceGeneratedCommandsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDeviceMemoryReportFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDeviceMemoryReportFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDiagnosticsConfigFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDiagnosticsConfigFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDiscardRectanglePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDiscardRectanglePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDisplacementMicromapFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDisplacementMicromapFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_FEATURES_NV; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDisplacementMicromapPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDisplacementMicromapPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_PROPERTIES_NV; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDriverProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDriverProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDrmPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDrmPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDynamicRenderingFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDynamicRenderingFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExclusiveScissorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExclusiveScissorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExtendedDynamicState2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExtendedDynamicState2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExtendedDynamicState3FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExtendedDynamicState3FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExtendedDynamicState3PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExtendedDynamicState3PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExtendedDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalBufferInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalBufferInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalFenceInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalFenceInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalImageFormatInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalImageFormatInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalMemoryHostPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalMemoryHostPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalMemoryRDMAFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalMemoryRDMAFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceExternalSemaphoreInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceExternalSemaphoreInfo>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFaultFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFaultFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFeatures2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFeatures2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFloatControlsProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFloatControlsProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMap2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMap2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMap2PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMap2PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentDensityMapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentDensityMapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShaderBarycentricPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShaderBarycentricPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShadingRateEnumsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShadingRateEnumsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShadingRateFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShadingRateFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShadingRateKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShadingRateKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceFragmentShadingRatePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceFragmentShadingRatePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceGlobalPriorityQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceGlobalPriorityQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceGraphicsPipelineLibraryPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceGraphicsPipelineLibraryPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceGroupProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceGroupProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceHostQueryResetFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceHostQueryResetFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceIDProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceIDProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImage2DViewOf3DFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImage2DViewOf3DFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageCompressionControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageCompressionControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageDrmFormatModifierInfoEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageDrmFormatModifierInfoEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageFormatInfo2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageFormatInfo2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageProcessingFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageProcessingFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageProcessingPropertiesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageProcessingPropertiesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageRobustnessFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageRobustnessFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageSlicedViewOf3DFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageSlicedViewOf3DFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageViewImageFormatInfoEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageViewImageFormatInfoEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImageViewMinLodFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImageViewMinLodFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceImagelessFramebufferFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceImagelessFramebufferFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceIndexTypeUint8FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceIndexTypeUint8FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceInheritedViewportScissorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceInheritedViewportScissorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceInlineUniformBlockFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceInlineUniformBlockFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceInlineUniformBlockProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceInlineUniformBlockProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceInvocationMaskFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceInvocationMaskFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceLegacyDitheringFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceLegacyDitheringFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceLineRasterizationFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceLineRasterizationFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceLineRasterizationPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceLineRasterizationPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceLinearColorAttachmentFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceLinearColorAttachmentFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance3Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance3Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance4Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance4Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance4Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance4Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryBudgetPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryBudgetPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryPriorityFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryPriorityFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryProperties2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryProperties2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMeshShaderFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMeshShaderFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMeshShaderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMeshShaderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMeshShaderPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMeshShaderPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMeshShaderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMeshShaderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiDrawFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiDrawFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiDrawPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiDrawPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiviewFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiviewFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMultiviewProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMultiviewProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMutableDescriptorTypeFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMutableDescriptorTypeFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceNonSeamlessCubeMapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceNonSeamlessCubeMapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceOpacityMicromapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceOpacityMicromapFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceOpacityMicromapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceOpacityMicromapPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceOpticalFlowFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceOpticalFlowFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceOpticalFlowPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPTICAL_FLOW_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceOpticalFlowPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPTICAL_FLOW_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePCIBusInfoPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePCIBusInfoPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerformanceQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerformanceQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerformanceQueryPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerformanceQueryPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineCreationCacheControlFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineCreationCacheControlFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelinePropertiesFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelinePropertiesFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineProtectedAccessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineProtectedAccessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineRobustnessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineRobustnessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePipelineRobustnessPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePipelineRobustnessPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePointClippingProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePointClippingProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePortabilitySubsetFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePortabilitySubsetFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePortabilitySubsetPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePortabilitySubsetPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentBarrierFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentBarrierFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentIdFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentIdFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentWaitFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentWaitFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePrivateDataFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePrivateDataFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceProperties2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceProperties2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceProtectedMemoryFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceProtectedMemoryFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceProtectedMemoryProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceProtectedMemoryProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceProvokingVertexFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceProvokingVertexFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceProvokingVertexPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceProvokingVertexPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePushDescriptorPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePushDescriptorPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingMotionBlurFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingMotionBlurFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingPipelineFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingPipelineFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingPipelinePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingPipelinePropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRobustness2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRobustness2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRobustness2PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRobustness2PropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSampleLocationsPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSampleLocationsPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSamplerFilterMinmaxProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSamplerFilterMinmaxProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSamplerYcbcrConversionFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSamplerYcbcrConversionFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceScalarBlockLayoutFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceScalarBlockLayoutFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderAtomicFloatFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderAtomicFloatFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderAtomicInt64Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderAtomicInt64Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderClockFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderClockFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderCoreBuiltinsFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderCoreBuiltinsFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderCoreBuiltinsPropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderCoreBuiltinsPropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderCoreProperties2AMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderCoreProperties2AMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderCorePropertiesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderCorePropertiesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderCorePropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderCorePropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderDrawParametersFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderDrawParametersFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderFloat16Int8Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderFloat16Int8Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderImageFootprintFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderImageFootprintFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderIntegerDotProductFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderIntegerDotProductFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderIntegerDotProductProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderIntegerDotProductProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderModuleIdentifierFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderModuleIdentifierFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderModuleIdentifierPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderModuleIdentifierPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderObjectFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderObjectFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderObjectPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderObjectPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderSMBuiltinsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderSMBuiltinsFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderSMBuiltinsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderSMBuiltinsPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderTerminateInvocationFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderTerminateInvocationFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderTileImageFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderTileImageFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderTileImagePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderTileImagePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShadingRateImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShadingRateImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShadingRateImagePropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShadingRateImagePropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSparseImageFormatInfo2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSparseImageFormatInfo2>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubgroupProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubgroupProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubgroupSizeControlFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubgroupSizeControlFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubgroupSizeControlProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubgroupSizeControlProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubpassShadingFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubpassShadingFeaturesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSubpassShadingPropertiesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSubpassShadingPropertiesHUAWEI>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSurfaceInfo2KHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSurfaceInfo2KHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSynchronization2Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSynchronization2Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTexelBufferAlignmentProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTexelBufferAlignmentProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTextureCompressionASTCHDRFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTextureCompressionASTCHDRFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTilePropertiesFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTilePropertiesFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTimelineSemaphoreFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTimelineSemaphoreFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTimelineSemaphoreProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTimelineSemaphoreProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceToolProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceToolProperties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTransformFeedbackFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTransformFeedbackFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceTransformFeedbackPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceTransformFeedbackPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceUniformBufferStandardLayoutFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceUniformBufferStandardLayoutFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVariablePointersFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVariablePointersFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVideoFormatInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_FORMAT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVideoFormatInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_FORMAT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan11Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan11Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan11Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan11Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan12Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan12Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan12Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan12Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan13Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan13Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkan13Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkan13Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVulkanMemoryModelFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVulkanMemoryModelFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceYcbcrImageArraysFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceYcbcrImageArraysFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCacheCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCacheCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineColorBlendAdvancedStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineColorBlendAdvancedStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineColorBlendStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineColorBlendStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineColorWriteCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_WRITE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineColorWriteCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_COLOR_WRITE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCompilerControlCreateInfoAMD>() { return VK_STRUCTURE_TYPE_PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCompilerControlCreateInfoAMD>() { return VK_STRUCTURE_TYPE_PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCoverageModulationStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCoverageModulationStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCoverageReductionStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCoverageReductionStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCoverageToColorStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCoverageToColorStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineCreationFeedbackCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineCreationFeedbackCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineDepthStencilStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineDepthStencilStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineDiscardRectangleStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineDiscardRectangleStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineDynamicStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineDynamicStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineExecutableInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineExecutableInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineExecutableInternalRepresentationKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineExecutableInternalRepresentationKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineExecutablePropertiesKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineExecutablePropertiesKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineExecutableStatisticKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_STATISTIC_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineExecutableStatisticKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_STATISTIC_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineFragmentShadingRateEnumStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineFragmentShadingRateEnumStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineFragmentShadingRateStateCreateInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineFragmentShadingRateStateCreateInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineInputAssemblyStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineInputAssemblyStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineLayoutCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineLayoutCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineLibraryCreateInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineLibraryCreateInfoKHR>() { return VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineMultisampleStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineMultisampleStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelinePropertiesIdentifierEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_PROPERTIES_IDENTIFIER_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelinePropertiesIdentifierEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_PROPERTIES_IDENTIFIER_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationConservativeStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationConservativeStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationDepthClipStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationDepthClipStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationLineStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationLineStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationProvokingVertexStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationStateRasterizationOrderAMD>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationStateRasterizationOrderAMD>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRasterizationStateStreamCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRasterizationStateStreamCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRenderingCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRenderingCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRepresentativeFragmentTestStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRepresentativeFragmentTestStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineRobustnessCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_ROBUSTNESS_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineRobustnessCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_ROBUSTNESS_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineSampleLocationsStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineSampleLocationsStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineShaderStageCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineShaderStageCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineShaderStageModuleIdentifierCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineShaderStageModuleIdentifierCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineShaderStageRequiredSubgroupSizeCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineShaderStageRequiredSubgroupSizeCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineTessellationDomainOriginStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineTessellationDomainOriginStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineTessellationStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineTessellationStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineVertexInputDivisorStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineVertexInputDivisorStateCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineVertexInputStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineVertexInputStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportCoarseSampleOrderStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportCoarseSampleOrderStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportDepthClipControlCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportDepthClipControlCreateInfoEXT>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportExclusiveScissorStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportExclusiveScissorStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportShadingRateImageStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportShadingRateImageStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportStateCreateInfo>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportSwizzleStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportSwizzleStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPipelineViewportWScalingStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkPipelineViewportWScalingStateCreateInfoNV>() { return VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV; }
+
+#ifdef VK_USE_PLATFORM_GGP
+  template <> constexpr VkStructureType ResolveSType<VkPresentFrameTokenGGP>() { return VK_STRUCTURE_TYPE_PRESENT_FRAME_TOKEN_GGP; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentFrameTokenGGP>() { return VK_STRUCTURE_TYPE_PRESENT_FRAME_TOKEN_GGP; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentIdKHR>() { return VK_STRUCTURE_TYPE_PRESENT_ID_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentIdKHR>() { return VK_STRUCTURE_TYPE_PRESENT_ID_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentInfoKHR>() { return VK_STRUCTURE_TYPE_PRESENT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentInfoKHR>() { return VK_STRUCTURE_TYPE_PRESENT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentRegionsKHR>() { return VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentRegionsKHR>() { return VK_STRUCTURE_TYPE_PRESENT_REGIONS_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentTimesInfoGOOGLE>() { return VK_STRUCTURE_TYPE_PRESENT_TIMES_INFO_GOOGLE; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentTimesInfoGOOGLE>() { return VK_STRUCTURE_TYPE_PRESENT_TIMES_INFO_GOOGLE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPrivateDataSlotCreateInfo>() { return VK_STRUCTURE_TYPE_PRIVATE_DATA_SLOT_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkPrivateDataSlotCreateInfo>() { return VK_STRUCTURE_TYPE_PRIVATE_DATA_SLOT_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkProtectedSubmitInfo>() { return VK_STRUCTURE_TYPE_PROTECTED_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkProtectedSubmitInfo>() { return VK_STRUCTURE_TYPE_PROTECTED_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueryLowLatencySupportNV>() { return VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueryLowLatencySupportNV>() { return VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueryPoolCreateInfo>() { return VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueryPoolCreateInfo>() { return VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueryPoolPerformanceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueryPoolPerformanceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueryPoolPerformanceQueryCreateInfoINTEL>() { return VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueryPoolPerformanceQueryCreateInfoINTEL>() { return VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkQueryPoolVideoEncodeFeedbackCreateInfoKHR>() { return VK_STRUCTURE_TYPE_QUERY_POOL_VIDEO_ENCODE_FEEDBACK_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueryPoolVideoEncodeFeedbackCreateInfoKHR>() { return VK_STRUCTURE_TYPE_QUERY_POOL_VIDEO_ENCODE_FEEDBACK_CREATE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyCheckpointProperties2NV>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyCheckpointProperties2NV>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyCheckpointPropertiesNV>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyCheckpointPropertiesNV>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyGlobalPriorityPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyGlobalPriorityPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyProperties2>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyProperties2>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyQueryResultStatusPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_QUERY_RESULT_STATUS_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyQueryResultStatusPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_QUERY_RESULT_STATUS_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkQueueFamilyVideoPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_VIDEO_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkQueueFamilyVideoPropertiesKHR>() { return VK_STRUCTURE_TYPE_QUEUE_FAMILY_VIDEO_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRayTracingPipelineCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRayTracingPipelineCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRayTracingPipelineCreateInfoNV>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkRayTracingPipelineCreateInfoNV>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRayTracingPipelineInterfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRayTracingPipelineInterfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRayTracingShaderGroupCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRayTracingShaderGroupCreateInfoKHR>() { return VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRayTracingShaderGroupCreateInfoNV>() { return VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkRayTracingShaderGroupCreateInfoNV>() { return VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkReleaseSwapchainImagesInfoEXT>() { return VK_STRUCTURE_TYPE_RELEASE_SWAPCHAIN_IMAGES_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkReleaseSwapchainImagesInfoEXT>() { return VK_STRUCTURE_TYPE_RELEASE_SWAPCHAIN_IMAGES_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassAttachmentBeginInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassAttachmentBeginInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassBeginInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassBeginInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassCreateInfo2>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassCreateInfo2>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassCreationControlEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_CONTROL_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassCreationControlEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_CONTROL_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassCreationFeedbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassCreationFeedbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassFragmentDensityMapCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassFragmentDensityMapCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassInputAttachmentAspectCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassInputAttachmentAspectCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassMultiviewCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassMultiviewCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassSampleLocationsBeginInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassSampleLocationsBeginInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassSubpassFeedbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassSubpassFeedbackCreateInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassTransformBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassTransformBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderingAttachmentInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingAttachmentInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderingFragmentDensityMapAttachmentInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingFragmentDensityMapAttachmentInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderingFragmentShadingRateAttachmentInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingFragmentShadingRateAttachmentInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkRenderingInfo>() { return VK_STRUCTURE_TYPE_RENDERING_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingInfo>() { return VK_STRUCTURE_TYPE_RENDERING_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkResolveImageInfo2>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkResolveImageInfo2>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSampleLocationsInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSampleLocationsInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerBorderColorComponentMappingCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerBorderColorComponentMappingCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerCaptureDescriptorDataInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerCustomBorderColorCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerCustomBorderColorCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerReductionModeCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerReductionModeCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerYcbcrConversionCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerYcbcrConversionCreateInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerYcbcrConversionImageFormatProperties>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerYcbcrConversionImageFormatProperties>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSamplerYcbcrConversionInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSamplerYcbcrConversionInfo>() { return VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO; }
+
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+  template <> constexpr VkStructureType ResolveSType<VkScreenSurfaceCreateInfoQNX>() { return VK_STRUCTURE_TYPE_SCREEN_SURFACE_CREATE_INFO_QNX; }
+  template <> constexpr VkStructureType ResolveSType<const VkScreenSurfaceCreateInfoQNX>() { return VK_STRUCTURE_TYPE_SCREEN_SURFACE_CREATE_INFO_QNX; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreCreateInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreCreateInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreGetFdInfoKHR>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_FD_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreGetWin32HandleInfoKHR>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreGetZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreGetZirconHandleInfoFUCHSIA>() { return VK_STRUCTURE_TYPE_SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreSignalInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreSignalInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreSubmitInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreSubmitInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreTypeCreateInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreTypeCreateInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSemaphoreWaitInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSemaphoreWaitInfo>() { return VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkShaderCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SHADER_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkShaderCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SHADER_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkShaderModuleCreateInfo>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkShaderModuleCreateInfo>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkShaderModuleIdentifierEXT>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_IDENTIFIER_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkShaderModuleIdentifierEXT>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_IDENTIFIER_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkShaderModuleValidationCacheCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkShaderModuleValidationCacheCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSharedPresentSurfaceCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSharedPresentSurfaceCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SHARED_PRESENT_SURFACE_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSparseImageFormatProperties2>() { return VK_STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkSparseImageFormatProperties2>() { return VK_STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSparseImageMemoryRequirements2>() { return VK_STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkSparseImageMemoryRequirements2>() { return VK_STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2; }
+
+#ifdef VK_USE_PLATFORM_GGP
+  template <> constexpr VkStructureType ResolveSType<VkStreamDescriptorSurfaceCreateInfoGGP>() { return VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP; }
+  template <> constexpr VkStructureType ResolveSType<const VkStreamDescriptorSurfaceCreateInfoGGP>() { return VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkSubmitInfo>() { return VK_STRUCTURE_TYPE_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubmitInfo>() { return VK_STRUCTURE_TYPE_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubmitInfo2>() { return VK_STRUCTURE_TYPE_SUBMIT_INFO_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubmitInfo2>() { return VK_STRUCTURE_TYPE_SUBMIT_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassBeginInfo>() { return VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassBeginInfo>() { return VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassDependency2>() { return VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassDependency2>() { return VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassDescription2>() { return VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassDescription2>() { return VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassDescriptionDepthStencilResolve>() { return VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassDescriptionDepthStencilResolve>() { return VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassEndInfo>() { return VK_STRUCTURE_TYPE_SUBPASS_END_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassEndInfo>() { return VK_STRUCTURE_TYPE_SUBPASS_END_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassFragmentDensityMapOffsetEndInfoQCOM>() { return VK_STRUCTURE_TYPE_SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassFragmentDensityMapOffsetEndInfoQCOM>() { return VK_STRUCTURE_TYPE_SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassResolvePerformanceQueryEXT>() { return VK_STRUCTURE_TYPE_SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassResolvePerformanceQueryEXT>() { return VK_STRUCTURE_TYPE_SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubpassShadingPipelineCreateInfoHUAWEI>() { return VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubpassShadingPipelineCreateInfoHUAWEI>() { return VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSubresourceLayout2EXT>() { return VK_STRUCTURE_TYPE_SUBRESOURCE_LAYOUT_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSubresourceLayout2EXT>() { return VK_STRUCTURE_TYPE_SUBRESOURCE_LAYOUT_2_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceCapabilities2EXT>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceCapabilities2EXT>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceCapabilities2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceCapabilities2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceCapabilitiesFullScreenExclusiveEXT>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceCapabilitiesFullScreenExclusiveEXT>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceCapabilitiesPresentBarrierNV>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_BARRIER_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceCapabilitiesPresentBarrierNV>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_BARRIER_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceFormat2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceFormat2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR; }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceFullScreenExclusiveInfoEXT>() { return VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceFullScreenExclusiveInfoEXT>() { return VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceFullScreenExclusiveWin32InfoEXT>() { return VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceFullScreenExclusiveWin32InfoEXT>() { return VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfacePresentModeCompatibilityEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_COMPATIBILITY_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfacePresentModeCompatibilityEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_COMPATIBILITY_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfacePresentModeEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfacePresentModeEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfacePresentScalingCapabilitiesEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_SCALING_CAPABILITIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfacePresentScalingCapabilitiesEXT>() { return VK_STRUCTURE_TYPE_SURFACE_PRESENT_SCALING_CAPABILITIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceProtectedCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceProtectedCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainCounterCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_COUNTER_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainCounterCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_COUNTER_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainCreateInfoKHR>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainDisplayNativeHdrCreateInfoAMD>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainDisplayNativeHdrCreateInfoAMD>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentBarrierCreateInfoNV>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_BARRIER_CREATE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentBarrierCreateInfoNV>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_BARRIER_CREATE_INFO_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentFenceInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_FENCE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentFenceInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_FENCE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentModeInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentModeInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentModesCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentModesCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentScalingCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentScalingCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT; }
+
+#ifdef VK_USE_PLATFORM_FUCHSIA
+  template <> constexpr VkStructureType ResolveSType<VkSysmemColorSpaceFUCHSIA>() { return VK_STRUCTURE_TYPE_SYSMEM_COLOR_SPACE_FUCHSIA; }
+  template <> constexpr VkStructureType ResolveSType<const VkSysmemColorSpaceFUCHSIA>() { return VK_STRUCTURE_TYPE_SYSMEM_COLOR_SPACE_FUCHSIA; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkTextureLODGatherFormatPropertiesAMD>() { return VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD; }
+  template <> constexpr VkStructureType ResolveSType<const VkTextureLODGatherFormatPropertiesAMD>() { return VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkTilePropertiesQCOM>() { return VK_STRUCTURE_TYPE_TILE_PROPERTIES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkTilePropertiesQCOM>() { return VK_STRUCTURE_TYPE_TILE_PROPERTIES_QCOM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkTimelineSemaphoreSubmitInfo>() { return VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO; }
+  template <> constexpr VkStructureType ResolveSType<const VkTimelineSemaphoreSubmitInfo>() { return VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO; }
+
+  template <> constexpr VkStructureType ResolveSType<VkValidationCacheCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkValidationCacheCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkValidationFeaturesEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkValidationFeaturesEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkValidationFlagsEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_FLAGS_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkValidationFlagsEXT>() { return VK_STRUCTURE_TYPE_VALIDATION_FLAGS_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVertexInputAttributeDescription2EXT>() { return VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVertexInputAttributeDescription2EXT>() { return VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVertexInputBindingDescription2EXT>() { return VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVertexInputBindingDescription2EXT>() { return VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT; }
+
+#ifdef VK_USE_PLATFORM_VI_NN
+  template <> constexpr VkStructureType ResolveSType<VkViSurfaceCreateInfoNN>() { return VK_STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN; }
+  template <> constexpr VkStructureType ResolveSType<const VkViSurfaceCreateInfoNN>() { return VK_STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoBeginCodingInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_BEGIN_CODING_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoBeginCodingInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_BEGIN_CODING_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoCodingControlInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_CODING_CONTROL_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoCodingControlInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_CODING_CONTROL_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264CapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264CapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264DpbSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_DPB_SLOT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264DpbSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_DPB_SLOT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264PictureInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PICTURE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264PictureInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PICTURE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264ProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PROFILE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264ProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PROFILE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264SessionParametersAddInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_ADD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264SessionParametersAddInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_ADD_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH264SessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH264SessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265CapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265CapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_CAPABILITIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265DpbSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_DPB_SLOT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265DpbSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_DPB_SLOT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265PictureInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PICTURE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265PictureInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PICTURE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265ProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PROFILE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265ProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PROFILE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265SessionParametersAddInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_ADD_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265SessionParametersAddInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_ADD_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeH265SessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeH265SessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoDecodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_USAGE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoDecodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_DECODE_USAGE_INFO_KHR; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_CAPABILITIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_CAPABILITIES_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264CapabilitiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_CAPABILITIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264CapabilitiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_CAPABILITIES_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264DpbSlotInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_DPB_SLOT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264DpbSlotInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_DPB_SLOT_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264GopRemainingFrameInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_GOP_REMAINING_FRAME_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264GopRemainingFrameInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_GOP_REMAINING_FRAME_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264NaluSliceInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_NALU_SLICE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264NaluSliceInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_NALU_SLICE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264PictureInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PICTURE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264PictureInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PICTURE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264ProfileInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PROFILE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264ProfileInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PROFILE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264QualityLevelPropertiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_QUALITY_LEVEL_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264QualityLevelPropertiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_QUALITY_LEVEL_PROPERTIES_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264RateControlInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264RateControlInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264RateControlLayerInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_LAYER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264RateControlLayerInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_LAYER_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264SessionCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264SessionCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_CREATE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264SessionParametersAddInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264SessionParametersAddInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264SessionParametersCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264SessionParametersCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_CREATE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264SessionParametersFeedbackInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_FEEDBACK_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264SessionParametersFeedbackInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_FEEDBACK_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH264SessionParametersGetInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_GET_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH264SessionParametersGetInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_GET_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265CapabilitiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_CAPABILITIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265CapabilitiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_CAPABILITIES_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265DpbSlotInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_DPB_SLOT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265DpbSlotInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_DPB_SLOT_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265GopRemainingFrameInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_GOP_REMAINING_FRAME_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265GopRemainingFrameInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_GOP_REMAINING_FRAME_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265NaluSliceSegmentInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_NALU_SLICE_SEGMENT_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265NaluSliceSegmentInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_NALU_SLICE_SEGMENT_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265PictureInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PICTURE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265PictureInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PICTURE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265ProfileInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PROFILE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265ProfileInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PROFILE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265QualityLevelPropertiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_QUALITY_LEVEL_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265QualityLevelPropertiesEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_QUALITY_LEVEL_PROPERTIES_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265RateControlInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265RateControlInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265RateControlLayerInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_LAYER_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265RateControlLayerInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_LAYER_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265SessionCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265SessionCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_CREATE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265SessionParametersAddInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265SessionParametersAddInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265SessionParametersCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265SessionParametersCreateInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265SessionParametersFeedbackInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_FEEDBACK_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265SessionParametersFeedbackInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_FEEDBACK_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeH265SessionParametersGetInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_GET_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeH265SessionParametersGetInfoEXT>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_GET_INFO_EXT; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeQualityLevelPropertiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeQualityLevelPropertiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_PROPERTIES_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeRateControlInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeRateControlInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeRateControlLayerInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeRateControlLayerInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeSessionParametersFeedbackInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_FEEDBACK_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeSessionParametersFeedbackInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_FEEDBACK_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeSessionParametersGetInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_GET_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeSessionParametersGetInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_GET_INFO_KHR; }
+#endif
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_USAGE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_USAGE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoEndCodingInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_END_CODING_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEndCodingInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_END_CODING_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoFormatPropertiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_FORMAT_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoFormatPropertiesKHR>() { return VK_STRUCTURE_TYPE_VIDEO_FORMAT_PROPERTIES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoPictureResourceInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PICTURE_RESOURCE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoPictureResourceInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PICTURE_RESOURCE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PROFILE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoProfileInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PROFILE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoProfileListInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PROFILE_LIST_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoProfileListInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_PROFILE_LIST_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoReferenceSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_REFERENCE_SLOT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoReferenceSlotInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_REFERENCE_SLOT_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoSessionCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoSessionCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoSessionMemoryRequirementsKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_MEMORY_REQUIREMENTS_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoSessionMemoryRequirementsKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_MEMORY_REQUIREMENTS_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoSessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoSessionParametersCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoSessionParametersUpdateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_UPDATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoSessionParametersUpdateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_SESSION_PARAMETERS_UPDATE_INFO_KHR; }
+
+#ifdef VK_USE_PLATFORM_WAYLAND_KHR
+  template <> constexpr VkStructureType ResolveSType<VkWaylandSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkWaylandSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkWin32KeyedMutexAcquireReleaseInfoKHR>() { return VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkWin32KeyedMutexAcquireReleaseInfoKHR>() { return VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkWin32KeyedMutexAcquireReleaseInfoNV>() { return VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkWin32KeyedMutexAcquireReleaseInfoNV>() { return VK_STRUCTURE_TYPE_WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV; }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <> constexpr VkStructureType ResolveSType<VkWin32SurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkWin32SurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR; }
+#endif
+
+  template <> constexpr VkStructureType ResolveSType<VkWriteDescriptorSet>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET; }
+  template <> constexpr VkStructureType ResolveSType<const VkWriteDescriptorSet>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET; }
+
+  template <> constexpr VkStructureType ResolveSType<VkWriteDescriptorSetAccelerationStructureKHR>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkWriteDescriptorSetAccelerationStructureKHR>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkWriteDescriptorSetAccelerationStructureNV>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV; }
+  template <> constexpr VkStructureType ResolveSType<const VkWriteDescriptorSetAccelerationStructureNV>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkWriteDescriptorSetInlineUniformBlock>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK; }
+  template <> constexpr VkStructureType ResolveSType<const VkWriteDescriptorSetInlineUniformBlock>() { return VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK; }
+
+#ifdef VK_USE_PLATFORM_XCB_KHR
+  template <> constexpr VkStructureType ResolveSType<VkXcbSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkXcbSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR; }
+#endif
+
+#ifdef VK_USE_PLATFORM_XLIB_KHR
+  template <> constexpr VkStructureType ResolveSType<VkXlibSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkXlibSurfaceCreateInfoKHR>() { return VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR; }
+#endif
 }
 
 namespace vkroots::tables {

@@ -1391,6 +1391,7 @@ class VkStruct(Sequence):
     """ Class which represents the type union and struct. """
 
     def __init__(self, name, members, returnedonly, structextends, alias=None, union=False):
+        self.extensions = []
         self.name = name
         self.members = members
         self.returnedonly = returnedonly
@@ -1863,8 +1864,12 @@ class VkRegistry(object):
             vk_types = ext.findall("require/type")
             for vk_type in vk_types:
                 type_name = vk_type.attrib["name"]
+
                 if type_name in self.enums:
                     self.enums[type_name].extensions.append(ext_name)
+                for struct in self.structs:
+                    if struct.name == type_name:
+                        struct.extensions.append(ext_name)
 
             # Some extensions are not ready or have numbers reserved as a place holder
             # or are only supported for VulkanSC.
@@ -1906,6 +1911,8 @@ class VkRegistry(object):
             # different features (e.g. Vulkan 1.1). Parse each require section
             # separately, so we can skip sections we don't want.
             for require in ext.findall("require"):
+                if not api_is_vulkan(require):
+                    continue
                 # Extensions can add enum values to Core / extension enums, so add these.
                 for enum_elem in require.findall("enum"):
                     self._process_require_enum(enum_elem, ext)

@@ -311,6 +311,24 @@ class VkGenerator(object):
                 self.print_object_platform_endif(f, enum)
         f.write( "  }\n")
 
+    def write_stype_helpers(self, f):
+        f.write(f"  template <typename Type>\n")
+        f.write(f"  constexpr VkStructureType ResolveSType();\n")
+        for struct in self.registry.structs:
+            if not struct.required:
+                continue
+
+            if struct.alias:
+                continue
+
+            for member in struct.members:
+                if member.name == 'sType' and member.values != None and member.values != "":
+                    f.write(f"\n")
+                    self.print_object_platform_ifdef(f, struct)
+                    f.write(f"  template <> constexpr VkStructureType ResolveSType<{struct.name}>() {{ return {member.values}; }}\n")
+                    f.write(f"  template <> constexpr VkStructureType ResolveSType<const {struct.name}>() {{ return {member.values}; }}\n")
+                    self.print_object_platform_endif(f, struct)
+
 def download_vk_xml(filename):
     url = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v{0}/xml/vk.xml".format(VK_XML_VERSION)
     if not os.path.isfile(filename):
@@ -351,6 +369,7 @@ def main():
         f.write( "namespace vkroots {\n")
         generator.write_dispatch_classes(f)
         generator.write_enum_string_helpers(f)
+        generator.write_stype_helpers(f)
         f.write( "}\n")
         f.write( "\n")
         write_include(f, "vkroots_dispatches.h")
