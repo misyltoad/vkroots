@@ -88,17 +88,49 @@ namespace vkroots::helpers {
     using MapData = Data;
 
     static SynchronizedMapObject get(const Key& key) {
-      std::unique_lock lock{ s_mutex };
-      auto iter = s_map.find(key);
-      if (iter == s_map.end())
-        return SynchronizedMapObject{ nullptr };
-      return SynchronizedMapObject{ iter->second, std::move(lock) };
+      {
+	  auto iter = s_map.find(key);
+	  auto waitIter = s_waitMap.find(key);
+
+	  if (waitIter == s_waitMap.end()) {
+	     s_waitMap[key] = false;
+
+	     auto newWaitIter = s_waitMap.find(key);
+	     (newWaitIter->second).wait(false);
+	  }
+	  else if (iter == s_map.end()) {
+	     (waitIter->second).wait(false);
+	  }
+
+      }
+      {
+          std::unique_lock lock{ s_mutex };
+          auto iter = s_map.find(key);
+          if (iter == s_map.end()) {
+            return SynchronizedMapObject{ nullptr };
+          }
+          return SynchronizedMapObject{ iter->second, std::move(lock) };
+      }
     }
 
     static SynchronizedMapObject create(const Key& key, Data data) {
+      {
+      	auto iter = s_waitMap.find(key);
+      	if (iter != s_waitMap.end())
+      	   (iter->second) = false;
+      }
+      
       std::unique_lock lock{ s_mutex };
       auto val = s_map.insert(std::make_pair(key, std::move(data)));
-      return SynchronizedMapObject{ val.first->second, std::move(lock) };
+      auto ret = SynchronizedMapObject{ val.first->second, std::move(lock) };
+
+      {
+      	auto iter = s_waitMap.find(key);
+      	if (iter != s_waitMap.end())
+      	   (iter->second) = true;
+      } 
+
+      return ret;
     }
 
     static bool remove(const Key& key) {
@@ -152,7 +184,10 @@ namespace vkroots::helpers {
 
     Data *m_data;
     std::unique_lock<std::mutex> m_lock;
-
+    
+    static std::unordered_map<Key, std::atomic<bool>> s_waitMap; // latch to avoid deadlocks caused by lock-order-inversion, 
+    //wherein one thread (T1) tries to access data from object A first, and then another (T2) thread is still creating object A
+    //Yet somehow thread T2 ends up getting stuck waiting to acquire the lock for object A
     static std::mutex s_mutex;
     static std::unordered_map<Key, Data> s_map;
   };
@@ -162,7 +197,8 @@ namespace vkroots::helpers {
 
 #define VKROOTS_IMPLEMENT_SYNCHRONIZED_MAP_TYPE(x) \
   template <> std::mutex x::s_mutex = {}; \
-  template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {};
+  template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {}; \
+  template <> std::unordered_map<x::MapKey, std::atomic<bool>> x::s_waitMap = {};
 
 }
 

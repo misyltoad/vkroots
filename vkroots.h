@@ -16799,7 +16799,8 @@ namespace vkroots::helpers {
 
 #define VKROOTS_IMPLEMENT_SYNCHRONIZED_MAP_TYPE(x) \
   template <> std::mutex x::s_mutex = {}; \
-  template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {};
+  template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {}; \
+  template <> std::unordered_map<x::MapKey, std::atomic<bool>> x::s_waitMap = {};
 
 }
 
