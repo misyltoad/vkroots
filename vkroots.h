@@ -16690,53 +16690,98 @@ namespace vkroots::helpers {
 
     static SynchronizedMapObject get(const Key& key) {
       {
+#ifdef VKROOTS_DEBUG
+      	  printf("in get()\n");
+#endif
 	  auto iter = s_map.find(key);
 	  auto waitIter = s_waitMap.find(key);
-	  
-	  if (waitIter == s_waitMap.end()) {
-	     s_waitMap[key] = false;
+	  if (waitIter == s_waitMap.end() && iter == s_map.end()) {
+	     
+	     uint32_t pendingIdx = (s_pendingWaitsIdx++) + 1; //note: atomic::operator++(int) returns the value *before* the increment
+	     uint32_t targetIndex = pendingIdx + s_waitMapIdx;
+	     
+	     s_pendingWaits[pendingIdx] = key;
 
-	     auto newWaitIter = s_waitMap.find(key);
-	     (newWaitIter->second).wait(false);
+	     std::atomic<bool> * bAtm = reinterpret_cast<std::atomic<bool> *>(&s_boolPool[targetIndex]);
+	     bAtm->wait(false);
+	     
 	  }
 	  else if (iter == s_map.end()) {
-	     (waitIter->second).wait(false);
+	    std::atomic<bool> * bAtm = reinterpret_cast<std::atomic<bool> *>(waitIter->second);
+	    bAtm->wait(false);
 	  }
 
       }
       {
           std::unique_lock lock{ s_mutex };
           auto iter = s_map.find(key);
+#ifdef VKROOTS_DEBUG
+          printf("out of get()\n");
+#endif
           if (iter == s_map.end()) {
             return SynchronizedMapObject{ nullptr };
           }
           return SynchronizedMapObject{ iter->second, std::move(lock) };
       }
+      
     }
 
     static SynchronizedMapObject create(const Key& key, Data data) {
+#ifdef VKROOTS_DEBUG
+      printf("in create()\n");
+#endif
       {
       	auto iter = s_waitMap.find(key);
-      	if (iter != s_waitMap.end())
-      	   (iter->second) = false;
+      	if (iter != s_waitMap.end()) {
+      	   std::atomic<bool> * bAtm = reinterpret_cast<std::atomic<bool> *>(iter->second);
+      	   bAtm->store(false);
+      	}
       } 
-      
+
       std::unique_lock lock{ s_mutex };
+      
+      uint32_t pendingIdx = s_pendingWaitsIdx;
+      Key pending[pendingIdx];
+      
+      if ( pendingIdx > 0 ) {
+        for (uint32_t i = 0; i < pendingIdx; i++) {
+          pending[i]=s_pendingWaits[i];
+        }
+        
+        uint32_t mapIdx = s_waitMapIdx;
+        
+        for (uint32_t i = mapIdx; i < mapIdx + pendingIdx; i++) {
+            s_waitMap[pending[i-mapIdx]] = &s_boolPool[i];
+        }
+        
+        s_pendingWaitsIdx -= pendingIdx;
+        s_waitMapIdx += pendingIdx;
+      }
+      
       auto val = s_map.insert(std::make_pair(key, std::move(data)));
       auto ret = SynchronizedMapObject{ val.first->second, std::move(lock) };
-      
       {
       	auto iter = s_waitMap.find(key);
-      	if (iter != s_waitMap.end())
-      	   (iter->second) = true;
-      } 
-      
+      	if (iter != s_waitMap.end()) {
+      	   std::atomic<bool> * bAtm = reinterpret_cast<std::atomic<bool> *>(iter->second);
+      	   bAtm->store(true);
+      	}
+      }
+#ifdef VKROOTS_DEBUG 
+      printf("out of create()\n");
+#endif
       return ret;
     }
 
     static bool remove(const Key& key) {
+#ifdef VKROOTS_DEBUG
+      printf("in remove()\n");
+#endif
       std::unique_lock lock{ s_mutex };
       auto iter = s_map.find(key);
+#ifdef VKROOTS_DEBUG
+      printf("out of remove()\n");
+#endif
       if (iter == s_map.end())
         return false;
       s_map.erase(iter);
@@ -16786,10 +16831,16 @@ namespace vkroots::helpers {
     Data *m_data;
     std::unique_lock<std::mutex> m_lock;
 
-        
-    static std::unordered_map<Key, std::atomic<bool>> s_waitMap; // latch to avoid deadlocks caused by lock-order-inversion, 
+    static std::array<bool, 64> s_boolPool;
+
+    static std::unordered_map<Key, bool*> s_waitMap; // latch to avoid deadlocks caused by lock-order-inversion, 
     //wherein one thread (T1) tries to access data from object A first, and then another (T2) thread is still creating object A
     //Yet somehow thread T2 ends up getting stuck waiting to acquire the lock for object A
+    static std::atomic<uint32_t> s_waitMapIdx; 
+    
+    static Key s_pendingWaits[64];
+    static std::atomic<uint32_t> s_pendingWaitsIdx;
+    
     static std::mutex s_mutex;
     static std::unordered_map<Key, Data> s_map;
   };
@@ -16800,7 +16851,11 @@ namespace vkroots::helpers {
 #define VKROOTS_IMPLEMENT_SYNCHRONIZED_MAP_TYPE(x) \
   template <> std::mutex x::s_mutex = {}; \
   template <> std::unordered_map<x::MapKey, x::MapData> x::s_map = {}; \
-  template <> std::unordered_map<x::MapKey, std::atomic<bool>> x::s_waitMap = {};
+  template <> std::unordered_map<x::MapKey, bool*> x::s_waitMap = {}; \
+  template <> x::MapKey x::s_pendingWaits[64] = {}; \
+  template <> std::atomic<uint32_t> x::s_waitMapIdx = 0; \
+  template <> std::atomic<uint32_t> x::s_pendingWaitsIdx = 0; \
+  template <> std::array<bool, 64> x::s_boolPool = {};
 
 }
 
