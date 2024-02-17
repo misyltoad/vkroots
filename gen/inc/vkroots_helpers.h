@@ -140,9 +140,8 @@ namespace vkroots::helpers {
       std::unique_lock lock{ s_mutex };
       
       uint32_t pendingIdx = s_pendingWaitsIdx;
-      Key pending[pendingIdx];
-      
       if ( pendingIdx > 0 ) {
+        Key pending[pendingIdx];
         for (uint32_t i = 0; i < pendingIdx; i++) {
           pending[i]=s_pendingWaits[i];
         }

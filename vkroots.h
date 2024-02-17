@@ -19,8 +19,8 @@
 #include <optional>
 #include <string_view>
 #include <array>
-#include <atomic>
 #include <functional>
+#include <atomic>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1
@@ -16741,9 +16741,8 @@ namespace vkroots::helpers {
       std::unique_lock lock{ s_mutex };
       
       uint32_t pendingIdx = s_pendingWaitsIdx;
-      Key pending[pendingIdx];
-      
       if ( pendingIdx > 0 ) {
+        Key pending[pendingIdx];
         for (uint32_t i = 0; i < pendingIdx; i++) {
           pending[i]=s_pendingWaits[i];
         }
