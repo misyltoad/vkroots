@@ -35,6 +35,18 @@ namespace vkroots {
     return nullptr;
   }
 
+  template <typename Type, typename AnyStruct>
+  Type *RemoveFromChain(AnyStruct *obj) {
+    for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
+      VkBaseOutStructure *pNextInChain = header->pNext;
+      if (pNextInChain && pNextInChain->sType == ResolveSType<Type>()) {
+        header->pNext = pNextInChain->pNext;
+        return reinterpret_cast<Type*>(pNextInChain);
+      }
+    }
+    return nullptr;
+  }
+
   namespace tables {
 
     template <typename T>
