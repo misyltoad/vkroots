@@ -16643,10 +16643,40 @@ namespace vkroots::helpers {
       ? VK_INCOMPLETE
       : VK_SUCCESS;
   }
+  
+  template <typename T, typename ArrType, typename Op>
+  inline VkResult array(ArrType& arr, uint32_t *pCount, T** pOut, Op func) {
+    const uint32_t count = uint32_t(arr.size());
+
+    if (!pOut) {
+      *pCount = count;
+      return VK_SUCCESS;
+    }
+
+    const uint32_t outCount = std::min(*pCount, count);
+    for (uint32_t i = 0; i < outCount; i++)
+      func(pOut[i], &((arr.data())[i]) );
+
+    *pCount = outCount;
+    return count != outCount
+      ? VK_INCOMPLETE
+      : VK_SUCCESS;
+  }
+  
+
+  template <typename T, typename ArrType>
+  inline VkResult array(const ArrType& arr, uint32_t *pCount, T** pOut) {
+    return array(const_cast<ArrType&>(arr), pCount, pOut, [](T*& x, auto y) { x = std::move(y); });
+  }
+
+  template <typename T, typename ArrType>
+  inline VkResult array(ArrType& arr, uint32_t *pCount, T** pOut) {
+    return array(arr, pCount, pOut, [](T*& x, auto y) { x = y; });
+  }
 
   template <typename T, typename ArrType>
   inline VkResult array(ArrType& arr, uint32_t *pCount, T* pOut) {
-    return array(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
+    return array(arr, pCount, pOut, [](T& x, auto y) { x = y; });
   }
 
   template <typename Func, typename OutArray, typename... Args>
