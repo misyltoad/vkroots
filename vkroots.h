@@ -16697,20 +16697,48 @@ namespace vkroots::helpers {
   class SynchronizedMapObject {
   public:
     using MapKey = Key;
-    using MapData = Data;
+    using MapData = SynchronizedMapObject<Key, Data>;
 
-    static SynchronizedMapObject get(const Key& key) {
+    SynchronizedMapObject(std::shared_ptr<Data> data)
+      : m_data{std::move(data)} {
+    }
+    SynchronizedMapObject(const SynchronizedMapObject<Key, Data>& other)
+      : m_data{other.m_data} {
+    }
+    SynchronizedMapObject(SynchronizedMapObject<Key, Data>&& other)
+      : m_data{std::move(other.m_data)} {
+    }
+    SynchronizedMapObject(std::nullptr_t) {
+    }
+
+    SynchronizedMapObject& operator = (std::nullptr_t) {
+      m_data = nullptr;
+      return *this;
+    }
+
+    SynchronizedMapObject& operator = (const SynchronizedMapObject& other) {
+      m_data = other.m_data;
+    }
+
+    SynchronizedMapObject& operator = (SynchronizedMapObject&& other) {
+      m_data = std::move(other.m_data);
+    }
+
+    static SynchronizedMapObject<Key, Data> get(const Key& key) {
       std::unique_lock lock{ s_mutex };
       auto iter = s_map.find(key);
       if (iter == s_map.end())
-        return SynchronizedMapObject{ nullptr };
-      return SynchronizedMapObject{ iter->second, std::move(lock) };
+        return nullptr;
+      return iter->second;
     }
 
-    static SynchronizedMapObject create(const Key& key, Data data) {
+    static SynchronizedMapObject<Key, Data> create(const Key& key, Data data) {
       std::unique_lock lock{ s_mutex };
-      auto val = s_map.insert(std::make_pair(key, std::move(data)));
-      return SynchronizedMapObject{ val.first->second, std::move(lock) };
+      auto val = s_map.emplace(
+        std::piecewise_construct,
+        std::forward_as_tuple(key),
+        std::forward_as_tuple(std::make_shared<Data>(std::move(data))));
+      return val.first->second;
     }
 
     static bool remove(const Key& key) {
@@ -16723,11 +16751,11 @@ namespace vkroots::helpers {
     }
 
     Data* get() {
-      return m_data;
+      return m_data.get();
     }
 
     const Data* get() const {
-      return m_data;
+      return m_data.get();
     }
 
     Data* operator->() {
@@ -16746,27 +16774,12 @@ namespace vkroots::helpers {
       return has();
     }
 
-    void clear() {
-      m_data = nullptr;
-      m_lock = {};
-    }
-
-    SynchronizedMapObject(SynchronizedMapObject&& other)
-      : m_data{ other.m_data }, m_lock{ std::move(other.m_lock) } {
-    }
-
   private:
-    SynchronizedMapObject(std::nullptr_t)
-        : m_data{ nullptr }, m_lock{} {}
 
-    SynchronizedMapObject(Data& data, std::unique_lock<std::mutex> lock) noexcept
-        : m_data{ &data }, m_lock{ std::move(lock) } {}
-
-    Data *m_data;
-    std::unique_lock<std::mutex> m_lock;
+    std::shared_ptr<Data> m_data;
 
     static std::mutex s_mutex;
-    static std::unordered_map<Key, Data> s_map;
+    static std::unordered_map<MapKey, MapData> s_map;
   };
 
 #define VKROOTS_DEFINE_SYNCHRONIZED_MAP_TYPE(name, key) \
