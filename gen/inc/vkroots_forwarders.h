@@ -36,15 +36,24 @@ namespace vkroots {
   }
 
   template <typename Type, typename AnyStruct>
-  Type *RemoveFromChain(AnyStruct *obj) {
+  std::tuple<Type *, VkBaseOutStructure *> RemoveFromChain(AnyStruct *obj) {
     for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
       VkBaseOutStructure *pNextInChain = header->pNext;
       if (pNextInChain && pNextInChain->sType == ResolveSType<Type>()) {
         header->pNext = pNextInChain->pNext;
-        return reinterpret_cast<Type*>(pNextInChain);
+        return std::make_tuple(reinterpret_cast<Type*>(pNextInChain), header);
       }
     }
-    return nullptr;
+    return std::make_tuple(nullptr, nullptr);
+  }
+
+  template <typename Type, typename AnyStruct>
+  Type *AddToChain(AnyStruct *pParent, Type *pType) {
+    void **ppParentNext = reinterpret_cast<void **>(&pParent->pNext);
+    void **ppTypeNext   = reinterpret_cast<void **>(&pType->pNext);
+
+    *ppTypeNext = std::exchange(*ppParentNext, reinterpret_cast<void *>(pType));
+    return pType;
   }
 
   namespace tables {
