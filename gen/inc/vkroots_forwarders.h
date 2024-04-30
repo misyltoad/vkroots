@@ -17,8 +17,26 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkLayerDeviceCreateInfo>() { return VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO; }
 
+  template <typename T>
+  static constexpr bool TypeIsSinglePointer() {
+    // If we aren't a pointer at all, return false
+    // eg. int
+    if (!std::is_pointer<T>::value)
+      return false;
+
+    // If we are still a pointer after removing pointer, return false.
+    // eg. void**
+    if (std::is_pointer<typename std::remove_pointer<T>::type>::value)
+      return false;
+
+    // Must be a single * ptr.
+    return true;
+  }
+
   template <typename Type, typename AnyStruct>
   const Type* FindInChain(const AnyStruct* obj) {
+    static_assert(TypeIsSinglePointer<decltype(obj)>());
+
     for (const VkBaseInStructure* header = reinterpret_cast<const VkBaseInStructure*>(obj); header; header = header->pNext) {
       if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<const Type*>(header);
@@ -28,6 +46,8 @@ namespace vkroots {
 
   template <typename Type, typename AnyStruct>
   Type* FindInChainMutable(AnyStruct* obj) {
+    static_assert(TypeIsSinglePointer<decltype(obj)>());
+
     for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
       if (header->sType == ResolveSType<Type>())
         return reinterpret_cast<Type*>(header);
@@ -37,6 +57,8 @@ namespace vkroots {
 
   template <typename Type, typename AnyStruct>
   std::tuple<Type *, VkBaseOutStructure *> RemoveFromChain(AnyStruct *obj) {
+    static_assert(TypeIsSinglePointer<decltype(obj)>());
+
     for (VkBaseOutStructure* header = reinterpret_cast<VkBaseOutStructure*>(obj); header; header = header->pNext) {
       VkBaseOutStructure *pNextInChain = header->pNext;
       if (pNextInChain && pNextInChain->sType == ResolveSType<Type>()) {
@@ -49,6 +71,9 @@ namespace vkroots {
 
   template <typename Type, typename AnyStruct>
   Type *AddToChain(AnyStruct *pParent, Type *pType) {
+    static_assert(TypeIsSinglePointer<decltype(pParent)>());
+    static_assert(TypeIsSinglePointer<decltype(pType)>());
+
     void **ppParentNext = reinterpret_cast<void **>(&pParent->pNext);
     void **ppTypeNext   = reinterpret_cast<void **>(&pType->pNext);
 
