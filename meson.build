@@ -18,5 +18,6 @@ pkgconfig.generate(
   filebase: meson.project_name(),
   name: meson.project_name(),
   description: 'Vulkan layers library',
-  subdirs: '.'
+  subdirs: '.',
+  install_dir: 'share/pkgconfig'
 )
