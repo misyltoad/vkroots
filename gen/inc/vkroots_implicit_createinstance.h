@@ -1,5 +1,5 @@
+namespace vkroots {
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static VkResult implicit_wrap_CreateInstance(
     const VkInstanceCreateInfo*  pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
@@ -15,3 +15,4 @@
     return ret;
   }
 
+}

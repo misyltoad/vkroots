@@ -1,5 +1,5 @@
+namespace vkroots {
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
   static void implicit_wrap_DestroyInstance(
           VkInstance             instance,
     const VkAllocationCallbacks* pAllocator) {
@@ -9,3 +9,4 @@
     dispatch->DestroyInstance(instance, pAllocator);
   }
 
+}

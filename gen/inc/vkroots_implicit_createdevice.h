@@ -1,5 +1,5 @@
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+namespace vkroots {
+  
   static VkResult implicit_wrap_CreateDevice(
             VkPhysicalDevice       physicalDevice,
       const VkDeviceCreateInfo*    pCreateInfo,
@@ -10,9 +10,10 @@
     VkResult procAddrRes = GetProcAddrs(pCreateInfo, &deviceProcAddr);
     if (procAddrRes != VK_SUCCESS)
       return procAddrRes;
-    VkResult ret = dispatch->CreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
+    VkResult ret = dispatch->_RealCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
     if (ret == VK_SUCCESS)
       tables::CreateDispatchTable(pCreateInfo, deviceProcAddr, physicalDevice, *pDevice);
     return ret;
   }
 
+}
