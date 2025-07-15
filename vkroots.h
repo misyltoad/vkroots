@@ -20,6 +20,7 @@
 #include <string_view>
 #include <array>
 #include <functional>
+#include <any>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1
@@ -396,7 +397,7 @@ namespace vkroots {
       this->m_SubmitDebugUtilsMessageEXT = (PFN_vkSubmitDebugUtilsMessageEXT) NextGetInstanceProcAddr(instance, "vkSubmitDebugUtilsMessageEXT");
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char *pName) const { return m_GetPhysicalDeviceProcAddr(instance, pName); }    VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return m_AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const { return m_AcquireWinrtDisplayNV(physicalDevice, display); }
@@ -752,7 +753,7 @@ namespace vkroots {
       this->pInstanceDispatch = pInstanceDispatch;
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pInstanceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const { return pInstanceDispatch->AcquireWinrtDisplayNV(physicalDevice, display); }
@@ -1627,7 +1628,7 @@ namespace vkroots {
       this->m_WriteMicromapsPropertiesEXT = (PFN_vkWriteMicromapsPropertiesEXT) NextGetDeviceProcAddr(device, "vkWriteMicromapsPropertiesEXT");
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pPhysicalDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return m_AcquireFullScreenExclusiveModeEXT(device, swapchain); }
@@ -3205,7 +3206,7 @@ namespace vkroots {
       this->pDeviceDispatch = pDeviceDispatch;
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }
@@ -4074,7 +4075,7 @@ namespace vkroots {
       this->pDeviceDispatch = pDeviceDispatch;
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }
@@ -4943,7 +4944,7 @@ namespace vkroots {
       this->pDeviceDispatch = pDeviceDispatch;
     }
 
-    mutable uint64_t UserData = 0;
+    mutable std::any UserData;
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }

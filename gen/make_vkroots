@@ -139,7 +139,7 @@ class VkGenerator(object):
                     f.write(f"      this->m_{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
                 self.print_object_platform_endif(f, func);
         f.write(f"    }}\n\n")
-        f.write( "    mutable uint64_t UserData = 0;\n")
+        f.write( "    mutable std::any UserData;\n")
 
         if dispatch_type == "Instance":
             f.write( "    PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char *pName) const { return m_GetPhysicalDeviceProcAddr(instance, pName); }")
