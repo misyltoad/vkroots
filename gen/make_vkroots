@@ -139,6 +139,7 @@ class VkGenerator(object):
                     f.write(f"      this->m_{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
                 self.print_object_platform_endif(f, func);
         f.write(f"    }}\n\n")
+        f.write( "    // Put your types you want to associate with any dispatchable object here. This is a std::any, so it's destructor will trigger when the dispatchable object is destroyed.\n")
         f.write( "    mutable std::any UserData;\n")
 
         if dispatch_type == "Instance":
