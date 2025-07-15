@@ -32,20 +32,6 @@ namespace vkroots::helpers {
       : VK_SUCCESS;
   }
 
-    template <typename Func, typename OutArray, typename... Args>
-    uint32_t enumerate( Func function, OutArray& outArray, Args&&... arguments )
-    {
-        uint32_t count = 0;
-        function( arguments..., &count, nullptr );
-
-        outArray.resize( count );
-        if ( !count )
-            return 0;
-
-        function( std::forward<Args>( arguments )..., &count, outArray.data() );
-        return count;
-    }
-
   template <typename T, typename ArrType>
   inline VkResult array(ArrType& arr, uint32_t *pCount, T* pOut) {
     return array(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
