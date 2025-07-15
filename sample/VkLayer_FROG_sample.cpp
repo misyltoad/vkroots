@@ -20,5 +20,4 @@ namespace MyLayer {
 }
 
 VKROOTS_DEFINE_LAYER_INTERFACES(vkroots::NoOverrides,
-                                vkroots::NoOverrides,
                                 MyLayer::VkDeviceOverrides);

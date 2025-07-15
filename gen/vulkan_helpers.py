@@ -41,20 +41,6 @@ EXT_BLOCK_SIZE = 1000
 
 VK_VERSION = (1, 3)
 
-CORE_EXTENSIONS = [
-    "VK_KHR_display",
-    "VK_KHR_display_swapchain",
-    "VK_KHR_get_surface_capabilities2",
-    "VK_KHR_surface",
-    "VK_KHR_swapchain",
-
-    "VK_KHR_xlib_surface",
-    "VK_KHR_xcb_surface",
-    "VK_KHR_wayland_surface",
-    "VK_KHR_win32_surface",
-    "VK_EXT_headless_surface",
-]
-
 LOGGER = logging.Logger("vkroots")
 LOGGER.addHandler(logging.StreamHandler())
 
@@ -396,7 +382,7 @@ class VkFunction(object):
 
     def is_device_func(self):
         # If none of the other, it must be a device function
-        return not self.is_global_func() and not self.is_instance_func() and not self.is_phys_dev_func()
+        return not self.is_global_func() and not self.is_instance_func()
 
     def is_global_func(self):
         # Global functions are not passed a dispatchable object.
@@ -408,17 +394,9 @@ class VkFunction(object):
         # Instance functions are passed VkInstance.
         if self.name == "vkCreateInstance":
             return True
-        if self.params[0].type == "VkPhysicalDevice" and self.is_core_func():
+        if self.params[0].type == "VkPhysicalDevice":
             return True
         if self.params[0].type == "VkInstance":
-            return True
-        return False
-
-    def is_phys_dev_func(self):
-        # Physical device functions are passed VkPhysicalDevice.
-        # BUT they aren't phys dev functions if they are in core.
-        # *sigh*
-        if not self.is_core_func() and self.params[0].type == "VkPhysicalDevice":
             return True
         return False
 
@@ -428,8 +406,6 @@ class VkFunction(object):
     def get_func_type(self):
         if self.is_instance_func():
             return "Instance"
-        if self.is_phys_dev_func():
-            return "PhysicalDevice"
         if self.is_device_func():
             return "Device"
 
@@ -1728,8 +1704,6 @@ class VkRegistry(object):
                 device_funcs.append(func)
             elif func.is_global_func():
                 global_funcs.append(func)
-            elif func.is_phys_dev_func():
-                phys_dev_funcs.append(func)
             else:
                 instance_funcs.append(func)
 

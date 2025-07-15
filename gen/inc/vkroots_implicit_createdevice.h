@@ -5,12 +5,12 @@ namespace vkroots {
       const VkDeviceCreateInfo*    pCreateInfo,
       const VkAllocationCallbacks* pAllocator,
             VkDevice*              pDevice) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     PFN_vkGetDeviceProcAddr deviceProcAddr;
     VkResult procAddrRes = GetProcAddrs(pCreateInfo, &deviceProcAddr);
     if (procAddrRes != VK_SUCCESS)
       return procAddrRes;
-    VkResult ret = dispatch->_RealCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
+    VkResult ret = dispatch->pInstanceDispatch->_RealCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
     if (ret == VK_SUCCESS)
       tables::CreateDispatchTable(pCreateInfo, deviceProcAddr, physicalDevice, *pDevice);
     return ret;

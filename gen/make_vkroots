@@ -91,16 +91,13 @@ class VkGenerator(object):
         f.write(f"  class Vk{dispatch_type}Dispatch {{\n")
         f.write( "  public:\n")
         additional_args = ""
-        if dispatch_type == "PhysicalDevice":
-            additional_args += ", const VkInstanceDispatch* pInstanceDispatch"
+        if dispatch_type == "Instance":
+            additional_args += ", PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr"
         if dispatch_type == "Device":
             additional_args += ", VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch, const VkDeviceCreateInfo* pCreateInfo"
         f.write(f"    Vk{dispatch_type}Dispatch(PFN_{procaddr} Next{procaddr_normalized}, Vk{procaddr_type} {procaddr_name}{additional_args}) {{\n")
         if dispatch_type == "Instance":
             f.write(f"      this->Instance = instance;\n")
-        if dispatch_type == "PhysicalDevice":
-            f.write(f"      this->Instance = instance;\n")
-            f.write(f"      this->pInstanceDispatch = pInstanceDispatch;\n")
             f.write(f"      this->GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;\n")
         if dispatch_type == "Device":
             f.write(f"      this->PhysicalDevice = PhysicalDevice;\n")
@@ -132,9 +129,6 @@ class VkGenerator(object):
         f.write( "    mutable uint64_t UserData = 0;\n")
         if dispatch_type == "Instance":
             f.write( "    VkInstance Instance;\n")
-        if dispatch_type == "PhysicalDevice":
-            f.write( "    VkInstance Instance;\n")
-            f.write( "    const VkInstanceDispatch* pInstanceDispatch;\n")
             f.write( "    PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;\n")
         if dispatch_type == "Device":
             f.write( "    VkDevice Device;\n")
@@ -176,12 +170,17 @@ class VkGenerator(object):
                 params   = ", ".join([p.definition() for p in func.params])
                 args     = ", ".join([p.name for p in func.params])
                 return_v = f"{func.type} ret = " if func.type != "void" else ""
-                f.write( "  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>\n")
+                f.write( "  template <typename InstanceOverrides, typename DeviceOverrides>\n")
                 f.write(f"  static {func.type} wrap_{func_name_normalized}({params}) {{\n")
+
+                local_dispatch_type = dispatch_type
+                if dispatch_type == "Instance" and func.params[0].type == "VkPhysicalDevice":
+                    local_dispatch_type = "PhysicalDevice"
+
                 if func.name == "vkCreateInstance":
-                    f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(implicit_wrap_CreateInstance, {args});\n")
+                    f.write(f"    {return_v}{local_dispatch_type}Overrides::{func_name_normalized}(implicit_wrap_CreateInstance, {args});\n")
                 else:
-                    f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({func.params[0].name});\n")
+                    f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = tables::Lookup{local_dispatch_type}Dispatch({func.params[0].name});\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
                 if func.type != "void":
                     f.write(f"    return ret;\n")
@@ -192,27 +191,29 @@ class VkGenerator(object):
         procaddr_normalized = f"Get{dispatch_type}ProcAddr"
         procaddr = f"vk{procaddr_normalized}"
 
-        f.write( "  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>\n")
+        f.write( "  template <typename InstanceOverrides, typename DeviceOverrides>\n")
         f.write(f"  static PFN_vkVoidFunction Get{dispatch_type}ProcAddr(Vk{procaddr_type} {procaddr_name}, const char* name) {{\n")
-        f.write(f"    const Vk{dispatch_type}Dispatch* dispatch = tables::Lookup{dispatch_type}Dispatch({procaddr_name});\n")
+        f.write(f"    const Vk{procaddr_type}Dispatch* dispatch = tables::Lookup{procaddr_type}Dispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
             if not func.is_required():
                 continue
-            if func.get_func_type() == dispatch_type:
+            if func.get_func_type() == procaddr_type:
+                if dispatch_type == "PhysicalDevice" and func.params[0].type != "VkPhysicalDevice":
+                    continue
                 self.print_object_platform_ifdef(f, func)
                 func_name_normalized = remove_vk_prefix(func.name)
                 if is_proc_addr_func(func.name):
                     f.write(f"    if (!std::strcmp(\"{func.name}\", name))\n")
-                    f.write(f"      return (PFN_vkVoidFunction) &{func_name_normalized}<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                    f.write(f"      return (PFN_vkVoidFunction) &{func_name_normalized}<InstanceOverrides, DeviceOverrides>;\n")
                 else:
-                    f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {dispatch_type}Overrides& t) {{ &{dispatch_type}Overrides::{func_name_normalized}; }};\n")
+                    f.write(f"    constexpr bool Has{func_name_normalized} = requires(const {procaddr_type}Overrides& t) {{ &{procaddr_type}Overrides::{func_name_normalized}; }};\n")
                     f.write(f"    if constexpr (Has{func_name_normalized}) {{\n")
                     # VS is smart enough to make stateless lambdas with the right calling conventions.
                     # if you simply just cast them to the right function pointer type!
                     # Versions which are unused are elimated by the linker.
                     # TODO: Is this enough for MinGW?
                     f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                    f.write(f"        return (PFN_vkVoidFunction) &wrap_{func_name_normalized}<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
+                    f.write(f"        return (PFN_vkVoidFunction) &wrap_{func_name_normalized}<InstanceOverrides, DeviceOverrides>;\n")
                     f.write( "    }\n")
                     if func.name == "vkCreateInstance":
                         f.write( "    else {\n")
@@ -240,11 +241,9 @@ class VkGenerator(object):
         # WHY DOES THIS EXIST????
         # PLEASE TELL ME.
         # I ALREADY GAVE YOU THIS IN vkNegotiateLoaderLayerInterfaceVersion!!! :(
-        if dispatch_type == "PhysicalDevice":
-            f.write( "    if constexpr (!std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value || !std::is_base_of<NoOverrides, DeviceOverrides>::value) {\n")
-            f.write(f"      if (!std::strcmp(\"vk_layerGetPhysicalDeviceProcAddr\", name))\n")
-            f.write(f"        return (PFN_vkVoidFunction) &GetPhysicalDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;\n")
-            f.write( "    }\n")
+        if dispatch_type == "Instance":
+            f.write(f"    if (!std::strcmp(\"vk_layerGetPhysicalDeviceProcAddr\", name))\n")
+            f.write(f"      return (PFN_vkVoidFunction) &GetPhysicalDeviceProcAddr<InstanceOverrides, DeviceOverrides>;\n")
             f.write(f"\n")
         f.write(f"    if (dispatch)\n")
         f.write(f"      return dispatch->{procaddr_normalized}({procaddr_name}, name);\n")
@@ -254,11 +253,9 @@ class VkGenerator(object):
 
     def write_dispatch_classes(self, f):
         self.write_dispatch_class(f, "Instance", "instance",             "Instance", "instance")
-        self.write_dispatch_class(f, "PhysicalDevice", "physicalDevice", "Instance", "instance")
         self.write_dispatch_class(f, "Device", "device",                 "Device",   "device")
 
         self.write_dispatch_funcs(f, "Instance", "instance",             "Instance", "instance")
-        self.write_dispatch_funcs(f, "PhysicalDevice", "physicalDevice", "Instance", "instance")
         self.write_dispatch_funcs(f, "Device", "device",                 "Device",   "device")
 
         self.write_dispatch_impls(f, "Instance", "instance",             "Instance", "instance")
@@ -364,11 +361,17 @@ def main():
 
                 f.write(f"  static {retval} implicit_wrap_{func_name_normalized}({params});\n")
 
+        f.write( "\n")
+        f.write("  template <typename InstanceOverrides, typename DeviceOverrides>\n")
+        f.write("  static PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char* name);\n\n")
+
         generator.write_dispatch_classes(f)
         generator.write_enum_string_helpers(f)
         generator.write_stype_helpers(f)
         f.write( "}\n")
         f.write( "\n")
+
+        write_include(f, "vkroots_extra_dispatch_tables.h")
 
         write_include(f, "vkroots_implicit_createinstance.h")
         write_include(f, "vkroots_implicit_destroyinstance.h")

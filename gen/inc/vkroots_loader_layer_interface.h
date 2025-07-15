@@ -1,21 +1,21 @@
 namespace vkroots {
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   VkResult NegotiateLoaderLayerInterfaceVersion(VkNegotiateLayerInterface* pVersionStruct) {
     if (pVersionStruct->loaderLayerInterfaceVersion < 2)
       return VK_ERROR_INITIALIZATION_FAILED;
     pVersionStruct->loaderLayerInterfaceVersion = 2;
 
     // Can't optimize away not having instance overrides from the layer, need to track device creation and instance dispatch and stuff.
-    pVersionStruct->pfnGetInstanceProcAddr       = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
+    pVersionStruct->pfnGetInstanceProcAddr       = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetInstanceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
-    pVersionStruct->pfnGetPhysicalDeviceProcAddr = std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
+                                                     : &GetInstanceProcAddr<InstanceOverrides, DeviceOverrides>;
+    pVersionStruct->pfnGetPhysicalDeviceProcAddr = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetPhysicalDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+                                                     : &GetPhysicalDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
     pVersionStruct->pfnGetDeviceProcAddr         = std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+                                                     : &GetDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
 
     return VK_SUCCESS;
   }
@@ -47,7 +47,7 @@ namespace vkroots {
 
 #endif
 
-#define VKROOTS_DEFINE_LAYER_INTERFACES(InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides)                                   \
+#define VKROOTS_DEFINE_LAYER_INTERFACES(InstanceOverrides, DeviceOverrides)                                   \
   VK_LAYER_EXPORT VKAPI_ATTR VkResult VKAPI_CALL VKROOTS_NEGOTIATION_INTERFACE(VkNegotiateLayerInterface* pVersionStruct) {            \
-    return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>(pVersionStruct); \
+    return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, DeviceOverrides>(pVersionStruct); \
   }

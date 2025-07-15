@@ -152,15 +152,13 @@ namespace vkroots {
 
     // All our dispatchables...
     inline VkDispatchTableMap<VkInstance,       VkInstanceDispatch,       std::unique_ptr<const VkInstanceDispatch>>       InstanceDispatches;
-    inline VkDispatchTableMap<VkInstance,       VkPhysicalDeviceDispatch, std::unique_ptr<const VkPhysicalDeviceDispatch>> PhysicalDeviceInstanceDispatches;
-    inline VkDispatchTableMap<VkPhysicalDevice, VkPhysicalDeviceDispatch, RawPointer     <const VkPhysicalDeviceDispatch>> PhysicalDeviceDispatches;
+    inline VkDispatchTableMap<VkPhysicalDevice, VkPhysicalDeviceDispatch, std::unique_ptr<const VkPhysicalDeviceDispatch>> PhysicalDeviceDispatches;
     inline VkDispatchTableMap<VkDevice,         VkDeviceDispatch,         std::unique_ptr<const VkDeviceDispatch>>         DeviceDispatches;
     inline VkDispatchTableMap<VkQueue,          VkDeviceDispatch,         RawPointer     <const VkDeviceDispatch>>         QueueDispatches;
     inline VkDispatchTableMap<VkCommandBuffer,  VkDeviceDispatch,         RawPointer     <const VkDeviceDispatch>>         CommandBufferDispatches;
     inline VkDispatchTableMap<VkExternalComputeQueueNV, VkDeviceDispatch, RawPointer     <const VkDeviceDispatch>>         ExternalComputeQueueDispatches;
 
     static inline const VkInstanceDispatch*       LookupInstanceDispatch      (VkInstance instance)             { return InstanceDispatches.find(instance); }
-    static inline const VkPhysicalDeviceDispatch* LookupPhysicalDeviceDispatch(VkInstance instance)             { return PhysicalDeviceInstanceDispatches.find(instance); }
     static inline const VkPhysicalDeviceDispatch* LookupPhysicalDeviceDispatch(VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice); }
     static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkDevice device)                 { return DeviceDispatches.find(device); }
     static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkQueue device)                  { return QueueDispatches.find(device); }
@@ -221,10 +219,22 @@ namespace vkroots {
   static void implicit_wrap_DestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator);
   static VkResult implicit_wrap_AllocateCommandBuffers(VkDevice device, const VkCommandBufferAllocateInfo *pAllocateInfo, VkCommandBuffer *pCommandBuffers);
   static void implicit_wrap_FreeCommandBuffers(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers);
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char* name);
+
   class VkInstanceDispatch {
   public:
-    VkInstanceDispatch(PFN_vkGetInstanceProcAddr NextGetInstanceProcAddr, VkInstance instance) {
+    VkInstanceDispatch(PFN_vkGetInstanceProcAddr NextGetInstanceProcAddr, VkInstance instance, PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr) {
       this->Instance = instance;
+      this->GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;
+      this->AcquireDrmDisplayEXT = (PFN_vkAcquireDrmDisplayEXT) NextGetInstanceProcAddr(instance, "vkAcquireDrmDisplayEXT");
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      this->AcquireWinrtDisplayNV = (PFN_vkAcquireWinrtDisplayNV) NextGetInstanceProcAddr(instance, "vkAcquireWinrtDisplayNV");
+#endif
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+      this->AcquireXlibDisplayEXT = (PFN_vkAcquireXlibDisplayEXT) NextGetInstanceProcAddr(instance, "vkAcquireXlibDisplayEXT");
+#endif
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       this->CreateAndroidSurfaceKHR = (PFN_vkCreateAndroidSurfaceKHR) NextGetInstanceProcAddr(instance, "vkCreateAndroidSurfaceKHR");
 #endif
@@ -286,38 +296,83 @@ namespace vkroots {
       this->EnumerateDeviceLayerProperties = (PFN_vkEnumerateDeviceLayerProperties) NextGetInstanceProcAddr(instance, "vkEnumerateDeviceLayerProperties");
       this->EnumeratePhysicalDeviceGroups = (PFN_vkEnumeratePhysicalDeviceGroups) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceGroups");
       this->EnumeratePhysicalDeviceGroupsKHR = (PFN_vkEnumeratePhysicalDeviceGroupsKHR) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceGroupsKHR");
+      this->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = (PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR");
       this->EnumeratePhysicalDevices = (PFN_vkEnumeratePhysicalDevices) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDevices");
+      this->GetDisplayModeProperties2KHR = (PFN_vkGetDisplayModeProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetDisplayModeProperties2KHR");
       this->GetDisplayModePropertiesKHR = (PFN_vkGetDisplayModePropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetDisplayModePropertiesKHR");
+      this->GetDisplayPlaneCapabilities2KHR = (PFN_vkGetDisplayPlaneCapabilities2KHR) NextGetInstanceProcAddr(instance, "vkGetDisplayPlaneCapabilities2KHR");
       this->GetDisplayPlaneCapabilitiesKHR = (PFN_vkGetDisplayPlaneCapabilitiesKHR) NextGetInstanceProcAddr(instance, "vkGetDisplayPlaneCapabilitiesKHR");
       this->GetDisplayPlaneSupportedDisplaysKHR = (PFN_vkGetDisplayPlaneSupportedDisplaysKHR) NextGetInstanceProcAddr(instance, "vkGetDisplayPlaneSupportedDisplaysKHR");
+      this->GetDrmDisplayEXT = (PFN_vkGetDrmDisplayEXT) NextGetInstanceProcAddr(instance, "vkGetDrmDisplayEXT");
       this->GetInstanceProcAddr = NextGetInstanceProcAddr;
+      this->GetPhysicalDeviceCalibrateableTimeDomainsEXT = (PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT");
+      this->GetPhysicalDeviceCalibrateableTimeDomainsKHR = (PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR");
+      this->GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV");
+      this->GetPhysicalDeviceCooperativeMatrixPropertiesKHR = (PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR");
+      this->GetPhysicalDeviceCooperativeMatrixPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesNV");
+      this->GetPhysicalDeviceCooperativeVectorPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceCooperativeVectorPropertiesNV");
+#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+      this->GetPhysicalDeviceDirectFBPresentationSupportEXT = (PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceDirectFBPresentationSupportEXT");
+#endif
+      this->GetPhysicalDeviceDisplayPlaneProperties2KHR = (PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceDisplayPlaneProperties2KHR");
       this->GetPhysicalDeviceDisplayPlanePropertiesKHR = (PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceDisplayPlanePropertiesKHR");
+      this->GetPhysicalDeviceDisplayProperties2KHR = (PFN_vkGetPhysicalDeviceDisplayProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceDisplayProperties2KHR");
       this->GetPhysicalDeviceDisplayPropertiesKHR = (PFN_vkGetPhysicalDeviceDisplayPropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceDisplayPropertiesKHR");
       this->GetPhysicalDeviceExternalBufferProperties = (PFN_vkGetPhysicalDeviceExternalBufferProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalBufferProperties");
+      this->GetPhysicalDeviceExternalBufferPropertiesKHR = (PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalBufferPropertiesKHR");
       this->GetPhysicalDeviceExternalFenceProperties = (PFN_vkGetPhysicalDeviceExternalFenceProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalFenceProperties");
+      this->GetPhysicalDeviceExternalFencePropertiesKHR = (PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalFencePropertiesKHR");
+      this->GetPhysicalDeviceExternalImageFormatPropertiesNV = (PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalImageFormatPropertiesNV");
       this->GetPhysicalDeviceExternalSemaphoreProperties = (PFN_vkGetPhysicalDeviceExternalSemaphoreProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalSemaphoreProperties");
+      this->GetPhysicalDeviceExternalSemaphorePropertiesKHR = (PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalSemaphorePropertiesKHR");
+      this->GetPhysicalDeviceExternalTensorPropertiesARM = (PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceExternalTensorPropertiesARM");
       this->GetPhysicalDeviceFeatures = (PFN_vkGetPhysicalDeviceFeatures) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFeatures");
       this->GetPhysicalDeviceFeatures2 = (PFN_vkGetPhysicalDeviceFeatures2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFeatures2");
+      this->GetPhysicalDeviceFeatures2KHR = (PFN_vkGetPhysicalDeviceFeatures2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFeatures2KHR");
       this->GetPhysicalDeviceFormatProperties = (PFN_vkGetPhysicalDeviceFormatProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFormatProperties");
       this->GetPhysicalDeviceFormatProperties2 = (PFN_vkGetPhysicalDeviceFormatProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFormatProperties2");
+      this->GetPhysicalDeviceFormatProperties2KHR = (PFN_vkGetPhysicalDeviceFormatProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFormatProperties2KHR");
+      this->GetPhysicalDeviceFragmentShadingRatesKHR = (PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceFragmentShadingRatesKHR");
       this->GetPhysicalDeviceImageFormatProperties = (PFN_vkGetPhysicalDeviceImageFormatProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceImageFormatProperties");
       this->GetPhysicalDeviceImageFormatProperties2 = (PFN_vkGetPhysicalDeviceImageFormatProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceImageFormatProperties2");
+      this->GetPhysicalDeviceImageFormatProperties2KHR = (PFN_vkGetPhysicalDeviceImageFormatProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceImageFormatProperties2KHR");
       this->GetPhysicalDeviceMemoryProperties = (PFN_vkGetPhysicalDeviceMemoryProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceMemoryProperties");
       this->GetPhysicalDeviceMemoryProperties2 = (PFN_vkGetPhysicalDeviceMemoryProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceMemoryProperties2");
+      this->GetPhysicalDeviceMemoryProperties2KHR = (PFN_vkGetPhysicalDeviceMemoryProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceMemoryProperties2KHR");
+      this->GetPhysicalDeviceMultisamplePropertiesEXT = (PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceMultisamplePropertiesEXT");
+      this->GetPhysicalDeviceOpticalFlowImageFormatsNV = (PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceOpticalFlowImageFormatsNV");
       this->GetPhysicalDevicePresentRectanglesKHR = (PFN_vkGetPhysicalDevicePresentRectanglesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDevicePresentRectanglesKHR");
       this->GetPhysicalDeviceProperties = (PFN_vkGetPhysicalDeviceProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceProperties");
       this->GetPhysicalDeviceProperties2 = (PFN_vkGetPhysicalDeviceProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceProperties2");
+      this->GetPhysicalDeviceProperties2KHR = (PFN_vkGetPhysicalDeviceProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceProperties2KHR");
+      this->GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = (PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM");
+      this->GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = (PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM");
+      this->GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = (PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR");
       this->GetPhysicalDeviceQueueFamilyProperties = (PFN_vkGetPhysicalDeviceQueueFamilyProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyProperties");
       this->GetPhysicalDeviceQueueFamilyProperties2 = (PFN_vkGetPhysicalDeviceQueueFamilyProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyProperties2");
+      this->GetPhysicalDeviceQueueFamilyProperties2KHR = (PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyProperties2KHR");
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+      this->GetPhysicalDeviceScreenPresentationSupportQNX = (PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceScreenPresentationSupportQNX");
+#endif
       this->GetPhysicalDeviceSparseImageFormatProperties = (PFN_vkGetPhysicalDeviceSparseImageFormatProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSparseImageFormatProperties");
       this->GetPhysicalDeviceSparseImageFormatProperties2 = (PFN_vkGetPhysicalDeviceSparseImageFormatProperties2) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSparseImageFormatProperties2");
+      this->GetPhysicalDeviceSparseImageFormatProperties2KHR = (PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSparseImageFormatProperties2KHR");
+      this->GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = (PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV");
+      this->GetPhysicalDeviceSurfaceCapabilities2EXT = (PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceCapabilities2EXT");
       this->GetPhysicalDeviceSurfaceCapabilities2KHR = (PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceCapabilities2KHR");
       this->GetPhysicalDeviceSurfaceCapabilitiesKHR = (PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
       this->GetPhysicalDeviceSurfaceFormats2KHR = (PFN_vkGetPhysicalDeviceSurfaceFormats2KHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceFormats2KHR");
       this->GetPhysicalDeviceSurfaceFormatsKHR = (PFN_vkGetPhysicalDeviceSurfaceFormatsKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceFormatsKHR");
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      this->GetPhysicalDeviceSurfacePresentModes2EXT = (PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfacePresentModes2EXT");
+#endif
       this->GetPhysicalDeviceSurfacePresentModesKHR = (PFN_vkGetPhysicalDeviceSurfacePresentModesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfacePresentModesKHR");
       this->GetPhysicalDeviceSurfaceSupportKHR = (PFN_vkGetPhysicalDeviceSurfaceSupportKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceSurfaceSupportKHR");
       this->GetPhysicalDeviceToolProperties = (PFN_vkGetPhysicalDeviceToolProperties) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceToolProperties");
+      this->GetPhysicalDeviceToolPropertiesEXT = (PFN_vkGetPhysicalDeviceToolPropertiesEXT) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceToolPropertiesEXT");
+      this->GetPhysicalDeviceVideoCapabilitiesKHR = (PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceVideoCapabilitiesKHR");
+      this->GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR");
+      this->GetPhysicalDeviceVideoFormatPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceVideoFormatPropertiesKHR");
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
       this->GetPhysicalDeviceWaylandPresentationSupportKHR = (PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceWaylandPresentationSupportKHR");
 #endif
@@ -330,11 +385,26 @@ namespace vkroots {
 #ifdef VK_USE_PLATFORM_XLIB_KHR
       this->GetPhysicalDeviceXlibPresentationSupportKHR = (PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR) NextGetInstanceProcAddr(instance, "vkGetPhysicalDeviceXlibPresentationSupportKHR");
 #endif
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+      this->GetRandROutputDisplayEXT = (PFN_vkGetRandROutputDisplayEXT) NextGetInstanceProcAddr(instance, "vkGetRandROutputDisplayEXT");
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+      this->GetWinrtDisplayNV = (PFN_vkGetWinrtDisplayNV) NextGetInstanceProcAddr(instance, "vkGetWinrtDisplayNV");
+#endif
+      this->ReleaseDisplayEXT = (PFN_vkReleaseDisplayEXT) NextGetInstanceProcAddr(instance, "vkReleaseDisplayEXT");
       this->SubmitDebugUtilsMessageEXT = (PFN_vkSubmitDebugUtilsMessageEXT) NextGetInstanceProcAddr(instance, "vkSubmitDebugUtilsMessageEXT");
     }
 
     mutable uint64_t UserData = 0;
     VkInstance Instance;
+    PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;
+    PFN_vkAcquireDrmDisplayEXT AcquireDrmDisplayEXT;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkAcquireWinrtDisplayNV AcquireWinrtDisplayNV;
+#endif
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+    PFN_vkAcquireXlibDisplayEXT AcquireXlibDisplayEXT;
+#endif
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR CreateAndroidSurfaceKHR;
 #endif
@@ -395,38 +465,83 @@ namespace vkroots {
     PFN_vkEnumerateDeviceLayerProperties EnumerateDeviceLayerProperties;
     PFN_vkEnumeratePhysicalDeviceGroups EnumeratePhysicalDeviceGroups;
     PFN_vkEnumeratePhysicalDeviceGroupsKHR EnumeratePhysicalDeviceGroupsKHR;
+    PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR;
     PFN_vkEnumeratePhysicalDevices EnumeratePhysicalDevices;
+    PFN_vkGetDisplayModeProperties2KHR GetDisplayModeProperties2KHR;
     PFN_vkGetDisplayModePropertiesKHR GetDisplayModePropertiesKHR;
+    PFN_vkGetDisplayPlaneCapabilities2KHR GetDisplayPlaneCapabilities2KHR;
     PFN_vkGetDisplayPlaneCapabilitiesKHR GetDisplayPlaneCapabilitiesKHR;
     PFN_vkGetDisplayPlaneSupportedDisplaysKHR GetDisplayPlaneSupportedDisplaysKHR;
+    PFN_vkGetDrmDisplayEXT GetDrmDisplayEXT;
     PFN_vkGetInstanceProcAddr GetInstanceProcAddr;
+    PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT GetPhysicalDeviceCalibrateableTimeDomainsEXT;
+    PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR GetPhysicalDeviceCalibrateableTimeDomainsKHR;
+    PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
+    PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR GetPhysicalDeviceCooperativeMatrixPropertiesKHR;
+    PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV GetPhysicalDeviceCooperativeMatrixPropertiesNV;
+    PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV GetPhysicalDeviceCooperativeVectorPropertiesNV;
+#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+    PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT GetPhysicalDeviceDirectFBPresentationSupportEXT;
+#endif
+    PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR GetPhysicalDeviceDisplayPlaneProperties2KHR;
     PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR GetPhysicalDeviceDisplayPlanePropertiesKHR;
+    PFN_vkGetPhysicalDeviceDisplayProperties2KHR GetPhysicalDeviceDisplayProperties2KHR;
     PFN_vkGetPhysicalDeviceDisplayPropertiesKHR GetPhysicalDeviceDisplayPropertiesKHR;
     PFN_vkGetPhysicalDeviceExternalBufferProperties GetPhysicalDeviceExternalBufferProperties;
+    PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR GetPhysicalDeviceExternalBufferPropertiesKHR;
     PFN_vkGetPhysicalDeviceExternalFenceProperties GetPhysicalDeviceExternalFenceProperties;
+    PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR GetPhysicalDeviceExternalFencePropertiesKHR;
+    PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV GetPhysicalDeviceExternalImageFormatPropertiesNV;
     PFN_vkGetPhysicalDeviceExternalSemaphoreProperties GetPhysicalDeviceExternalSemaphoreProperties;
+    PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR GetPhysicalDeviceExternalSemaphorePropertiesKHR;
+    PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM GetPhysicalDeviceExternalTensorPropertiesARM;
     PFN_vkGetPhysicalDeviceFeatures GetPhysicalDeviceFeatures;
     PFN_vkGetPhysicalDeviceFeatures2 GetPhysicalDeviceFeatures2;
+    PFN_vkGetPhysicalDeviceFeatures2KHR GetPhysicalDeviceFeatures2KHR;
     PFN_vkGetPhysicalDeviceFormatProperties GetPhysicalDeviceFormatProperties;
     PFN_vkGetPhysicalDeviceFormatProperties2 GetPhysicalDeviceFormatProperties2;
+    PFN_vkGetPhysicalDeviceFormatProperties2KHR GetPhysicalDeviceFormatProperties2KHR;
+    PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR GetPhysicalDeviceFragmentShadingRatesKHR;
     PFN_vkGetPhysicalDeviceImageFormatProperties GetPhysicalDeviceImageFormatProperties;
     PFN_vkGetPhysicalDeviceImageFormatProperties2 GetPhysicalDeviceImageFormatProperties2;
+    PFN_vkGetPhysicalDeviceImageFormatProperties2KHR GetPhysicalDeviceImageFormatProperties2KHR;
     PFN_vkGetPhysicalDeviceMemoryProperties GetPhysicalDeviceMemoryProperties;
     PFN_vkGetPhysicalDeviceMemoryProperties2 GetPhysicalDeviceMemoryProperties2;
+    PFN_vkGetPhysicalDeviceMemoryProperties2KHR GetPhysicalDeviceMemoryProperties2KHR;
+    PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT GetPhysicalDeviceMultisamplePropertiesEXT;
+    PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV GetPhysicalDeviceOpticalFlowImageFormatsNV;
     PFN_vkGetPhysicalDevicePresentRectanglesKHR GetPhysicalDevicePresentRectanglesKHR;
     PFN_vkGetPhysicalDeviceProperties GetPhysicalDeviceProperties;
     PFN_vkGetPhysicalDeviceProperties2 GetPhysicalDeviceProperties2;
+    PFN_vkGetPhysicalDeviceProperties2KHR GetPhysicalDeviceProperties2KHR;
+    PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
+    PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
+    PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR;
     PFN_vkGetPhysicalDeviceQueueFamilyProperties GetPhysicalDeviceQueueFamilyProperties;
     PFN_vkGetPhysicalDeviceQueueFamilyProperties2 GetPhysicalDeviceQueueFamilyProperties2;
+    PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR GetPhysicalDeviceQueueFamilyProperties2KHR;
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+    PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX GetPhysicalDeviceScreenPresentationSupportQNX;
+#endif
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties GetPhysicalDeviceSparseImageFormatProperties;
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 GetPhysicalDeviceSparseImageFormatProperties2;
+    PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR GetPhysicalDeviceSparseImageFormatProperties2KHR;
+    PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV;
+    PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT GetPhysicalDeviceSurfaceCapabilities2EXT;
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR GetPhysicalDeviceSurfaceCapabilities2KHR;
     PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR GetPhysicalDeviceSurfaceCapabilitiesKHR;
     PFN_vkGetPhysicalDeviceSurfaceFormats2KHR GetPhysicalDeviceSurfaceFormats2KHR;
     PFN_vkGetPhysicalDeviceSurfaceFormatsKHR GetPhysicalDeviceSurfaceFormatsKHR;
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT GetPhysicalDeviceSurfacePresentModes2EXT;
+#endif
     PFN_vkGetPhysicalDeviceSurfacePresentModesKHR GetPhysicalDeviceSurfacePresentModesKHR;
     PFN_vkGetPhysicalDeviceSurfaceSupportKHR GetPhysicalDeviceSurfaceSupportKHR;
     PFN_vkGetPhysicalDeviceToolProperties GetPhysicalDeviceToolProperties;
+    PFN_vkGetPhysicalDeviceToolPropertiesEXT GetPhysicalDeviceToolPropertiesEXT;
+    PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR GetPhysicalDeviceVideoCapabilitiesKHR;
+    PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
+    PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR GetPhysicalDeviceVideoFormatPropertiesKHR;
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
     PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR GetPhysicalDeviceWaylandPresentationSupportKHR;
 #endif
@@ -439,6 +554,13 @@ namespace vkroots {
 #ifdef VK_USE_PLATFORM_XLIB_KHR
     PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR GetPhysicalDeviceXlibPresentationSupportKHR;
 #endif
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+    PFN_vkGetRandROutputDisplayEXT GetRandROutputDisplayEXT;
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    PFN_vkGetWinrtDisplayNV GetWinrtDisplayNV;
+#endif
+    PFN_vkReleaseDisplayEXT ReleaseDisplayEXT;
     PFN_vkSubmitDebugUtilsMessageEXT SubmitDebugUtilsMessageEXT;
   private:
     PFN_vkDestroyInstance _RealDestroyInstance;
@@ -450,142 +572,6 @@ namespace vkroots {
     }
   };
 
-  class VkPhysicalDeviceDispatch {
-  public:
-    VkPhysicalDeviceDispatch(PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr, VkInstance instance, const VkInstanceDispatch* pInstanceDispatch) {
-      this->Instance = instance;
-      this->pInstanceDispatch = pInstanceDispatch;
-      this->GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;
-      this->AcquireDrmDisplayEXT = (PFN_vkAcquireDrmDisplayEXT) NextGetPhysicalDeviceProcAddr(instance, "vkAcquireDrmDisplayEXT");
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-      this->AcquireWinrtDisplayNV = (PFN_vkAcquireWinrtDisplayNV) NextGetPhysicalDeviceProcAddr(instance, "vkAcquireWinrtDisplayNV");
-#endif
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-      this->AcquireXlibDisplayEXT = (PFN_vkAcquireXlibDisplayEXT) NextGetPhysicalDeviceProcAddr(instance, "vkAcquireXlibDisplayEXT");
-#endif
-      this->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = (PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) NextGetPhysicalDeviceProcAddr(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR");
-      this->GetDisplayModeProperties2KHR = (PFN_vkGetDisplayModeProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetDisplayModeProperties2KHR");
-      this->GetDisplayPlaneCapabilities2KHR = (PFN_vkGetDisplayPlaneCapabilities2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetDisplayPlaneCapabilities2KHR");
-      this->GetDrmDisplayEXT = (PFN_vkGetDrmDisplayEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetDrmDisplayEXT");
-      this->GetPhysicalDeviceCalibrateableTimeDomainsEXT = (PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT");
-      this->GetPhysicalDeviceCalibrateableTimeDomainsKHR = (PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR");
-      this->GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV");
-      this->GetPhysicalDeviceCooperativeMatrixPropertiesKHR = (PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR");
-      this->GetPhysicalDeviceCooperativeMatrixPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesNV");
-      this->GetPhysicalDeviceCooperativeVectorPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceCooperativeVectorPropertiesNV");
-#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
-      this->GetPhysicalDeviceDirectFBPresentationSupportEXT = (PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceDirectFBPresentationSupportEXT");
-#endif
-      this->GetPhysicalDeviceDisplayPlaneProperties2KHR = (PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceDisplayPlaneProperties2KHR");
-      this->GetPhysicalDeviceDisplayProperties2KHR = (PFN_vkGetPhysicalDeviceDisplayProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceDisplayProperties2KHR");
-      this->GetPhysicalDeviceExternalBufferPropertiesKHR = (PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceExternalBufferPropertiesKHR");
-      this->GetPhysicalDeviceExternalFencePropertiesKHR = (PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceExternalFencePropertiesKHR");
-      this->GetPhysicalDeviceExternalImageFormatPropertiesNV = (PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceExternalImageFormatPropertiesNV");
-      this->GetPhysicalDeviceExternalSemaphorePropertiesKHR = (PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceExternalSemaphorePropertiesKHR");
-      this->GetPhysicalDeviceExternalTensorPropertiesARM = (PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceExternalTensorPropertiesARM");
-      this->GetPhysicalDeviceFeatures2KHR = (PFN_vkGetPhysicalDeviceFeatures2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceFeatures2KHR");
-      this->GetPhysicalDeviceFormatProperties2KHR = (PFN_vkGetPhysicalDeviceFormatProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceFormatProperties2KHR");
-      this->GetPhysicalDeviceFragmentShadingRatesKHR = (PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceFragmentShadingRatesKHR");
-      this->GetPhysicalDeviceImageFormatProperties2KHR = (PFN_vkGetPhysicalDeviceImageFormatProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceImageFormatProperties2KHR");
-      this->GetPhysicalDeviceMemoryProperties2KHR = (PFN_vkGetPhysicalDeviceMemoryProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceMemoryProperties2KHR");
-      this->GetPhysicalDeviceMultisamplePropertiesEXT = (PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceMultisamplePropertiesEXT");
-      this->GetPhysicalDeviceOpticalFlowImageFormatsNV = (PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceOpticalFlowImageFormatsNV");
-      this->GetPhysicalDeviceProperties2KHR = (PFN_vkGetPhysicalDeviceProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceProperties2KHR");
-      this->GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = (PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM");
-      this->GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = (PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM");
-      this->GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = (PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR");
-      this->GetPhysicalDeviceQueueFamilyProperties2KHR = (PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceQueueFamilyProperties2KHR");
-#ifdef VK_USE_PLATFORM_SCREEN_QNX
-      this->GetPhysicalDeviceScreenPresentationSupportQNX = (PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceScreenPresentationSupportQNX");
-#endif
-      this->GetPhysicalDeviceSparseImageFormatProperties2KHR = (PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceSparseImageFormatProperties2KHR");
-      this->GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = (PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV");
-      this->GetPhysicalDeviceSurfaceCapabilities2EXT = (PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceSurfaceCapabilities2EXT");
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-      this->GetPhysicalDeviceSurfacePresentModes2EXT = (PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceSurfacePresentModes2EXT");
-#endif
-      this->GetPhysicalDeviceToolPropertiesEXT = (PFN_vkGetPhysicalDeviceToolPropertiesEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceToolPropertiesEXT");
-      this->GetPhysicalDeviceVideoCapabilitiesKHR = (PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceVideoCapabilitiesKHR");
-      this->GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR");
-      this->GetPhysicalDeviceVideoFormatPropertiesKHR = (PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR) NextGetPhysicalDeviceProcAddr(instance, "vkGetPhysicalDeviceVideoFormatPropertiesKHR");
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-      this->GetRandROutputDisplayEXT = (PFN_vkGetRandROutputDisplayEXT) NextGetPhysicalDeviceProcAddr(instance, "vkGetRandROutputDisplayEXT");
-#endif
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-      this->GetWinrtDisplayNV = (PFN_vkGetWinrtDisplayNV) NextGetPhysicalDeviceProcAddr(instance, "vkGetWinrtDisplayNV");
-#endif
-      this->ReleaseDisplayEXT = (PFN_vkReleaseDisplayEXT) NextGetPhysicalDeviceProcAddr(instance, "vkReleaseDisplayEXT");
-    }
-
-    mutable uint64_t UserData = 0;
-    VkInstance Instance;
-    const VkInstanceDispatch* pInstanceDispatch;
-    PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;
-    PFN_vkAcquireDrmDisplayEXT AcquireDrmDisplayEXT;
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-    PFN_vkAcquireWinrtDisplayNV AcquireWinrtDisplayNV;
-#endif
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-    PFN_vkAcquireXlibDisplayEXT AcquireXlibDisplayEXT;
-#endif
-    PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR;
-    PFN_vkGetDisplayModeProperties2KHR GetDisplayModeProperties2KHR;
-    PFN_vkGetDisplayPlaneCapabilities2KHR GetDisplayPlaneCapabilities2KHR;
-    PFN_vkGetDrmDisplayEXT GetDrmDisplayEXT;
-    PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT GetPhysicalDeviceCalibrateableTimeDomainsEXT;
-    PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR GetPhysicalDeviceCalibrateableTimeDomainsKHR;
-    PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
-    PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR GetPhysicalDeviceCooperativeMatrixPropertiesKHR;
-    PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV GetPhysicalDeviceCooperativeMatrixPropertiesNV;
-    PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV GetPhysicalDeviceCooperativeVectorPropertiesNV;
-#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
-    PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT GetPhysicalDeviceDirectFBPresentationSupportEXT;
-#endif
-    PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR GetPhysicalDeviceDisplayPlaneProperties2KHR;
-    PFN_vkGetPhysicalDeviceDisplayProperties2KHR GetPhysicalDeviceDisplayProperties2KHR;
-    PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR GetPhysicalDeviceExternalBufferPropertiesKHR;
-    PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR GetPhysicalDeviceExternalFencePropertiesKHR;
-    PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV GetPhysicalDeviceExternalImageFormatPropertiesNV;
-    PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR GetPhysicalDeviceExternalSemaphorePropertiesKHR;
-    PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM GetPhysicalDeviceExternalTensorPropertiesARM;
-    PFN_vkGetPhysicalDeviceFeatures2KHR GetPhysicalDeviceFeatures2KHR;
-    PFN_vkGetPhysicalDeviceFormatProperties2KHR GetPhysicalDeviceFormatProperties2KHR;
-    PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR GetPhysicalDeviceFragmentShadingRatesKHR;
-    PFN_vkGetPhysicalDeviceImageFormatProperties2KHR GetPhysicalDeviceImageFormatProperties2KHR;
-    PFN_vkGetPhysicalDeviceMemoryProperties2KHR GetPhysicalDeviceMemoryProperties2KHR;
-    PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT GetPhysicalDeviceMultisamplePropertiesEXT;
-    PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV GetPhysicalDeviceOpticalFlowImageFormatsNV;
-    PFN_vkGetPhysicalDeviceProperties2KHR GetPhysicalDeviceProperties2KHR;
-    PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
-    PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
-    PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR;
-    PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR GetPhysicalDeviceQueueFamilyProperties2KHR;
-#ifdef VK_USE_PLATFORM_SCREEN_QNX
-    PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX GetPhysicalDeviceScreenPresentationSupportQNX;
-#endif
-    PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR GetPhysicalDeviceSparseImageFormatProperties2KHR;
-    PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV;
-    PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT GetPhysicalDeviceSurfaceCapabilities2EXT;
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT GetPhysicalDeviceSurfacePresentModes2EXT;
-#endif
-    PFN_vkGetPhysicalDeviceToolPropertiesEXT GetPhysicalDeviceToolPropertiesEXT;
-    PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR GetPhysicalDeviceVideoCapabilitiesKHR;
-    PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
-    PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR GetPhysicalDeviceVideoFormatPropertiesKHR;
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-    PFN_vkGetRandROutputDisplayEXT GetRandROutputDisplayEXT;
-#endif
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-    PFN_vkGetWinrtDisplayNV GetWinrtDisplayNV;
-#endif
-    PFN_vkReleaseDisplayEXT ReleaseDisplayEXT;
-  private:
-  };
-
-  namespace tables {
-    static inline const VkInstanceDispatch* LookupInstanceDispatch(VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice)->pInstanceDispatch; }
-  }
   class VkDeviceDispatch {
   public:
     VkDeviceDispatch(PFN_vkGetDeviceProcAddr NextGetDeviceProcAddr, VkDevice device, VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch, const VkDeviceCreateInfo* pCreateInfo) {
@@ -2005,8 +1991,33 @@ namespace vkroots {
     }
   };
 
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::AcquireDrmDisplayEXT(dispatch, physicalDevice, drmFd, display);
+    return ret;
+  }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_AcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::AcquireWinrtDisplayNV(dispatch, physicalDevice, display);
+    return ret;
+  }
+
+#endif
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_AcquireXlibDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, VkDisplayKHR display) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::AcquireXlibDisplayEXT(dispatch, physicalDevice, dpy, display);
+    return ret;
+  }
+
+#endif
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAndroidSurfaceKHR(VkInstance instance, const VkAndroidSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateAndroidSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2014,29 +2025,29 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugReportCallbackEXT *pCallback) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateDebugReportCallbackEXT(dispatch, instance, pCreateInfo, pAllocator, pCallback);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pMessenger) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateDebugUtilsMessengerEXT(dispatch, instance, pCreateInfo, pAllocator, pMessenger);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDevice *pDevice) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::CreateDevice(dispatch, physicalDevice, pCreateInfo, pAllocator, pDevice);
     return ret;
   }
 
 #ifdef VK_USE_PLATFORM_DIRECTFB_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDirectFBSurfaceEXT(VkInstance instance, const VkDirectFBSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateDirectFBSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2044,21 +2055,21 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDisplayModeKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, const VkDisplayModeCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDisplayModeKHR *pMode) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::CreateDisplayModeKHR(dispatch, physicalDevice, display, pCreateInfo, pAllocator, pMode);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDisplayPlaneSurfaceKHR(VkInstance instance, const VkDisplaySurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateDisplayPlaneSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateHeadlessSurfaceEXT(VkInstance instance, const VkHeadlessSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateHeadlessSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2066,7 +2077,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_IOS_MVK
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIOSSurfaceMVK(VkInstance instance, const VkIOSSurfaceCreateInfoMVK *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateIOSSurfaceMVK(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2075,7 +2086,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImagePipeSurfaceFUCHSIA(VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateImagePipeSurfaceFUCHSIA(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2083,14 +2094,14 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateInstance(const VkInstanceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkInstance *pInstance) {
     VkResult ret = InstanceOverrides::CreateInstance(implicit_wrap_CreateInstance, pCreateInfo, pAllocator, pInstance);
     return ret;
   }
 
 #ifdef VK_USE_PLATFORM_MACOS_MVK
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMacOSSurfaceMVK(VkInstance instance, const VkMacOSSurfaceCreateInfoMVK *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateMacOSSurfaceMVK(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2099,7 +2110,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMetalSurfaceEXT(VkInstance instance, const VkMetalSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateMetalSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2108,7 +2119,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateScreenSurfaceQNX(VkInstance instance, const VkScreenSurfaceCreateInfoQNX *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateScreenSurfaceQNX(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2117,7 +2128,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_GGP
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateStreamDescriptorSurfaceGGP(VkInstance instance, const VkStreamDescriptorSurfaceCreateInfoGGP *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateStreamDescriptorSurfaceGGP(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2126,7 +2137,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_OHOS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSurfaceOHOS(VkInstance instance, const VkSurfaceCreateInfoOHOS *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateSurfaceOHOS(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2135,7 +2146,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_VI_NN
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateViSurfaceNN(VkInstance instance, const VkViSurfaceCreateInfoNN *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateViSurfaceNN(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2144,7 +2155,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateWaylandSurfaceKHR(VkInstance instance, const VkWaylandSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateWaylandSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2153,7 +2164,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateWin32SurfaceKHR(VkInstance instance, const VkWin32SurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateWin32SurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2162,7 +2173,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateXcbSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2171,7 +2182,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::CreateXlibSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
@@ -2179,633 +2190,608 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DebugReportMessageEXT(VkInstance instance, VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char *pLayerPrefix, const char *pMessage) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::DebugReportMessageEXT(dispatch, instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::DestroyDebugReportCallbackEXT(dispatch, instance, callback, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::DestroyDebugUtilsMessengerEXT(dispatch, instance, messenger, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyInstance(VkInstance instance, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::DestroyInstance(dispatch, instance, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::DestroySurfaceKHR(dispatch, instance, surface, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice, const char *pLayerName, uint32_t *pPropertyCount, VkExtensionProperties *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::EnumerateDeviceExtensionProperties(dispatch, physicalDevice, pLayerName, pPropertyCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::EnumerateDeviceLayerProperties(dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroups(dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroupsKHR(dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(dispatch, physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     VkResult ret = InstanceOverrides::EnumeratePhysicalDevices(dispatch, instance, pPhysicalDeviceCount, pPhysicalDevices);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModeProperties2KHR *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetDisplayModeProperties2KHR(dispatch, physicalDevice, display, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayModePropertiesKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModePropertiesKHR *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetDisplayModePropertiesKHR(dispatch, physicalDevice, display, pPropertyCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetDisplayPlaneCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkDisplayPlaneInfo2KHR *pDisplayPlaneInfo, VkDisplayPlaneCapabilities2KHR *pCapabilities) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilities2KHR(dispatch, physicalDevice, pDisplayPlaneInfo, pCapabilities);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayPlaneCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkDisplayModeKHR mode, uint32_t planeIndex, VkDisplayPlaneCapabilitiesKHR *pCapabilities) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilitiesKHR(dispatch, physicalDevice, mode, planeIndex, pCapabilities);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayPlaneSupportedDisplaysKHR(VkPhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t *pDisplayCount, VkDisplayKHR *pDisplays) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetDisplayPlaneSupportedDisplaysKHR(dispatch, physicalDevice, planeIndex, pDisplayCount, pDisplays);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, uint32_t connectorId, VkDisplayKHR *display) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetDrmDisplayEXT(dispatch, physicalDevice, drmFd, connectorId, display);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction wrap_GetInstanceProcAddr(VkInstance instance, const char *pName) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     PFN_vkVoidFunction ret = InstanceOverrides::GetInstanceProcAddr(dispatch, instance, pName);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixFlexibleDimensionsPropertiesNV *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesKHR *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesNV *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeVectorPropertiesNV *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkBool32 wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, IDirectFB *dfb) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT(dispatch, physicalDevice, queueFamilyIndex, dfb);
+    return ret;
+  }
+
+#endif
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlaneProperties2KHR *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayPlanePropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlanePropertiesKHR *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceDisplayProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayProperties2KHR *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPropertiesKHR *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceExternalBufferProperties(dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceExternalBufferPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR(dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalFenceProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceExternalFenceProperties(dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceExternalFencePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR(dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkExternalMemoryHandleTypeFlagsNV externalHandleType, VkExternalImageFormatPropertiesNV *pExternalImageFormatProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV(dispatch, physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalSemaphoreProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfo *pExternalSemaphoreInfo, VkExternalSemaphoreProperties *pExternalSemaphoreProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceExternalSemaphoreProperties(dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfo *pExternalSemaphoreInfo, VkExternalSemaphoreProperties *pExternalSemaphoreProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR(dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceExternalTensorPropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalTensorInfoARM *pExternalTensorInfo, VkExternalTensorPropertiesARM *pExternalTensorProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM(dispatch, physicalDevice, pExternalTensorInfo, pExternalTensorProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures *pFeatures) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceFeatures(dispatch, physicalDevice, pFeatures);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFeatures2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2 *pFeatures) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceFeatures2(dispatch, physicalDevice, pFeatures);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceFeatures2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2 *pFeatures) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceFeatures2KHR(dispatch, physicalDevice, pFeatures);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties *pFormatProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceFormatProperties(dispatch, physicalDevice, format, pFormatProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2 *pFormatProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceFormatProperties2(dispatch, physicalDevice, format, pFormatProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceFormatProperties2KHR(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2 *pFormatProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceFormatProperties2KHR(dispatch, physicalDevice, format, pFormatProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceFragmentShadingRatesKHR(VkPhysicalDevice physicalDevice, uint32_t *pFragmentShadingRateCount, VkPhysicalDeviceFragmentShadingRateKHR *pFragmentShadingRates) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR(dispatch, physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkImageFormatProperties *pImageFormatProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties(dispatch, physicalDevice, format, type, tiling, usage, flags, pImageFormatProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkImageFormatProperties2 *pImageFormatProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2(dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkImageFormatProperties2 *pImageFormatProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2KHR(dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMemoryProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties *pMemoryProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceMemoryProperties(dispatch, physicalDevice, pMemoryProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMemoryProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2 *pMemoryProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceMemoryProperties2(dispatch, physicalDevice, pMemoryProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceMemoryProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2 *pMemoryProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceMemoryProperties2KHR(dispatch, physicalDevice, pMemoryProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceMultisamplePropertiesEXT(VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT *pMultisampleProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT(dispatch, physicalDevice, samples, pMultisampleProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV(VkPhysicalDevice physicalDevice, const VkOpticalFlowImageFormatInfoNV *pOpticalFlowImageFormatInfo, uint32_t *pFormatCount, VkOpticalFlowImageFormatPropertiesNV *pImageFormatProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV(dispatch, physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDevicePresentRectanglesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pRectCount, VkRect2D *pRects) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDevicePresentRectanglesKHR(dispatch, physicalDevice, surface, pRectCount, pRects);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceProperties(dispatch, physicalDevice, pProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2 *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceProperties2(dispatch, physicalDevice, pProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2 *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceProperties2KHR(dispatch, physicalDevice, pProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM *pQueueFamilyDataGraphProcessingEngineInfo, VkQueueFamilyDataGraphProcessingEnginePropertiesARM *pQueueFamilyDataGraphProcessingEngineProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(dispatch, physicalDevice, pQueueFamilyDataGraphProcessingEngineInfo, pQueueFamilyDataGraphProcessingEngineProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pQueueFamilyDataGraphPropertyCount, VkQueueFamilyDataGraphPropertiesARM *pQueueFamilyDataGraphProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(dispatch, physicalDevice, queueFamilyIndex, pQueueFamilyDataGraphPropertyCount, pQueueFamilyDataGraphProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR *pPerformanceQueryCreateInfo, uint32_t *pNumPasses) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(dispatch, physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyProperties(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties *pQueueFamilyProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyProperties2(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceQueueFamilyProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
+  }
+
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkBool32 wrap_GetPhysicalDeviceScreenPresentationSupportQNX(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct _screen_window *window) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX(dispatch, physicalDevice, queueFamilyIndex, window);
+    return ret;
+  }
+
+#endif
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceSparseImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, uint32_t *pPropertyCount, VkSparseImageFormatProperties *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties(dispatch, physicalDevice, format, type, samples, usage, tiling, pPropertyCount, pProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceSparseImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2 *pFormatInfo, uint32_t *pPropertyCount, VkSparseImageFormatProperties2 *pProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2(dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2 *pFormatInfo, uint32_t *pPropertyCount, VkSparseImageFormatProperties2 *pProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR(dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(VkPhysicalDevice physicalDevice, uint32_t *pCombinationCount, VkFramebufferMixedSamplesCombinationNV *pCombinations) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(dispatch, physicalDevice, pCombinationCount, pCombinations);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceSurfaceCapabilities2EXT(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT *pSurfaceCapabilities) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT(dispatch, physicalDevice, surface, pSurfaceCapabilities);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, VkSurfaceCapabilities2KHR *pSurfaceCapabilities) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2KHR(dispatch, physicalDevice, pSurfaceInfo, pSurfaceCapabilities);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilitiesKHR(dispatch, physicalDevice, surface, pSurfaceCapabilities);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceFormats2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, uint32_t *pSurfaceFormatCount, VkSurfaceFormat2KHR *pSurfaceFormats) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormats2KHR(dispatch, physicalDevice, pSurfaceInfo, pSurfaceFormatCount, pSurfaceFormats);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pSurfaceFormatCount, VkSurfaceFormatKHR *pSurfaceFormats) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormatsKHR(dispatch, physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceSurfacePresentModes2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT(dispatch, physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
+    return ret;
+  }
+
+#endif
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfacePresentModesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModesKHR(dispatch, physicalDevice, surface, pPresentModeCount, pPresentModes);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32 *pSupported) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceSupportKHR(dispatch, physicalDevice, queueFamilyIndex, surface, pSupported);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceToolProperties(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolProperties *pToolProperties) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkResult ret = InstanceOverrides::GetPhysicalDeviceToolProperties(dispatch, physicalDevice, pToolCount, pToolProperties);
     return ret;
   }
 
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolProperties *pToolProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceToolPropertiesEXT(dispatch, physicalDevice, pToolCount, pToolProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceVideoCapabilitiesKHR(VkPhysicalDevice physicalDevice, const VkVideoProfileInfoKHR *pVideoProfile, VkVideoCapabilitiesKHR *pCapabilities) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR(dispatch, physicalDevice, pVideoProfile, pCapabilities);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *pQualityLevelInfo, VkVideoEncodeQualityLevelPropertiesKHR *pQualityLevelProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(dispatch, physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPhysicalDeviceVideoFormatPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoFormatInfoKHR *pVideoFormatInfo, uint32_t *pVideoFormatPropertyCount, VkVideoFormatPropertiesKHR *pVideoFormatProperties) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR(dispatch, physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
+    return ret;
+  }
+
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display *display) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWaylandPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, display);
     return ret;
   }
 
 #endif
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceWin32PresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWin32PresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex);
     return ret;
   }
 
 #endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceXcbPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, xcb_connection_t *connection, xcb_visualid_t visual_id) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXcbPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, connection, visual_id);
     return ret;
   }
 
 #endif
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceXlibPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, Display *dpy, VisualID visualID) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXlibPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, dpy, visualID);
     return ret;
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetRandROutputDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, RROutput rrOutput, VkDisplayKHR *pDisplay) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetRandROutputDisplayEXT(dispatch, physicalDevice, dpy, rrOutput, pDisplay);
+    return ret;
+  }
+
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetWinrtDisplayNV(VkPhysicalDevice physicalDevice, uint32_t deviceRelativeId, VkDisplayKHR *pDisplay) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::GetWinrtDisplayNV(dispatch, physicalDevice, deviceRelativeId, pDisplay);
+    return ret;
+  }
+
+#endif
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_ReleaseDisplayEXT(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::ReleaseDisplayEXT(dispatch, physicalDevice, display);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
     InstanceOverrides::SubmitDebugUtilsMessageEXT(dispatch, instance, messageSeverity, messageTypes, pCallbackData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::AcquireDrmDisplayEXT(dispatch, physicalDevice, drmFd, display);
-    return ret;
-  }
-
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_AcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::AcquireWinrtDisplayNV(dispatch, physicalDevice, display);
-    return ret;
-  }
-
-#endif
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_AcquireXlibDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, VkDisplayKHR display) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::AcquireXlibDisplayEXT(dispatch, physicalDevice, dpy, display);
-    return ret;
-  }
-
-#endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(dispatch, physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModeProperties2KHR *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetDisplayModeProperties2KHR(dispatch, physicalDevice, display, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetDisplayPlaneCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkDisplayPlaneInfo2KHR *pDisplayPlaneInfo, VkDisplayPlaneCapabilities2KHR *pCapabilities) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetDisplayPlaneCapabilities2KHR(dispatch, physicalDevice, pDisplayPlaneInfo, pCapabilities);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, uint32_t connectorId, VkDisplayKHR *display) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetDrmDisplayEXT(dispatch, physicalDevice, drmFd, connectorId, display);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixFlexibleDimensionsPropertiesNV *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesKHR *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesNV *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeVectorPropertiesNV *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkBool32 wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, IDirectFB *dfb) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkBool32 ret = PhysicalDeviceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT(dispatch, physicalDevice, queueFamilyIndex, dfb);
-    return ret;
-  }
-
-#endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlaneProperties2KHR *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceDisplayProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayProperties2KHR *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceDisplayProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceExternalBufferPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR(dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceExternalFencePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR(dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkExternalMemoryHandleTypeFlagsNV externalHandleType, VkExternalImageFormatPropertiesNV *pExternalImageFormatProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV(dispatch, physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfo *pExternalSemaphoreInfo, VkExternalSemaphoreProperties *pExternalSemaphoreProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR(dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceExternalTensorPropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalTensorInfoARM *pExternalTensorInfo, VkExternalTensorPropertiesARM *pExternalTensorProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM(dispatch, physicalDevice, pExternalTensorInfo, pExternalTensorProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceFeatures2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2 *pFeatures) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceFeatures2KHR(dispatch, physicalDevice, pFeatures);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceFormatProperties2KHR(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2 *pFormatProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceFormatProperties2KHR(dispatch, physicalDevice, format, pFormatProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceFragmentShadingRatesKHR(VkPhysicalDevice physicalDevice, uint32_t *pFragmentShadingRateCount, VkPhysicalDeviceFragmentShadingRateKHR *pFragmentShadingRates) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR(dispatch, physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkImageFormatProperties2 *pImageFormatProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceImageFormatProperties2KHR(dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceMemoryProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2 *pMemoryProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceMemoryProperties2KHR(dispatch, physicalDevice, pMemoryProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceMultisamplePropertiesEXT(VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT *pMultisampleProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT(dispatch, physicalDevice, samples, pMultisampleProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV(VkPhysicalDevice physicalDevice, const VkOpticalFlowImageFormatInfoNV *pOpticalFlowImageFormatInfo, uint32_t *pFormatCount, VkOpticalFlowImageFormatPropertiesNV *pImageFormatProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV(dispatch, physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2 *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceProperties2KHR(dispatch, physicalDevice, pProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM *pQueueFamilyDataGraphProcessingEngineInfo, VkQueueFamilyDataGraphProcessingEnginePropertiesARM *pQueueFamilyDataGraphProcessingEngineProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(dispatch, physicalDevice, pQueueFamilyDataGraphProcessingEngineInfo, pQueueFamilyDataGraphProcessingEngineProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pQueueFamilyDataGraphPropertyCount, VkQueueFamilyDataGraphPropertiesARM *pQueueFamilyDataGraphProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(dispatch, physicalDevice, queueFamilyIndex, pQueueFamilyDataGraphPropertyCount, pQueueFamilyDataGraphProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR *pPerformanceQueryCreateInfo, uint32_t *pNumPasses) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(dispatch, physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceQueueFamilyProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
-  }
-
-#ifdef VK_USE_PLATFORM_SCREEN_QNX
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkBool32 wrap_GetPhysicalDeviceScreenPresentationSupportQNX(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct _screen_window *window) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkBool32 ret = PhysicalDeviceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX(dispatch, physicalDevice, queueFamilyIndex, window);
-    return ret;
-  }
-
-#endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static void wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2 *pFormatInfo, uint32_t *pPropertyCount, VkSparseImageFormatProperties2 *pProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    PhysicalDeviceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR(dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(VkPhysicalDevice physicalDevice, uint32_t *pCombinationCount, VkFramebufferMixedSamplesCombinationNV *pCombinations) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(dispatch, physicalDevice, pCombinationCount, pCombinations);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceSurfaceCapabilities2EXT(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT *pSurfaceCapabilities) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT(dispatch, physicalDevice, surface, pSurfaceCapabilities);
-    return ret;
-  }
-
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceSurfacePresentModes2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT(dispatch, physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
-    return ret;
-  }
-
-#endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolProperties *pToolProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceToolPropertiesEXT(dispatch, physicalDevice, pToolCount, pToolProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceVideoCapabilitiesKHR(VkPhysicalDevice physicalDevice, const VkVideoProfileInfoKHR *pVideoProfile, VkVideoCapabilitiesKHR *pCapabilities) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR(dispatch, physicalDevice, pVideoProfile, pCapabilities);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *pQualityLevelInfo, VkVideoEncodeQualityLevelPropertiesKHR *pQualityLevelProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(dispatch, physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
-    return ret;
-  }
-
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetPhysicalDeviceVideoFormatPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoFormatInfoKHR *pVideoFormatInfo, uint32_t *pVideoFormatPropertyCount, VkVideoFormatPropertiesKHR *pVideoFormatProperties) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR(dispatch, physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
-    return ret;
-  }
-
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetRandROutputDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, RROutput rrOutput, VkDisplayKHR *pDisplay) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetRandROutputDisplayEXT(dispatch, physicalDevice, dpy, rrOutput, pDisplay);
-    return ret;
-  }
-
-#endif
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_GetWinrtDisplayNV(VkPhysicalDevice physicalDevice, uint32_t deviceRelativeId, VkDisplayKHR *pDisplay) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::GetWinrtDisplayNV(dispatch, physicalDevice, deviceRelativeId, pDisplay);
-    return ret;
-  }
-
-#endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
-  static VkResult wrap_ReleaseDisplayEXT(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
-    VkResult ret = PhysicalDeviceOverrides::ReleaseDisplayEXT(dispatch, physicalDevice, display);
-    return ret;
-  }
-
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AcquireFullScreenExclusiveModeEXT(dispatch, device, swapchain);
@@ -2813,625 +2799,625 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AcquireNextImage2KHR(dispatch, device, pAcquireInfo, pImageIndex);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AcquireNextImageKHR(dispatch, device, swapchain, timeout, semaphore, fence, pImageIndex);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquirePerformanceConfigurationINTEL(VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL *pAcquireInfo, VkPerformanceConfigurationINTEL *pConfiguration) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AcquirePerformanceConfigurationINTEL(dispatch, device, pAcquireInfo, pConfiguration);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireProfilingLockKHR(VkDevice device, const VkAcquireProfilingLockInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AcquireProfilingLockKHR(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateCommandBuffers(VkDevice device, const VkCommandBufferAllocateInfo *pAllocateInfo, VkCommandBuffer *pCommandBuffers) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AllocateCommandBuffers(dispatch, device, pAllocateInfo, pCommandBuffers);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateDescriptorSets(VkDevice device, const VkDescriptorSetAllocateInfo *pAllocateInfo, VkDescriptorSet *pDescriptorSets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AllocateDescriptorSets(dispatch, device, pAllocateInfo, pDescriptorSets);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateMemory(VkDevice device, const VkMemoryAllocateInfo *pAllocateInfo, const VkAllocationCallbacks *pAllocator, VkDeviceMemory *pMemory) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::AllocateMemory(dispatch, device, pAllocateInfo, pAllocator, pMemory);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_AntiLagUpdateAMD(VkDevice device, const VkAntiLagDataAMD *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::AntiLagUpdateAMD(dispatch, device, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BeginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo *pBeginInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::BeginCommandBuffer(dispatch, commandBuffer, pBeginInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindAccelerationStructureMemoryNV(VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNV *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindAccelerationStructureMemoryNV(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory(VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindBufferMemory(dispatch, device, buffer, memory, memoryOffset);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindBufferMemory2(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindBufferMemory2KHR(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindDataGraphPipelineSessionMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindDataGraphPipelineSessionMemoryInfoARM *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindDataGraphPipelineSessionMemoryARM(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory(VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindImageMemory(dispatch, device, image, memory, memoryOffset);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindImageMemory2(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindImageMemory2KHR(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindOpticalFlowSessionImageNV(VkDevice device, VkOpticalFlowSessionNV session, VkOpticalFlowSessionBindingPointNV bindingPoint, VkImageView view, VkImageLayout layout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindOpticalFlowSessionImageNV(dispatch, device, session, bindingPoint, view, layout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindTensorMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindTensorMemoryInfoARM *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindTensorMemoryARM(dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindVideoSessionMemoryKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t bindSessionMemoryInfoCount, const VkBindVideoSessionMemoryInfoKHR *pBindSessionMemoryInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BindVideoSessionMemoryKHR(dispatch, device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BuildAccelerationStructuresKHR(dispatch, device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::BuildMicromapsEXT(dispatch, device, deferredOperation, infoCount, pInfos);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginConditionalRenderingEXT(dispatch, commandBuffer, pConditionalRenderingBegin);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginDebugUtilsLabelEXT(dispatch, commandBuffer, pLabelInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginPerTileExecutionQCOM(dispatch, commandBuffer, pPerTileBeginInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginQuery(dispatch, commandBuffer, queryPool, query, flags);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags, uint32_t index) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginQueryIndexedEXT(dispatch, commandBuffer, queryPool, query, flags, index);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, VkSubpassContents contents) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginRenderPass(dispatch, commandBuffer, pRenderPassBegin, contents);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass2(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, const VkSubpassBeginInfo *pSubpassBeginInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginRenderPass2(dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass2KHR(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, const VkSubpassBeginInfo *pSubpassBeginInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginRenderPass2KHR(dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRendering(VkCommandBuffer commandBuffer, const VkRenderingInfo *pRenderingInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginRendering(dispatch, commandBuffer, pRenderingInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderingKHR(VkCommandBuffer commandBuffer, const VkRenderingInfo *pRenderingInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginRenderingKHR(dispatch, commandBuffer, pRenderingInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginTransformFeedbackEXT(dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoBeginCodingInfoKHR *pBeginInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBeginVideoCodingKHR(dispatch, commandBuffer, pBeginInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBufferEmbeddedSamplers2EXT(VkCommandBuffer commandBuffer, const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *pBindDescriptorBufferEmbeddedSamplersInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplers2EXT(dispatch, commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT(dispatch, commandBuffer, pipelineBindPoint, layout, set);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorBuffersEXT(dispatch, commandBuffer, bufferCount, pBindingInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorSets(dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorSets2KHR(dispatch, commandBuffer, pBindDescriptorSetsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindIndexBuffer(dispatch, commandBuffer, buffer, offset, indexType);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindIndexBuffer2KHR(dispatch, commandBuffer, buffer, offset, size, indexType);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindInvocationMaskHUAWEI(dispatch, commandBuffer, imageView, imageLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindPipeline(dispatch, commandBuffer, pipelineBindPoint, pipeline);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindPipelineShaderGroupNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline, uint32_t groupIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindPipelineShaderGroupNV(dispatch, commandBuffer, pipelineBindPoint, pipeline, groupIndex);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindShadersEXT(VkCommandBuffer commandBuffer, uint32_t stageCount, const VkShaderStageFlagBits *pStages, const VkShaderEXT *pShaders) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindShadersEXT(dispatch, commandBuffer, stageCount, pStages, pShaders);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindShadingRateImageNV(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindShadingRateImageNV(dispatch, commandBuffer, imageView, imageLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindTileMemoryQCOM(VkCommandBuffer commandBuffer, const VkTileMemoryBindInfoQCOM *pTileMemoryBindInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindTileMemoryQCOM(dispatch, commandBuffer, pTileMemoryBindInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindTransformFeedbackBuffersEXT(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindVertexBuffers(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers2(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes, const VkDeviceSize *pStrides) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindVertexBuffers2(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers2EXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes, const VkDeviceSize *pStrides) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBindVertexBuffers2EXT(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBlitImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage2(VkCommandBuffer commandBuffer, const VkBlitImageInfo2 *pBlitImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBlitImage2(dispatch, commandBuffer, pBlitImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage2KHR(VkCommandBuffer commandBuffer, const VkBlitImageInfo2 *pBlitImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBlitImage2KHR(dispatch, commandBuffer, pBlitImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructureNV(VkCommandBuffer commandBuffer, const VkAccelerationStructureInfoNV *pInfo, VkBuffer instanceData, VkDeviceSize instanceOffset, VkBool32 update, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkBuffer scratch, VkDeviceSize scratchOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildAccelerationStructureNV(dispatch, commandBuffer, pInfo, instanceData, instanceOffset, update, dst, src, scratch, scratchOffset);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructuresIndirectKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides, const uint32_t * const*ppMaxPrimitiveCounts) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildAccelerationStructuresIndirectKHR(dispatch, commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructuresKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildAccelerationStructuresKHR(dispatch, commandBuffer, infoCount, pInfos, ppBuildRangeInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildClusterAccelerationStructureIndirectNV(VkCommandBuffer commandBuffer, const VkClusterAccelerationStructureCommandsInfoNV *pCommandInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildClusterAccelerationStructureIndirectNV(dispatch, commandBuffer, pCommandInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildMicromapsEXT(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildMicromapsEXT(dispatch, commandBuffer, infoCount, pInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildPartitionedAccelerationStructuresNV(VkCommandBuffer commandBuffer, const VkBuildPartitionedAccelerationStructureInfoNV *pBuildInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdBuildPartitionedAccelerationStructuresNV(dispatch, commandBuffer, pBuildInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearAttachments(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkClearAttachment *pAttachments, uint32_t rectCount, const VkClearRect *pRects) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdClearAttachments(dispatch, commandBuffer, attachmentCount, pAttachments, rectCount, pRects);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearColorImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearColorValue *pColor, uint32_t rangeCount, const VkImageSubresourceRange *pRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdClearColorImage(dispatch, commandBuffer, image, imageLayout, pColor, rangeCount, pRanges);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearDepthStencilImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearDepthStencilValue *pDepthStencil, uint32_t rangeCount, const VkImageSubresourceRange *pRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdClearDepthStencilImage(dispatch, commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdControlVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoCodingControlInfoKHR *pCodingControlInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdControlVideoCodingKHR(dispatch, commandBuffer, pCodingControlInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdConvertCooperativeVectorMatrixNV(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkConvertCooperativeVectorMatrixInfoNV *pInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdConvertCooperativeVectorMatrixNV(dispatch, commandBuffer, infoCount, pInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyAccelerationStructureKHR(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureNV(VkCommandBuffer commandBuffer, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkCopyAccelerationStructureModeKHR mode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyAccelerationStructureNV(dispatch, commandBuffer, dst, src, mode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureToMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyAccelerationStructureToMemoryKHR(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBuffer(dispatch, commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer2(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 *pCopyBufferInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBuffer2(dispatch, commandBuffer, pCopyBufferInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 *pCopyBufferInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBuffer2KHR(dispatch, commandBuffer, pCopyBufferInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkBufferImageCopy *pRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBufferToImage(dispatch, commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage2(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2 *pCopyBufferToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBufferToImage2(dispatch, commandBuffer, pCopyBufferToImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2 *pCopyBufferToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyBufferToImage2KHR(dispatch, commandBuffer, pCopyBufferToImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageCopy *pRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage2(VkCommandBuffer commandBuffer, const VkCopyImageInfo2 *pCopyImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImage2(dispatch, commandBuffer, pCopyImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage2KHR(VkCommandBuffer commandBuffer, const VkCopyImageInfo2 *pCopyImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImage2KHR(dispatch, commandBuffer, pCopyImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImageToBuffer(dispatch, commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImageToBuffer2(dispatch, commandBuffer, pCopyImageToBufferInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyImageToBuffer2KHR(dispatch, commandBuffer, pCopyImageToBufferInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryIndirectNV(dispatch, commandBuffer, copyBufferAddress, copyCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryToImageIndirectNV(dispatch, commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryToMicromapEXT(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMicromapEXT(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMicromapToMemoryEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapToMemoryInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMicromapToMemoryEXT(dispatch, commandBuffer, pInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyQueryPoolResults(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyQueryPoolResults(dispatch, commandBuffer, queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyTensorARM(VkCommandBuffer commandBuffer, const VkCopyTensorInfoARM *pCopyTensorInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCopyTensorARM(dispatch, commandBuffer, pCopyTensorInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCudaLaunchKernelNV(VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV *pLaunchInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdCudaLaunchKernelNV(dispatch, commandBuffer, pLaunchInfo);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerBeginEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDebugMarkerBeginEXT(dispatch, commandBuffer, pMarkerInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDebugMarkerEndEXT(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDebugMarkerInsertEXT(dispatch, commandBuffer, pMarkerInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDecodeVideoKHR(dispatch, commandBuffer, pDecodeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDecompressMemoryIndirectCountNV(dispatch, commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDecompressMemoryNV(dispatch, commandBuffer, decompressRegionCount, pDecompressMemoryRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatch(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchBase(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchBase(dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchBaseKHR(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchBaseKHR(dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchDataGraphARM(VkCommandBuffer commandBuffer, VkDataGraphPipelineSessionARM session, const VkDataGraphPipelineDispatchInfoARM *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchDataGraphARM(dispatch, commandBuffer, session, pInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX *pCountInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchGraphAMDX(dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
@@ -3439,7 +3425,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphIndirectAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX *pCountInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchGraphIndirectAMDX(dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
@@ -3447,1220 +3433,1220 @@ namespace vkroots {
 
 #endif
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphIndirectCountAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, VkDeviceAddress countInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchGraphIndirectCountAMDX(dispatch, commandBuffer, scratch, scratchSize, countInfo);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchIndirect(dispatch, commandBuffer, buffer, offset);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchTileQCOM(VkCommandBuffer commandBuffer, const VkDispatchTileInfoQCOM *pDispatchTileInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDispatchTileQCOM(dispatch, commandBuffer, pDispatchTileInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDraw(VkCommandBuffer commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDraw(dispatch, commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawClusterHUAWEI(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawClusterHUAWEI(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawClusterIndirectHUAWEI(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawClusterIndirectHUAWEI(dispatch, commandBuffer, buffer, offset);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexed(VkCommandBuffer commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndexed(dispatch, commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndexedIndirect(dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndexedIndirectCount(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndexedIndirectCountAMD(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndexedIndirectCountKHR(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndirect(dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectByteCountEXT(VkCommandBuffer commandBuffer, uint32_t instanceCount, uint32_t firstInstance, VkBuffer counterBuffer, VkDeviceSize counterBufferOffset, uint32_t counterOffset, uint32_t vertexStride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndirectByteCountEXT(dispatch, commandBuffer, instanceCount, firstInstance, counterBuffer, counterBufferOffset, counterOffset, vertexStride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndirectCount(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndirectCountAMD(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawIndirectCountKHR(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksEXT(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksEXT(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectCountEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksIndirectCountEXT(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectCountNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksIndirectCountNV(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksIndirectEXT(dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksIndirectNV(dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksNV(VkCommandBuffer commandBuffer, uint32_t taskCount, uint32_t firstTask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMeshTasksNV(dispatch, commandBuffer, taskCount, firstTask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMultiEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawInfoEXT *pVertexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMultiEXT(dispatch, commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMultiIndexedEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawIndexedInfoEXT *pIndexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride, const int32_t *pVertexOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdDrawMultiIndexedEXT(dispatch, commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEncodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR *pEncodeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEncodeVideoKHR(dispatch, commandBuffer, pEncodeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndConditionalRenderingEXT(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndConditionalRenderingEXT(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndDebugUtilsLabelEXT(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndDebugUtilsLabelEXT(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileEndInfoQCOM *pPerTileEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndPerTileExecutionQCOM(dispatch, commandBuffer, pPerTileEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndQuery(dispatch, commandBuffer, queryPool, query);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, uint32_t index) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndQueryIndexedEXT(dispatch, commandBuffer, queryPool, query, index);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRenderPass(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRenderPass2(dispatch, commandBuffer, pSubpassEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRenderPass2KHR(dispatch, commandBuffer, pSubpassEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRendering(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRendering(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRendering2EXT(dispatch, commandBuffer, pRenderingEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderingKHR(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndRenderingKHR(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndTransformFeedbackEXT(dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdEndVideoCodingKHR(dispatch, commandBuffer, pEndCodingInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteCommands(VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdExecuteCommands(dispatch, commandBuffer, commandBufferCount, pCommandBuffers);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteGeneratedCommandsEXT(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdExecuteGeneratedCommandsEXT(dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteGeneratedCommandsNV(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdExecuteGeneratedCommandsNV(dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdFillBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdFillBuffer(dispatch, commandBuffer, dstBuffer, dstOffset, size, data);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdInitializeGraphScratchMemoryAMDX(VkCommandBuffer commandBuffer, VkPipeline executionGraph, VkDeviceAddress scratch, VkDeviceSize scratchSize) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdInitializeGraphScratchMemoryAMDX(dispatch, commandBuffer, executionGraph, scratch, scratchSize);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdInsertDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdInsertDebugUtilsLabelEXT(dispatch, commandBuffer, pLabelInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass(VkCommandBuffer commandBuffer, VkSubpassContents contents) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdNextSubpass(dispatch, commandBuffer, contents);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass2(VkCommandBuffer commandBuffer, const VkSubpassBeginInfo *pSubpassBeginInfo, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdNextSubpass2(dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass2KHR(VkCommandBuffer commandBuffer, const VkSubpassBeginInfo *pSubpassBeginInfo, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdNextSubpass2KHR(dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdOpticalFlowExecuteNV(VkCommandBuffer commandBuffer, VkOpticalFlowSessionNV session, const VkOpticalFlowExecuteInfoNV *pExecuteInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdOpticalFlowExecuteNV(dispatch, commandBuffer, session, pExecuteInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier(VkCommandBuffer commandBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPipelineBarrier(dispatch, commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo *pDependencyInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPipelineBarrier2(dispatch, commandBuffer, pDependencyInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier2KHR(VkCommandBuffer commandBuffer, const VkDependencyInfo *pDependencyInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPipelineBarrier2KHR(dispatch, commandBuffer, pDependencyInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPreprocessGeneratedCommandsEXT(dispatch, commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPreprocessGeneratedCommandsNV(dispatch, commandBuffer, pGeneratedCommandsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushConstants(dispatch, commandBuffer, layout, stageFlags, offset, size, pValues);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushConstants2KHR(dispatch, commandBuffer, pPushConstantsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushDescriptorSet2KHR(dispatch, commandBuffer, pPushDescriptorSetInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushDescriptorSetKHR(dispatch, commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR(dispatch, commandBuffer, pPushDescriptorSetWithTemplateInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR(dispatch, commandBuffer, descriptorUpdateTemplate, layout, set, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResetEvent(dispatch, commandBuffer, event, stageMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent2(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2 stageMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResetEvent2(dispatch, commandBuffer, event, stageMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2 stageMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResetEvent2KHR(dispatch, commandBuffer, event, stageMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetQueryPool(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResetQueryPool(dispatch, commandBuffer, queryPool, firstQuery, queryCount);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageResolve *pRegions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResolveImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage2(VkCommandBuffer commandBuffer, const VkResolveImageInfo2 *pResolveImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResolveImage2(dispatch, commandBuffer, pResolveImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage2KHR(VkCommandBuffer commandBuffer, const VkResolveImageInfo2 *pResolveImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdResolveImage2KHR(dispatch, commandBuffer, pResolveImageInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAlphaToCoverageEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToCoverageEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetAlphaToCoverageEnableEXT(dispatch, commandBuffer, alphaToCoverageEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAlphaToOneEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToOneEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetAlphaToOneEnableEXT(dispatch, commandBuffer, alphaToOneEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAttachmentFeedbackLoopEnableEXT(VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetAttachmentFeedbackLoopEnableEXT(dispatch, commandBuffer, aspectMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetBlendConstants(VkCommandBuffer commandBuffer, const float blendConstants[4]) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetBlendConstants(dispatch, commandBuffer, blendConstants);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCheckpointNV(VkCommandBuffer commandBuffer, const void *pCheckpointMarker) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCheckpointNV(dispatch, commandBuffer, pCheckpointMarker);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoarseSampleOrderNV(VkCommandBuffer commandBuffer, VkCoarseSampleOrderTypeNV sampleOrderType, uint32_t customSampleOrderCount, const VkCoarseSampleOrderCustomNV *pCustomSampleOrders) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoarseSampleOrderNV(dispatch, commandBuffer, sampleOrderType, customSampleOrderCount, pCustomSampleOrders);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendAdvancedEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendAdvancedEXT *pColorBlendAdvanced) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetColorBlendAdvancedEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendEnableEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkBool32 *pColorBlendEnables) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetColorBlendEnableEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendEquationEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendEquationEXT *pColorBlendEquations) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetColorBlendEquationEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorWriteEnableEXT(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkBool32 *pColorWriteEnables) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetColorWriteEnableEXT(dispatch, commandBuffer, attachmentCount, pColorWriteEnables);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorWriteMaskEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorComponentFlags *pColorWriteMasks) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetColorWriteMaskEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetConservativeRasterizationModeEXT(VkCommandBuffer commandBuffer, VkConservativeRasterizationModeEXT conservativeRasterizationMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetConservativeRasterizationModeEXT(dispatch, commandBuffer, conservativeRasterizationMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationModeNV(VkCommandBuffer commandBuffer, VkCoverageModulationModeNV coverageModulationMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageModulationModeNV(dispatch, commandBuffer, coverageModulationMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationTableEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageModulationTableEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageModulationTableEnableNV(dispatch, commandBuffer, coverageModulationTableEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationTableNV(VkCommandBuffer commandBuffer, uint32_t coverageModulationTableCount, const float *pCoverageModulationTable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageModulationTableNV(dispatch, commandBuffer, coverageModulationTableCount, pCoverageModulationTable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageReductionModeNV(VkCommandBuffer commandBuffer, VkCoverageReductionModeNV coverageReductionMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageReductionModeNV(dispatch, commandBuffer, coverageReductionMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageToColorEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageToColorEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageToColorEnableNV(dispatch, commandBuffer, coverageToColorEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageToColorLocationNV(VkCommandBuffer commandBuffer, uint32_t coverageToColorLocation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCoverageToColorLocationNV(dispatch, commandBuffer, coverageToColorLocation);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCullMode(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCullMode(dispatch, commandBuffer, cullMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCullModeEXT(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetCullModeEXT(dispatch, commandBuffer, cullMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBias(VkCommandBuffer commandBuffer, float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBias(dispatch, commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBias2EXT(VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT *pDepthBiasInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBias2EXT(dispatch, commandBuffer, pDepthBiasInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBiasEnable(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBiasEnable(dispatch, commandBuffer, depthBiasEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBiasEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBiasEnableEXT(dispatch, commandBuffer, depthBiasEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBounds(VkCommandBuffer commandBuffer, float minDepthBounds, float maxDepthBounds) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBounds(dispatch, commandBuffer, minDepthBounds, maxDepthBounds);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBoundsTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBoundsTestEnable(dispatch, commandBuffer, depthBoundsTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBoundsTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthBoundsTestEnableEXT(dispatch, commandBuffer, depthBoundsTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClampEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClampEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthClampEnableEXT(dispatch, commandBuffer, depthClampEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClampRangeEXT(VkCommandBuffer commandBuffer, VkDepthClampModeEXT depthClampMode, const VkDepthClampRangeEXT *pDepthClampRange) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthClampRangeEXT(dispatch, commandBuffer, depthClampMode, pDepthClampRange);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClipEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClipEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthClipEnableEXT(dispatch, commandBuffer, depthClipEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClipNegativeOneToOneEXT(VkCommandBuffer commandBuffer, VkBool32 negativeOneToOne) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthClipNegativeOneToOneEXT(dispatch, commandBuffer, negativeOneToOne);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthCompareOp(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthCompareOp(dispatch, commandBuffer, depthCompareOp);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthCompareOpEXT(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthCompareOpEXT(dispatch, commandBuffer, depthCompareOp);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthTestEnable(dispatch, commandBuffer, depthTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthTestEnableEXT(dispatch, commandBuffer, depthTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthWriteEnable(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthWriteEnable(dispatch, commandBuffer, depthWriteEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthWriteEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDepthWriteEnableEXT(dispatch, commandBuffer, depthWriteEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDescriptorBufferOffsets2EXT(VkCommandBuffer commandBuffer, const VkSetDescriptorBufferOffsetsInfoEXT *pSetDescriptorBufferOffsetsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDescriptorBufferOffsets2EXT(dispatch, commandBuffer, pSetDescriptorBufferOffsetsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDescriptorBufferOffsetsEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t setCount, const uint32_t *pBufferIndices, const VkDeviceSize *pOffsets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDescriptorBufferOffsetsEXT(dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDeviceMask(VkCommandBuffer commandBuffer, uint32_t deviceMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDeviceMask(dispatch, commandBuffer, deviceMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDeviceMaskKHR(VkCommandBuffer commandBuffer, uint32_t deviceMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDeviceMaskKHR(dispatch, commandBuffer, deviceMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleEXT(VkCommandBuffer commandBuffer, uint32_t firstDiscardRectangle, uint32_t discardRectangleCount, const VkRect2D *pDiscardRectangles) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDiscardRectangleEXT(dispatch, commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 discardRectangleEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDiscardRectangleEnableEXT(dispatch, commandBuffer, discardRectangleEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleModeEXT(VkCommandBuffer commandBuffer, VkDiscardRectangleModeEXT discardRectangleMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetDiscardRectangleModeEXT(dispatch, commandBuffer, discardRectangleMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetEvent(dispatch, commandBuffer, event, stageMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent2(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo *pDependencyInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetEvent2(dispatch, commandBuffer, event, pDependencyInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo *pDependencyInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetEvent2KHR(dispatch, commandBuffer, event, pDependencyInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExclusiveScissorEnableNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkBool32 *pExclusiveScissorEnables) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetExclusiveScissorEnableNV(dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissorEnables);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExclusiveScissorNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkRect2D *pExclusiveScissors) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetExclusiveScissorNV(dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExtraPrimitiveOverestimationSizeEXT(VkCommandBuffer commandBuffer, float extraPrimitiveOverestimationSize) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetExtraPrimitiveOverestimationSizeEXT(dispatch, commandBuffer, extraPrimitiveOverestimationSize);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFragmentShadingRateEnumNV(VkCommandBuffer commandBuffer, VkFragmentShadingRateNV shadingRate, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetFragmentShadingRateEnumNV(dispatch, commandBuffer, shadingRate, combinerOps);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFragmentShadingRateKHR(VkCommandBuffer commandBuffer, const VkExtent2D *pFragmentSize, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetFragmentShadingRateKHR(dispatch, commandBuffer, pFragmentSize, combinerOps);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetFrontFace(dispatch, commandBuffer, frontFace);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetFrontFaceEXT(dispatch, commandBuffer, frontFace);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineRasterizationModeEXT(dispatch, commandBuffer, lineRasterizationMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineStippleEXT(dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineStippleEnableEXT(dispatch, commandBuffer, stippledLineEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineStippleKHR(dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineWidth(VkCommandBuffer commandBuffer, float lineWidth) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineWidth(dispatch, commandBuffer, lineWidth);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLogicOpEXT(VkCommandBuffer commandBuffer, VkLogicOp logicOp) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLogicOpEXT(dispatch, commandBuffer, logicOp);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLogicOpEnableEXT(VkCommandBuffer commandBuffer, VkBool32 logicOpEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetLogicOpEnableEXT(dispatch, commandBuffer, logicOpEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPatchControlPointsEXT(VkCommandBuffer commandBuffer, uint32_t patchControlPoints) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPatchControlPointsEXT(dispatch, commandBuffer, patchControlPoints);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceMarkerInfoINTEL *pMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::CmdSetPerformanceMarkerINTEL(dispatch, commandBuffer, pMarkerInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceOverrideINTEL(VkCommandBuffer commandBuffer, const VkPerformanceOverrideInfoINTEL *pOverrideInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::CmdSetPerformanceOverrideINTEL(dispatch, commandBuffer, pOverrideInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceStreamMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceStreamMarkerInfoINTEL *pMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::CmdSetPerformanceStreamMarkerINTEL(dispatch, commandBuffer, pMarkerInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPolygonModeEXT(VkCommandBuffer commandBuffer, VkPolygonMode polygonMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPolygonModeEXT(dispatch, commandBuffer, polygonMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveRestartEnable(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPrimitiveRestartEnable(dispatch, commandBuffer, primitiveRestartEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveRestartEnableEXT(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPrimitiveRestartEnableEXT(dispatch, commandBuffer, primitiveRestartEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveTopology(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPrimitiveTopology(dispatch, commandBuffer, primitiveTopology);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveTopologyEXT(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetPrimitiveTopologyEXT(dispatch, commandBuffer, primitiveTopology);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetProvokingVertexModeEXT(VkCommandBuffer commandBuffer, VkProvokingVertexModeEXT provokingVertexMode) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetProvokingVertexModeEXT(dispatch, commandBuffer, provokingVertexMode);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizationSamplesEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits rasterizationSamples) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRasterizationSamplesEXT(dispatch, commandBuffer, rasterizationSamples);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizationStreamEXT(VkCommandBuffer commandBuffer, uint32_t rasterizationStream) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRasterizationStreamEXT(dispatch, commandBuffer, rasterizationStream);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRasterizerDiscardEnable(dispatch, commandBuffer, rasterizerDiscardEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRasterizerDiscardEnableEXT(dispatch, commandBuffer, rasterizerDiscardEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR(dispatch, commandBuffer, pipelineStackSize);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR(dispatch, commandBuffer, pLocationInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR(dispatch, commandBuffer, pInputAttachmentIndexInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV(dispatch, commandBuffer, representativeFragmentTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetSampleLocationsEXT(dispatch, commandBuffer, pSampleLocationsInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleLocationsEnableEXT(VkCommandBuffer commandBuffer, VkBool32 sampleLocationsEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetSampleLocationsEnableEXT(dispatch, commandBuffer, sampleLocationsEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleMaskEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, const VkSampleMask *pSampleMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetSampleMaskEXT(dispatch, commandBuffer, samples, pSampleMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissor(VkCommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetScissor(dispatch, commandBuffer, firstScissor, scissorCount, pScissors);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissorWithCount(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetScissorWithCount(dispatch, commandBuffer, scissorCount, pScissors);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissorWithCountEXT(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetScissorWithCountEXT(dispatch, commandBuffer, scissorCount, pScissors);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetShadingRateImageEnableNV(VkCommandBuffer commandBuffer, VkBool32 shadingRateImageEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetShadingRateImageEnableNV(dispatch, commandBuffer, shadingRateImageEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilCompareMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t compareMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilCompareMask(dispatch, commandBuffer, faceMask, compareMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilOp(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilOp(dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilOpEXT(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilOpEXT(dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilReference(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t reference) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilReference(dispatch, commandBuffer, faceMask, reference);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilTestEnable(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilTestEnable(dispatch, commandBuffer, stencilTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilTestEnableEXT(dispatch, commandBuffer, stencilTestEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilWriteMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t writeMask) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetStencilWriteMask(dispatch, commandBuffer, faceMask, writeMask);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetTessellationDomainOriginEXT(VkCommandBuffer commandBuffer, VkTessellationDomainOrigin domainOrigin) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetTessellationDomainOriginEXT(dispatch, commandBuffer, domainOrigin);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetVertexInputEXT(VkCommandBuffer commandBuffer, uint32_t vertexBindingDescriptionCount, const VkVertexInputBindingDescription2EXT *pVertexBindingDescriptions, uint32_t vertexAttributeDescriptionCount, const VkVertexInputAttributeDescription2EXT *pVertexAttributeDescriptions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetVertexInputEXT(dispatch, commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewport(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewport(dispatch, commandBuffer, firstViewport, viewportCount, pViewports);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportShadingRatePaletteNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkShadingRatePaletteNV *pShadingRatePalettes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportShadingRatePaletteNV(dispatch, commandBuffer, firstViewport, viewportCount, pShadingRatePalettes);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportSwizzleNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportSwizzleNV *pViewportSwizzles) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportSwizzleNV(dispatch, commandBuffer, firstViewport, viewportCount, pViewportSwizzles);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWScalingEnableNV(VkCommandBuffer commandBuffer, VkBool32 viewportWScalingEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportWScalingEnableNV(dispatch, commandBuffer, viewportWScalingEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWScalingNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportWScalingNV *pViewportWScalings) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportWScalingNV(dispatch, commandBuffer, firstViewport, viewportCount, pViewportWScalings);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWithCount(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportWithCount(dispatch, commandBuffer, viewportCount, pViewports);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWithCountEXT(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSetViewportWithCountEXT(dispatch, commandBuffer, viewportCount, pViewports);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSubpassShadingHUAWEI(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdSubpassShadingHUAWEI(dispatch, commandBuffer);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysIndirect2KHR(VkCommandBuffer commandBuffer, VkDeviceAddress indirectDeviceAddress) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdTraceRaysIndirect2KHR(dispatch, commandBuffer, indirectDeviceAddress);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysIndirectKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR *pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pCallableShaderBindingTable, VkDeviceAddress indirectDeviceAddress) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdTraceRaysIndirectKHR(dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, indirectDeviceAddress);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR *pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pCallableShaderBindingTable, uint32_t width, uint32_t height, uint32_t depth) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdTraceRaysKHR(dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, width, height, depth);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysNV(VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, VkBuffer callableShaderBindingTableBuffer, VkDeviceSize callableShaderBindingOffset, VkDeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdTraceRaysNV(dispatch, commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, callableShaderBindingTableBuffer, callableShaderBindingOffset, callableShaderBindingStride, width, height, depth);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdUpdateBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdUpdateBuffer(dispatch, commandBuffer, dstBuffer, dstOffset, dataSize, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdUpdatePipelineIndirectBufferNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdUpdatePipelineIndirectBufferNV(dispatch, commandBuffer, pipelineBindPoint, pipeline);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWaitEvents(dispatch, commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents2(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfo *pDependencyInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWaitEvents2(dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents2KHR(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfo *pDependencyInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWaitEvents2KHR(dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteAccelerationStructuresPropertiesKHR(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteAccelerationStructuresPropertiesKHR(dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteAccelerationStructuresPropertiesNV(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureNV *pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteAccelerationStructuresPropertiesNV(dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteBufferMarker2AMD(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteBufferMarker2AMD(dispatch, commandBuffer, stage, dstBuffer, dstOffset, marker);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteBufferMarkerAMD(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteBufferMarkerAMD(dispatch, commandBuffer, pipelineStage, dstBuffer, dstOffset, marker);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteMicromapsPropertiesEXT(VkCommandBuffer commandBuffer, uint32_t micromapCount, const VkMicromapEXT *pMicromaps, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteMicromapsPropertiesEXT(dispatch, commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, uint32_t query) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteTimestamp(dispatch, commandBuffer, pipelineStage, queryPool, query);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkQueryPool queryPool, uint32_t query) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteTimestamp2(dispatch, commandBuffer, stage, queryPool, query);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp2KHR(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkQueryPool queryPool, uint32_t query) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     DeviceOverrides::CmdWriteTimestamp2KHR(dispatch, commandBuffer, stage, queryPool, query);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CompileDeferredNV(VkDevice device, VkPipeline pipeline, uint32_t shader) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CompileDeferredNV(dispatch, device, pipeline, shader);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ConvertCooperativeVectorMatrixNV(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyAccelerationStructureKHR(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyAccelerationStructureToMemoryKHR(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyImageToImageEXT(dispatch, device, pCopyImageToImageInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyImageToMemoryEXT(dispatch, device, pCopyImageToMemoryInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyMemoryToAccelerationStructureKHR(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyMemoryToImageEXT(dispatch, device, pCopyMemoryToImageInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyMemoryToMicromapEXT(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyMicromapEXT(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMicromapToMemoryEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapToMemoryInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CopyMicromapToMemoryEXT(dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAccelerationStructureKHR(VkDevice device, const VkAccelerationStructureCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkAccelerationStructureKHR *pAccelerationStructure) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateAccelerationStructureKHR(dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAccelerationStructureNV(VkDevice device, const VkAccelerationStructureCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkAccelerationStructureNV *pAccelerationStructure) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateAccelerationStructureNV(dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBuffer(VkDevice device, const VkBufferCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBuffer *pBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateBuffer(dispatch, device, pCreateInfo, pAllocator, pBuffer);
@@ -4668,7 +4654,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBufferCollectionFUCHSIA(VkDevice device, const VkBufferCollectionCreateInfoFUCHSIA *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBufferCollectionFUCHSIA *pCollection) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateBufferCollectionFUCHSIA(dispatch, device, pCreateInfo, pAllocator, pCollection);
@@ -4676,21 +4662,21 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBufferView(VkDevice device, const VkBufferViewCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBufferView *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateBufferView(dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCommandPool(VkDevice device, const VkCommandPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCommandPool *pCommandPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateCommandPool(dispatch, device, pCreateInfo, pAllocator, pCommandPool);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateComputePipelines(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
@@ -4698,7 +4684,7 @@ namespace vkroots {
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCudaFunctionNV(VkDevice device, const VkCudaFunctionCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCudaFunctionNV *pFunction) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateCudaFunctionNV(dispatch, device, pCreateInfo, pAllocator, pFunction);
@@ -4707,7 +4693,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCudaModuleNV *pModule) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateCudaModuleNV(dispatch, device, pCreateInfo, pAllocator, pModule);
@@ -4715,56 +4701,56 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDataGraphPipelineSessionARM(VkDevice device, const VkDataGraphPipelineSessionCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDataGraphPipelineSessionARM *pSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDataGraphPipelineSessionARM(dispatch, device, pCreateInfo, pAllocator, pSession);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDataGraphPipelinesARM(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkDataGraphPipelineCreateInfoARM *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDataGraphPipelinesARM(dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDeferredOperationKHR(VkDevice device, const VkAllocationCallbacks *pAllocator, VkDeferredOperationKHR *pDeferredOperation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDeferredOperationKHR(dispatch, device, pAllocator, pDeferredOperation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorPool(VkDevice device, const VkDescriptorPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorPool *pDescriptorPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDescriptorPool(dispatch, device, pCreateInfo, pAllocator, pDescriptorPool);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorSetLayout(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorSetLayout *pSetLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDescriptorSetLayout(dispatch, device, pCreateInfo, pAllocator, pSetLayout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorUpdateTemplate(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorUpdateTemplate *pDescriptorUpdateTemplate) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplate(dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorUpdateTemplateKHR(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorUpdateTemplate *pDescriptorUpdateTemplate) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplateKHR(dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateEvent(VkDevice device, const VkEventCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkEvent *pEvent) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateEvent(dispatch, device, pCreateInfo, pAllocator, pEvent);
@@ -4772,7 +4758,7 @@ namespace vkroots {
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateExecutionGraphPipelinesAMDX(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkExecutionGraphPipelineCreateInfoAMDX *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateExecutionGraphPipelinesAMDX(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
@@ -4780,312 +4766,312 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateExternalComputeQueueNV(VkDevice device, const VkExternalComputeQueueCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkExternalComputeQueueNV *pExternalQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateExternalComputeQueueNV(dispatch, device, pCreateInfo, pAllocator, pExternalQueue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateFence(VkDevice device, const VkFenceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateFence(dispatch, device, pCreateInfo, pAllocator, pFence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateFramebuffer(VkDevice device, const VkFramebufferCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkFramebuffer *pFramebuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateFramebuffer(dispatch, device, pCreateInfo, pAllocator, pFramebuffer);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateGraphicsPipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkGraphicsPipelineCreateInfo *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateGraphicsPipelines(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImage(VkDevice device, const VkImageCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkImage *pImage) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateImage(dispatch, device, pCreateInfo, pAllocator, pImage);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImageView(VkDevice device, const VkImageViewCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkImageView *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateImageView(dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectCommandsLayoutEXT(VkDevice device, const VkIndirectCommandsLayoutCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectCommandsLayoutEXT *pIndirectCommandsLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutEXT(dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectCommandsLayoutNV(VkDevice device, const VkIndirectCommandsLayoutCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectCommandsLayoutNV *pIndirectCommandsLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutNV(dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectExecutionSetEXT(VkDevice device, const VkIndirectExecutionSetCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectExecutionSetEXT *pIndirectExecutionSet) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateIndirectExecutionSetEXT(dispatch, device, pCreateInfo, pAllocator, pIndirectExecutionSet);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMicromapEXT(VkDevice device, const VkMicromapCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkMicromapEXT *pMicromap) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateMicromapEXT(dispatch, device, pCreateInfo, pAllocator, pMicromap);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateOpticalFlowSessionNV(VkDevice device, const VkOpticalFlowSessionCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkOpticalFlowSessionNV *pSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateOpticalFlowSessionNV(dispatch, device, pCreateInfo, pAllocator, pSession);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineBinariesKHR(VkDevice device, const VkPipelineBinaryCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineBinaryHandlesInfoKHR *pBinaries) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreatePipelineBinariesKHR(dispatch, device, pCreateInfo, pAllocator, pBinaries);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineCache(VkDevice device, const VkPipelineCacheCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineCache *pPipelineCache) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreatePipelineCache(dispatch, device, pCreateInfo, pAllocator, pPipelineCache);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineLayout *pPipelineLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreatePipelineLayout(dispatch, device, pCreateInfo, pAllocator, pPipelineLayout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlotCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPrivateDataSlot *pPrivateDataSlot) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreatePrivateDataSlot(dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPrivateDataSlot *pPrivateDataSlot) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreatePrivateDataSlotEXT(dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateQueryPool(VkDevice device, const VkQueryPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkQueryPool *pQueryPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateQueryPool(dispatch, device, pCreateInfo, pAllocator, pQueryPool);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRayTracingPipelinesKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoKHR *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateRayTracingPipelinesKHR(dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRayTracingPipelinesNV(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoNV *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateRayTracingPipelinesNV(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass(VkDevice device, const VkRenderPassCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateRenderPass(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass2(VkDevice device, const VkRenderPassCreateInfo2 *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateRenderPass2(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass2KHR(VkDevice device, const VkRenderPassCreateInfo2 *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateRenderPass2KHR(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSampler(VkDevice device, const VkSamplerCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSampler *pSampler) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSampler(dispatch, device, pCreateInfo, pAllocator, pSampler);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSamplerYcbcrConversion *pYcbcrConversion) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversion(dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSamplerYcbcrConversionKHR(VkDevice device, const VkSamplerYcbcrConversionCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSamplerYcbcrConversion *pYcbcrConversion) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversionKHR(dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSemaphore(VkDevice device, const VkSemaphoreCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSemaphore *pSemaphore) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSemaphore(dispatch, device, pCreateInfo, pAllocator, pSemaphore);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateShaderModule(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkShaderModule *pShaderModule) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateShaderModule(dispatch, device, pCreateInfo, pAllocator, pShaderModule);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateShadersEXT(VkDevice device, uint32_t createInfoCount, const VkShaderCreateInfoEXT *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkShaderEXT *pShaders) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateShadersEXT(dispatch, device, createInfoCount, pCreateInfos, pAllocator, pShaders);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSharedSwapchainsKHR(VkDevice device, uint32_t swapchainCount, const VkSwapchainCreateInfoKHR *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkSwapchainKHR *pSwapchains) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSharedSwapchainsKHR(dispatch, device, swapchainCount, pCreateInfos, pAllocator, pSwapchains);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSwapchainKHR *pSwapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateSwapchainKHR(dispatch, device, pCreateInfo, pAllocator, pSwapchain);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateTensorARM(VkDevice device, const VkTensorCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkTensorARM *pTensor) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateTensorARM(dispatch, device, pCreateInfo, pAllocator, pTensor);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateTensorViewARM(VkDevice device, const VkTensorViewCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkTensorViewARM *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateTensorViewARM(dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateValidationCacheEXT(VkDevice device, const VkValidationCacheCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkValidationCacheEXT *pValidationCache) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateValidationCacheEXT(dispatch, device, pCreateInfo, pAllocator, pValidationCache);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateVideoSessionKHR(VkDevice device, const VkVideoSessionCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkVideoSessionKHR *pVideoSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateVideoSessionKHR(dispatch, device, pCreateInfo, pAllocator, pVideoSession);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateVideoSessionParametersKHR(VkDevice device, const VkVideoSessionParametersCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkVideoSessionParametersKHR *pVideoSessionParameters) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::CreateVideoSessionParametersKHR(dispatch, device, pCreateInfo, pAllocator, pVideoSessionParameters);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DebugMarkerSetObjectNameEXT(VkDevice device, const VkDebugMarkerObjectNameInfoEXT *pNameInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::DebugMarkerSetObjectNameEXT(dispatch, device, pNameInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DebugMarkerSetObjectTagEXT(VkDevice device, const VkDebugMarkerObjectTagInfoEXT *pTagInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::DebugMarkerSetObjectTagEXT(dispatch, device, pTagInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DeferredOperationJoinKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::DeferredOperationJoinKHR(dispatch, device, operation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyAccelerationStructureKHR(VkDevice device, VkAccelerationStructureKHR accelerationStructure, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyAccelerationStructureKHR(dispatch, device, accelerationStructure, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyAccelerationStructureNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyAccelerationStructureNV(dispatch, device, accelerationStructure, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBuffer(VkDevice device, VkBuffer buffer, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyBuffer(dispatch, device, buffer, pAllocator);
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBufferCollectionFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyBufferCollectionFUCHSIA(dispatch, device, collection, pAllocator);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBufferView(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyBufferView(dispatch, device, bufferView, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCommandPool(VkDevice device, VkCommandPool commandPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyCommandPool(dispatch, device, commandPool, pAllocator);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCudaFunctionNV(VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyCudaFunctionNV(dispatch, device, function, pAllocator);
@@ -5093,256 +5079,256 @@ namespace vkroots {
 
 #endif
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCudaModuleNV(VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyCudaModuleNV(dispatch, device, module, pAllocator);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDataGraphPipelineSessionARM(VkDevice device, VkDataGraphPipelineSessionARM session, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDataGraphPipelineSessionARM(dispatch, device, session, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDeferredOperationKHR(VkDevice device, VkDeferredOperationKHR operation, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDeferredOperationKHR(dispatch, device, operation, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDescriptorPool(dispatch, device, descriptorPool, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDescriptorSetLayout(dispatch, device, descriptorSetLayout, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorUpdateTemplate(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDescriptorUpdateTemplate(dispatch, device, descriptorUpdateTemplate, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorUpdateTemplateKHR(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDescriptorUpdateTemplateKHR(dispatch, device, descriptorUpdateTemplate, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDevice(VkDevice device, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyDevice(dispatch, device, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyEvent(VkDevice device, VkEvent event, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyEvent(dispatch, device, event, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyExternalComputeQueueNV(VkDevice device, VkExternalComputeQueueNV externalQueue, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyExternalComputeQueueNV(dispatch, device, externalQueue, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyFence(VkDevice device, VkFence fence, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyFence(dispatch, device, fence, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyFramebuffer(VkDevice device, VkFramebuffer framebuffer, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyFramebuffer(dispatch, device, framebuffer, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyImage(VkDevice device, VkImage image, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyImage(dispatch, device, image, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyImageView(dispatch, device, imageView, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectCommandsLayoutEXT(VkDevice device, VkIndirectCommandsLayoutEXT indirectCommandsLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyIndirectCommandsLayoutEXT(dispatch, device, indirectCommandsLayout, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectCommandsLayoutNV(VkDevice device, VkIndirectCommandsLayoutNV indirectCommandsLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyIndirectCommandsLayoutNV(dispatch, device, indirectCommandsLayout, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectExecutionSetEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyIndirectExecutionSetEXT(dispatch, device, indirectExecutionSet, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyMicromapEXT(VkDevice device, VkMicromapEXT micromap, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyMicromapEXT(dispatch, device, micromap, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyOpticalFlowSessionNV(VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyOpticalFlowSessionNV(dispatch, device, session, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipeline(VkDevice device, VkPipeline pipeline, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPipeline(dispatch, device, pipeline, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineBinaryKHR(VkDevice device, VkPipelineBinaryKHR pipelineBinary, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPipelineBinaryKHR(dispatch, device, pipelineBinary, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineCache(VkDevice device, VkPipelineCache pipelineCache, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPipelineCache(dispatch, device, pipelineCache, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPipelineLayout(dispatch, device, pipelineLayout, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPrivateDataSlot(dispatch, device, privateDataSlot, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyPrivateDataSlotEXT(dispatch, device, privateDataSlot, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyQueryPool(VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyQueryPool(dispatch, device, queryPool, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyRenderPass(VkDevice device, VkRenderPass renderPass, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyRenderPass(dispatch, device, renderPass, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroySampler(dispatch, device, sampler, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroySamplerYcbcrConversion(dispatch, device, ycbcrConversion, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySamplerYcbcrConversionKHR(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroySamplerYcbcrConversionKHR(dispatch, device, ycbcrConversion, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySemaphore(VkDevice device, VkSemaphore semaphore, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroySemaphore(dispatch, device, semaphore, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyShaderEXT(VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyShaderEXT(dispatch, device, shader, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyShaderModule(VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyShaderModule(dispatch, device, shaderModule, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroySwapchainKHR(dispatch, device, swapchain, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyTensorARM(VkDevice device, VkTensorARM tensor, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyTensorARM(dispatch, device, tensor, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyTensorViewARM(VkDevice device, VkTensorViewARM tensorView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyTensorViewARM(dispatch, device, tensorView, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyValidationCacheEXT(VkDevice device, VkValidationCacheEXT validationCache, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyValidationCacheEXT(dispatch, device, validationCache, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyVideoSessionKHR(VkDevice device, VkVideoSessionKHR videoSession, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyVideoSessionKHR(dispatch, device, videoSession, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::DestroyVideoSessionParametersKHR(dispatch, device, videoSessionParameters, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DeviceWaitIdle(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::DeviceWaitIdle(dispatch, device);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DisplayPowerControlEXT(VkDevice device, VkDisplayKHR display, const VkDisplayPowerInfoEXT *pDisplayPowerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::DisplayPowerControlEXT(dispatch, device, display, pDisplayPowerInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EndCommandBuffer(VkCommandBuffer commandBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::EndCommandBuffer(dispatch, commandBuffer);
@@ -5350,66 +5336,66 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ExportMetalObjectsEXT(VkDevice device, VkExportMetalObjectsInfoEXT *pMetalObjectsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::ExportMetalObjectsEXT(dispatch, device, pMetalObjectsInfo);
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_FlushMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::FlushMappedMemoryRanges(dispatch, device, memoryRangeCount, pMemoryRanges);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_FreeCommandBuffers(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::FreeCommandBuffers(dispatch, device, commandPool, commandBufferCount, pCommandBuffers);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_FreeDescriptorSets(VkDevice device, VkDescriptorPool descriptorPool, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::FreeDescriptorSets(dispatch, device, descriptorPool, descriptorSetCount, pDescriptorSets);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_FreeMemory(VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::FreeMemory(dispatch, device, memory, pAllocator);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetAccelerationStructureBuildSizesKHR(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo, const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetAccelerationStructureBuildSizesKHR(dispatch, device, buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetAccelerationStructureDeviceAddressKHR(VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceAddress ret = DeviceOverrides::GetAccelerationStructureDeviceAddressKHR(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAccelerationStructureHandleNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetAccelerationStructureHandleNV(dispatch, device, accelerationStructure, dataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetAccelerationStructureMemoryRequirementsNV(VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV *pInfo, VkMemoryRequirements2KHR *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetAccelerationStructureMemoryRequirementsNV(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAccelerationStructureOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkAccelerationStructureCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetAccelerationStructureOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
@@ -5417,7 +5403,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAndroidHardwareBufferPropertiesANDROID(VkDevice device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetAndroidHardwareBufferPropertiesANDROID(dispatch, device, buffer, pProperties);
@@ -5426,7 +5412,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetBufferCollectionPropertiesFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, VkBufferCollectionPropertiesFUCHSIA *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetBufferCollectionPropertiesFUCHSIA(dispatch, device, collection, pProperties);
@@ -5434,88 +5420,88 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddress(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddress(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddressEXT(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressEXT(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddressKHR(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressKHR(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements(VkDevice device, VkBuffer buffer, VkMemoryRequirements *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetBufferMemoryRequirements(dispatch, device, buffer, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements2(VkDevice device, const VkBufferMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetBufferMemoryRequirements2(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements2KHR(VkDevice device, const VkBufferMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetBufferMemoryRequirements2KHR(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetBufferOpaqueCaptureAddress(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddress(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetBufferOpaqueCaptureAddressKHR(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddressKHR(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetBufferOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkBufferCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetBufferOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCalibratedTimestampsEXT(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoKHR *pTimestampInfos, uint64_t *pTimestamps, uint64_t *pMaxDeviation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetCalibratedTimestampsEXT(dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCalibratedTimestampsKHR(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoKHR *pTimestampInfos, uint64_t *pTimestamps, uint64_t *pMaxDeviation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetCalibratedTimestampsKHR(dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetClusterAccelerationStructureBuildSizesNV(VkDevice device, const VkClusterAccelerationStructureInputInfoNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetClusterAccelerationStructureBuildSizesNV(dispatch, device, pInfo, pSizeInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCudaModuleCacheNV(VkDevice device, VkCudaModuleNV module, size_t *pCacheSize, void *pCacheData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetCudaModuleCacheNV(dispatch, device, module, pCacheSize, pCacheData);
@@ -5523,127 +5509,127 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelineAvailablePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM *pPipelineInfo, uint32_t *pPropertiesCount, VkDataGraphPipelinePropertyARM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDataGraphPipelineAvailablePropertiesARM(dispatch, device, pPipelineInfo, pPropertiesCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelinePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM *pPipelineInfo, uint32_t propertiesCount, VkDataGraphPipelinePropertyQueryResultARM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDataGraphPipelinePropertiesARM(dispatch, device, pPipelineInfo, propertiesCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelineSessionBindPointRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionBindPointRequirementsInfoARM *pInfo, uint32_t *pBindPointRequirementCount, VkDataGraphPipelineSessionBindPointRequirementARM *pBindPointRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDataGraphPipelineSessionBindPointRequirementsARM(dispatch, device, pInfo, pBindPointRequirementCount, pBindPointRequirements);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDataGraphPipelineSessionMemoryRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDataGraphPipelineSessionMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static uint32_t wrap_GetDeferredOperationMaxConcurrencyKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     uint32_t ret = DeviceOverrides::GetDeferredOperationMaxConcurrencyKHR(dispatch, device, operation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeferredOperationResultKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeferredOperationResultKHR(dispatch, device, operation);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorEXT(VkDevice device, const VkDescriptorGetInfoEXT *pDescriptorInfo, size_t dataSize, void *pDescriptor) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorEXT(dispatch, device, pDescriptorInfo, dataSize, pDescriptor);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetHostMappingVALVE(VkDevice device, VkDescriptorSet descriptorSet, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetHostMappingVALVE(dispatch, device, descriptorSet, ppData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutBindingOffsetEXT(VkDevice device, VkDescriptorSetLayout layout, uint32_t binding, VkDeviceSize *pOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetLayoutBindingOffsetEXT(dispatch, device, layout, binding, pOffset);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutHostMappingInfoVALVE(VkDevice device, const VkDescriptorSetBindingReferenceVALVE *pBindingReference, VkDescriptorSetLayoutHostMappingInfoVALVE *pHostMapping) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetLayoutHostMappingInfoVALVE(dispatch, device, pBindingReference, pHostMapping);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSizeEXT(VkDevice device, VkDescriptorSetLayout layout, VkDeviceSize *pLayoutSizeInBytes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetLayoutSizeEXT(dispatch, device, layout, pLayoutSizeInBytes);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSupport(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, VkDescriptorSetLayoutSupport *pSupport) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetLayoutSupport(dispatch, device, pCreateInfo, pSupport);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSupportKHR(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, VkDescriptorSetLayoutSupport *pSupport) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDescriptorSetLayoutSupportKHR(dispatch, device, pCreateInfo, pSupport);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceAccelerationStructureCompatibilityKHR(VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo, VkAccelerationStructureCompatibilityKHR *pCompatibility) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceAccelerationStructureCompatibilityKHR(dispatch, device, pVersionInfo, pCompatibility);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceBufferMemoryRequirements(VkDevice device, const VkDeviceBufferMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceBufferMemoryRequirements(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceBufferMemoryRequirementsKHR(VkDevice device, const VkDeviceBufferMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceBufferMemoryRequirementsKHR(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceFaultInfoEXT(VkDevice device, VkDeviceFaultCountsEXT *pFaultCounts, VkDeviceFaultInfoEXT *pFaultInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeviceFaultInfoEXT(dispatch, device, pFaultCounts, pFaultInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags *pPeerMemoryFeatures) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceGroupPeerMemoryFeatures(dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceGroupPeerMemoryFeaturesKHR(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags *pPeerMemoryFeatures) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceGroupPeerMemoryFeaturesKHR(dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupPresentCapabilitiesKHR(VkDevice device, VkDeviceGroupPresentCapabilitiesKHR *pDeviceGroupPresentCapabilities) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeviceGroupPresentCapabilitiesKHR(dispatch, device, pDeviceGroupPresentCapabilities);
@@ -5651,7 +5637,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupSurfacePresentModes2EXT(VkDevice device, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, VkDeviceGroupPresentModeFlagsKHR *pModes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModes2EXT(dispatch, device, pSurfaceInfo, pModes);
@@ -5659,109 +5645,109 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupSurfacePresentModesKHR(VkDevice device, VkSurfaceKHR surface, VkDeviceGroupPresentModeFlagsKHR *pModes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModesKHR(dispatch, device, surface, pModes);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceImageMemoryRequirements(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceImageMemoryRequirementsKHR(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceImageSparseMemoryRequirements(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceImageSparseMemoryRequirementsKHR(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceImageSubresourceLayoutKHR(dispatch, device, pInfo, pLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceMemoryCommitment(dispatch, device, memory, pCommittedMemoryInBytes);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddress(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetDeviceMemoryOpaqueCaptureAddressKHR(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddressKHR(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceMicromapCompatibilityEXT(VkDevice device, const VkMicromapVersionInfoEXT *pVersionInfo, VkAccelerationStructureCompatibilityKHR *pCompatibility) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceMicromapCompatibilityEXT(dispatch, device, pVersionInfo, pCompatibility);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceQueue(VkDevice device, uint32_t queueFamilyIndex, uint32_t queueIndex, VkQueue *pQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceQueue(dispatch, device, queueFamilyIndex, queueIndex, pQueue);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceQueue2(VkDevice device, const VkDeviceQueueInfo2 *pQueueInfo, VkQueue *pQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceQueue2(dispatch, device, pQueueInfo, pQueue);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(VkDevice device, VkRenderPass renderpass, VkExtent2D *pMaxWorkgroupSize) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(dispatch, device, renderpass, pMaxWorkgroupSize);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceTensorMemoryRequirementsARM(VkDevice device, const VkDeviceTensorMemoryRequirementsARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetDeviceTensorMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDynamicRenderingTilePropertiesQCOM(VkDevice device, const VkRenderingInfo *pRenderingInfo, VkTilePropertiesQCOM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetDynamicRenderingTilePropertiesQCOM(dispatch, device, pRenderingInfo, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetEncodedVideoSessionParametersKHR(VkDevice device, const VkVideoEncodeSessionParametersGetInfoKHR *pVideoSessionParametersInfo, VkVideoEncodeSessionParametersFeedbackInfoKHR *pFeedbackInfo, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetEncodedVideoSessionParametersKHR(dispatch, device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetEventStatus(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetEventStatus(dispatch, device, event);
@@ -5769,7 +5755,7 @@ namespace vkroots {
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetExecutionGraphPipelineNodeIndexAMDX(VkDevice device, VkPipeline executionGraph, const VkPipelineShaderStageNodeCreateInfoAMDX *pNodeInfo, uint32_t *pNodeIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetExecutionGraphPipelineNodeIndexAMDX(dispatch, device, executionGraph, pNodeInfo, pNodeIndex);
@@ -5778,7 +5764,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetExecutionGraphPipelineScratchSizeAMDX(VkDevice device, VkPipeline executionGraph, VkExecutionGraphPipelineScratchSizeAMDX *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetExecutionGraphPipelineScratchSizeAMDX(dispatch, device, executionGraph, pSizeInfo);
@@ -5786,20 +5772,20 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetExternalComputeQueueDataNV(VkExternalComputeQueueNV externalQueue, VkExternalComputeQueueDataParamsNV *params, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(externalQueue);
     DeviceOverrides::GetExternalComputeQueueDataNV(dispatch, externalQueue, params, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceFdKHR(VkDevice device, const VkFenceGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetFenceFdKHR(dispatch, device, pGetFdInfo, pFd);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceStatus(VkDevice device, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetFenceStatus(dispatch, device, fence);
@@ -5807,7 +5793,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceWin32HandleKHR(VkDevice device, const VkFenceGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetFenceWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
@@ -5815,108 +5801,108 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFramebufferTilePropertiesQCOM(VkDevice device, VkFramebuffer framebuffer, uint32_t *pPropertiesCount, VkTilePropertiesQCOM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetFramebufferTilePropertiesQCOM(dispatch, device, framebuffer, pPropertiesCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetGeneratedCommandsMemoryRequirementsEXT(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoEXT *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetGeneratedCommandsMemoryRequirementsEXT(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetGeneratedCommandsMemoryRequirementsNV(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoNV *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetGeneratedCommandsMemoryRequirementsNV(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetImageDrmFormatModifierPropertiesEXT(dispatch, device, image, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements(VkDevice device, VkImage image, VkMemoryRequirements *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageMemoryRequirements(dispatch, device, image, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements2(VkDevice device, const VkImageMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageMemoryRequirements2(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements2KHR(VkDevice device, const VkImageMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageMemoryRequirements2KHR(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetImageOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements(VkDevice device, VkImage image, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSparseMemoryRequirements(dispatch, device, image, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSparseMemoryRequirements2(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSparseMemoryRequirements2KHR(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSubresourceLayout(dispatch, device, image, pSubresource, pLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSubresourceLayout2EXT(dispatch, device, image, pSubresource, pLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetImageSubresourceLayout2KHR(dispatch, device, image, pSubresource, pLayout);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetImageViewOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetLatencyTimingsNV(VkDevice device, VkSwapchainKHR swapchain, VkGetLatencyMarkerInfoNV *pLatencyMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetLatencyTimingsNV(dispatch, device, swapchain, pLatencyMarkerInfo);
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryAndroidHardwareBufferANDROID(VkDevice device, const VkMemoryGetAndroidHardwareBufferInfoANDROID *pInfo, struct AHardwareBuffer **pBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryAndroidHardwareBufferANDROID(dispatch, device, pInfo, pBuffer);
@@ -5924,21 +5910,21 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryFdKHR(dispatch, device, pGetFdInfo, pFd);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR *pMemoryFdProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryFdPropertiesKHR(dispatch, device, handleType, fd, pMemoryFdProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryHostPointerPropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHostPointer, VkMemoryHostPointerPropertiesEXT *pMemoryHostPointerProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryHostPointerPropertiesEXT(dispatch, device, handleType, pHostPointer, pMemoryHostPointerProperties);
@@ -5946,7 +5932,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryMetalHandleEXT(VkDevice device, const VkMemoryGetMetalHandleInfoEXT *pGetMetalHandleInfo, void **pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryMetalHandleEXT(dispatch, device, pGetMetalHandleInfo, pHandle);
@@ -5955,7 +5941,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryMetalHandlePropertiesEXT(dispatch, device, handleType, pHandle, pMemoryMetalHandleProperties);
@@ -5963,7 +5949,7 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryRemoteAddressNV(dispatch, device, pMemoryGetRemoteAddressInfo, pAddress);
@@ -5971,7 +5957,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandleKHR(VkDevice device, const VkMemoryGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
@@ -5980,7 +5966,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandleNV(VkDevice device, VkDeviceMemory memory, VkExternalMemoryHandleTypeFlagsNV handleType, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryWin32HandleNV(dispatch, device, memory, handleType, pHandle);
@@ -5989,7 +5975,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandlePropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, HANDLE handle, VkMemoryWin32HandlePropertiesKHR *pMemoryWin32HandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryWin32HandlePropertiesKHR(dispatch, device, handleType, handle, pMemoryWin32HandleProperties);
@@ -5998,7 +5984,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryZirconHandleFUCHSIA(VkDevice device, const VkMemoryGetZirconHandleInfoFUCHSIA *pGetZirconHandleInfo, zx_handle_t *pZirconHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryZirconHandleFUCHSIA(dispatch, device, pGetZirconHandleInfo, pZirconHandle);
@@ -6007,7 +5993,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetMemoryZirconHandlePropertiesFUCHSIA(dispatch, device, handleType, zirconHandle, pMemoryZirconHandleProperties);
@@ -6015,173 +6001,173 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetMicromapBuildSizesEXT(dispatch, device, buildType, pBuildInfo, pSizeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV(dispatch, device, pInfo, pSizeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPastPresentationTimingGOOGLE(dispatch, device, swapchain, pPresentationTimingCount, pPresentationTimings);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPerformanceParameterINTEL(dispatch, device, parameter, pValue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineBinaryDataKHR(VkDevice device, const VkPipelineBinaryDataInfoKHR *pInfo, VkPipelineBinaryKeyKHR *pPipelineBinaryKey, size_t *pPipelineBinaryDataSize, void *pPipelineBinaryData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineBinaryDataKHR(dispatch, device, pInfo, pPipelineBinaryKey, pPipelineBinaryDataSize, pPipelineBinaryData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineCacheData(VkDevice device, VkPipelineCache pipelineCache, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineCacheData(dispatch, device, pipelineCache, pDataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutableInternalRepresentationsKHR(VkDevice device, const VkPipelineExecutableInfoKHR *pExecutableInfo, uint32_t *pInternalRepresentationCount, VkPipelineExecutableInternalRepresentationKHR *pInternalRepresentations) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineExecutableInternalRepresentationsKHR(dispatch, device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutablePropertiesKHR(VkDevice device, const VkPipelineInfoKHR *pPipelineInfo, uint32_t *pExecutableCount, VkPipelineExecutablePropertiesKHR *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineExecutablePropertiesKHR(dispatch, device, pPipelineInfo, pExecutableCount, pProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutableStatisticsKHR(VkDevice device, const VkPipelineExecutableInfoKHR *pExecutableInfo, uint32_t *pStatisticCount, VkPipelineExecutableStatisticKHR *pStatistics) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineExecutableStatisticsKHR(dispatch, device, pExecutableInfo, pStatisticCount, pStatistics);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetPipelineIndirectDeviceAddressNV(VkDevice device, const VkPipelineIndirectDeviceAddressInfoNV *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceAddress ret = DeviceOverrides::GetPipelineIndirectDeviceAddressNV(dispatch, device, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPipelineIndirectMemoryRequirementsNV(VkDevice device, const VkComputePipelineCreateInfo *pCreateInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetPipelineIndirectMemoryRequirementsNV(dispatch, device, pCreateInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineKeyKHR(VkDevice device, const VkPipelineCreateInfoKHR *pPipelineCreateInfo, VkPipelineBinaryKeyKHR *pPipelineKey) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelineKeyKHR(dispatch, device, pPipelineCreateInfo, pPipelineKey);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoEXT *pPipelineInfo, VkBaseOutStructure *pPipelineProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetPipelinePropertiesEXT(dispatch, device, pPipelineInfo, pPipelineProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetPrivateData(dispatch, device, objectType, objectHandle, privateDataSlot, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetPrivateDataEXT(dispatch, device, objectType, objectHandle, privateDataSlot, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetQueryPoolResults(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void *pData, VkDeviceSize stride, VkQueryResultFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetQueryPoolResults(dispatch, device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetQueueCheckpointData2NV(VkQueue queue, uint32_t *pCheckpointDataCount, VkCheckpointData2NV *pCheckpointData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::GetQueueCheckpointData2NV(dispatch, queue, pCheckpointDataCount, pCheckpointData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetQueueCheckpointDataNV(VkQueue queue, uint32_t *pCheckpointDataCount, VkCheckpointDataNV *pCheckpointData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::GetQueueCheckpointDataNV(dispatch, queue, pCheckpointDataCount, pCheckpointData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingCaptureReplayShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetRayTracingCaptureReplayShaderGroupHandlesKHR(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesKHR(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingShaderGroupHandlesNV(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesNV(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceSize wrap_GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkDeviceSize ret = DeviceOverrides::GetRayTracingShaderGroupStackSizeKHR(dispatch, device, pipeline, group, groupShader);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetRefreshCycleDurationGOOGLE(dispatch, device, swapchain, pDisplayTimingProperties);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetRenderAreaGranularity(dispatch, device, renderPass, pGranularity);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetRenderingAreaGranularityKHR(dispatch, device, pRenderingAreaInfo, pGranularity);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSamplerOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
@@ -6189,7 +6175,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetScreenBufferPropertiesQNX(VkDevice device, const struct _screen_buffer *buffer, VkScreenBufferPropertiesQNX *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetScreenBufferPropertiesQNX(dispatch, device, buffer, pProperties);
@@ -6197,21 +6183,21 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreCounterValue(VkDevice device, VkSemaphore semaphore, uint64_t *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSemaphoreCounterValue(dispatch, device, semaphore, pValue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreCounterValueKHR(VkDevice device, VkSemaphore semaphore, uint64_t *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSemaphoreCounterValueKHR(dispatch, device, semaphore, pValue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSemaphoreFdKHR(dispatch, device, pGetFdInfo, pFd);
@@ -6219,7 +6205,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreWin32HandleKHR(VkDevice device, const VkSemaphoreGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSemaphoreWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
@@ -6228,7 +6214,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkSemaphoreGetZirconHandleInfoFUCHSIA *pGetZirconHandleInfo, zx_handle_t *pZirconHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSemaphoreZirconHandleFUCHSIA(dispatch, device, pGetZirconHandleInfo, pZirconHandle);
@@ -6236,88 +6222,88 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetShaderBinaryDataEXT(VkDevice device, VkShaderEXT shader, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetShaderBinaryDataEXT(dispatch, device, shader, pDataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetShaderInfoAMD(VkDevice device, VkPipeline pipeline, VkShaderStageFlagBits shaderStage, VkShaderInfoTypeAMD infoType, size_t *pInfoSize, void *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetShaderInfoAMD(dispatch, device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT(dispatch, device, pCreateInfo, pIdentifier);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetShaderModuleIdentifierEXT(dispatch, device, shaderModule, pIdentifier);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSwapchainCounterEXT(dispatch, device, swapchain, counter, pCounterValue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSwapchainImagesKHR(dispatch, device, swapchain, pSwapchainImageCount, pSwapchainImages);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetSwapchainStatusKHR(dispatch, device, swapchain);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::GetTensorMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetTensorOpaqueCaptureDescriptorDataARM(dispatch, device, pInfo, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetTensorViewOpaqueCaptureDescriptorDataARM(dispatch, device, pInfo, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetValidationCacheDataEXT(VkDevice device, VkValidationCacheEXT validationCache, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetValidationCacheDataEXT(dispatch, device, validationCache, pDataSize, pData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetVideoSessionMemoryRequirementsKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t *pMemoryRequirementsCount, VkVideoSessionMemoryRequirementsKHR *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::GetVideoSessionMemoryRequirementsKHR(dispatch, device, videoSession, pMemoryRequirementsCount, pMemoryRequirements);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportFenceFdKHR(VkDevice device, const VkImportFenceFdInfoKHR *pImportFenceFdInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ImportFenceFdKHR(dispatch, device, pImportFenceFdInfo);
@@ -6325,7 +6311,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportFenceWin32HandleKHR(VkDevice device, const VkImportFenceWin32HandleInfoKHR *pImportFenceWin32HandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ImportFenceWin32HandleKHR(dispatch, device, pImportFenceWin32HandleInfo);
@@ -6333,7 +6319,7 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreFdKHR(VkDevice device, const VkImportSemaphoreFdInfoKHR *pImportSemaphoreFdInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ImportSemaphoreFdKHR(dispatch, device, pImportSemaphoreFdInfo);
@@ -6341,7 +6327,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreWin32HandleKHR(VkDevice device, const VkImportSemaphoreWin32HandleInfoKHR *pImportSemaphoreWin32HandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ImportSemaphoreWin32HandleKHR(dispatch, device, pImportSemaphoreWin32HandleInfo);
@@ -6350,7 +6336,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA *pImportSemaphoreZirconHandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ImportSemaphoreZirconHandleFUCHSIA(dispatch, device, pImportSemaphoreZirconHandleInfo);
@@ -6358,143 +6344,143 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_InitializePerformanceApiINTEL(VkDevice device, const VkInitializePerformanceApiInfoINTEL *pInitializeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::InitializePerformanceApiINTEL(dispatch, device, pInitializeInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::InvalidateMappedMemoryRanges(dispatch, device, memoryRangeCount, pMemoryRanges);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::LatencySleepNV(dispatch, device, swapchain, pSleepInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::MapMemory(dispatch, device, memory, offset, size, flags, ppData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::MapMemory2KHR(dispatch, device, pMemoryMapInfo, ppData);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::MergePipelineCaches(dispatch, device, dstCache, srcCacheCount, pSrcCaches);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::MergeValidationCachesEXT(dispatch, device, dstCache, srcCacheCount, pSrcCaches);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueBeginDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::QueueBeginDebugUtilsLabelEXT(dispatch, queue, pLabelInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueBindSparse(VkQueue queue, uint32_t bindInfoCount, const VkBindSparseInfo *pBindInfo, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueBindSparse(dispatch, queue, bindInfoCount, pBindInfo, fence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueEndDebugUtilsLabelEXT(VkQueue queue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::QueueEndDebugUtilsLabelEXT(dispatch, queue);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueInsertDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::QueueInsertDebugUtilsLabelEXT(dispatch, queue, pLabelInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     DeviceOverrides::QueueNotifyOutOfBandNV(dispatch, queue, pQueueTypeInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueuePresentKHR(dispatch, queue, pPresentInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueSetPerformanceConfigurationINTEL(dispatch, queue, configuration);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueSubmit(dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueSubmit2(dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueSubmit2KHR(dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueWaitIdle(VkQueue queue) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(queue);
     VkResult ret = DeviceOverrides::QueueWaitIdle(dispatch, queue);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_RegisterDeviceEventEXT(VkDevice device, const VkDeviceEventInfoEXT *pDeviceEventInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::RegisterDeviceEventEXT(dispatch, device, pDeviceEventInfo, pAllocator, pFence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_RegisterDisplayEventEXT(VkDevice device, VkDisplayKHR display, const VkDisplayEventInfoEXT *pDisplayEventInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::RegisterDisplayEventEXT(dispatch, device, display, pDisplayEventInfo, pAllocator, pFence);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseCapturedPipelineDataKHR(VkDevice device, const VkReleaseCapturedPipelineDataInfoKHR *pInfo, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ReleaseCapturedPipelineDataKHR(dispatch, device, pInfo, pAllocator);
@@ -6502,7 +6488,7 @@ namespace vkroots {
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ReleaseFullScreenExclusiveModeEXT(dispatch, device, swapchain);
@@ -6510,82 +6496,82 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleasePerformanceConfigurationINTEL(VkDevice device, VkPerformanceConfigurationINTEL configuration) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ReleasePerformanceConfigurationINTEL(dispatch, device, configuration);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ReleaseProfilingLockKHR(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::ReleaseProfilingLockKHR(dispatch, device);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseSwapchainImagesEXT(VkDevice device, const VkReleaseSwapchainImagesInfoKHR *pReleaseInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ReleaseSwapchainImagesEXT(dispatch, device, pReleaseInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseSwapchainImagesKHR(VkDevice device, const VkReleaseSwapchainImagesInfoKHR *pReleaseInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ReleaseSwapchainImagesKHR(dispatch, device, pReleaseInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetCommandBuffer(VkCommandBuffer commandBuffer, VkCommandBufferResetFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(commandBuffer);
     VkResult ret = DeviceOverrides::ResetCommandBuffer(dispatch, commandBuffer, flags);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ResetCommandPool(dispatch, device, commandPool, flags);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, VkDescriptorPoolResetFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ResetDescriptorPool(dispatch, device, descriptorPool, flags);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetEvent(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ResetEvent(dispatch, device, event);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetFences(VkDevice device, uint32_t fenceCount, const VkFence *pFences) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::ResetFences(dispatch, device, fenceCount, pFences);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ResetQueryPool(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::ResetQueryPool(dispatch, device, queryPool, firstQuery, queryCount);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ResetQueryPoolEXT(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::ResetQueryPoolEXT(dispatch, device, queryPool, firstQuery, queryCount);
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetBufferCollectionBufferConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkBufferConstraintsInfoFUCHSIA *pBufferConstraintsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetBufferCollectionBufferConstraintsFUCHSIA(dispatch, device, collection, pBufferConstraintsInfo);
@@ -6594,7 +6580,7 @@ namespace vkroots {
 
 #endif
 #ifdef VK_USE_PLATFORM_FUCHSIA
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetBufferCollectionImageConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkImageConstraintsInfoFUCHSIA *pImageConstraintsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetBufferCollectionImageConstraintsFUCHSIA(dispatch, device, collection, pImageConstraintsInfo);
@@ -6602,237 +6588,259 @@ namespace vkroots {
   }
 
 #endif
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetDebugUtilsObjectNameEXT(VkDevice device, const VkDebugUtilsObjectNameInfoEXT *pNameInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetDebugUtilsObjectNameEXT(dispatch, device, pNameInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetDebugUtilsObjectTagEXT(VkDevice device, const VkDebugUtilsObjectTagInfoEXT *pTagInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetDebugUtilsObjectTagEXT(dispatch, device, pTagInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetDeviceMemoryPriorityEXT(VkDevice device, VkDeviceMemory memory, float priority) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::SetDeviceMemoryPriorityEXT(dispatch, device, memory, priority);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetEvent(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetEvent(dispatch, device, event);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetHdrMetadataEXT(VkDevice device, uint32_t swapchainCount, const VkSwapchainKHR *pSwapchains, const VkHdrMetadataEXT *pMetadata) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::SetHdrMetadataEXT(dispatch, device, swapchainCount, pSwapchains, pMetadata);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetLatencyMarkerNV(VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV *pLatencyMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::SetLatencyMarkerNV(dispatch, device, swapchain, pLatencyMarkerInfo);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetLatencySleepModeNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV *pSleepModeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetLatencySleepModeNV(dispatch, device, swapchain, pSleepModeInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::SetLocalDimmingAMD(dispatch, device, swapChain, localDimmingEnable);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetPrivateData(dispatch, device, objectType, objectHandle, privateDataSlot, data);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SetPrivateDataEXT(dispatch, device, objectType, objectHandle, privateDataSlot, data);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SignalSemaphore(dispatch, device, pSignalInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::SignalSemaphoreKHR(dispatch, device, pSignalInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::TransitionImageLayoutEXT(dispatch, device, transitionCount, pTransitions);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::TrimCommandPool(dispatch, device, commandPool, flags);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::TrimCommandPoolKHR(dispatch, device, commandPool, flags);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UninitializePerformanceApiINTEL(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UninitializePerformanceApiINTEL(dispatch, device);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UnmapMemory(VkDevice device, VkDeviceMemory memory) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UnmapMemory(dispatch, device, memory);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::UnmapMemory2KHR(dispatch, device, pMemoryUnmapInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UpdateDescriptorSetWithTemplate(dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UpdateDescriptorSetWithTemplateKHR(dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSets(VkDevice device, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet *pDescriptorCopies) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UpdateDescriptorSets(dispatch, device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateIndirectExecutionSetPipelineEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetPipelineEXT *pExecutionSetWrites) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UpdateIndirectExecutionSetPipelineEXT(dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateIndirectExecutionSetShaderEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetShaderEXT *pExecutionSetWrites) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     DeviceOverrides::UpdateIndirectExecutionSetShaderEXT(dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_UpdateVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkVideoSessionParametersUpdateInfoKHR *pUpdateInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::UpdateVideoSessionParametersKHR(dispatch, device, videoSessionParameters, pUpdateInfo);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForFences(VkDevice device, uint32_t fenceCount, const VkFence *pFences, VkBool32 waitAll, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WaitForFences(dispatch, device, fenceCount, pFences, waitAll, timeout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForPresent2KHR(VkDevice device, VkSwapchainKHR swapchain, const VkPresentWait2InfoKHR *pPresentWait2Info) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WaitForPresent2KHR(dispatch, device, swapchain, pPresentWait2Info);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForPresentKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t presentId, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WaitForPresentKHR(dispatch, device, swapchain, presentId, timeout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitSemaphores(VkDevice device, const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WaitSemaphores(dispatch, device, pWaitInfo, timeout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitSemaphoresKHR(VkDevice device, const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WaitSemaphoresKHR(dispatch, device, pWaitInfo, timeout);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WriteAccelerationStructuresPropertiesKHR(VkDevice device, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType, size_t dataSize, void *pData, size_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WriteAccelerationStructuresPropertiesKHR(dispatch, device, accelerationStructureCount, pAccelerationStructures, queryType, dataSize, pData, stride);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WriteMicromapsPropertiesEXT(VkDevice device, uint32_t micromapCount, const VkMicromapEXT *pMicromaps, VkQueryType queryType, size_t dataSize, void *pData, size_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
     VkResult ret = DeviceOverrides::WriteMicromapsPropertiesEXT(dispatch, device, micromapCount, pMicromaps, queryType, dataSize, pData, stride);
     return ret;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction GetInstanceProcAddr(VkInstance instance, const char* name) {
     const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
+    constexpr bool HasAcquireDrmDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireDrmDisplayEXT; };
+    if constexpr (HasAcquireDrmDisplayEXT) {
+      if (!std::strcmp("vkAcquireDrmDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_AcquireDrmDisplayEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    constexpr bool HasAcquireWinrtDisplayNV = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireWinrtDisplayNV; };
+    if constexpr (HasAcquireWinrtDisplayNV) {
+      if (!std::strcmp("vkAcquireWinrtDisplayNV", name))
+        return (PFN_vkVoidFunction) &wrap_AcquireWinrtDisplayNV<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+    constexpr bool HasAcquireXlibDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireXlibDisplayEXT; };
+    if constexpr (HasAcquireXlibDisplayEXT) {
+      if (!std::strcmp("vkAcquireXlibDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_AcquireXlibDisplayEXT<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     constexpr bool HasCreateAndroidSurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateAndroidSurfaceKHR; };
     if constexpr (HasCreateAndroidSurfaceKHR) {
       if (!std::strcmp("vkCreateAndroidSurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateAndroidSurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateAndroidSurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateDebugReportCallbackEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDebugReportCallbackEXT; };
     if constexpr (HasCreateDebugReportCallbackEXT) {
       if (!std::strcmp("vkCreateDebugReportCallbackEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDebugReportCallbackEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDebugReportCallbackEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDebugUtilsMessengerEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDebugUtilsMessengerEXT; };
     if constexpr (HasCreateDebugUtilsMessengerEXT) {
       if (!std::strcmp("vkCreateDebugUtilsMessengerEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDebugUtilsMessengerEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDebugUtilsMessengerEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDevice = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDevice; };
     if constexpr (HasCreateDevice) {
       if (!std::strcmp("vkCreateDevice", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDevice<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp("vkCreateDevice", name))
@@ -6843,33 +6851,33 @@ namespace vkroots {
     constexpr bool HasCreateDirectFBSurfaceEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDirectFBSurfaceEXT; };
     if constexpr (HasCreateDirectFBSurfaceEXT) {
       if (!std::strcmp("vkCreateDirectFBSurfaceEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDirectFBSurfaceEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDirectFBSurfaceEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateDisplayModeKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDisplayModeKHR; };
     if constexpr (HasCreateDisplayModeKHR) {
       if (!std::strcmp("vkCreateDisplayModeKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDisplayModeKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDisplayModeKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDisplayPlaneSurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDisplayPlaneSurfaceKHR; };
     if constexpr (HasCreateDisplayPlaneSurfaceKHR) {
       if (!std::strcmp("vkCreateDisplayPlaneSurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDisplayPlaneSurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDisplayPlaneSurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateHeadlessSurfaceEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateHeadlessSurfaceEXT; };
     if constexpr (HasCreateHeadlessSurfaceEXT) {
       if (!std::strcmp("vkCreateHeadlessSurfaceEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateHeadlessSurfaceEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateHeadlessSurfaceEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_IOS_MVK
     constexpr bool HasCreateIOSSurfaceMVK = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateIOSSurfaceMVK; };
     if constexpr (HasCreateIOSSurfaceMVK) {
       if (!std::strcmp("vkCreateIOSSurfaceMVK", name))
-        return (PFN_vkVoidFunction) &wrap_CreateIOSSurfaceMVK<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateIOSSurfaceMVK<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6877,14 +6885,14 @@ namespace vkroots {
     constexpr bool HasCreateImagePipeSurfaceFUCHSIA = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateImagePipeSurfaceFUCHSIA; };
     if constexpr (HasCreateImagePipeSurfaceFUCHSIA) {
       if (!std::strcmp("vkCreateImagePipeSurfaceFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_CreateImagePipeSurfaceFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateImagePipeSurfaceFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateInstance = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateInstance; };
     if constexpr (HasCreateInstance) {
       if (!std::strcmp("vkCreateInstance", name))
-        return (PFN_vkVoidFunction) &wrap_CreateInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateInstance<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::strcmp("vkCreateInstance", name))
@@ -6895,7 +6903,7 @@ namespace vkroots {
     constexpr bool HasCreateMacOSSurfaceMVK = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateMacOSSurfaceMVK; };
     if constexpr (HasCreateMacOSSurfaceMVK) {
       if (!std::strcmp("vkCreateMacOSSurfaceMVK", name))
-        return (PFN_vkVoidFunction) &wrap_CreateMacOSSurfaceMVK<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateMacOSSurfaceMVK<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6903,7 +6911,7 @@ namespace vkroots {
     constexpr bool HasCreateMetalSurfaceEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateMetalSurfaceEXT; };
     if constexpr (HasCreateMetalSurfaceEXT) {
       if (!std::strcmp("vkCreateMetalSurfaceEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateMetalSurfaceEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateMetalSurfaceEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6911,7 +6919,7 @@ namespace vkroots {
     constexpr bool HasCreateScreenSurfaceQNX = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateScreenSurfaceQNX; };
     if constexpr (HasCreateScreenSurfaceQNX) {
       if (!std::strcmp("vkCreateScreenSurfaceQNX", name))
-        return (PFN_vkVoidFunction) &wrap_CreateScreenSurfaceQNX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateScreenSurfaceQNX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6919,7 +6927,7 @@ namespace vkroots {
     constexpr bool HasCreateStreamDescriptorSurfaceGGP = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateStreamDescriptorSurfaceGGP; };
     if constexpr (HasCreateStreamDescriptorSurfaceGGP) {
       if (!std::strcmp("vkCreateStreamDescriptorSurfaceGGP", name))
-        return (PFN_vkVoidFunction) &wrap_CreateStreamDescriptorSurfaceGGP<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateStreamDescriptorSurfaceGGP<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6927,7 +6935,7 @@ namespace vkroots {
     constexpr bool HasCreateSurfaceOHOS = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateSurfaceOHOS; };
     if constexpr (HasCreateSurfaceOHOS) {
       if (!std::strcmp("vkCreateSurfaceOHOS", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSurfaceOHOS<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSurfaceOHOS<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6935,7 +6943,7 @@ namespace vkroots {
     constexpr bool HasCreateViSurfaceNN = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateViSurfaceNN; };
     if constexpr (HasCreateViSurfaceNN) {
       if (!std::strcmp("vkCreateViSurfaceNN", name))
-        return (PFN_vkVoidFunction) &wrap_CreateViSurfaceNN<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateViSurfaceNN<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6943,7 +6951,7 @@ namespace vkroots {
     constexpr bool HasCreateWaylandSurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateWaylandSurfaceKHR; };
     if constexpr (HasCreateWaylandSurfaceKHR) {
       if (!std::strcmp("vkCreateWaylandSurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateWaylandSurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateWaylandSurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6951,7 +6959,7 @@ namespace vkroots {
     constexpr bool HasCreateWin32SurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateWin32SurfaceKHR; };
     if constexpr (HasCreateWin32SurfaceKHR) {
       if (!std::strcmp("vkCreateWin32SurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateWin32SurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateWin32SurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6959,7 +6967,7 @@ namespace vkroots {
     constexpr bool HasCreateXcbSurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateXcbSurfaceKHR; };
     if constexpr (HasCreateXcbSurfaceKHR) {
       if (!std::strcmp("vkCreateXcbSurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateXcbSurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateXcbSurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -6967,32 +6975,32 @@ namespace vkroots {
     constexpr bool HasCreateXlibSurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateXlibSurfaceKHR; };
     if constexpr (HasCreateXlibSurfaceKHR) {
       if (!std::strcmp("vkCreateXlibSurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateXlibSurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateXlibSurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasDebugReportMessageEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::DebugReportMessageEXT; };
     if constexpr (HasDebugReportMessageEXT) {
       if (!std::strcmp("vkDebugReportMessageEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DebugReportMessageEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DebugReportMessageEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDebugReportCallbackEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::DestroyDebugReportCallbackEXT; };
     if constexpr (HasDestroyDebugReportCallbackEXT) {
       if (!std::strcmp("vkDestroyDebugReportCallbackEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDebugReportCallbackEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDebugReportCallbackEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDebugUtilsMessengerEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::DestroyDebugUtilsMessengerEXT; };
     if constexpr (HasDestroyDebugUtilsMessengerEXT) {
       if (!std::strcmp("vkDestroyDebugUtilsMessengerEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDebugUtilsMessengerEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDebugUtilsMessengerEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyInstance = requires(const InstanceOverrides& t) { &InstanceOverrides::DestroyInstance; };
     if constexpr (HasDestroyInstance) {
       if (!std::strcmp("vkDestroyInstance", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyInstance<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyInstance<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::strcmp("vkDestroyInstance", name))
@@ -7002,227 +7010,467 @@ namespace vkroots {
     constexpr bool HasDestroySurfaceKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::DestroySurfaceKHR; };
     if constexpr (HasDestroySurfaceKHR) {
       if (!std::strcmp("vkDestroySurfaceKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySurfaceKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySurfaceKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumerateDeviceExtensionProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumerateDeviceExtensionProperties; };
     if constexpr (HasEnumerateDeviceExtensionProperties) {
       if (!std::strcmp("vkEnumerateDeviceExtensionProperties", name))
-        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceExtensionProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceExtensionProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumerateDeviceLayerProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumerateDeviceLayerProperties; };
     if constexpr (HasEnumerateDeviceLayerProperties) {
       if (!std::strcmp("vkEnumerateDeviceLayerProperties", name))
-        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceLayerProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceLayerProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumeratePhysicalDeviceGroups = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceGroups; };
     if constexpr (HasEnumeratePhysicalDeviceGroups) {
       if (!std::strcmp("vkEnumeratePhysicalDeviceGroups", name))
-        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceGroups<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceGroups<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumeratePhysicalDeviceGroupsKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceGroupsKHR; };
     if constexpr (HasEnumeratePhysicalDeviceGroupsKHR) {
       if (!std::strcmp("vkEnumeratePhysicalDeviceGroupsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceGroupsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceGroupsKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR; };
+    if constexpr (HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) {
+      if (!std::strcmp("vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR", name))
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumeratePhysicalDevices = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDevices; };
     if constexpr (HasEnumeratePhysicalDevices) {
       if (!std::strcmp("vkEnumeratePhysicalDevices", name))
-        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDevices<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDevices<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDisplayModeProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayModeProperties2KHR; };
+    if constexpr (HasGetDisplayModeProperties2KHR) {
+      if (!std::strcmp("vkGetDisplayModeProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetDisplayModeProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDisplayModePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayModePropertiesKHR; };
     if constexpr (HasGetDisplayModePropertiesKHR) {
       if (!std::strcmp("vkGetDisplayModePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDisplayModePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDisplayModePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDisplayPlaneCapabilities2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneCapabilities2KHR; };
+    if constexpr (HasGetDisplayPlaneCapabilities2KHR) {
+      if (!std::strcmp("vkGetDisplayPlaneCapabilities2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilities2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDisplayPlaneCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneCapabilitiesKHR; };
     if constexpr (HasGetDisplayPlaneCapabilitiesKHR) {
       if (!std::strcmp("vkGetDisplayPlaneCapabilitiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilitiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDisplayPlaneSupportedDisplaysKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneSupportedDisplaysKHR; };
     if constexpr (HasGetDisplayPlaneSupportedDisplaysKHR) {
       if (!std::strcmp("vkGetDisplayPlaneSupportedDisplaysKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneSupportedDisplaysKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneSupportedDisplaysKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDrmDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDrmDisplayEXT; };
+    if constexpr (HasGetDrmDisplayEXT) {
+      if (!std::strcmp("vkGetDrmDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetDrmDisplayEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     if (!std::strcmp("vkGetInstanceProcAddr", name))
-      return (PFN_vkVoidFunction) &GetInstanceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+      return (PFN_vkVoidFunction) &GetInstanceProcAddr<InstanceOverrides, DeviceOverrides>;
+
+    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT; };
+    if constexpr (HasGetPhysicalDeviceCalibrateableTimeDomainsEXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceCalibrateableTimeDomainsEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR; };
+    if constexpr (HasGetPhysicalDeviceCalibrateableTimeDomainsKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceCalibrateableTimeDomainsKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV; };
+    if constexpr (HasGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceCooperativeMatrixPropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV; };
+    if constexpr (HasGetPhysicalDeviceCooperativeMatrixPropertiesNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixPropertiesNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceCooperativeVectorPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV; };
+    if constexpr (HasGetPhysicalDeviceCooperativeVectorPropertiesNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceCooperativeVectorPropertiesNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV<InstanceOverrides, DeviceOverrides>;
+    }
+
+#ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+    constexpr bool HasGetPhysicalDeviceDirectFBPresentationSupportEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT; };
+    if constexpr (HasGetPhysicalDeviceDirectFBPresentationSupportEXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceDirectFBPresentationSupportEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+    constexpr bool HasGetPhysicalDeviceDisplayPlaneProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceDisplayPlaneProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceDisplayPlaneProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
 
     constexpr bool HasGetPhysicalDeviceDisplayPlanePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceDisplayPlanePropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceDisplayPlanePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlanePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlanePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceDisplayProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceDisplayProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceDisplayProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceDisplayPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceDisplayPropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceDisplayPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceExternalBufferProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalBufferProperties; };
     if constexpr (HasGetPhysicalDeviceExternalBufferProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalBufferProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalBufferPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceExternalBufferPropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalBufferPropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceExternalFenceProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalFenceProperties; };
     if constexpr (HasGetPhysicalDeviceExternalFenceProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalFenceProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFenceProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFenceProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalFencePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceExternalFencePropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalFencePropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFencePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalImageFormatPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV; };
+    if constexpr (HasGetPhysicalDeviceExternalImageFormatPropertiesNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalImageFormatPropertiesNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceExternalSemaphoreProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalSemaphoreProperties; };
     if constexpr (HasGetPhysicalDeviceExternalSemaphoreProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalSemaphoreProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphoreProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphoreProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalSemaphorePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceExternalSemaphorePropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalSemaphorePropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalTensorPropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM; };
+    if constexpr (HasGetPhysicalDeviceExternalTensorPropertiesARM) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalTensorPropertiesARM", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalTensorPropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceFeatures = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures; };
     if constexpr (HasGetPhysicalDeviceFeatures) {
       if (!std::strcmp("vkGetPhysicalDeviceFeatures", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceFeatures2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures2; };
     if constexpr (HasGetPhysicalDeviceFeatures2) {
       if (!std::strcmp("vkGetPhysicalDeviceFeatures2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFeatures2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures2KHR; };
+    if constexpr (HasGetPhysicalDeviceFeatures2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceFeatures2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties; };
     if constexpr (HasGetPhysicalDeviceFormatProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceFormatProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties2; };
     if constexpr (HasGetPhysicalDeviceFormatProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceFormatProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceFormatProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceFormatProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFragmentShadingRatesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR; };
+    if constexpr (HasGetPhysicalDeviceFragmentShadingRatesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceFragmentShadingRatesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFragmentShadingRatesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceImageFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties; };
     if constexpr (HasGetPhysicalDeviceImageFormatProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceImageFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties2; };
     if constexpr (HasGetPhysicalDeviceImageFormatProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceImageFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceImageFormatProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceMemoryProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties; };
     if constexpr (HasGetPhysicalDeviceMemoryProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceMemoryProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties2; };
     if constexpr (HasGetPhysicalDeviceMemoryProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceMemoryProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceMemoryProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceMultisamplePropertiesEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT; };
+    if constexpr (HasGetPhysicalDeviceMultisamplePropertiesEXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceMultisamplePropertiesEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMultisamplePropertiesEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceOpticalFlowImageFormatsNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV; };
+    if constexpr (HasGetPhysicalDeviceOpticalFlowImageFormatsNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceOpticalFlowImageFormatsNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDevicePresentRectanglesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDevicePresentRectanglesKHR; };
     if constexpr (HasGetPhysicalDevicePresentRectanglesKHR) {
       if (!std::strcmp("vkGetPhysicalDevicePresentRectanglesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDevicePresentRectanglesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDevicePresentRectanglesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties; };
     if constexpr (HasGetPhysicalDeviceProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties2; };
     if constexpr (HasGetPhysicalDeviceProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceQueueFamilyProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceQueueFamilyProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2<InstanceOverrides, DeviceOverrides>;
     }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+#ifdef VK_USE_PLATFORM_SCREEN_QNX
+    constexpr bool HasGetPhysicalDeviceScreenPresentationSupportQNX = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX; };
+    if constexpr (HasGetPhysicalDeviceScreenPresentationSupportQNX) {
+      if (!std::strcmp("vkGetPhysicalDeviceScreenPresentationSupportQNX", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceScreenPresentationSupportQNX<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
 
     constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties; };
     if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2; };
     if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties2) {
       if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties2", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR; };
+    if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV; };
+    if constexpr (HasGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) {
+      if (!std::strcmp("vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceCapabilities2EXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT; };
+    if constexpr (HasGetPhysicalDeviceSurfaceCapabilities2EXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilities2EXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSurfaceCapabilities2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2KHR; };
     if constexpr (HasGetPhysicalDeviceSurfaceCapabilities2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilities2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSurfaceCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilitiesKHR; };
     if constexpr (HasGetPhysicalDeviceSurfaceCapabilitiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilitiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilitiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSurfaceFormats2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceFormats2KHR; };
     if constexpr (HasGetPhysicalDeviceSurfaceFormats2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceFormats2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormats2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormats2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSurfaceFormatsKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceFormatsKHR; };
     if constexpr (HasGetPhysicalDeviceSurfaceFormatsKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceFormatsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormatsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormatsKHR<InstanceOverrides, DeviceOverrides>;
     }
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    constexpr bool HasGetPhysicalDeviceSurfacePresentModes2EXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT; };
+    if constexpr (HasGetPhysicalDeviceSurfacePresentModes2EXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfacePresentModes2EXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModes2EXT<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
 
     constexpr bool HasGetPhysicalDeviceSurfacePresentModesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfacePresentModesKHR; };
     if constexpr (HasGetPhysicalDeviceSurfacePresentModesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfacePresentModesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceSurfaceSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceSupportKHR; };
     if constexpr (HasGetPhysicalDeviceSurfaceSupportKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPhysicalDeviceToolProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceToolProperties; };
     if constexpr (HasGetPhysicalDeviceToolProperties) {
       if (!std::strcmp("vkGetPhysicalDeviceToolProperties", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolProperties<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceToolPropertiesEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceToolPropertiesEXT; };
+    if constexpr (HasGetPhysicalDeviceToolPropertiesEXT) {
+      if (!std::strcmp("vkGetPhysicalDeviceToolPropertiesEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolPropertiesEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceVideoCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR; };
+    if constexpr (HasGetPhysicalDeviceVideoCapabilitiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceVideoCapabilitiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceVideoFormatPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceVideoFormatPropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceVideoFormatPropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoFormatPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
     constexpr bool HasGetPhysicalDeviceWaylandPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceWaylandPresentationSupportKHR; };
     if constexpr (HasGetPhysicalDeviceWaylandPresentationSupportKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceWaylandPresentationSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWaylandPresentationSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWaylandPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -7230,7 +7478,7 @@ namespace vkroots {
     constexpr bool HasGetPhysicalDeviceWin32PresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceWin32PresentationSupportKHR; };
     if constexpr (HasGetPhysicalDeviceWin32PresentationSupportKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceWin32PresentationSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWin32PresentationSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWin32PresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -7238,7 +7486,7 @@ namespace vkroots {
     constexpr bool HasGetPhysicalDeviceXcbPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceXcbPresentationSupportKHR; };
     if constexpr (HasGetPhysicalDeviceXcbPresentationSupportKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceXcbPresentationSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXcbPresentationSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXcbPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -7246,15 +7494,40 @@ namespace vkroots {
     constexpr bool HasGetPhysicalDeviceXlibPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceXlibPresentationSupportKHR; };
     if constexpr (HasGetPhysicalDeviceXlibPresentationSupportKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceXlibPresentationSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXlibPresentationSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXlibPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
+
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+    constexpr bool HasGetRandROutputDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetRandROutputDisplayEXT; };
+    if constexpr (HasGetRandROutputDisplayEXT) {
+      if (!std::strcmp("vkGetRandROutputDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetRandROutputDisplayEXT<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    constexpr bool HasGetWinrtDisplayNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetWinrtDisplayNV; };
+    if constexpr (HasGetWinrtDisplayNV) {
+      if (!std::strcmp("vkGetWinrtDisplayNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetWinrtDisplayNV<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+    constexpr bool HasReleaseDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::ReleaseDisplayEXT; };
+    if constexpr (HasReleaseDisplayEXT) {
+      if (!std::strcmp("vkReleaseDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_ReleaseDisplayEXT<InstanceOverrides, DeviceOverrides>;
+    }
 
     constexpr bool HasSubmitDebugUtilsMessageEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::SubmitDebugUtilsMessageEXT; };
     if constexpr (HasSubmitDebugUtilsMessageEXT) {
       if (!std::strcmp("vkSubmitDebugUtilsMessageEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SubmitDebugUtilsMessageEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SubmitDebugUtilsMessageEXT<InstanceOverrides, DeviceOverrides>;
     }
+
+    if (!std::strcmp("vk_layerGetPhysicalDeviceProcAddr", name))
+      return (PFN_vkVoidFunction) &GetPhysicalDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
 
     if (dispatch)
       return dispatch->GetInstanceProcAddr(instance, name);
@@ -7262,296 +7535,531 @@ namespace vkroots {
       return NULL;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char* name) {
-    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(instance);
-    constexpr bool HasAcquireDrmDisplayEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::AcquireDrmDisplayEXT; };
+    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(instance);
+    constexpr bool HasAcquireDrmDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireDrmDisplayEXT; };
     if constexpr (HasAcquireDrmDisplayEXT) {
       if (!std::strcmp("vkAcquireDrmDisplayEXT", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireDrmDisplayEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireDrmDisplayEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    constexpr bool HasAcquireWinrtDisplayNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::AcquireWinrtDisplayNV; };
+    constexpr bool HasAcquireWinrtDisplayNV = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireWinrtDisplayNV; };
     if constexpr (HasAcquireWinrtDisplayNV) {
       if (!std::strcmp("vkAcquireWinrtDisplayNV", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireWinrtDisplayNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireWinrtDisplayNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-    constexpr bool HasAcquireXlibDisplayEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::AcquireXlibDisplayEXT; };
+    constexpr bool HasAcquireXlibDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::AcquireXlibDisplayEXT; };
     if constexpr (HasAcquireXlibDisplayEXT) {
       if (!std::strcmp("vkAcquireXlibDisplayEXT", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireXlibDisplayEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireXlibDisplayEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
-    constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR; };
+    constexpr bool HasCreateDevice = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDevice; };
+    if constexpr (HasCreateDevice) {
+      if (!std::strcmp("vkCreateDevice", name))
+        return (PFN_vkVoidFunction) &wrap_CreateDevice<InstanceOverrides, DeviceOverrides>;
+    }
+    else {
+      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp("vkCreateDevice", name))
+        return (PFN_vkVoidFunction) &implicit_wrap_CreateDevice;
+    }
+
+    constexpr bool HasCreateDisplayModeKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::CreateDisplayModeKHR; };
+    if constexpr (HasCreateDisplayModeKHR) {
+      if (!std::strcmp("vkCreateDisplayModeKHR", name))
+        return (PFN_vkVoidFunction) &wrap_CreateDisplayModeKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasEnumerateDeviceExtensionProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumerateDeviceExtensionProperties; };
+    if constexpr (HasEnumerateDeviceExtensionProperties) {
+      if (!std::strcmp("vkEnumerateDeviceExtensionProperties", name))
+        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceExtensionProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasEnumerateDeviceLayerProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumerateDeviceLayerProperties; };
+    if constexpr (HasEnumerateDeviceLayerProperties) {
+      if (!std::strcmp("vkEnumerateDeviceLayerProperties", name))
+        return (PFN_vkVoidFunction) &wrap_EnumerateDeviceLayerProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR; };
     if constexpr (HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) {
       if (!std::strcmp("vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR", name))
-        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetDisplayModeProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetDisplayModeProperties2KHR; };
+    constexpr bool HasGetDisplayModeProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayModeProperties2KHR; };
     if constexpr (HasGetDisplayModeProperties2KHR) {
       if (!std::strcmp("vkGetDisplayModeProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDisplayModeProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDisplayModeProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetDisplayPlaneCapabilities2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetDisplayPlaneCapabilities2KHR; };
+    constexpr bool HasGetDisplayModePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayModePropertiesKHR; };
+    if constexpr (HasGetDisplayModePropertiesKHR) {
+      if (!std::strcmp("vkGetDisplayModePropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetDisplayModePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDisplayPlaneCapabilities2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneCapabilities2KHR; };
     if constexpr (HasGetDisplayPlaneCapabilities2KHR) {
       if (!std::strcmp("vkGetDisplayPlaneCapabilities2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilities2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilities2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetDrmDisplayEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetDrmDisplayEXT; };
+    constexpr bool HasGetDisplayPlaneCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneCapabilitiesKHR; };
+    if constexpr (HasGetDisplayPlaneCapabilitiesKHR) {
+      if (!std::strcmp("vkGetDisplayPlaneCapabilitiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDisplayPlaneSupportedDisplaysKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDisplayPlaneSupportedDisplaysKHR; };
+    if constexpr (HasGetDisplayPlaneSupportedDisplaysKHR) {
+      if (!std::strcmp("vkGetDisplayPlaneSupportedDisplaysKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetDisplayPlaneSupportedDisplaysKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetDrmDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetDrmDisplayEXT; };
     if constexpr (HasGetDrmDisplayEXT) {
       if (!std::strcmp("vkGetDrmDisplayEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDrmDisplayEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDrmDisplayEXT<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT; };
+    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT; };
     if constexpr (HasGetPhysicalDeviceCalibrateableTimeDomainsEXT) {
       if (!std::strcmp("vkGetPhysicalDeviceCalibrateableTimeDomainsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR; };
+    constexpr bool HasGetPhysicalDeviceCalibrateableTimeDomainsKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR; };
     if constexpr (HasGetPhysicalDeviceCalibrateableTimeDomainsKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceCalibrateableTimeDomainsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV; };
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV; };
     if constexpr (HasGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) {
       if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceCooperativeMatrixPropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV; };
+    constexpr bool HasGetPhysicalDeviceCooperativeMatrixPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV; };
     if constexpr (HasGetPhysicalDeviceCooperativeMatrixPropertiesNV) {
       if (!std::strcmp("vkGetPhysicalDeviceCooperativeMatrixPropertiesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceCooperativeVectorPropertiesNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV; };
+    constexpr bool HasGetPhysicalDeviceCooperativeVectorPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV; };
     if constexpr (HasGetPhysicalDeviceCooperativeVectorPropertiesNV) {
       if (!std::strcmp("vkGetPhysicalDeviceCooperativeVectorPropertiesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_DIRECTFB_EXT
-    constexpr bool HasGetPhysicalDeviceDirectFBPresentationSupportEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT; };
+    constexpr bool HasGetPhysicalDeviceDirectFBPresentationSupportEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT; };
     if constexpr (HasGetPhysicalDeviceDirectFBPresentationSupportEXT) {
       if (!std::strcmp("vkGetPhysicalDeviceDirectFBPresentationSupportEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
-    constexpr bool HasGetPhysicalDeviceDisplayPlaneProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceDisplayPlaneProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceDisplayPlaneProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceDisplayPlaneProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceDisplayProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceDisplayProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceDisplayPlanePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceDisplayPlanePropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceDisplayPlanePropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPlanePropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceDisplayProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceDisplayProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceDisplayProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceExternalBufferPropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceDisplayPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceDisplayPropertiesKHR; };
+    if constexpr (HasGetPhysicalDeviceDisplayPropertiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceDisplayPropertiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceDisplayPropertiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalBufferProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalBufferProperties; };
+    if constexpr (HasGetPhysicalDeviceExternalBufferProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalBufferProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalBufferPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceExternalBufferPropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalBufferPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalBufferPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceExternalFencePropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceExternalFenceProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalFenceProperties; };
+    if constexpr (HasGetPhysicalDeviceExternalFenceProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalFenceProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFenceProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalFencePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceExternalFencePropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalFencePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFencePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalFencePropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceExternalImageFormatPropertiesNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV; };
+    constexpr bool HasGetPhysicalDeviceExternalImageFormatPropertiesNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV; };
     if constexpr (HasGetPhysicalDeviceExternalImageFormatPropertiesNV) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalImageFormatPropertiesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceExternalSemaphorePropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceExternalSemaphoreProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalSemaphoreProperties; };
+    if constexpr (HasGetPhysicalDeviceExternalSemaphoreProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceExternalSemaphoreProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphoreProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceExternalSemaphorePropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceExternalSemaphorePropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalSemaphorePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceExternalTensorPropertiesARM = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM; };
+    constexpr bool HasGetPhysicalDeviceExternalTensorPropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM; };
     if constexpr (HasGetPhysicalDeviceExternalTensorPropertiesARM) {
       if (!std::strcmp("vkGetPhysicalDeviceExternalTensorPropertiesARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalTensorPropertiesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceExternalTensorPropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceFeatures2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceFeatures2KHR; };
+    constexpr bool HasGetPhysicalDeviceFeatures = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures; };
+    if constexpr (HasGetPhysicalDeviceFeatures) {
+      if (!std::strcmp("vkGetPhysicalDeviceFeatures", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFeatures2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures2; };
+    if constexpr (HasGetPhysicalDeviceFeatures2) {
+      if (!std::strcmp("vkGetPhysicalDeviceFeatures2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFeatures2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFeatures2KHR; };
     if constexpr (HasGetPhysicalDeviceFeatures2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceFeatures2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFeatures2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceFormatProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceFormatProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties; };
+    if constexpr (HasGetPhysicalDeviceFormatProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceFormatProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties2; };
+    if constexpr (HasGetPhysicalDeviceFormatProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceFormatProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFormatProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceFormatProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceFormatProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceFragmentShadingRatesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR; };
+    constexpr bool HasGetPhysicalDeviceFragmentShadingRatesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR; };
     if constexpr (HasGetPhysicalDeviceFragmentShadingRatesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceFragmentShadingRatesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFragmentShadingRatesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceFragmentShadingRatesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceImageFormatProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceImageFormatProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceImageFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties; };
+    if constexpr (HasGetPhysicalDeviceImageFormatProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceImageFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties2; };
+    if constexpr (HasGetPhysicalDeviceImageFormatProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceImageFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceImageFormatProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceImageFormatProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceImageFormatProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceImageFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceMemoryProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceMemoryProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceMemoryProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties; };
+    if constexpr (HasGetPhysicalDeviceMemoryProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceMemoryProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties2; };
+    if constexpr (HasGetPhysicalDeviceMemoryProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceMemoryProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMemoryProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceMemoryProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceMemoryProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMemoryProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceMultisamplePropertiesEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT; };
+    constexpr bool HasGetPhysicalDeviceMultisamplePropertiesEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT; };
     if constexpr (HasGetPhysicalDeviceMultisamplePropertiesEXT) {
       if (!std::strcmp("vkGetPhysicalDeviceMultisamplePropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMultisamplePropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceMultisamplePropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceOpticalFlowImageFormatsNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV; };
+    constexpr bool HasGetPhysicalDeviceOpticalFlowImageFormatsNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV; };
     if constexpr (HasGetPhysicalDeviceOpticalFlowImageFormatsNV) {
       if (!std::strcmp("vkGetPhysicalDeviceOpticalFlowImageFormatsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceProperties2KHR; };
+    constexpr bool HasGetPhysicalDevicePresentRectanglesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDevicePresentRectanglesKHR; };
+    if constexpr (HasGetPhysicalDevicePresentRectanglesKHR) {
+      if (!std::strcmp("vkGetPhysicalDevicePresentRectanglesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDevicePresentRectanglesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties; };
+    if constexpr (HasGetPhysicalDeviceProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties2; };
+    if constexpr (HasGetPhysicalDeviceProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM; };
+    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM; };
+    constexpr bool HasGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR; };
+    constexpr bool HasGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceQueueFamilyProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceQueueFamilyProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2; };
+    if constexpr (HasGetPhysicalDeviceQueueFamilyProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceQueueFamilyProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceQueueFamilyProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceQueueFamilyProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceQueueFamilyProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
-    constexpr bool HasGetPhysicalDeviceScreenPresentationSupportQNX = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX; };
+    constexpr bool HasGetPhysicalDeviceScreenPresentationSupportQNX = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX; };
     if constexpr (HasGetPhysicalDeviceScreenPresentationSupportQNX) {
       if (!std::strcmp("vkGetPhysicalDeviceScreenPresentationSupportQNX", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceScreenPresentationSupportQNX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceScreenPresentationSupportQNX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
-    constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties2KHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR; };
+    constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties; };
+    if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties2 = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2; };
+    if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties2) {
+      if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties2", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSparseImageFormatProperties2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR; };
     if constexpr (HasGetPhysicalDeviceSparseImageFormatProperties2KHR) {
       if (!std::strcmp("vkGetPhysicalDeviceSparseImageFormatProperties2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV; };
+    constexpr bool HasGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV; };
     if constexpr (HasGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) {
       if (!std::strcmp("vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceSurfaceCapabilities2EXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT; };
+    constexpr bool HasGetPhysicalDeviceSurfaceCapabilities2EXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT; };
     if constexpr (HasGetPhysicalDeviceSurfaceCapabilities2EXT) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilities2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2EXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceCapabilities2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2KHR; };
+    if constexpr (HasGetPhysicalDeviceSurfaceCapabilities2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilities2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilities2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceCapabilitiesKHR; };
+    if constexpr (HasGetPhysicalDeviceSurfaceCapabilitiesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceCapabilitiesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceFormats2KHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceFormats2KHR; };
+    if constexpr (HasGetPhysicalDeviceSurfaceFormats2KHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceFormats2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormats2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceFormatsKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceFormatsKHR; };
+    if constexpr (HasGetPhysicalDeviceSurfaceFormatsKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceFormatsKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceFormatsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    constexpr bool HasGetPhysicalDeviceSurfacePresentModes2EXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT; };
+    constexpr bool HasGetPhysicalDeviceSurfacePresentModes2EXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT; };
     if constexpr (HasGetPhysicalDeviceSurfacePresentModes2EXT) {
       if (!std::strcmp("vkGetPhysicalDeviceSurfacePresentModes2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModes2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModes2EXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
-    constexpr bool HasGetPhysicalDeviceToolPropertiesEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceToolPropertiesEXT; };
+    constexpr bool HasGetPhysicalDeviceSurfacePresentModesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfacePresentModesKHR; };
+    if constexpr (HasGetPhysicalDeviceSurfacePresentModesKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfacePresentModesKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfacePresentModesKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceSurfaceSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceSurfaceSupportKHR; };
+    if constexpr (HasGetPhysicalDeviceSurfaceSupportKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceSurfaceSupportKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceSurfaceSupportKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceToolProperties = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceToolProperties; };
+    if constexpr (HasGetPhysicalDeviceToolProperties) {
+      if (!std::strcmp("vkGetPhysicalDeviceToolProperties", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolProperties<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPhysicalDeviceToolPropertiesEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceToolPropertiesEXT; };
     if constexpr (HasGetPhysicalDeviceToolPropertiesEXT) {
       if (!std::strcmp("vkGetPhysicalDeviceToolPropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolPropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceToolPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceVideoCapabilitiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR; };
+    constexpr bool HasGetPhysicalDeviceVideoCapabilitiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR; };
     if constexpr (HasGetPhysicalDeviceVideoCapabilitiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceVideoCapabilitiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoCapabilitiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-    constexpr bool HasGetPhysicalDeviceVideoFormatPropertiesKHR = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR; };
+    constexpr bool HasGetPhysicalDeviceVideoFormatPropertiesKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR; };
     if constexpr (HasGetPhysicalDeviceVideoFormatPropertiesKHR) {
       if (!std::strcmp("vkGetPhysicalDeviceVideoFormatPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoFormatPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceVideoFormatPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
-#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
-    constexpr bool HasGetRandROutputDisplayEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetRandROutputDisplayEXT; };
-    if constexpr (HasGetRandROutputDisplayEXT) {
-      if (!std::strcmp("vkGetRandROutputDisplayEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetRandROutputDisplayEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+#ifdef VK_USE_PLATFORM_WAYLAND_KHR
+    constexpr bool HasGetPhysicalDeviceWaylandPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceWaylandPresentationSupportKHR; };
+    if constexpr (HasGetPhysicalDeviceWaylandPresentationSupportKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceWaylandPresentationSupportKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWaylandPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    constexpr bool HasGetWinrtDisplayNV = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::GetWinrtDisplayNV; };
-    if constexpr (HasGetWinrtDisplayNV) {
-      if (!std::strcmp("vkGetWinrtDisplayNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetWinrtDisplayNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+    constexpr bool HasGetPhysicalDeviceWin32PresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceWin32PresentationSupportKHR; };
+    if constexpr (HasGetPhysicalDeviceWin32PresentationSupportKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceWin32PresentationSupportKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceWin32PresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
-    constexpr bool HasReleaseDisplayEXT = requires(const PhysicalDeviceOverrides& t) { &PhysicalDeviceOverrides::ReleaseDisplayEXT; };
+#ifdef VK_USE_PLATFORM_XCB_KHR
+    constexpr bool HasGetPhysicalDeviceXcbPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceXcbPresentationSupportKHR; };
+    if constexpr (HasGetPhysicalDeviceXcbPresentationSupportKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceXcbPresentationSupportKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXcbPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+#ifdef VK_USE_PLATFORM_XLIB_KHR
+    constexpr bool HasGetPhysicalDeviceXlibPresentationSupportKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::GetPhysicalDeviceXlibPresentationSupportKHR; };
+    if constexpr (HasGetPhysicalDeviceXlibPresentationSupportKHR) {
+      if (!std::strcmp("vkGetPhysicalDeviceXlibPresentationSupportKHR", name))
+        return (PFN_vkVoidFunction) &wrap_GetPhysicalDeviceXlibPresentationSupportKHR<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+#ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+    constexpr bool HasGetRandROutputDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::GetRandROutputDisplayEXT; };
+    if constexpr (HasGetRandROutputDisplayEXT) {
+      if (!std::strcmp("vkGetRandROutputDisplayEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetRandROutputDisplayEXT<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+    constexpr bool HasGetWinrtDisplayNV = requires(const InstanceOverrides& t) { &InstanceOverrides::GetWinrtDisplayNV; };
+    if constexpr (HasGetWinrtDisplayNV) {
+      if (!std::strcmp("vkGetWinrtDisplayNV", name))
+        return (PFN_vkVoidFunction) &wrap_GetWinrtDisplayNV<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
+    constexpr bool HasReleaseDisplayEXT = requires(const InstanceOverrides& t) { &InstanceOverrides::ReleaseDisplayEXT; };
     if constexpr (HasReleaseDisplayEXT) {
       if (!std::strcmp("vkReleaseDisplayEXT", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseDisplayEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
-    }
-
-    if constexpr (!std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value || !std::is_base_of<NoOverrides, DeviceOverrides>::value) {
-      if (!std::strcmp("vk_layerGetPhysicalDeviceProcAddr", name))
-        return (PFN_vkVoidFunction) &GetPhysicalDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseDisplayEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     if (dispatch)
@@ -7560,45 +8068,45 @@ namespace vkroots {
       return NULL;
   }
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction GetDeviceProcAddr(VkDevice device, const char* name) {
     const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasAcquireFullScreenExclusiveModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireFullScreenExclusiveModeEXT; };
     if constexpr (HasAcquireFullScreenExclusiveModeEXT) {
       if (!std::strcmp("vkAcquireFullScreenExclusiveModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireFullScreenExclusiveModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireFullScreenExclusiveModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasAcquireNextImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireNextImage2KHR; };
     if constexpr (HasAcquireNextImage2KHR) {
       if (!std::strcmp("vkAcquireNextImage2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireNextImage2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireNextImage2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAcquireNextImageKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireNextImageKHR; };
     if constexpr (HasAcquireNextImageKHR) {
       if (!std::strcmp("vkAcquireNextImageKHR", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireNextImageKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireNextImageKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAcquirePerformanceConfigurationINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquirePerformanceConfigurationINTEL; };
     if constexpr (HasAcquirePerformanceConfigurationINTEL) {
       if (!std::strcmp("vkAcquirePerformanceConfigurationINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_AcquirePerformanceConfigurationINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquirePerformanceConfigurationINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAcquireProfilingLockKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireProfilingLockKHR; };
     if constexpr (HasAcquireProfilingLockKHR) {
       if (!std::strcmp("vkAcquireProfilingLockKHR", name))
-        return (PFN_vkVoidFunction) &wrap_AcquireProfilingLockKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AcquireProfilingLockKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAllocateCommandBuffers = requires(const DeviceOverrides& t) { &DeviceOverrides::AllocateCommandBuffers; };
     if constexpr (HasAllocateCommandBuffers) {
       if (!std::strcmp("vkAllocateCommandBuffers", name))
-        return (PFN_vkVoidFunction) &wrap_AllocateCommandBuffers<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AllocateCommandBuffers<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp("vkAllocateCommandBuffers", name))
@@ -7608,574 +8116,574 @@ namespace vkroots {
     constexpr bool HasAllocateDescriptorSets = requires(const DeviceOverrides& t) { &DeviceOverrides::AllocateDescriptorSets; };
     if constexpr (HasAllocateDescriptorSets) {
       if (!std::strcmp("vkAllocateDescriptorSets", name))
-        return (PFN_vkVoidFunction) &wrap_AllocateDescriptorSets<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AllocateDescriptorSets<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAllocateMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::AllocateMemory; };
     if constexpr (HasAllocateMemory) {
       if (!std::strcmp("vkAllocateMemory", name))
-        return (PFN_vkVoidFunction) &wrap_AllocateMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AllocateMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasAntiLagUpdateAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::AntiLagUpdateAMD; };
     if constexpr (HasAntiLagUpdateAMD) {
       if (!std::strcmp("vkAntiLagUpdateAMD", name))
-        return (PFN_vkVoidFunction) &wrap_AntiLagUpdateAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_AntiLagUpdateAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBeginCommandBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::BeginCommandBuffer; };
     if constexpr (HasBeginCommandBuffer) {
       if (!std::strcmp("vkBeginCommandBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_BeginCommandBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BeginCommandBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindAccelerationStructureMemoryNV = requires(const DeviceOverrides& t) { &DeviceOverrides::BindAccelerationStructureMemoryNV; };
     if constexpr (HasBindAccelerationStructureMemoryNV) {
       if (!std::strcmp("vkBindAccelerationStructureMemoryNV", name))
-        return (PFN_vkVoidFunction) &wrap_BindAccelerationStructureMemoryNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindAccelerationStructureMemoryNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindBufferMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::BindBufferMemory; };
     if constexpr (HasBindBufferMemory) {
       if (!std::strcmp("vkBindBufferMemory", name))
-        return (PFN_vkVoidFunction) &wrap_BindBufferMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindBufferMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindBufferMemory2 = requires(const DeviceOverrides& t) { &DeviceOverrides::BindBufferMemory2; };
     if constexpr (HasBindBufferMemory2) {
       if (!std::strcmp("vkBindBufferMemory2", name))
-        return (PFN_vkVoidFunction) &wrap_BindBufferMemory2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindBufferMemory2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindBufferMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::BindBufferMemory2KHR; };
     if constexpr (HasBindBufferMemory2KHR) {
       if (!std::strcmp("vkBindBufferMemory2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_BindBufferMemory2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindBufferMemory2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindDataGraphPipelineSessionMemoryARM = requires(const DeviceOverrides& t) { &DeviceOverrides::BindDataGraphPipelineSessionMemoryARM; };
     if constexpr (HasBindDataGraphPipelineSessionMemoryARM) {
       if (!std::strcmp("vkBindDataGraphPipelineSessionMemoryARM", name))
-        return (PFN_vkVoidFunction) &wrap_BindDataGraphPipelineSessionMemoryARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindDataGraphPipelineSessionMemoryARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindImageMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::BindImageMemory; };
     if constexpr (HasBindImageMemory) {
       if (!std::strcmp("vkBindImageMemory", name))
-        return (PFN_vkVoidFunction) &wrap_BindImageMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindImageMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindImageMemory2 = requires(const DeviceOverrides& t) { &DeviceOverrides::BindImageMemory2; };
     if constexpr (HasBindImageMemory2) {
       if (!std::strcmp("vkBindImageMemory2", name))
-        return (PFN_vkVoidFunction) &wrap_BindImageMemory2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindImageMemory2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindImageMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::BindImageMemory2KHR; };
     if constexpr (HasBindImageMemory2KHR) {
       if (!std::strcmp("vkBindImageMemory2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_BindImageMemory2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindImageMemory2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindOpticalFlowSessionImageNV = requires(const DeviceOverrides& t) { &DeviceOverrides::BindOpticalFlowSessionImageNV; };
     if constexpr (HasBindOpticalFlowSessionImageNV) {
       if (!std::strcmp("vkBindOpticalFlowSessionImageNV", name))
-        return (PFN_vkVoidFunction) &wrap_BindOpticalFlowSessionImageNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindOpticalFlowSessionImageNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindTensorMemoryARM = requires(const DeviceOverrides& t) { &DeviceOverrides::BindTensorMemoryARM; };
     if constexpr (HasBindTensorMemoryARM) {
       if (!std::strcmp("vkBindTensorMemoryARM", name))
-        return (PFN_vkVoidFunction) &wrap_BindTensorMemoryARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindTensorMemoryARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBindVideoSessionMemoryKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::BindVideoSessionMemoryKHR; };
     if constexpr (HasBindVideoSessionMemoryKHR) {
       if (!std::strcmp("vkBindVideoSessionMemoryKHR", name))
-        return (PFN_vkVoidFunction) &wrap_BindVideoSessionMemoryKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BindVideoSessionMemoryKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBuildAccelerationStructuresKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::BuildAccelerationStructuresKHR; };
     if constexpr (HasBuildAccelerationStructuresKHR) {
       if (!std::strcmp("vkBuildAccelerationStructuresKHR", name))
-        return (PFN_vkVoidFunction) &wrap_BuildAccelerationStructuresKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BuildAccelerationStructuresKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasBuildMicromapsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::BuildMicromapsEXT; };
     if constexpr (HasBuildMicromapsEXT) {
       if (!std::strcmp("vkBuildMicromapsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_BuildMicromapsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_BuildMicromapsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginConditionalRenderingEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginConditionalRenderingEXT; };
     if constexpr (HasCmdBeginConditionalRenderingEXT) {
       if (!std::strcmp("vkCmdBeginConditionalRenderingEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginConditionalRenderingEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginConditionalRenderingEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginDebugUtilsLabelEXT; };
     if constexpr (HasCmdBeginDebugUtilsLabelEXT) {
       if (!std::strcmp("vkCmdBeginDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginPerTileExecutionQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginPerTileExecutionQCOM; };
     if constexpr (HasCmdBeginPerTileExecutionQCOM) {
       if (!std::strcmp("vkCmdBeginPerTileExecutionQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginPerTileExecutionQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginPerTileExecutionQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginQuery = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginQuery; };
     if constexpr (HasCmdBeginQuery) {
       if (!std::strcmp("vkCmdBeginQuery", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginQuery<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginQuery<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginQueryIndexedEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginQueryIndexedEXT; };
     if constexpr (HasCmdBeginQueryIndexedEXT) {
       if (!std::strcmp("vkCmdBeginQueryIndexedEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginQueryIndexedEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginQueryIndexedEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginRenderPass = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginRenderPass; };
     if constexpr (HasCmdBeginRenderPass) {
       if (!std::strcmp("vkCmdBeginRenderPass", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginRenderPass2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginRenderPass2; };
     if constexpr (HasCmdBeginRenderPass2) {
       if (!std::strcmp("vkCmdBeginRenderPass2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginRenderPass2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginRenderPass2KHR; };
     if constexpr (HasCmdBeginRenderPass2KHR) {
       if (!std::strcmp("vkCmdBeginRenderPass2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderPass2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginRendering = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginRendering; };
     if constexpr (HasCmdBeginRendering) {
       if (!std::strcmp("vkCmdBeginRendering", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginRendering<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginRendering<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginRenderingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginRenderingKHR; };
     if constexpr (HasCmdBeginRenderingKHR) {
       if (!std::strcmp("vkCmdBeginRenderingKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderingKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginRenderingKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginTransformFeedbackEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginTransformFeedbackEXT; };
     if constexpr (HasCmdBeginTransformFeedbackEXT) {
       if (!std::strcmp("vkCmdBeginTransformFeedbackEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginTransformFeedbackEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginTransformFeedbackEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBeginVideoCodingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginVideoCodingKHR; };
     if constexpr (HasCmdBeginVideoCodingKHR) {
       if (!std::strcmp("vkCmdBeginVideoCodingKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBeginVideoCodingKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBeginVideoCodingKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindDescriptorBufferEmbeddedSamplers2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplers2EXT; };
     if constexpr (HasCmdBindDescriptorBufferEmbeddedSamplers2EXT) {
       if (!std::strcmp("vkCmdBindDescriptorBufferEmbeddedSamplers2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBufferEmbeddedSamplers2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBufferEmbeddedSamplers2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindDescriptorBufferEmbeddedSamplersEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT; };
     if constexpr (HasCmdBindDescriptorBufferEmbeddedSamplersEXT) {
       if (!std::strcmp("vkCmdBindDescriptorBufferEmbeddedSamplersEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBufferEmbeddedSamplersEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBufferEmbeddedSamplersEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindDescriptorBuffersEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBuffersEXT; };
     if constexpr (HasCmdBindDescriptorBuffersEXT) {
       if (!std::strcmp("vkCmdBindDescriptorBuffersEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBuffersEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorBuffersEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindDescriptorSets = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets; };
     if constexpr (HasCmdBindDescriptorSets) {
       if (!std::strcmp("vkCmdBindDescriptorSets", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindDescriptorSets2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2KHR; };
     if constexpr (HasCmdBindDescriptorSets2KHR) {
       if (!std::strcmp("vkCmdBindDescriptorSets2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindIndexBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer; };
     if constexpr (HasCmdBindIndexBuffer) {
       if (!std::strcmp("vkCmdBindIndexBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindIndexBuffer2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2KHR; };
     if constexpr (HasCmdBindIndexBuffer2KHR) {
       if (!std::strcmp("vkCmdBindIndexBuffer2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindInvocationMaskHUAWEI = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindInvocationMaskHUAWEI; };
     if constexpr (HasCmdBindInvocationMaskHUAWEI) {
       if (!std::strcmp("vkCmdBindInvocationMaskHUAWEI", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindInvocationMaskHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindInvocationMaskHUAWEI<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindPipeline = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindPipeline; };
     if constexpr (HasCmdBindPipeline) {
       if (!std::strcmp("vkCmdBindPipeline", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindPipeline<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindPipeline<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindPipelineShaderGroupNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindPipelineShaderGroupNV; };
     if constexpr (HasCmdBindPipelineShaderGroupNV) {
       if (!std::strcmp("vkCmdBindPipelineShaderGroupNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindPipelineShaderGroupNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindPipelineShaderGroupNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindShadersEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindShadersEXT; };
     if constexpr (HasCmdBindShadersEXT) {
       if (!std::strcmp("vkCmdBindShadersEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindShadersEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindShadersEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindShadingRateImageNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindShadingRateImageNV; };
     if constexpr (HasCmdBindShadingRateImageNV) {
       if (!std::strcmp("vkCmdBindShadingRateImageNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindShadingRateImageNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindShadingRateImageNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindTileMemoryQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindTileMemoryQCOM; };
     if constexpr (HasCmdBindTileMemoryQCOM) {
       if (!std::strcmp("vkCmdBindTileMemoryQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindTileMemoryQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindTileMemoryQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindTransformFeedbackBuffersEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindTransformFeedbackBuffersEXT; };
     if constexpr (HasCmdBindTransformFeedbackBuffersEXT) {
       if (!std::strcmp("vkCmdBindTransformFeedbackBuffersEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindTransformFeedbackBuffersEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindTransformFeedbackBuffersEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindVertexBuffers = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindVertexBuffers; };
     if constexpr (HasCmdBindVertexBuffers) {
       if (!std::strcmp("vkCmdBindVertexBuffers", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindVertexBuffers2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindVertexBuffers2; };
     if constexpr (HasCmdBindVertexBuffers2) {
       if (!std::strcmp("vkCmdBindVertexBuffers2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindVertexBuffers2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindVertexBuffers2EXT; };
     if constexpr (HasCmdBindVertexBuffers2EXT) {
       if (!std::strcmp("vkCmdBindVertexBuffers2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBindVertexBuffers2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBlitImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBlitImage; };
     if constexpr (HasCmdBlitImage) {
       if (!std::strcmp("vkCmdBlitImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBlitImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBlitImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBlitImage2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBlitImage2; };
     if constexpr (HasCmdBlitImage2) {
       if (!std::strcmp("vkCmdBlitImage2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBlitImage2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBlitImage2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBlitImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBlitImage2KHR; };
     if constexpr (HasCmdBlitImage2KHR) {
       if (!std::strcmp("vkCmdBlitImage2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBlitImage2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBlitImage2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildAccelerationStructureNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildAccelerationStructureNV; };
     if constexpr (HasCmdBuildAccelerationStructureNV) {
       if (!std::strcmp("vkCmdBuildAccelerationStructureNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructureNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructureNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildAccelerationStructuresIndirectKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildAccelerationStructuresIndirectKHR; };
     if constexpr (HasCmdBuildAccelerationStructuresIndirectKHR) {
       if (!std::strcmp("vkCmdBuildAccelerationStructuresIndirectKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructuresIndirectKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructuresIndirectKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildAccelerationStructuresKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildAccelerationStructuresKHR; };
     if constexpr (HasCmdBuildAccelerationStructuresKHR) {
       if (!std::strcmp("vkCmdBuildAccelerationStructuresKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructuresKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildAccelerationStructuresKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildClusterAccelerationStructureIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildClusterAccelerationStructureIndirectNV; };
     if constexpr (HasCmdBuildClusterAccelerationStructureIndirectNV) {
       if (!std::strcmp("vkCmdBuildClusterAccelerationStructureIndirectNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildClusterAccelerationStructureIndirectNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildClusterAccelerationStructureIndirectNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildMicromapsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildMicromapsEXT; };
     if constexpr (HasCmdBuildMicromapsEXT) {
       if (!std::strcmp("vkCmdBuildMicromapsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildMicromapsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildMicromapsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBuildPartitionedAccelerationStructuresNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBuildPartitionedAccelerationStructuresNV; };
     if constexpr (HasCmdBuildPartitionedAccelerationStructuresNV) {
       if (!std::strcmp("vkCmdBuildPartitionedAccelerationStructuresNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdBuildPartitionedAccelerationStructuresNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdBuildPartitionedAccelerationStructuresNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdClearAttachments = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdClearAttachments; };
     if constexpr (HasCmdClearAttachments) {
       if (!std::strcmp("vkCmdClearAttachments", name))
-        return (PFN_vkVoidFunction) &wrap_CmdClearAttachments<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdClearAttachments<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdClearColorImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdClearColorImage; };
     if constexpr (HasCmdClearColorImage) {
       if (!std::strcmp("vkCmdClearColorImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdClearColorImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdClearColorImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdClearDepthStencilImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdClearDepthStencilImage; };
     if constexpr (HasCmdClearDepthStencilImage) {
       if (!std::strcmp("vkCmdClearDepthStencilImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdClearDepthStencilImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdClearDepthStencilImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdControlVideoCodingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdControlVideoCodingKHR; };
     if constexpr (HasCmdControlVideoCodingKHR) {
       if (!std::strcmp("vkCmdControlVideoCodingKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdControlVideoCodingKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdControlVideoCodingKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdConvertCooperativeVectorMatrixNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdConvertCooperativeVectorMatrixNV; };
     if constexpr (HasCmdConvertCooperativeVectorMatrixNV) {
       if (!std::strcmp("vkCmdConvertCooperativeVectorMatrixNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdConvertCooperativeVectorMatrixNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdConvertCooperativeVectorMatrixNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyAccelerationStructureKHR; };
     if constexpr (HasCmdCopyAccelerationStructureKHR) {
       if (!std::strcmp("vkCmdCopyAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyAccelerationStructureNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyAccelerationStructureNV; };
     if constexpr (HasCmdCopyAccelerationStructureNV) {
       if (!std::strcmp("vkCmdCopyAccelerationStructureNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyAccelerationStructureToMemoryKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyAccelerationStructureToMemoryKHR; };
     if constexpr (HasCmdCopyAccelerationStructureToMemoryKHR) {
       if (!std::strcmp("vkCmdCopyAccelerationStructureToMemoryKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureToMemoryKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyAccelerationStructureToMemoryKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBuffer; };
     if constexpr (HasCmdCopyBuffer) {
       if (!std::strcmp("vkCmdCopyBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBuffer2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBuffer2; };
     if constexpr (HasCmdCopyBuffer2) {
       if (!std::strcmp("vkCmdCopyBuffer2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBuffer2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBuffer2KHR; };
     if constexpr (HasCmdCopyBuffer2KHR) {
       if (!std::strcmp("vkCmdCopyBuffer2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBuffer2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBufferToImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBufferToImage; };
     if constexpr (HasCmdCopyBufferToImage) {
       if (!std::strcmp("vkCmdCopyBufferToImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBufferToImage2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBufferToImage2; };
     if constexpr (HasCmdCopyBufferToImage2) {
       if (!std::strcmp("vkCmdCopyBufferToImage2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyBufferToImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyBufferToImage2KHR; };
     if constexpr (HasCmdCopyBufferToImage2KHR) {
       if (!std::strcmp("vkCmdCopyBufferToImage2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyBufferToImage2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImage; };
     if constexpr (HasCmdCopyImage) {
       if (!std::strcmp("vkCmdCopyImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImage2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImage2; };
     if constexpr (HasCmdCopyImage2) {
       if (!std::strcmp("vkCmdCopyImage2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImage2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImage2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImage2KHR; };
     if constexpr (HasCmdCopyImage2KHR) {
       if (!std::strcmp("vkCmdCopyImage2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImage2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImage2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImageToBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer; };
     if constexpr (HasCmdCopyImageToBuffer) {
       if (!std::strcmp("vkCmdCopyImageToBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImageToBuffer2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2; };
     if constexpr (HasCmdCopyImageToBuffer2) {
       if (!std::strcmp("vkCmdCopyImageToBuffer2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyImageToBuffer2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2KHR; };
     if constexpr (HasCmdCopyImageToBuffer2KHR) {
       if (!std::strcmp("vkCmdCopyImageToBuffer2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMemoryIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectNV; };
     if constexpr (HasCmdCopyMemoryIndirectNV) {
       if (!std::strcmp("vkCmdCopyMemoryIndirectNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryIndirectNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryIndirectNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMemoryToAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR; };
     if constexpr (HasCmdCopyMemoryToAccelerationStructureKHR) {
       if (!std::strcmp("vkCmdCopyMemoryToAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMemoryToImageIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectNV; };
     if constexpr (HasCmdCopyMemoryToImageIndirectNV) {
       if (!std::strcmp("vkCmdCopyMemoryToImageIndirectNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToImageIndirectNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToImageIndirectNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMemoryToMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToMicromapEXT; };
     if constexpr (HasCmdCopyMemoryToMicromapEXT) {
       if (!std::strcmp("vkCmdCopyMemoryToMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMicromapEXT; };
     if constexpr (HasCmdCopyMicromapEXT) {
       if (!std::strcmp("vkCmdCopyMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMicromapToMemoryEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMicromapToMemoryEXT; };
     if constexpr (HasCmdCopyMicromapToMemoryEXT) {
       if (!std::strcmp("vkCmdCopyMicromapToMemoryEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyMicromapToMemoryEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMicromapToMemoryEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyQueryPoolResults = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyQueryPoolResults; };
     if constexpr (HasCmdCopyQueryPoolResults) {
       if (!std::strcmp("vkCmdCopyQueryPoolResults", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyQueryPoolResults<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyQueryPoolResults<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyTensorARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyTensorARM; };
     if constexpr (HasCmdCopyTensorARM) {
       if (!std::strcmp("vkCmdCopyTensorARM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCopyTensorARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCopyTensorARM<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasCmdCudaLaunchKernelNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCudaLaunchKernelNV; };
     if constexpr (HasCmdCudaLaunchKernelNV) {
       if (!std::strcmp("vkCmdCudaLaunchKernelNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdCudaLaunchKernelNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdCudaLaunchKernelNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCmdDebugMarkerBeginEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerBeginEXT; };
     if constexpr (HasCmdDebugMarkerBeginEXT) {
       if (!std::strcmp("vkCmdDebugMarkerBeginEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerBeginEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerBeginEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDebugMarkerEndEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerEndEXT; };
     if constexpr (HasCmdDebugMarkerEndEXT) {
       if (!std::strcmp("vkCmdDebugMarkerEndEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerEndEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerEndEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDebugMarkerInsertEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerInsertEXT; };
     if constexpr (HasCmdDebugMarkerInsertEXT) {
       if (!std::strcmp("vkCmdDebugMarkerInsertEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerInsertEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDebugMarkerInsertEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDecodeVideoKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecodeVideoKHR; };
     if constexpr (HasCmdDecodeVideoKHR) {
       if (!std::strcmp("vkCmdDecodeVideoKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDecodeVideoKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDecodeVideoKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDecompressMemoryIndirectCountNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountNV; };
     if constexpr (HasCmdDecompressMemoryIndirectCountNV) {
       if (!std::strcmp("vkCmdDecompressMemoryIndirectCountNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryIndirectCountNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryIndirectCountNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDecompressMemoryNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryNV; };
     if constexpr (HasCmdDecompressMemoryNV) {
       if (!std::strcmp("vkCmdDecompressMemoryNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDispatch = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatch; };
     if constexpr (HasCmdDispatch) {
       if (!std::strcmp("vkCmdDispatch", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatch<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatch<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDispatchBase = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchBase; };
     if constexpr (HasCmdDispatchBase) {
       if (!std::strcmp("vkCmdDispatchBase", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchBase<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchBase<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDispatchBaseKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchBaseKHR; };
     if constexpr (HasCmdDispatchBaseKHR) {
       if (!std::strcmp("vkCmdDispatchBaseKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchBaseKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchBaseKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDispatchDataGraphARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchDataGraphARM; };
     if constexpr (HasCmdDispatchDataGraphARM) {
       if (!std::strcmp("vkCmdDispatchDataGraphARM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchDataGraphARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchDataGraphARM<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasCmdDispatchGraphAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchGraphAMDX; };
     if constexpr (HasCmdDispatchGraphAMDX) {
       if (!std::strcmp("vkCmdDispatchGraphAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -8183,7 +8691,7 @@ namespace vkroots {
     constexpr bool HasCmdDispatchGraphIndirectAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchGraphIndirectAMDX; };
     if constexpr (HasCmdDispatchGraphIndirectAMDX) {
       if (!std::strcmp("vkCmdDispatchGraphIndirectAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphIndirectAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphIndirectAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -8191,1237 +8699,1237 @@ namespace vkroots {
     constexpr bool HasCmdDispatchGraphIndirectCountAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchGraphIndirectCountAMDX; };
     if constexpr (HasCmdDispatchGraphIndirectCountAMDX) {
       if (!std::strcmp("vkCmdDispatchGraphIndirectCountAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphIndirectCountAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchGraphIndirectCountAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCmdDispatchIndirect = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchIndirect; };
     if constexpr (HasCmdDispatchIndirect) {
       if (!std::strcmp("vkCmdDispatchIndirect", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchIndirect<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchIndirect<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDispatchTileQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatchTileQCOM; };
     if constexpr (HasCmdDispatchTileQCOM) {
       if (!std::strcmp("vkCmdDispatchTileQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDispatchTileQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDispatchTileQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDraw = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDraw; };
     if constexpr (HasCmdDraw) {
       if (!std::strcmp("vkCmdDraw", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDraw<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDraw<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawClusterHUAWEI = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawClusterHUAWEI; };
     if constexpr (HasCmdDrawClusterHUAWEI) {
       if (!std::strcmp("vkCmdDrawClusterHUAWEI", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawClusterHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawClusterHUAWEI<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawClusterIndirectHUAWEI = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawClusterIndirectHUAWEI; };
     if constexpr (HasCmdDrawClusterIndirectHUAWEI) {
       if (!std::strcmp("vkCmdDrawClusterIndirectHUAWEI", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawClusterIndirectHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawClusterIndirectHUAWEI<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndexed = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndexed; };
     if constexpr (HasCmdDrawIndexed) {
       if (!std::strcmp("vkCmdDrawIndexed", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexed<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexed<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndexedIndirect = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndexedIndirect; };
     if constexpr (HasCmdDrawIndexedIndirect) {
       if (!std::strcmp("vkCmdDrawIndexedIndirect", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirect<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirect<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndexedIndirectCount = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndexedIndirectCount; };
     if constexpr (HasCmdDrawIndexedIndirectCount) {
       if (!std::strcmp("vkCmdDrawIndexedIndirectCount", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCount<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCount<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndexedIndirectCountAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndexedIndirectCountAMD; };
     if constexpr (HasCmdDrawIndexedIndirectCountAMD) {
       if (!std::strcmp("vkCmdDrawIndexedIndirectCountAMD", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCountAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCountAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndexedIndirectCountKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndexedIndirectCountKHR; };
     if constexpr (HasCmdDrawIndexedIndirectCountKHR) {
       if (!std::strcmp("vkCmdDrawIndexedIndirectCountKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCountKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndexedIndirectCountKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndirect = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndirect; };
     if constexpr (HasCmdDrawIndirect) {
       if (!std::strcmp("vkCmdDrawIndirect", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirect<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirect<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndirectByteCountEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndirectByteCountEXT; };
     if constexpr (HasCmdDrawIndirectByteCountEXT) {
       if (!std::strcmp("vkCmdDrawIndirectByteCountEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectByteCountEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectByteCountEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndirectCount = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndirectCount; };
     if constexpr (HasCmdDrawIndirectCount) {
       if (!std::strcmp("vkCmdDrawIndirectCount", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCount<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCount<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndirectCountAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndirectCountAMD; };
     if constexpr (HasCmdDrawIndirectCountAMD) {
       if (!std::strcmp("vkCmdDrawIndirectCountAMD", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCountAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCountAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawIndirectCountKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawIndirectCountKHR; };
     if constexpr (HasCmdDrawIndirectCountKHR) {
       if (!std::strcmp("vkCmdDrawIndirectCountKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCountKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawIndirectCountKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksEXT; };
     if constexpr (HasCmdDrawMeshTasksEXT) {
       if (!std::strcmp("vkCmdDrawMeshTasksEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksIndirectCountEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksIndirectCountEXT; };
     if constexpr (HasCmdDrawMeshTasksIndirectCountEXT) {
       if (!std::strcmp("vkCmdDrawMeshTasksIndirectCountEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectCountEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectCountEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksIndirectCountNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksIndirectCountNV; };
     if constexpr (HasCmdDrawMeshTasksIndirectCountNV) {
       if (!std::strcmp("vkCmdDrawMeshTasksIndirectCountNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectCountNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectCountNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksIndirectEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksIndirectEXT; };
     if constexpr (HasCmdDrawMeshTasksIndirectEXT) {
       if (!std::strcmp("vkCmdDrawMeshTasksIndirectEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksIndirectNV; };
     if constexpr (HasCmdDrawMeshTasksIndirectNV) {
       if (!std::strcmp("vkCmdDrawMeshTasksIndirectNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksIndirectNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMeshTasksNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMeshTasksNV; };
     if constexpr (HasCmdDrawMeshTasksNV) {
       if (!std::strcmp("vkCmdDrawMeshTasksNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMeshTasksNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMultiEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMultiEXT; };
     if constexpr (HasCmdDrawMultiEXT) {
       if (!std::strcmp("vkCmdDrawMultiEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMultiEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMultiEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDrawMultiIndexedEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDrawMultiIndexedEXT; };
     if constexpr (HasCmdDrawMultiIndexedEXT) {
       if (!std::strcmp("vkCmdDrawMultiIndexedEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdDrawMultiIndexedEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdDrawMultiIndexedEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEncodeVideoKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEncodeVideoKHR; };
     if constexpr (HasCmdEncodeVideoKHR) {
       if (!std::strcmp("vkCmdEncodeVideoKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEncodeVideoKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEncodeVideoKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndConditionalRenderingEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndConditionalRenderingEXT; };
     if constexpr (HasCmdEndConditionalRenderingEXT) {
       if (!std::strcmp("vkCmdEndConditionalRenderingEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndConditionalRenderingEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndConditionalRenderingEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndDebugUtilsLabelEXT; };
     if constexpr (HasCmdEndDebugUtilsLabelEXT) {
       if (!std::strcmp("vkCmdEndDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndPerTileExecutionQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndPerTileExecutionQCOM; };
     if constexpr (HasCmdEndPerTileExecutionQCOM) {
       if (!std::strcmp("vkCmdEndPerTileExecutionQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndPerTileExecutionQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndPerTileExecutionQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndQuery = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndQuery; };
     if constexpr (HasCmdEndQuery) {
       if (!std::strcmp("vkCmdEndQuery", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndQuery<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndQuery<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndQueryIndexedEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndQueryIndexedEXT; };
     if constexpr (HasCmdEndQueryIndexedEXT) {
       if (!std::strcmp("vkCmdEndQueryIndexedEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndQueryIndexedEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndQueryIndexedEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRenderPass = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderPass; };
     if constexpr (HasCmdEndRenderPass) {
       if (!std::strcmp("vkCmdEndRenderPass", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRenderPass2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderPass2; };
     if constexpr (HasCmdEndRenderPass2) {
       if (!std::strcmp("vkCmdEndRenderPass2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRenderPass2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderPass2KHR; };
     if constexpr (HasCmdEndRenderPass2KHR) {
       if (!std::strcmp("vkCmdEndRenderPass2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRenderPass2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRendering = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering; };
     if constexpr (HasCmdEndRendering) {
       if (!std::strcmp("vkCmdEndRendering", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRendering<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRendering<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRendering2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2EXT; };
     if constexpr (HasCmdEndRendering2EXT) {
       if (!std::strcmp("vkCmdEndRendering2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRendering2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRendering2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndRenderingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderingKHR; };
     if constexpr (HasCmdEndRenderingKHR) {
       if (!std::strcmp("vkCmdEndRenderingKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndRenderingKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndRenderingKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndTransformFeedbackEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndTransformFeedbackEXT; };
     if constexpr (HasCmdEndTransformFeedbackEXT) {
       if (!std::strcmp("vkCmdEndTransformFeedbackEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndTransformFeedbackEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndTransformFeedbackEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdEndVideoCodingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndVideoCodingKHR; };
     if constexpr (HasCmdEndVideoCodingKHR) {
       if (!std::strcmp("vkCmdEndVideoCodingKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdEndVideoCodingKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdEndVideoCodingKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdExecuteCommands = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdExecuteCommands; };
     if constexpr (HasCmdExecuteCommands) {
       if (!std::strcmp("vkCmdExecuteCommands", name))
-        return (PFN_vkVoidFunction) &wrap_CmdExecuteCommands<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdExecuteCommands<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdExecuteGeneratedCommandsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdExecuteGeneratedCommandsEXT; };
     if constexpr (HasCmdExecuteGeneratedCommandsEXT) {
       if (!std::strcmp("vkCmdExecuteGeneratedCommandsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdExecuteGeneratedCommandsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdExecuteGeneratedCommandsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdExecuteGeneratedCommandsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdExecuteGeneratedCommandsNV; };
     if constexpr (HasCmdExecuteGeneratedCommandsNV) {
       if (!std::strcmp("vkCmdExecuteGeneratedCommandsNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdExecuteGeneratedCommandsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdExecuteGeneratedCommandsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdFillBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdFillBuffer; };
     if constexpr (HasCmdFillBuffer) {
       if (!std::strcmp("vkCmdFillBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CmdFillBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdFillBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasCmdInitializeGraphScratchMemoryAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdInitializeGraphScratchMemoryAMDX; };
     if constexpr (HasCmdInitializeGraphScratchMemoryAMDX) {
       if (!std::strcmp("vkCmdInitializeGraphScratchMemoryAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_CmdInitializeGraphScratchMemoryAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdInitializeGraphScratchMemoryAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCmdInsertDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdInsertDebugUtilsLabelEXT; };
     if constexpr (HasCmdInsertDebugUtilsLabelEXT) {
       if (!std::strcmp("vkCmdInsertDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdInsertDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdInsertDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdNextSubpass = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdNextSubpass; };
     if constexpr (HasCmdNextSubpass) {
       if (!std::strcmp("vkCmdNextSubpass", name))
-        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdNextSubpass2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdNextSubpass2; };
     if constexpr (HasCmdNextSubpass2) {
       if (!std::strcmp("vkCmdNextSubpass2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdNextSubpass2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdNextSubpass2KHR; };
     if constexpr (HasCmdNextSubpass2KHR) {
       if (!std::strcmp("vkCmdNextSubpass2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdNextSubpass2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdOpticalFlowExecuteNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdOpticalFlowExecuteNV; };
     if constexpr (HasCmdOpticalFlowExecuteNV) {
       if (!std::strcmp("vkCmdOpticalFlowExecuteNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdOpticalFlowExecuteNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdOpticalFlowExecuteNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPipelineBarrier = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPipelineBarrier; };
     if constexpr (HasCmdPipelineBarrier) {
       if (!std::strcmp("vkCmdPipelineBarrier", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPipelineBarrier2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPipelineBarrier2; };
     if constexpr (HasCmdPipelineBarrier2) {
       if (!std::strcmp("vkCmdPipelineBarrier2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPipelineBarrier2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPipelineBarrier2KHR; };
     if constexpr (HasCmdPipelineBarrier2KHR) {
       if (!std::strcmp("vkCmdPipelineBarrier2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPipelineBarrier2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPreprocessGeneratedCommandsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsEXT; };
     if constexpr (HasCmdPreprocessGeneratedCommandsEXT) {
       if (!std::strcmp("vkCmdPreprocessGeneratedCommandsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPreprocessGeneratedCommandsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPreprocessGeneratedCommandsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPreprocessGeneratedCommandsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsNV; };
     if constexpr (HasCmdPreprocessGeneratedCommandsNV) {
       if (!std::strcmp("vkCmdPreprocessGeneratedCommandsNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPreprocessGeneratedCommandsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPreprocessGeneratedCommandsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushConstants = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants; };
     if constexpr (HasCmdPushConstants) {
       if (!std::strcmp("vkCmdPushConstants", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushConstants<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushConstants<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushConstants2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2KHR; };
     if constexpr (HasCmdPushConstants2KHR) {
       if (!std::strcmp("vkCmdPushConstants2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushConstants2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushConstants2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSet2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2KHR; };
     if constexpr (HasCmdPushDescriptorSet2KHR) {
       if (!std::strcmp("vkCmdPushDescriptorSet2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSet2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSet2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSetKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetKHR; };
     if constexpr (HasCmdPushDescriptorSetKHR) {
       if (!std::strcmp("vkCmdPushDescriptorSetKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSetWithTemplate2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR; };
     if constexpr (HasCmdPushDescriptorSetWithTemplate2KHR) {
       if (!std::strcmp("vkCmdPushDescriptorSetWithTemplate2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplate2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplate2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSetWithTemplateKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR; };
     if constexpr (HasCmdPushDescriptorSetWithTemplateKHR) {
       if (!std::strcmp("vkCmdPushDescriptorSetWithTemplateKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplateKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplateKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResetEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetEvent; };
     if constexpr (HasCmdResetEvent) {
       if (!std::strcmp("vkCmdResetEvent", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResetEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResetEvent<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResetEvent2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetEvent2; };
     if constexpr (HasCmdResetEvent2) {
       if (!std::strcmp("vkCmdResetEvent2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResetEvent2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResetEvent2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResetEvent2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetEvent2KHR; };
     if constexpr (HasCmdResetEvent2KHR) {
       if (!std::strcmp("vkCmdResetEvent2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResetEvent2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResetEvent2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResetQueryPool = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetQueryPool; };
     if constexpr (HasCmdResetQueryPool) {
       if (!std::strcmp("vkCmdResetQueryPool", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResetQueryPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResetQueryPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResolveImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResolveImage; };
     if constexpr (HasCmdResolveImage) {
       if (!std::strcmp("vkCmdResolveImage", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResolveImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResolveImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResolveImage2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResolveImage2; };
     if constexpr (HasCmdResolveImage2) {
       if (!std::strcmp("vkCmdResolveImage2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResolveImage2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResolveImage2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdResolveImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResolveImage2KHR; };
     if constexpr (HasCmdResolveImage2KHR) {
       if (!std::strcmp("vkCmdResolveImage2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdResolveImage2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdResolveImage2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetAlphaToCoverageEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetAlphaToCoverageEnableEXT; };
     if constexpr (HasCmdSetAlphaToCoverageEnableEXT) {
       if (!std::strcmp("vkCmdSetAlphaToCoverageEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetAlphaToCoverageEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetAlphaToCoverageEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetAlphaToOneEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetAlphaToOneEnableEXT; };
     if constexpr (HasCmdSetAlphaToOneEnableEXT) {
       if (!std::strcmp("vkCmdSetAlphaToOneEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetAlphaToOneEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetAlphaToOneEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetAttachmentFeedbackLoopEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetAttachmentFeedbackLoopEnableEXT; };
     if constexpr (HasCmdSetAttachmentFeedbackLoopEnableEXT) {
       if (!std::strcmp("vkCmdSetAttachmentFeedbackLoopEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetAttachmentFeedbackLoopEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetAttachmentFeedbackLoopEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetBlendConstants = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetBlendConstants; };
     if constexpr (HasCmdSetBlendConstants) {
       if (!std::strcmp("vkCmdSetBlendConstants", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetBlendConstants<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetBlendConstants<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCheckpointNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCheckpointNV; };
     if constexpr (HasCmdSetCheckpointNV) {
       if (!std::strcmp("vkCmdSetCheckpointNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCheckpointNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCheckpointNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoarseSampleOrderNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoarseSampleOrderNV; };
     if constexpr (HasCmdSetCoarseSampleOrderNV) {
       if (!std::strcmp("vkCmdSetCoarseSampleOrderNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoarseSampleOrderNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoarseSampleOrderNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetColorBlendAdvancedEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetColorBlendAdvancedEXT; };
     if constexpr (HasCmdSetColorBlendAdvancedEXT) {
       if (!std::strcmp("vkCmdSetColorBlendAdvancedEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendAdvancedEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendAdvancedEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetColorBlendEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetColorBlendEnableEXT; };
     if constexpr (HasCmdSetColorBlendEnableEXT) {
       if (!std::strcmp("vkCmdSetColorBlendEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetColorBlendEquationEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetColorBlendEquationEXT; };
     if constexpr (HasCmdSetColorBlendEquationEXT) {
       if (!std::strcmp("vkCmdSetColorBlendEquationEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendEquationEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetColorBlendEquationEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetColorWriteEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetColorWriteEnableEXT; };
     if constexpr (HasCmdSetColorWriteEnableEXT) {
       if (!std::strcmp("vkCmdSetColorWriteEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetColorWriteEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetColorWriteEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetColorWriteMaskEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetColorWriteMaskEXT; };
     if constexpr (HasCmdSetColorWriteMaskEXT) {
       if (!std::strcmp("vkCmdSetColorWriteMaskEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetColorWriteMaskEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetColorWriteMaskEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetConservativeRasterizationModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetConservativeRasterizationModeEXT; };
     if constexpr (HasCmdSetConservativeRasterizationModeEXT) {
       if (!std::strcmp("vkCmdSetConservativeRasterizationModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetConservativeRasterizationModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetConservativeRasterizationModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageModulationModeNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageModulationModeNV; };
     if constexpr (HasCmdSetCoverageModulationModeNV) {
       if (!std::strcmp("vkCmdSetCoverageModulationModeNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationModeNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationModeNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageModulationTableEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageModulationTableEnableNV; };
     if constexpr (HasCmdSetCoverageModulationTableEnableNV) {
       if (!std::strcmp("vkCmdSetCoverageModulationTableEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationTableEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationTableEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageModulationTableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageModulationTableNV; };
     if constexpr (HasCmdSetCoverageModulationTableNV) {
       if (!std::strcmp("vkCmdSetCoverageModulationTableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationTableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageModulationTableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageReductionModeNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageReductionModeNV; };
     if constexpr (HasCmdSetCoverageReductionModeNV) {
       if (!std::strcmp("vkCmdSetCoverageReductionModeNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageReductionModeNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageReductionModeNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageToColorEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageToColorEnableNV; };
     if constexpr (HasCmdSetCoverageToColorEnableNV) {
       if (!std::strcmp("vkCmdSetCoverageToColorEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageToColorEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageToColorEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCoverageToColorLocationNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCoverageToColorLocationNV; };
     if constexpr (HasCmdSetCoverageToColorLocationNV) {
       if (!std::strcmp("vkCmdSetCoverageToColorLocationNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageToColorLocationNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCoverageToColorLocationNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCullMode = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCullMode; };
     if constexpr (HasCmdSetCullMode) {
       if (!std::strcmp("vkCmdSetCullMode", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCullMode<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCullMode<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetCullModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetCullModeEXT; };
     if constexpr (HasCmdSetCullModeEXT) {
       if (!std::strcmp("vkCmdSetCullModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetCullModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetCullModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBias = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBias; };
     if constexpr (HasCmdSetDepthBias) {
       if (!std::strcmp("vkCmdSetDepthBias", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBias<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBias<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBias2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBias2EXT; };
     if constexpr (HasCmdSetDepthBias2EXT) {
       if (!std::strcmp("vkCmdSetDepthBias2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBias2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBias2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBiasEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBiasEnable; };
     if constexpr (HasCmdSetDepthBiasEnable) {
       if (!std::strcmp("vkCmdSetDepthBiasEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBiasEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBiasEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBiasEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBiasEnableEXT; };
     if constexpr (HasCmdSetDepthBiasEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthBiasEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBiasEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBiasEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBounds = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBounds; };
     if constexpr (HasCmdSetDepthBounds) {
       if (!std::strcmp("vkCmdSetDepthBounds", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBounds<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBounds<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBoundsTestEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBoundsTestEnable; };
     if constexpr (HasCmdSetDepthBoundsTestEnable) {
       if (!std::strcmp("vkCmdSetDepthBoundsTestEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBoundsTestEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBoundsTestEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthBoundsTestEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthBoundsTestEnableEXT; };
     if constexpr (HasCmdSetDepthBoundsTestEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthBoundsTestEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBoundsTestEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthBoundsTestEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthClampEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthClampEnableEXT; };
     if constexpr (HasCmdSetDepthClampEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthClampEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClampEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClampEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthClampRangeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthClampRangeEXT; };
     if constexpr (HasCmdSetDepthClampRangeEXT) {
       if (!std::strcmp("vkCmdSetDepthClampRangeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClampRangeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClampRangeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthClipEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthClipEnableEXT; };
     if constexpr (HasCmdSetDepthClipEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthClipEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClipEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClipEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthClipNegativeOneToOneEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthClipNegativeOneToOneEXT; };
     if constexpr (HasCmdSetDepthClipNegativeOneToOneEXT) {
       if (!std::strcmp("vkCmdSetDepthClipNegativeOneToOneEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClipNegativeOneToOneEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthClipNegativeOneToOneEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthCompareOp = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthCompareOp; };
     if constexpr (HasCmdSetDepthCompareOp) {
       if (!std::strcmp("vkCmdSetDepthCompareOp", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthCompareOp<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthCompareOp<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthCompareOpEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthCompareOpEXT; };
     if constexpr (HasCmdSetDepthCompareOpEXT) {
       if (!std::strcmp("vkCmdSetDepthCompareOpEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthCompareOpEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthCompareOpEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthTestEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthTestEnable; };
     if constexpr (HasCmdSetDepthTestEnable) {
       if (!std::strcmp("vkCmdSetDepthTestEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthTestEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthTestEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthTestEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthTestEnableEXT; };
     if constexpr (HasCmdSetDepthTestEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthTestEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthTestEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthTestEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthWriteEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthWriteEnable; };
     if constexpr (HasCmdSetDepthWriteEnable) {
       if (!std::strcmp("vkCmdSetDepthWriteEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthWriteEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthWriteEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDepthWriteEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDepthWriteEnableEXT; };
     if constexpr (HasCmdSetDepthWriteEnableEXT) {
       if (!std::strcmp("vkCmdSetDepthWriteEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDepthWriteEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDepthWriteEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDescriptorBufferOffsets2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDescriptorBufferOffsets2EXT; };
     if constexpr (HasCmdSetDescriptorBufferOffsets2EXT) {
       if (!std::strcmp("vkCmdSetDescriptorBufferOffsets2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDescriptorBufferOffsets2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDescriptorBufferOffsets2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDescriptorBufferOffsetsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDescriptorBufferOffsetsEXT; };
     if constexpr (HasCmdSetDescriptorBufferOffsetsEXT) {
       if (!std::strcmp("vkCmdSetDescriptorBufferOffsetsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDescriptorBufferOffsetsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDescriptorBufferOffsetsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDeviceMask = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDeviceMask; };
     if constexpr (HasCmdSetDeviceMask) {
       if (!std::strcmp("vkCmdSetDeviceMask", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDeviceMask<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDeviceMask<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDeviceMaskKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDeviceMaskKHR; };
     if constexpr (HasCmdSetDeviceMaskKHR) {
       if (!std::strcmp("vkCmdSetDeviceMaskKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDeviceMaskKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDeviceMaskKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDiscardRectangleEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDiscardRectangleEXT; };
     if constexpr (HasCmdSetDiscardRectangleEXT) {
       if (!std::strcmp("vkCmdSetDiscardRectangleEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDiscardRectangleEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDiscardRectangleEnableEXT; };
     if constexpr (HasCmdSetDiscardRectangleEnableEXT) {
       if (!std::strcmp("vkCmdSetDiscardRectangleEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetDiscardRectangleModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetDiscardRectangleModeEXT; };
     if constexpr (HasCmdSetDiscardRectangleModeEXT) {
       if (!std::strcmp("vkCmdSetDiscardRectangleModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetDiscardRectangleModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetEvent; };
     if constexpr (HasCmdSetEvent) {
       if (!std::strcmp("vkCmdSetEvent", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetEvent<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetEvent2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetEvent2; };
     if constexpr (HasCmdSetEvent2) {
       if (!std::strcmp("vkCmdSetEvent2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetEvent2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetEvent2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetEvent2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetEvent2KHR; };
     if constexpr (HasCmdSetEvent2KHR) {
       if (!std::strcmp("vkCmdSetEvent2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetEvent2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetEvent2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetExclusiveScissorEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetExclusiveScissorEnableNV; };
     if constexpr (HasCmdSetExclusiveScissorEnableNV) {
       if (!std::strcmp("vkCmdSetExclusiveScissorEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetExclusiveScissorEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetExclusiveScissorEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetExclusiveScissorNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetExclusiveScissorNV; };
     if constexpr (HasCmdSetExclusiveScissorNV) {
       if (!std::strcmp("vkCmdSetExclusiveScissorNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetExclusiveScissorNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetExclusiveScissorNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetExtraPrimitiveOverestimationSizeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetExtraPrimitiveOverestimationSizeEXT; };
     if constexpr (HasCmdSetExtraPrimitiveOverestimationSizeEXT) {
       if (!std::strcmp("vkCmdSetExtraPrimitiveOverestimationSizeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetExtraPrimitiveOverestimationSizeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetExtraPrimitiveOverestimationSizeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetFragmentShadingRateEnumNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFragmentShadingRateEnumNV; };
     if constexpr (HasCmdSetFragmentShadingRateEnumNV) {
       if (!std::strcmp("vkCmdSetFragmentShadingRateEnumNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetFragmentShadingRateEnumNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetFragmentShadingRateEnumNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetFragmentShadingRateKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFragmentShadingRateKHR; };
     if constexpr (HasCmdSetFragmentShadingRateKHR) {
       if (!std::strcmp("vkCmdSetFragmentShadingRateKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetFragmentShadingRateKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetFragmentShadingRateKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetFrontFace = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFace; };
     if constexpr (HasCmdSetFrontFace) {
       if (!std::strcmp("vkCmdSetFrontFace", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetFrontFace<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetFrontFace<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetFrontFaceEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFaceEXT; };
     if constexpr (HasCmdSetFrontFaceEXT) {
       if (!std::strcmp("vkCmdSetFrontFaceEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetFrontFaceEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetFrontFaceEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLineRasterizationModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineRasterizationModeEXT; };
     if constexpr (HasCmdSetLineRasterizationModeEXT) {
       if (!std::strcmp("vkCmdSetLineRasterizationModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLineRasterizationModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineRasterizationModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLineStippleEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEXT; };
     if constexpr (HasCmdSetLineStippleEXT) {
       if (!std::strcmp("vkCmdSetLineStippleEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLineStippleEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEnableEXT; };
     if constexpr (HasCmdSetLineStippleEnableEXT) {
       if (!std::strcmp("vkCmdSetLineStippleEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLineStippleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleKHR; };
     if constexpr (HasCmdSetLineStippleKHR) {
       if (!std::strcmp("vkCmdSetLineStippleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineStippleKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLineWidth = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineWidth; };
     if constexpr (HasCmdSetLineWidth) {
       if (!std::strcmp("vkCmdSetLineWidth", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLineWidth<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineWidth<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLogicOpEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLogicOpEXT; };
     if constexpr (HasCmdSetLogicOpEXT) {
       if (!std::strcmp("vkCmdSetLogicOpEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLogicOpEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLogicOpEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetLogicOpEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLogicOpEnableEXT; };
     if constexpr (HasCmdSetLogicOpEnableEXT) {
       if (!std::strcmp("vkCmdSetLogicOpEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetLogicOpEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetLogicOpEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPatchControlPointsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPatchControlPointsEXT; };
     if constexpr (HasCmdSetPatchControlPointsEXT) {
       if (!std::strcmp("vkCmdSetPatchControlPointsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPatchControlPointsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPatchControlPointsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPerformanceMarkerINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPerformanceMarkerINTEL; };
     if constexpr (HasCmdSetPerformanceMarkerINTEL) {
       if (!std::strcmp("vkCmdSetPerformanceMarkerINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceMarkerINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceMarkerINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPerformanceOverrideINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPerformanceOverrideINTEL; };
     if constexpr (HasCmdSetPerformanceOverrideINTEL) {
       if (!std::strcmp("vkCmdSetPerformanceOverrideINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceOverrideINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceOverrideINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPerformanceStreamMarkerINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPerformanceStreamMarkerINTEL; };
     if constexpr (HasCmdSetPerformanceStreamMarkerINTEL) {
       if (!std::strcmp("vkCmdSetPerformanceStreamMarkerINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceStreamMarkerINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPerformanceStreamMarkerINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPolygonModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPolygonModeEXT; };
     if constexpr (HasCmdSetPolygonModeEXT) {
       if (!std::strcmp("vkCmdSetPolygonModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPolygonModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPolygonModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPrimitiveRestartEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPrimitiveRestartEnable; };
     if constexpr (HasCmdSetPrimitiveRestartEnable) {
       if (!std::strcmp("vkCmdSetPrimitiveRestartEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveRestartEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveRestartEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPrimitiveRestartEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPrimitiveRestartEnableEXT; };
     if constexpr (HasCmdSetPrimitiveRestartEnableEXT) {
       if (!std::strcmp("vkCmdSetPrimitiveRestartEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveRestartEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveRestartEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPrimitiveTopology = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPrimitiveTopology; };
     if constexpr (HasCmdSetPrimitiveTopology) {
       if (!std::strcmp("vkCmdSetPrimitiveTopology", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveTopology<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveTopology<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetPrimitiveTopologyEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetPrimitiveTopologyEXT; };
     if constexpr (HasCmdSetPrimitiveTopologyEXT) {
       if (!std::strcmp("vkCmdSetPrimitiveTopologyEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveTopologyEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetPrimitiveTopologyEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetProvokingVertexModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetProvokingVertexModeEXT; };
     if constexpr (HasCmdSetProvokingVertexModeEXT) {
       if (!std::strcmp("vkCmdSetProvokingVertexModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetProvokingVertexModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetProvokingVertexModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRasterizationSamplesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizationSamplesEXT; };
     if constexpr (HasCmdSetRasterizationSamplesEXT) {
       if (!std::strcmp("vkCmdSetRasterizationSamplesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizationSamplesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizationSamplesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRasterizationStreamEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizationStreamEXT; };
     if constexpr (HasCmdSetRasterizationStreamEXT) {
       if (!std::strcmp("vkCmdSetRasterizationStreamEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizationStreamEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizationStreamEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRasterizerDiscardEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnable; };
     if constexpr (HasCmdSetRasterizerDiscardEnable) {
       if (!std::strcmp("vkCmdSetRasterizerDiscardEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizerDiscardEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizerDiscardEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRasterizerDiscardEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnableEXT; };
     if constexpr (HasCmdSetRasterizerDiscardEnableEXT) {
       if (!std::strcmp("vkCmdSetRasterizerDiscardEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizerDiscardEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRasterizerDiscardEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRayTracingPipelineStackSizeKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR; };
     if constexpr (HasCmdSetRayTracingPipelineStackSizeKHR) {
       if (!std::strcmp("vkCmdSetRayTracingPipelineStackSizeKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRayTracingPipelineStackSizeKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRayTracingPipelineStackSizeKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRenderingAttachmentLocationsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR; };
     if constexpr (HasCmdSetRenderingAttachmentLocationsKHR) {
       if (!std::strcmp("vkCmdSetRenderingAttachmentLocationsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingAttachmentLocationsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingAttachmentLocationsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRenderingInputAttachmentIndicesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR; };
     if constexpr (HasCmdSetRenderingInputAttachmentIndicesKHR) {
       if (!std::strcmp("vkCmdSetRenderingInputAttachmentIndicesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingInputAttachmentIndicesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingInputAttachmentIndicesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRepresentativeFragmentTestEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV; };
     if constexpr (HasCmdSetRepresentativeFragmentTestEnableNV) {
       if (!std::strcmp("vkCmdSetRepresentativeFragmentTestEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetRepresentativeFragmentTestEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetRepresentativeFragmentTestEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetSampleLocationsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetSampleLocationsEXT; };
     if constexpr (HasCmdSetSampleLocationsEXT) {
       if (!std::strcmp("vkCmdSetSampleLocationsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetSampleLocationsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetSampleLocationsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetSampleLocationsEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetSampleLocationsEnableEXT; };
     if constexpr (HasCmdSetSampleLocationsEnableEXT) {
       if (!std::strcmp("vkCmdSetSampleLocationsEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetSampleLocationsEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetSampleLocationsEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetSampleMaskEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetSampleMaskEXT; };
     if constexpr (HasCmdSetSampleMaskEXT) {
       if (!std::strcmp("vkCmdSetSampleMaskEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetSampleMaskEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetSampleMaskEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetScissor = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetScissor; };
     if constexpr (HasCmdSetScissor) {
       if (!std::strcmp("vkCmdSetScissor", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetScissor<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetScissor<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetScissorWithCount = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetScissorWithCount; };
     if constexpr (HasCmdSetScissorWithCount) {
       if (!std::strcmp("vkCmdSetScissorWithCount", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetScissorWithCount<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetScissorWithCount<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetScissorWithCountEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetScissorWithCountEXT; };
     if constexpr (HasCmdSetScissorWithCountEXT) {
       if (!std::strcmp("vkCmdSetScissorWithCountEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetScissorWithCountEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetScissorWithCountEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetShadingRateImageEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetShadingRateImageEnableNV; };
     if constexpr (HasCmdSetShadingRateImageEnableNV) {
       if (!std::strcmp("vkCmdSetShadingRateImageEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetShadingRateImageEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetShadingRateImageEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilCompareMask = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilCompareMask; };
     if constexpr (HasCmdSetStencilCompareMask) {
       if (!std::strcmp("vkCmdSetStencilCompareMask", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilCompareMask<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilCompareMask<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilOp = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilOp; };
     if constexpr (HasCmdSetStencilOp) {
       if (!std::strcmp("vkCmdSetStencilOp", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilOp<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilOp<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilOpEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilOpEXT; };
     if constexpr (HasCmdSetStencilOpEXT) {
       if (!std::strcmp("vkCmdSetStencilOpEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilOpEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilOpEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilReference = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilReference; };
     if constexpr (HasCmdSetStencilReference) {
       if (!std::strcmp("vkCmdSetStencilReference", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilReference<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilReference<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilTestEnable = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilTestEnable; };
     if constexpr (HasCmdSetStencilTestEnable) {
       if (!std::strcmp("vkCmdSetStencilTestEnable", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilTestEnable<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilTestEnable<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilTestEnableEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilTestEnableEXT; };
     if constexpr (HasCmdSetStencilTestEnableEXT) {
       if (!std::strcmp("vkCmdSetStencilTestEnableEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilTestEnableEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilTestEnableEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetStencilWriteMask = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetStencilWriteMask; };
     if constexpr (HasCmdSetStencilWriteMask) {
       if (!std::strcmp("vkCmdSetStencilWriteMask", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetStencilWriteMask<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetStencilWriteMask<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetTessellationDomainOriginEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetTessellationDomainOriginEXT; };
     if constexpr (HasCmdSetTessellationDomainOriginEXT) {
       if (!std::strcmp("vkCmdSetTessellationDomainOriginEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetTessellationDomainOriginEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetTessellationDomainOriginEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetVertexInputEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetVertexInputEXT; };
     if constexpr (HasCmdSetVertexInputEXT) {
       if (!std::strcmp("vkCmdSetVertexInputEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetVertexInputEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetVertexInputEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewport = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewport; };
     if constexpr (HasCmdSetViewport) {
       if (!std::strcmp("vkCmdSetViewport", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewport<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewport<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportShadingRatePaletteNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportShadingRatePaletteNV; };
     if constexpr (HasCmdSetViewportShadingRatePaletteNV) {
       if (!std::strcmp("vkCmdSetViewportShadingRatePaletteNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportShadingRatePaletteNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportShadingRatePaletteNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportSwizzleNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportSwizzleNV; };
     if constexpr (HasCmdSetViewportSwizzleNV) {
       if (!std::strcmp("vkCmdSetViewportSwizzleNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportSwizzleNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportSwizzleNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportWScalingEnableNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportWScalingEnableNV; };
     if constexpr (HasCmdSetViewportWScalingEnableNV) {
       if (!std::strcmp("vkCmdSetViewportWScalingEnableNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWScalingEnableNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWScalingEnableNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportWScalingNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportWScalingNV; };
     if constexpr (HasCmdSetViewportWScalingNV) {
       if (!std::strcmp("vkCmdSetViewportWScalingNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWScalingNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWScalingNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportWithCount = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportWithCount; };
     if constexpr (HasCmdSetViewportWithCount) {
       if (!std::strcmp("vkCmdSetViewportWithCount", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWithCount<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWithCount<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetViewportWithCountEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetViewportWithCountEXT; };
     if constexpr (HasCmdSetViewportWithCountEXT) {
       if (!std::strcmp("vkCmdSetViewportWithCountEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWithCountEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSetViewportWithCountEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSubpassShadingHUAWEI = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSubpassShadingHUAWEI; };
     if constexpr (HasCmdSubpassShadingHUAWEI) {
       if (!std::strcmp("vkCmdSubpassShadingHUAWEI", name))
-        return (PFN_vkVoidFunction) &wrap_CmdSubpassShadingHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdSubpassShadingHUAWEI<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdTraceRaysIndirect2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysIndirect2KHR; };
     if constexpr (HasCmdTraceRaysIndirect2KHR) {
       if (!std::strcmp("vkCmdTraceRaysIndirect2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysIndirect2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysIndirect2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdTraceRaysIndirectKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysIndirectKHR; };
     if constexpr (HasCmdTraceRaysIndirectKHR) {
       if (!std::strcmp("vkCmdTraceRaysIndirectKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysIndirectKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysIndirectKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdTraceRaysKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysKHR; };
     if constexpr (HasCmdTraceRaysKHR) {
       if (!std::strcmp("vkCmdTraceRaysKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdTraceRaysNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdTraceRaysNV; };
     if constexpr (HasCmdTraceRaysNV) {
       if (!std::strcmp("vkCmdTraceRaysNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdTraceRaysNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdUpdateBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdUpdateBuffer; };
     if constexpr (HasCmdUpdateBuffer) {
       if (!std::strcmp("vkCmdUpdateBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CmdUpdateBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdUpdateBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdUpdatePipelineIndirectBufferNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdUpdatePipelineIndirectBufferNV; };
     if constexpr (HasCmdUpdatePipelineIndirectBufferNV) {
       if (!std::strcmp("vkCmdUpdatePipelineIndirectBufferNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdUpdatePipelineIndirectBufferNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdUpdatePipelineIndirectBufferNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWaitEvents = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWaitEvents; };
     if constexpr (HasCmdWaitEvents) {
       if (!std::strcmp("vkCmdWaitEvents", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWaitEvents2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWaitEvents2; };
     if constexpr (HasCmdWaitEvents2) {
       if (!std::strcmp("vkCmdWaitEvents2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWaitEvents2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWaitEvents2KHR; };
     if constexpr (HasCmdWaitEvents2KHR) {
       if (!std::strcmp("vkCmdWaitEvents2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWaitEvents2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteAccelerationStructuresPropertiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteAccelerationStructuresPropertiesKHR; };
     if constexpr (HasCmdWriteAccelerationStructuresPropertiesKHR) {
       if (!std::strcmp("vkCmdWriteAccelerationStructuresPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteAccelerationStructuresPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteAccelerationStructuresPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteAccelerationStructuresPropertiesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteAccelerationStructuresPropertiesNV; };
     if constexpr (HasCmdWriteAccelerationStructuresPropertiesNV) {
       if (!std::strcmp("vkCmdWriteAccelerationStructuresPropertiesNV", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteAccelerationStructuresPropertiesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteAccelerationStructuresPropertiesNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteBufferMarker2AMD = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteBufferMarker2AMD; };
     if constexpr (HasCmdWriteBufferMarker2AMD) {
       if (!std::strcmp("vkCmdWriteBufferMarker2AMD", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteBufferMarker2AMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteBufferMarker2AMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteBufferMarkerAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteBufferMarkerAMD; };
     if constexpr (HasCmdWriteBufferMarkerAMD) {
       if (!std::strcmp("vkCmdWriteBufferMarkerAMD", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteBufferMarkerAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteBufferMarkerAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteMicromapsPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteMicromapsPropertiesEXT; };
     if constexpr (HasCmdWriteMicromapsPropertiesEXT) {
       if (!std::strcmp("vkCmdWriteMicromapsPropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteMicromapsPropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteMicromapsPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteTimestamp = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteTimestamp; };
     if constexpr (HasCmdWriteTimestamp) {
       if (!std::strcmp("vkCmdWriteTimestamp", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteTimestamp2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteTimestamp2; };
     if constexpr (HasCmdWriteTimestamp2) {
       if (!std::strcmp("vkCmdWriteTimestamp2", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdWriteTimestamp2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdWriteTimestamp2KHR; };
     if constexpr (HasCmdWriteTimestamp2KHR) {
       if (!std::strcmp("vkCmdWriteTimestamp2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CmdWriteTimestamp2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCompileDeferredNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CompileDeferredNV; };
     if constexpr (HasCompileDeferredNV) {
       if (!std::strcmp("vkCompileDeferredNV", name))
-        return (PFN_vkVoidFunction) &wrap_CompileDeferredNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CompileDeferredNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasConvertCooperativeVectorMatrixNV = requires(const DeviceOverrides& t) { &DeviceOverrides::ConvertCooperativeVectorMatrixNV; };
     if constexpr (HasConvertCooperativeVectorMatrixNV) {
       if (!std::strcmp("vkConvertCooperativeVectorMatrixNV", name))
-        return (PFN_vkVoidFunction) &wrap_ConvertCooperativeVectorMatrixNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ConvertCooperativeVectorMatrixNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyAccelerationStructureKHR; };
     if constexpr (HasCopyAccelerationStructureKHR) {
       if (!std::strcmp("vkCopyAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CopyAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyAccelerationStructureToMemoryKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyAccelerationStructureToMemoryKHR; };
     if constexpr (HasCopyAccelerationStructureToMemoryKHR) {
       if (!std::strcmp("vkCopyAccelerationStructureToMemoryKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CopyAccelerationStructureToMemoryKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyAccelerationStructureToMemoryKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyImageToImageEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToImageEXT; };
     if constexpr (HasCopyImageToImageEXT) {
       if (!std::strcmp("vkCopyImageToImageEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyImageToImageEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyImageToImageEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyImageToMemoryEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToMemoryEXT; };
     if constexpr (HasCopyImageToMemoryEXT) {
       if (!std::strcmp("vkCopyImageToMemoryEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyImageToMemoryEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyImageToMemoryEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMemoryToAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMemoryToAccelerationStructureKHR; };
     if constexpr (HasCopyMemoryToAccelerationStructureKHR) {
       if (!std::strcmp("vkCopyMemoryToAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CopyMemoryToAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyMemoryToAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMemoryToImageEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMemoryToImageEXT; };
     if constexpr (HasCopyMemoryToImageEXT) {
       if (!std::strcmp("vkCopyMemoryToImageEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyMemoryToImageEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyMemoryToImageEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMemoryToMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMemoryToMicromapEXT; };
     if constexpr (HasCopyMemoryToMicromapEXT) {
       if (!std::strcmp("vkCopyMemoryToMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyMemoryToMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyMemoryToMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMicromapEXT; };
     if constexpr (HasCopyMicromapEXT) {
       if (!std::strcmp("vkCopyMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMicromapToMemoryEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMicromapToMemoryEXT; };
     if constexpr (HasCopyMicromapToMemoryEXT) {
       if (!std::strcmp("vkCopyMicromapToMemoryEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CopyMicromapToMemoryEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CopyMicromapToMemoryEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateAccelerationStructureKHR; };
     if constexpr (HasCreateAccelerationStructureKHR) {
       if (!std::strcmp("vkCreateAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateAccelerationStructureNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateAccelerationStructureNV; };
     if constexpr (HasCreateAccelerationStructureNV) {
       if (!std::strcmp("vkCreateAccelerationStructureNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateAccelerationStructureNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateAccelerationStructureNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateBuffer; };
     if constexpr (HasCreateBuffer) {
       if (!std::strcmp("vkCreateBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CreateBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
     constexpr bool HasCreateBufferCollectionFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateBufferCollectionFUCHSIA; };
     if constexpr (HasCreateBufferCollectionFUCHSIA) {
       if (!std::strcmp("vkCreateBufferCollectionFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_CreateBufferCollectionFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateBufferCollectionFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateBufferView = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateBufferView; };
     if constexpr (HasCreateBufferView) {
       if (!std::strcmp("vkCreateBufferView", name))
-        return (PFN_vkVoidFunction) &wrap_CreateBufferView<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateBufferView<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateCommandPool = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateCommandPool; };
     if constexpr (HasCreateCommandPool) {
       if (!std::strcmp("vkCreateCommandPool", name))
-        return (PFN_vkVoidFunction) &wrap_CreateCommandPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateCommandPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateComputePipelines = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateComputePipelines; };
     if constexpr (HasCreateComputePipelines) {
       if (!std::strcmp("vkCreateComputePipelines", name))
-        return (PFN_vkVoidFunction) &wrap_CreateComputePipelines<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateComputePipelines<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasCreateCudaFunctionNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateCudaFunctionNV; };
     if constexpr (HasCreateCudaFunctionNV) {
       if (!std::strcmp("vkCreateCudaFunctionNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateCudaFunctionNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateCudaFunctionNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -9429,337 +9937,337 @@ namespace vkroots {
     constexpr bool HasCreateCudaModuleNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateCudaModuleNV; };
     if constexpr (HasCreateCudaModuleNV) {
       if (!std::strcmp("vkCreateCudaModuleNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateCudaModuleNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateCudaModuleNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateDataGraphPipelineSessionARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDataGraphPipelineSessionARM; };
     if constexpr (HasCreateDataGraphPipelineSessionARM) {
       if (!std::strcmp("vkCreateDataGraphPipelineSessionARM", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDataGraphPipelineSessionARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDataGraphPipelineSessionARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDataGraphPipelinesARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDataGraphPipelinesARM; };
     if constexpr (HasCreateDataGraphPipelinesARM) {
       if (!std::strcmp("vkCreateDataGraphPipelinesARM", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDataGraphPipelinesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDataGraphPipelinesARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDeferredOperationKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDeferredOperationKHR; };
     if constexpr (HasCreateDeferredOperationKHR) {
       if (!std::strcmp("vkCreateDeferredOperationKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDeferredOperationKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDeferredOperationKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDescriptorPool = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDescriptorPool; };
     if constexpr (HasCreateDescriptorPool) {
       if (!std::strcmp("vkCreateDescriptorPool", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDescriptorPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDescriptorPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDescriptorSetLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDescriptorSetLayout; };
     if constexpr (HasCreateDescriptorSetLayout) {
       if (!std::strcmp("vkCreateDescriptorSetLayout", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDescriptorSetLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDescriptorSetLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDescriptorUpdateTemplate = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDescriptorUpdateTemplate; };
     if constexpr (HasCreateDescriptorUpdateTemplate) {
       if (!std::strcmp("vkCreateDescriptorUpdateTemplate", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDescriptorUpdateTemplate<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDescriptorUpdateTemplate<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateDescriptorUpdateTemplateKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateDescriptorUpdateTemplateKHR; };
     if constexpr (HasCreateDescriptorUpdateTemplateKHR) {
       if (!std::strcmp("vkCreateDescriptorUpdateTemplateKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateDescriptorUpdateTemplateKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateDescriptorUpdateTemplateKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateEvent; };
     if constexpr (HasCreateEvent) {
       if (!std::strcmp("vkCreateEvent", name))
-        return (PFN_vkVoidFunction) &wrap_CreateEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateEvent<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasCreateExecutionGraphPipelinesAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateExecutionGraphPipelinesAMDX; };
     if constexpr (HasCreateExecutionGraphPipelinesAMDX) {
       if (!std::strcmp("vkCreateExecutionGraphPipelinesAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_CreateExecutionGraphPipelinesAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateExecutionGraphPipelinesAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasCreateExternalComputeQueueNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateExternalComputeQueueNV; };
     if constexpr (HasCreateExternalComputeQueueNV) {
       if (!std::strcmp("vkCreateExternalComputeQueueNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateExternalComputeQueueNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateExternalComputeQueueNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateFence = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateFence; };
     if constexpr (HasCreateFence) {
       if (!std::strcmp("vkCreateFence", name))
-        return (PFN_vkVoidFunction) &wrap_CreateFence<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateFence<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateFramebuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateFramebuffer; };
     if constexpr (HasCreateFramebuffer) {
       if (!std::strcmp("vkCreateFramebuffer", name))
-        return (PFN_vkVoidFunction) &wrap_CreateFramebuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateFramebuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateGraphicsPipelines = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateGraphicsPipelines; };
     if constexpr (HasCreateGraphicsPipelines) {
       if (!std::strcmp("vkCreateGraphicsPipelines", name))
-        return (PFN_vkVoidFunction) &wrap_CreateGraphicsPipelines<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateGraphicsPipelines<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateImage; };
     if constexpr (HasCreateImage) {
       if (!std::strcmp("vkCreateImage", name))
-        return (PFN_vkVoidFunction) &wrap_CreateImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateImageView = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateImageView; };
     if constexpr (HasCreateImageView) {
       if (!std::strcmp("vkCreateImageView", name))
-        return (PFN_vkVoidFunction) &wrap_CreateImageView<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateImageView<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateIndirectCommandsLayoutEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateIndirectCommandsLayoutEXT; };
     if constexpr (HasCreateIndirectCommandsLayoutEXT) {
       if (!std::strcmp("vkCreateIndirectCommandsLayoutEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateIndirectCommandsLayoutEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateIndirectCommandsLayoutEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateIndirectCommandsLayoutNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateIndirectCommandsLayoutNV; };
     if constexpr (HasCreateIndirectCommandsLayoutNV) {
       if (!std::strcmp("vkCreateIndirectCommandsLayoutNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateIndirectCommandsLayoutNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateIndirectCommandsLayoutNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateIndirectExecutionSetEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateIndirectExecutionSetEXT; };
     if constexpr (HasCreateIndirectExecutionSetEXT) {
       if (!std::strcmp("vkCreateIndirectExecutionSetEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateIndirectExecutionSetEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateIndirectExecutionSetEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateMicromapEXT; };
     if constexpr (HasCreateMicromapEXT) {
       if (!std::strcmp("vkCreateMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateOpticalFlowSessionNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateOpticalFlowSessionNV; };
     if constexpr (HasCreateOpticalFlowSessionNV) {
       if (!std::strcmp("vkCreateOpticalFlowSessionNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateOpticalFlowSessionNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateOpticalFlowSessionNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreatePipelineBinariesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreatePipelineBinariesKHR; };
     if constexpr (HasCreatePipelineBinariesKHR) {
       if (!std::strcmp("vkCreatePipelineBinariesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreatePipelineBinariesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreatePipelineBinariesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreatePipelineCache = requires(const DeviceOverrides& t) { &DeviceOverrides::CreatePipelineCache; };
     if constexpr (HasCreatePipelineCache) {
       if (!std::strcmp("vkCreatePipelineCache", name))
-        return (PFN_vkVoidFunction) &wrap_CreatePipelineCache<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreatePipelineCache<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreatePipelineLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::CreatePipelineLayout; };
     if constexpr (HasCreatePipelineLayout) {
       if (!std::strcmp("vkCreatePipelineLayout", name))
-        return (PFN_vkVoidFunction) &wrap_CreatePipelineLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreatePipelineLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreatePrivateDataSlot = requires(const DeviceOverrides& t) { &DeviceOverrides::CreatePrivateDataSlot; };
     if constexpr (HasCreatePrivateDataSlot) {
       if (!std::strcmp("vkCreatePrivateDataSlot", name))
-        return (PFN_vkVoidFunction) &wrap_CreatePrivateDataSlot<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreatePrivateDataSlot<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreatePrivateDataSlotEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreatePrivateDataSlotEXT; };
     if constexpr (HasCreatePrivateDataSlotEXT) {
       if (!std::strcmp("vkCreatePrivateDataSlotEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreatePrivateDataSlotEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreatePrivateDataSlotEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateQueryPool = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateQueryPool; };
     if constexpr (HasCreateQueryPool) {
       if (!std::strcmp("vkCreateQueryPool", name))
-        return (PFN_vkVoidFunction) &wrap_CreateQueryPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateQueryPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateRayTracingPipelinesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateRayTracingPipelinesKHR; };
     if constexpr (HasCreateRayTracingPipelinesKHR) {
       if (!std::strcmp("vkCreateRayTracingPipelinesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateRayTracingPipelinesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateRayTracingPipelinesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateRayTracingPipelinesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateRayTracingPipelinesNV; };
     if constexpr (HasCreateRayTracingPipelinesNV) {
       if (!std::strcmp("vkCreateRayTracingPipelinesNV", name))
-        return (PFN_vkVoidFunction) &wrap_CreateRayTracingPipelinesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateRayTracingPipelinesNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateRenderPass = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateRenderPass; };
     if constexpr (HasCreateRenderPass) {
       if (!std::strcmp("vkCreateRenderPass", name))
-        return (PFN_vkVoidFunction) &wrap_CreateRenderPass<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateRenderPass<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateRenderPass2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateRenderPass2; };
     if constexpr (HasCreateRenderPass2) {
       if (!std::strcmp("vkCreateRenderPass2", name))
-        return (PFN_vkVoidFunction) &wrap_CreateRenderPass2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateRenderPass2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateRenderPass2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateRenderPass2KHR; };
     if constexpr (HasCreateRenderPass2KHR) {
       if (!std::strcmp("vkCreateRenderPass2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateRenderPass2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateRenderPass2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSampler = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSampler; };
     if constexpr (HasCreateSampler) {
       if (!std::strcmp("vkCreateSampler", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSampler<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSampler<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSamplerYcbcrConversion = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSamplerYcbcrConversion; };
     if constexpr (HasCreateSamplerYcbcrConversion) {
       if (!std::strcmp("vkCreateSamplerYcbcrConversion", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSamplerYcbcrConversion<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSamplerYcbcrConversion<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSamplerYcbcrConversionKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSamplerYcbcrConversionKHR; };
     if constexpr (HasCreateSamplerYcbcrConversionKHR) {
       if (!std::strcmp("vkCreateSamplerYcbcrConversionKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSamplerYcbcrConversionKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSamplerYcbcrConversionKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSemaphore = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSemaphore; };
     if constexpr (HasCreateSemaphore) {
       if (!std::strcmp("vkCreateSemaphore", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSemaphore<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSemaphore<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateShaderModule = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateShaderModule; };
     if constexpr (HasCreateShaderModule) {
       if (!std::strcmp("vkCreateShaderModule", name))
-        return (PFN_vkVoidFunction) &wrap_CreateShaderModule<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateShaderModule<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateShadersEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateShadersEXT; };
     if constexpr (HasCreateShadersEXT) {
       if (!std::strcmp("vkCreateShadersEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateShadersEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateShadersEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSharedSwapchainsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSharedSwapchainsKHR; };
     if constexpr (HasCreateSharedSwapchainsKHR) {
       if (!std::strcmp("vkCreateSharedSwapchainsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSharedSwapchainsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSharedSwapchainsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateSwapchainKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateSwapchainKHR; };
     if constexpr (HasCreateSwapchainKHR) {
       if (!std::strcmp("vkCreateSwapchainKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateSwapchainKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateSwapchainKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateTensorARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateTensorARM; };
     if constexpr (HasCreateTensorARM) {
       if (!std::strcmp("vkCreateTensorARM", name))
-        return (PFN_vkVoidFunction) &wrap_CreateTensorARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateTensorARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateTensorViewARM = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateTensorViewARM; };
     if constexpr (HasCreateTensorViewARM) {
       if (!std::strcmp("vkCreateTensorViewARM", name))
-        return (PFN_vkVoidFunction) &wrap_CreateTensorViewARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateTensorViewARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateValidationCacheEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateValidationCacheEXT; };
     if constexpr (HasCreateValidationCacheEXT) {
       if (!std::strcmp("vkCreateValidationCacheEXT", name))
-        return (PFN_vkVoidFunction) &wrap_CreateValidationCacheEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateValidationCacheEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateVideoSessionKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateVideoSessionKHR; };
     if constexpr (HasCreateVideoSessionKHR) {
       if (!std::strcmp("vkCreateVideoSessionKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateVideoSessionKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateVideoSessionKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCreateVideoSessionParametersKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CreateVideoSessionParametersKHR; };
     if constexpr (HasCreateVideoSessionParametersKHR) {
       if (!std::strcmp("vkCreateVideoSessionParametersKHR", name))
-        return (PFN_vkVoidFunction) &wrap_CreateVideoSessionParametersKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_CreateVideoSessionParametersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDebugMarkerSetObjectNameEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DebugMarkerSetObjectNameEXT; };
     if constexpr (HasDebugMarkerSetObjectNameEXT) {
       if (!std::strcmp("vkDebugMarkerSetObjectNameEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DebugMarkerSetObjectNameEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DebugMarkerSetObjectNameEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDebugMarkerSetObjectTagEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DebugMarkerSetObjectTagEXT; };
     if constexpr (HasDebugMarkerSetObjectTagEXT) {
       if (!std::strcmp("vkDebugMarkerSetObjectTagEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DebugMarkerSetObjectTagEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DebugMarkerSetObjectTagEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDeferredOperationJoinKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DeferredOperationJoinKHR; };
     if constexpr (HasDeferredOperationJoinKHR) {
       if (!std::strcmp("vkDeferredOperationJoinKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DeferredOperationJoinKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DeferredOperationJoinKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyAccelerationStructureKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyAccelerationStructureKHR; };
     if constexpr (HasDestroyAccelerationStructureKHR) {
       if (!std::strcmp("vkDestroyAccelerationStructureKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyAccelerationStructureKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyAccelerationStructureNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyAccelerationStructureNV; };
     if constexpr (HasDestroyAccelerationStructureNV) {
       if (!std::strcmp("vkDestroyAccelerationStructureNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyAccelerationStructureNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyAccelerationStructureNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyBuffer; };
     if constexpr (HasDestroyBuffer) {
       if (!std::strcmp("vkDestroyBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
     constexpr bool HasDestroyBufferCollectionFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyBufferCollectionFUCHSIA; };
     if constexpr (HasDestroyBufferCollectionFUCHSIA) {
       if (!std::strcmp("vkDestroyBufferCollectionFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyBufferCollectionFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyBufferCollectionFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasDestroyBufferView = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyBufferView; };
     if constexpr (HasDestroyBufferView) {
       if (!std::strcmp("vkDestroyBufferView", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyBufferView<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyBufferView<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyCommandPool = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyCommandPool; };
     if constexpr (HasDestroyCommandPool) {
       if (!std::strcmp("vkDestroyCommandPool", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyCommandPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyCommandPool<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasDestroyCudaFunctionNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyCudaFunctionNV; };
     if constexpr (HasDestroyCudaFunctionNV) {
       if (!std::strcmp("vkDestroyCudaFunctionNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyCudaFunctionNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyCudaFunctionNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -9767,50 +10275,50 @@ namespace vkroots {
     constexpr bool HasDestroyCudaModuleNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyCudaModuleNV; };
     if constexpr (HasDestroyCudaModuleNV) {
       if (!std::strcmp("vkDestroyCudaModuleNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyCudaModuleNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyCudaModuleNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasDestroyDataGraphPipelineSessionARM = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDataGraphPipelineSessionARM; };
     if constexpr (HasDestroyDataGraphPipelineSessionARM) {
       if (!std::strcmp("vkDestroyDataGraphPipelineSessionARM", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDataGraphPipelineSessionARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDataGraphPipelineSessionARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDeferredOperationKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDeferredOperationKHR; };
     if constexpr (HasDestroyDeferredOperationKHR) {
       if (!std::strcmp("vkDestroyDeferredOperationKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDeferredOperationKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDeferredOperationKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDescriptorPool = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDescriptorPool; };
     if constexpr (HasDestroyDescriptorPool) {
       if (!std::strcmp("vkDestroyDescriptorPool", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDescriptorSetLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDescriptorSetLayout; };
     if constexpr (HasDestroyDescriptorSetLayout) {
       if (!std::strcmp("vkDestroyDescriptorSetLayout", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorSetLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorSetLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDescriptorUpdateTemplate = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDescriptorUpdateTemplate; };
     if constexpr (HasDestroyDescriptorUpdateTemplate) {
       if (!std::strcmp("vkDestroyDescriptorUpdateTemplate", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorUpdateTemplate<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorUpdateTemplate<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDescriptorUpdateTemplateKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDescriptorUpdateTemplateKHR; };
     if constexpr (HasDestroyDescriptorUpdateTemplateKHR) {
       if (!std::strcmp("vkDestroyDescriptorUpdateTemplateKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorUpdateTemplateKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDescriptorUpdateTemplateKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyDevice = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyDevice; };
     if constexpr (HasDestroyDevice) {
       if (!std::strcmp("vkDestroyDevice", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyDevice<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyDevice<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::strcmp("vkDestroyDevice", name))
@@ -9820,225 +10328,225 @@ namespace vkroots {
     constexpr bool HasDestroyEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyEvent; };
     if constexpr (HasDestroyEvent) {
       if (!std::strcmp("vkDestroyEvent", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyEvent<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyExternalComputeQueueNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyExternalComputeQueueNV; };
     if constexpr (HasDestroyExternalComputeQueueNV) {
       if (!std::strcmp("vkDestroyExternalComputeQueueNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyExternalComputeQueueNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyExternalComputeQueueNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyFence = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyFence; };
     if constexpr (HasDestroyFence) {
       if (!std::strcmp("vkDestroyFence", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyFence<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyFence<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyFramebuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyFramebuffer; };
     if constexpr (HasDestroyFramebuffer) {
       if (!std::strcmp("vkDestroyFramebuffer", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyFramebuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyFramebuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyImage = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyImage; };
     if constexpr (HasDestroyImage) {
       if (!std::strcmp("vkDestroyImage", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyImage<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyImageView = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyImageView; };
     if constexpr (HasDestroyImageView) {
       if (!std::strcmp("vkDestroyImageView", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyImageView<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyImageView<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyIndirectCommandsLayoutEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyIndirectCommandsLayoutEXT; };
     if constexpr (HasDestroyIndirectCommandsLayoutEXT) {
       if (!std::strcmp("vkDestroyIndirectCommandsLayoutEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyIndirectCommandsLayoutEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyIndirectCommandsLayoutEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyIndirectCommandsLayoutNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyIndirectCommandsLayoutNV; };
     if constexpr (HasDestroyIndirectCommandsLayoutNV) {
       if (!std::strcmp("vkDestroyIndirectCommandsLayoutNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyIndirectCommandsLayoutNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyIndirectCommandsLayoutNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyIndirectExecutionSetEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyIndirectExecutionSetEXT; };
     if constexpr (HasDestroyIndirectExecutionSetEXT) {
       if (!std::strcmp("vkDestroyIndirectExecutionSetEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyIndirectExecutionSetEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyIndirectExecutionSetEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyMicromapEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyMicromapEXT; };
     if constexpr (HasDestroyMicromapEXT) {
       if (!std::strcmp("vkDestroyMicromapEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyMicromapEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyMicromapEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyOpticalFlowSessionNV = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyOpticalFlowSessionNV; };
     if constexpr (HasDestroyOpticalFlowSessionNV) {
       if (!std::strcmp("vkDestroyOpticalFlowSessionNV", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyOpticalFlowSessionNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyOpticalFlowSessionNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPipeline = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPipeline; };
     if constexpr (HasDestroyPipeline) {
       if (!std::strcmp("vkDestroyPipeline", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPipeline<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPipeline<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPipelineBinaryKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPipelineBinaryKHR; };
     if constexpr (HasDestroyPipelineBinaryKHR) {
       if (!std::strcmp("vkDestroyPipelineBinaryKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPipelineBinaryKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPipelineBinaryKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPipelineCache = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPipelineCache; };
     if constexpr (HasDestroyPipelineCache) {
       if (!std::strcmp("vkDestroyPipelineCache", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPipelineCache<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPipelineCache<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPipelineLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPipelineLayout; };
     if constexpr (HasDestroyPipelineLayout) {
       if (!std::strcmp("vkDestroyPipelineLayout", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPipelineLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPipelineLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPrivateDataSlot = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPrivateDataSlot; };
     if constexpr (HasDestroyPrivateDataSlot) {
       if (!std::strcmp("vkDestroyPrivateDataSlot", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPrivateDataSlot<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPrivateDataSlot<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyPrivateDataSlotEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyPrivateDataSlotEXT; };
     if constexpr (HasDestroyPrivateDataSlotEXT) {
       if (!std::strcmp("vkDestroyPrivateDataSlotEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyPrivateDataSlotEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyPrivateDataSlotEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyQueryPool = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyQueryPool; };
     if constexpr (HasDestroyQueryPool) {
       if (!std::strcmp("vkDestroyQueryPool", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyQueryPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyQueryPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyRenderPass = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyRenderPass; };
     if constexpr (HasDestroyRenderPass) {
       if (!std::strcmp("vkDestroyRenderPass", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyRenderPass<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyRenderPass<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySampler = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroySampler; };
     if constexpr (HasDestroySampler) {
       if (!std::strcmp("vkDestroySampler", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySampler<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySampler<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySamplerYcbcrConversion = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroySamplerYcbcrConversion; };
     if constexpr (HasDestroySamplerYcbcrConversion) {
       if (!std::strcmp("vkDestroySamplerYcbcrConversion", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySamplerYcbcrConversion<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySamplerYcbcrConversion<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySamplerYcbcrConversionKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroySamplerYcbcrConversionKHR; };
     if constexpr (HasDestroySamplerYcbcrConversionKHR) {
       if (!std::strcmp("vkDestroySamplerYcbcrConversionKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySamplerYcbcrConversionKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySamplerYcbcrConversionKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySemaphore = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroySemaphore; };
     if constexpr (HasDestroySemaphore) {
       if (!std::strcmp("vkDestroySemaphore", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySemaphore<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySemaphore<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyShaderEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyShaderEXT; };
     if constexpr (HasDestroyShaderEXT) {
       if (!std::strcmp("vkDestroyShaderEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyShaderEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyShaderEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyShaderModule = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyShaderModule; };
     if constexpr (HasDestroyShaderModule) {
       if (!std::strcmp("vkDestroyShaderModule", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyShaderModule<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyShaderModule<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroySwapchainKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroySwapchainKHR; };
     if constexpr (HasDestroySwapchainKHR) {
       if (!std::strcmp("vkDestroySwapchainKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroySwapchainKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroySwapchainKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyTensorARM = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyTensorARM; };
     if constexpr (HasDestroyTensorARM) {
       if (!std::strcmp("vkDestroyTensorARM", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyTensorARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyTensorARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyTensorViewARM = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyTensorViewARM; };
     if constexpr (HasDestroyTensorViewARM) {
       if (!std::strcmp("vkDestroyTensorViewARM", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyTensorViewARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyTensorViewARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyValidationCacheEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyValidationCacheEXT; };
     if constexpr (HasDestroyValidationCacheEXT) {
       if (!std::strcmp("vkDestroyValidationCacheEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyValidationCacheEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyValidationCacheEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyVideoSessionKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyVideoSessionKHR; };
     if constexpr (HasDestroyVideoSessionKHR) {
       if (!std::strcmp("vkDestroyVideoSessionKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyVideoSessionKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyVideoSessionKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDestroyVideoSessionParametersKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::DestroyVideoSessionParametersKHR; };
     if constexpr (HasDestroyVideoSessionParametersKHR) {
       if (!std::strcmp("vkDestroyVideoSessionParametersKHR", name))
-        return (PFN_vkVoidFunction) &wrap_DestroyVideoSessionParametersKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DestroyVideoSessionParametersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDeviceWaitIdle = requires(const DeviceOverrides& t) { &DeviceOverrides::DeviceWaitIdle; };
     if constexpr (HasDeviceWaitIdle) {
       if (!std::strcmp("vkDeviceWaitIdle", name))
-        return (PFN_vkVoidFunction) &wrap_DeviceWaitIdle<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DeviceWaitIdle<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasDisplayPowerControlEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::DisplayPowerControlEXT; };
     if constexpr (HasDisplayPowerControlEXT) {
       if (!std::strcmp("vkDisplayPowerControlEXT", name))
-        return (PFN_vkVoidFunction) &wrap_DisplayPowerControlEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_DisplayPowerControlEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEndCommandBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::EndCommandBuffer; };
     if constexpr (HasEndCommandBuffer) {
       if (!std::strcmp("vkEndCommandBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_EndCommandBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_EndCommandBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT
     constexpr bool HasExportMetalObjectsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::ExportMetalObjectsEXT; };
     if constexpr (HasExportMetalObjectsEXT) {
       if (!std::strcmp("vkExportMetalObjectsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_ExportMetalObjectsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ExportMetalObjectsEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasFlushMappedMemoryRanges = requires(const DeviceOverrides& t) { &DeviceOverrides::FlushMappedMemoryRanges; };
     if constexpr (HasFlushMappedMemoryRanges) {
       if (!std::strcmp("vkFlushMappedMemoryRanges", name))
-        return (PFN_vkVoidFunction) &wrap_FlushMappedMemoryRanges<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_FlushMappedMemoryRanges<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasFreeCommandBuffers = requires(const DeviceOverrides& t) { &DeviceOverrides::FreeCommandBuffers; };
     if constexpr (HasFreeCommandBuffers) {
       if (!std::strcmp("vkFreeCommandBuffers", name))
-        return (PFN_vkVoidFunction) &wrap_FreeCommandBuffers<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_FreeCommandBuffers<InstanceOverrides, DeviceOverrides>;
     }
     else {
       if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp("vkFreeCommandBuffers", name))
@@ -10048,50 +10556,50 @@ namespace vkroots {
     constexpr bool HasFreeDescriptorSets = requires(const DeviceOverrides& t) { &DeviceOverrides::FreeDescriptorSets; };
     if constexpr (HasFreeDescriptorSets) {
       if (!std::strcmp("vkFreeDescriptorSets", name))
-        return (PFN_vkVoidFunction) &wrap_FreeDescriptorSets<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_FreeDescriptorSets<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasFreeMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::FreeMemory; };
     if constexpr (HasFreeMemory) {
       if (!std::strcmp("vkFreeMemory", name))
-        return (PFN_vkVoidFunction) &wrap_FreeMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_FreeMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetAccelerationStructureBuildSizesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAccelerationStructureBuildSizesKHR; };
     if constexpr (HasGetAccelerationStructureBuildSizesKHR) {
       if (!std::strcmp("vkGetAccelerationStructureBuildSizesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureBuildSizesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureBuildSizesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetAccelerationStructureDeviceAddressKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAccelerationStructureDeviceAddressKHR; };
     if constexpr (HasGetAccelerationStructureDeviceAddressKHR) {
       if (!std::strcmp("vkGetAccelerationStructureDeviceAddressKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureDeviceAddressKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureDeviceAddressKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetAccelerationStructureHandleNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAccelerationStructureHandleNV; };
     if constexpr (HasGetAccelerationStructureHandleNV) {
       if (!std::strcmp("vkGetAccelerationStructureHandleNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureHandleNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureHandleNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetAccelerationStructureMemoryRequirementsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAccelerationStructureMemoryRequirementsNV; };
     if constexpr (HasGetAccelerationStructureMemoryRequirementsNV) {
       if (!std::strcmp("vkGetAccelerationStructureMemoryRequirementsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureMemoryRequirementsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureMemoryRequirementsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetAccelerationStructureOpaqueCaptureDescriptorDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAccelerationStructureOpaqueCaptureDescriptorDataEXT; };
     if constexpr (HasGetAccelerationStructureOpaqueCaptureDescriptorDataEXT) {
       if (!std::strcmp("vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureOpaqueCaptureDescriptorDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAccelerationStructureOpaqueCaptureDescriptorDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     constexpr bool HasGetAndroidHardwareBufferPropertiesANDROID = requires(const DeviceOverrides& t) { &DeviceOverrides::GetAndroidHardwareBufferPropertiesANDROID; };
     if constexpr (HasGetAndroidHardwareBufferPropertiesANDROID) {
       if (!std::strcmp("vkGetAndroidHardwareBufferPropertiesANDROID", name))
-        return (PFN_vkVoidFunction) &wrap_GetAndroidHardwareBufferPropertiesANDROID<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetAndroidHardwareBufferPropertiesANDROID<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10099,328 +10607,328 @@ namespace vkroots {
     constexpr bool HasGetBufferCollectionPropertiesFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferCollectionPropertiesFUCHSIA; };
     if constexpr (HasGetBufferCollectionPropertiesFUCHSIA) {
       if (!std::strcmp("vkGetBufferCollectionPropertiesFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferCollectionPropertiesFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferCollectionPropertiesFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetBufferDeviceAddress = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferDeviceAddress; };
     if constexpr (HasGetBufferDeviceAddress) {
       if (!std::strcmp("vkGetBufferDeviceAddress", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddress<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddress<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferDeviceAddressEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferDeviceAddressEXT; };
     if constexpr (HasGetBufferDeviceAddressEXT) {
       if (!std::strcmp("vkGetBufferDeviceAddressEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddressEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddressEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferDeviceAddressKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferDeviceAddressKHR; };
     if constexpr (HasGetBufferDeviceAddressKHR) {
       if (!std::strcmp("vkGetBufferDeviceAddressKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddressKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferDeviceAddressKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferMemoryRequirements; };
     if constexpr (HasGetBufferMemoryRequirements) {
       if (!std::strcmp("vkGetBufferMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferMemoryRequirements2 = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferMemoryRequirements2; };
     if constexpr (HasGetBufferMemoryRequirements2) {
       if (!std::strcmp("vkGetBufferMemoryRequirements2", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferMemoryRequirements2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferMemoryRequirements2KHR; };
     if constexpr (HasGetBufferMemoryRequirements2KHR) {
       if (!std::strcmp("vkGetBufferMemoryRequirements2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferMemoryRequirements2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferOpaqueCaptureAddress = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferOpaqueCaptureAddress; };
     if constexpr (HasGetBufferOpaqueCaptureAddress) {
       if (!std::strcmp("vkGetBufferOpaqueCaptureAddress", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureAddress<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureAddress<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferOpaqueCaptureAddressKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferOpaqueCaptureAddressKHR; };
     if constexpr (HasGetBufferOpaqueCaptureAddressKHR) {
       if (!std::strcmp("vkGetBufferOpaqueCaptureAddressKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureAddressKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureAddressKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetBufferOpaqueCaptureDescriptorDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetBufferOpaqueCaptureDescriptorDataEXT; };
     if constexpr (HasGetBufferOpaqueCaptureDescriptorDataEXT) {
       if (!std::strcmp("vkGetBufferOpaqueCaptureDescriptorDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureDescriptorDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetBufferOpaqueCaptureDescriptorDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetCalibratedTimestampsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetCalibratedTimestampsEXT; };
     if constexpr (HasGetCalibratedTimestampsEXT) {
       if (!std::strcmp("vkGetCalibratedTimestampsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetCalibratedTimestampsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetCalibratedTimestampsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetCalibratedTimestampsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetCalibratedTimestampsKHR; };
     if constexpr (HasGetCalibratedTimestampsKHR) {
       if (!std::strcmp("vkGetCalibratedTimestampsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetCalibratedTimestampsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetCalibratedTimestampsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetClusterAccelerationStructureBuildSizesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetClusterAccelerationStructureBuildSizesNV; };
     if constexpr (HasGetClusterAccelerationStructureBuildSizesNV) {
       if (!std::strcmp("vkGetClusterAccelerationStructureBuildSizesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetClusterAccelerationStructureBuildSizesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetClusterAccelerationStructureBuildSizesNV<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasGetCudaModuleCacheNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetCudaModuleCacheNV; };
     if constexpr (HasGetCudaModuleCacheNV) {
       if (!std::strcmp("vkGetCudaModuleCacheNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetCudaModuleCacheNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetCudaModuleCacheNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetDataGraphPipelineAvailablePropertiesARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDataGraphPipelineAvailablePropertiesARM; };
     if constexpr (HasGetDataGraphPipelineAvailablePropertiesARM) {
       if (!std::strcmp("vkGetDataGraphPipelineAvailablePropertiesARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineAvailablePropertiesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineAvailablePropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDataGraphPipelinePropertiesARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDataGraphPipelinePropertiesARM; };
     if constexpr (HasGetDataGraphPipelinePropertiesARM) {
       if (!std::strcmp("vkGetDataGraphPipelinePropertiesARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelinePropertiesARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelinePropertiesARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDataGraphPipelineSessionBindPointRequirementsARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDataGraphPipelineSessionBindPointRequirementsARM; };
     if constexpr (HasGetDataGraphPipelineSessionBindPointRequirementsARM) {
       if (!std::strcmp("vkGetDataGraphPipelineSessionBindPointRequirementsARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineSessionBindPointRequirementsARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineSessionBindPointRequirementsARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDataGraphPipelineSessionMemoryRequirementsARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDataGraphPipelineSessionMemoryRequirementsARM; };
     if constexpr (HasGetDataGraphPipelineSessionMemoryRequirementsARM) {
       if (!std::strcmp("vkGetDataGraphPipelineSessionMemoryRequirementsARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineSessionMemoryRequirementsARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDataGraphPipelineSessionMemoryRequirementsARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeferredOperationMaxConcurrencyKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeferredOperationMaxConcurrencyKHR; };
     if constexpr (HasGetDeferredOperationMaxConcurrencyKHR) {
       if (!std::strcmp("vkGetDeferredOperationMaxConcurrencyKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeferredOperationMaxConcurrencyKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeferredOperationMaxConcurrencyKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeferredOperationResultKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeferredOperationResultKHR; };
     if constexpr (HasGetDeferredOperationResultKHR) {
       if (!std::strcmp("vkGetDeferredOperationResultKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeferredOperationResultKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeferredOperationResultKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorEXT; };
     if constexpr (HasGetDescriptorEXT) {
       if (!std::strcmp("vkGetDescriptorEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetHostMappingVALVE = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetHostMappingVALVE; };
     if constexpr (HasGetDescriptorSetHostMappingVALVE) {
       if (!std::strcmp("vkGetDescriptorSetHostMappingVALVE", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetHostMappingVALVE<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetHostMappingVALVE<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetLayoutBindingOffsetEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetLayoutBindingOffsetEXT; };
     if constexpr (HasGetDescriptorSetLayoutBindingOffsetEXT) {
       if (!std::strcmp("vkGetDescriptorSetLayoutBindingOffsetEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutBindingOffsetEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutBindingOffsetEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetLayoutHostMappingInfoVALVE = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetLayoutHostMappingInfoVALVE; };
     if constexpr (HasGetDescriptorSetLayoutHostMappingInfoVALVE) {
       if (!std::strcmp("vkGetDescriptorSetLayoutHostMappingInfoVALVE", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutHostMappingInfoVALVE<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutHostMappingInfoVALVE<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetLayoutSizeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetLayoutSizeEXT; };
     if constexpr (HasGetDescriptorSetLayoutSizeEXT) {
       if (!std::strcmp("vkGetDescriptorSetLayoutSizeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSizeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSizeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetLayoutSupport = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetLayoutSupport; };
     if constexpr (HasGetDescriptorSetLayoutSupport) {
       if (!std::strcmp("vkGetDescriptorSetLayoutSupport", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSupport<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSupport<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDescriptorSetLayoutSupportKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDescriptorSetLayoutSupportKHR; };
     if constexpr (HasGetDescriptorSetLayoutSupportKHR) {
       if (!std::strcmp("vkGetDescriptorSetLayoutSupportKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSupportKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDescriptorSetLayoutSupportKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceAccelerationStructureCompatibilityKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceAccelerationStructureCompatibilityKHR; };
     if constexpr (HasGetDeviceAccelerationStructureCompatibilityKHR) {
       if (!std::strcmp("vkGetDeviceAccelerationStructureCompatibilityKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceAccelerationStructureCompatibilityKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceAccelerationStructureCompatibilityKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceBufferMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceBufferMemoryRequirements; };
     if constexpr (HasGetDeviceBufferMemoryRequirements) {
       if (!std::strcmp("vkGetDeviceBufferMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceBufferMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceBufferMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceBufferMemoryRequirementsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceBufferMemoryRequirementsKHR; };
     if constexpr (HasGetDeviceBufferMemoryRequirementsKHR) {
       if (!std::strcmp("vkGetDeviceBufferMemoryRequirementsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceBufferMemoryRequirementsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceBufferMemoryRequirementsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceFaultInfoEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceFaultInfoEXT; };
     if constexpr (HasGetDeviceFaultInfoEXT) {
       if (!std::strcmp("vkGetDeviceFaultInfoEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceFaultInfoEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceFaultInfoEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceGroupPeerMemoryFeatures = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceGroupPeerMemoryFeatures; };
     if constexpr (HasGetDeviceGroupPeerMemoryFeatures) {
       if (!std::strcmp("vkGetDeviceGroupPeerMemoryFeatures", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPeerMemoryFeatures<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPeerMemoryFeatures<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceGroupPeerMemoryFeaturesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceGroupPeerMemoryFeaturesKHR; };
     if constexpr (HasGetDeviceGroupPeerMemoryFeaturesKHR) {
       if (!std::strcmp("vkGetDeviceGroupPeerMemoryFeaturesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPeerMemoryFeaturesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPeerMemoryFeaturesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceGroupPresentCapabilitiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceGroupPresentCapabilitiesKHR; };
     if constexpr (HasGetDeviceGroupPresentCapabilitiesKHR) {
       if (!std::strcmp("vkGetDeviceGroupPresentCapabilitiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPresentCapabilitiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupPresentCapabilitiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasGetDeviceGroupSurfacePresentModes2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceGroupSurfacePresentModes2EXT; };
     if constexpr (HasGetDeviceGroupSurfacePresentModes2EXT) {
       if (!std::strcmp("vkGetDeviceGroupSurfacePresentModes2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupSurfacePresentModes2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupSurfacePresentModes2EXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetDeviceGroupSurfacePresentModesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceGroupSurfacePresentModesKHR; };
     if constexpr (HasGetDeviceGroupSurfacePresentModesKHR) {
       if (!std::strcmp("vkGetDeviceGroupSurfacePresentModesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupSurfacePresentModesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceGroupSurfacePresentModesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceImageMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageMemoryRequirements; };
     if constexpr (HasGetDeviceImageMemoryRequirements) {
       if (!std::strcmp("vkGetDeviceImageMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceImageMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceImageMemoryRequirementsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageMemoryRequirementsKHR; };
     if constexpr (HasGetDeviceImageMemoryRequirementsKHR) {
       if (!std::strcmp("vkGetDeviceImageMemoryRequirementsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceImageMemoryRequirementsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageMemoryRequirementsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceImageSparseMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageSparseMemoryRequirements; };
     if constexpr (HasGetDeviceImageSparseMemoryRequirements) {
       if (!std::strcmp("vkGetDeviceImageSparseMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSparseMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSparseMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceImageSparseMemoryRequirementsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageSparseMemoryRequirementsKHR; };
     if constexpr (HasGetDeviceImageSparseMemoryRequirementsKHR) {
       if (!std::strcmp("vkGetDeviceImageSparseMemoryRequirementsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSparseMemoryRequirementsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSparseMemoryRequirementsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceImageSubresourceLayoutKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageSubresourceLayoutKHR; };
     if constexpr (HasGetDeviceImageSubresourceLayoutKHR) {
       if (!std::strcmp("vkGetDeviceImageSubresourceLayoutKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSubresourceLayoutKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSubresourceLayoutKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceMemoryCommitment = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceMemoryCommitment; };
     if constexpr (HasGetDeviceMemoryCommitment) {
       if (!std::strcmp("vkGetDeviceMemoryCommitment", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryCommitment<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryCommitment<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceMemoryOpaqueCaptureAddress = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddress; };
     if constexpr (HasGetDeviceMemoryOpaqueCaptureAddress) {
       if (!std::strcmp("vkGetDeviceMemoryOpaqueCaptureAddress", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryOpaqueCaptureAddress<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryOpaqueCaptureAddress<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceMemoryOpaqueCaptureAddressKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddressKHR; };
     if constexpr (HasGetDeviceMemoryOpaqueCaptureAddressKHR) {
       if (!std::strcmp("vkGetDeviceMemoryOpaqueCaptureAddressKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryOpaqueCaptureAddressKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceMemoryOpaqueCaptureAddressKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceMicromapCompatibilityEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceMicromapCompatibilityEXT; };
     if constexpr (HasGetDeviceMicromapCompatibilityEXT) {
       if (!std::strcmp("vkGetDeviceMicromapCompatibilityEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceMicromapCompatibilityEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceMicromapCompatibilityEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     if (!std::strcmp("vkGetDeviceProcAddr", name))
-      return (PFN_vkVoidFunction) &GetDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+      return (PFN_vkVoidFunction) &GetDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
 
     constexpr bool HasGetDeviceQueue = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceQueue; };
     if constexpr (HasGetDeviceQueue) {
       if (!std::strcmp("vkGetDeviceQueue", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceQueue<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceQueue<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceQueue2 = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceQueue2; };
     if constexpr (HasGetDeviceQueue2) {
       if (!std::strcmp("vkGetDeviceQueue2", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceQueue2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceQueue2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI; };
     if constexpr (HasGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI) {
       if (!std::strcmp("vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDeviceTensorMemoryRequirementsARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceTensorMemoryRequirementsARM; };
     if constexpr (HasGetDeviceTensorMemoryRequirementsARM) {
       if (!std::strcmp("vkGetDeviceTensorMemoryRequirementsARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDeviceTensorMemoryRequirementsARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDeviceTensorMemoryRequirementsARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetDynamicRenderingTilePropertiesQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDynamicRenderingTilePropertiesQCOM; };
     if constexpr (HasGetDynamicRenderingTilePropertiesQCOM) {
       if (!std::strcmp("vkGetDynamicRenderingTilePropertiesQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_GetDynamicRenderingTilePropertiesQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetDynamicRenderingTilePropertiesQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetEncodedVideoSessionParametersKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetEncodedVideoSessionParametersKHR; };
     if constexpr (HasGetEncodedVideoSessionParametersKHR) {
       if (!std::strcmp("vkGetEncodedVideoSessionParametersKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetEncodedVideoSessionParametersKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetEncodedVideoSessionParametersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetEventStatus = requires(const DeviceOverrides& t) { &DeviceOverrides::GetEventStatus; };
     if constexpr (HasGetEventStatus) {
       if (!std::strcmp("vkGetEventStatus", name))
-        return (PFN_vkVoidFunction) &wrap_GetEventStatus<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetEventStatus<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
     constexpr bool HasGetExecutionGraphPipelineNodeIndexAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::GetExecutionGraphPipelineNodeIndexAMDX; };
     if constexpr (HasGetExecutionGraphPipelineNodeIndexAMDX) {
       if (!std::strcmp("vkGetExecutionGraphPipelineNodeIndexAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_GetExecutionGraphPipelineNodeIndexAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetExecutionGraphPipelineNodeIndexAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10428,163 +10936,163 @@ namespace vkroots {
     constexpr bool HasGetExecutionGraphPipelineScratchSizeAMDX = requires(const DeviceOverrides& t) { &DeviceOverrides::GetExecutionGraphPipelineScratchSizeAMDX; };
     if constexpr (HasGetExecutionGraphPipelineScratchSizeAMDX) {
       if (!std::strcmp("vkGetExecutionGraphPipelineScratchSizeAMDX", name))
-        return (PFN_vkVoidFunction) &wrap_GetExecutionGraphPipelineScratchSizeAMDX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetExecutionGraphPipelineScratchSizeAMDX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetExternalComputeQueueDataNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetExternalComputeQueueDataNV; };
     if constexpr (HasGetExternalComputeQueueDataNV) {
       if (!std::strcmp("vkGetExternalComputeQueueDataNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetExternalComputeQueueDataNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetExternalComputeQueueDataNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetFenceFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetFenceFdKHR; };
     if constexpr (HasGetFenceFdKHR) {
       if (!std::strcmp("vkGetFenceFdKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetFenceFdKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetFenceFdKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetFenceStatus = requires(const DeviceOverrides& t) { &DeviceOverrides::GetFenceStatus; };
     if constexpr (HasGetFenceStatus) {
       if (!std::strcmp("vkGetFenceStatus", name))
-        return (PFN_vkVoidFunction) &wrap_GetFenceStatus<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetFenceStatus<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasGetFenceWin32HandleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetFenceWin32HandleKHR; };
     if constexpr (HasGetFenceWin32HandleKHR) {
       if (!std::strcmp("vkGetFenceWin32HandleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetFenceWin32HandleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetFenceWin32HandleKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetFramebufferTilePropertiesQCOM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetFramebufferTilePropertiesQCOM; };
     if constexpr (HasGetFramebufferTilePropertiesQCOM) {
       if (!std::strcmp("vkGetFramebufferTilePropertiesQCOM", name))
-        return (PFN_vkVoidFunction) &wrap_GetFramebufferTilePropertiesQCOM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetFramebufferTilePropertiesQCOM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetGeneratedCommandsMemoryRequirementsEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetGeneratedCommandsMemoryRequirementsEXT; };
     if constexpr (HasGetGeneratedCommandsMemoryRequirementsEXT) {
       if (!std::strcmp("vkGetGeneratedCommandsMemoryRequirementsEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetGeneratedCommandsMemoryRequirementsEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetGeneratedCommandsMemoryRequirementsEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetGeneratedCommandsMemoryRequirementsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetGeneratedCommandsMemoryRequirementsNV; };
     if constexpr (HasGetGeneratedCommandsMemoryRequirementsNV) {
       if (!std::strcmp("vkGetGeneratedCommandsMemoryRequirementsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetGeneratedCommandsMemoryRequirementsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetGeneratedCommandsMemoryRequirementsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageDrmFormatModifierPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageDrmFormatModifierPropertiesEXT; };
     if constexpr (HasGetImageDrmFormatModifierPropertiesEXT) {
       if (!std::strcmp("vkGetImageDrmFormatModifierPropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageDrmFormatModifierPropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageDrmFormatModifierPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageMemoryRequirements; };
     if constexpr (HasGetImageMemoryRequirements) {
       if (!std::strcmp("vkGetImageMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageMemoryRequirements2 = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageMemoryRequirements2; };
     if constexpr (HasGetImageMemoryRequirements2) {
       if (!std::strcmp("vkGetImageMemoryRequirements2", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageMemoryRequirements2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageMemoryRequirements2KHR; };
     if constexpr (HasGetImageMemoryRequirements2KHR) {
       if (!std::strcmp("vkGetImageMemoryRequirements2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageMemoryRequirements2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageOpaqueCaptureDescriptorDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageOpaqueCaptureDescriptorDataEXT; };
     if constexpr (HasGetImageOpaqueCaptureDescriptorDataEXT) {
       if (!std::strcmp("vkGetImageOpaqueCaptureDescriptorDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageOpaqueCaptureDescriptorDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageOpaqueCaptureDescriptorDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSparseMemoryRequirements = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSparseMemoryRequirements; };
     if constexpr (HasGetImageSparseMemoryRequirements) {
       if (!std::strcmp("vkGetImageSparseMemoryRequirements", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSparseMemoryRequirements2 = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSparseMemoryRequirements2; };
     if constexpr (HasGetImageSparseMemoryRequirements2) {
       if (!std::strcmp("vkGetImageSparseMemoryRequirements2", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSparseMemoryRequirements2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSparseMemoryRequirements2KHR; };
     if constexpr (HasGetImageSparseMemoryRequirements2KHR) {
       if (!std::strcmp("vkGetImageSparseMemoryRequirements2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSparseMemoryRequirements2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSubresourceLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout; };
     if constexpr (HasGetImageSubresourceLayout) {
       if (!std::strcmp("vkGetImageSubresourceLayout", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSubresourceLayout2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout2EXT; };
     if constexpr (HasGetImageSubresourceLayout2EXT) {
       if (!std::strcmp("vkGetImageSubresourceLayout2EXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2EXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageSubresourceLayout2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout2KHR; };
     if constexpr (HasGetImageSubresourceLayout2KHR) {
       if (!std::strcmp("vkGetImageSubresourceLayout2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetImageViewOpaqueCaptureDescriptorDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageViewOpaqueCaptureDescriptorDataEXT; };
     if constexpr (HasGetImageViewOpaqueCaptureDescriptorDataEXT) {
       if (!std::strcmp("vkGetImageViewOpaqueCaptureDescriptorDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetImageViewOpaqueCaptureDescriptorDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetImageViewOpaqueCaptureDescriptorDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetLatencyTimingsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetLatencyTimingsNV; };
     if constexpr (HasGetLatencyTimingsNV) {
       if (!std::strcmp("vkGetLatencyTimingsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetLatencyTimingsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetLatencyTimingsNV<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     constexpr bool HasGetMemoryAndroidHardwareBufferANDROID = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryAndroidHardwareBufferANDROID; };
     if constexpr (HasGetMemoryAndroidHardwareBufferANDROID) {
       if (!std::strcmp("vkGetMemoryAndroidHardwareBufferANDROID", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryAndroidHardwareBufferANDROID<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryAndroidHardwareBufferANDROID<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetMemoryFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryFdKHR; };
     if constexpr (HasGetMemoryFdKHR) {
       if (!std::strcmp("vkGetMemoryFdKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryFdKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryFdKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetMemoryFdPropertiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryFdPropertiesKHR; };
     if constexpr (HasGetMemoryFdPropertiesKHR) {
       if (!std::strcmp("vkGetMemoryFdPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryFdPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryFdPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetMemoryHostPointerPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryHostPointerPropertiesEXT; };
     if constexpr (HasGetMemoryHostPointerPropertiesEXT) {
       if (!std::strcmp("vkGetMemoryHostPointerPropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryHostPointerPropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryHostPointerPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_METAL_EXT
     constexpr bool HasGetMemoryMetalHandleEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryMetalHandleEXT; };
     if constexpr (HasGetMemoryMetalHandleEXT) {
       if (!std::strcmp("vkGetMemoryMetalHandleEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryMetalHandleEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryMetalHandleEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10592,21 +11100,21 @@ namespace vkroots {
     constexpr bool HasGetMemoryMetalHandlePropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryMetalHandlePropertiesEXT; };
     if constexpr (HasGetMemoryMetalHandlePropertiesEXT) {
       if (!std::strcmp("vkGetMemoryMetalHandlePropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryMetalHandlePropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryMetalHandlePropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetMemoryRemoteAddressNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryRemoteAddressNV; };
     if constexpr (HasGetMemoryRemoteAddressNV) {
       if (!std::strcmp("vkGetMemoryRemoteAddressNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryRemoteAddressNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryRemoteAddressNV<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasGetMemoryWin32HandleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryWin32HandleKHR; };
     if constexpr (HasGetMemoryWin32HandleKHR) {
       if (!std::strcmp("vkGetMemoryWin32HandleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandleKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10614,7 +11122,7 @@ namespace vkroots {
     constexpr bool HasGetMemoryWin32HandleNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryWin32HandleNV; };
     if constexpr (HasGetMemoryWin32HandleNV) {
       if (!std::strcmp("vkGetMemoryWin32HandleNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandleNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandleNV<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10622,7 +11130,7 @@ namespace vkroots {
     constexpr bool HasGetMemoryWin32HandlePropertiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryWin32HandlePropertiesKHR; };
     if constexpr (HasGetMemoryWin32HandlePropertiesKHR) {
       if (!std::strcmp("vkGetMemoryWin32HandlePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandlePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryWin32HandlePropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10630,7 +11138,7 @@ namespace vkroots {
     constexpr bool HasGetMemoryZirconHandleFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryZirconHandleFUCHSIA; };
     if constexpr (HasGetMemoryZirconHandleFUCHSIA) {
       if (!std::strcmp("vkGetMemoryZirconHandleFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryZirconHandleFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryZirconHandleFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10638,197 +11146,197 @@ namespace vkroots {
     constexpr bool HasGetMemoryZirconHandlePropertiesFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryZirconHandlePropertiesFUCHSIA; };
     if constexpr (HasGetMemoryZirconHandlePropertiesFUCHSIA) {
       if (!std::strcmp("vkGetMemoryZirconHandlePropertiesFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_GetMemoryZirconHandlePropertiesFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMemoryZirconHandlePropertiesFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetMicromapBuildSizesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMicromapBuildSizesEXT; };
     if constexpr (HasGetMicromapBuildSizesEXT) {
       if (!std::strcmp("vkGetMicromapBuildSizesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetMicromapBuildSizesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetMicromapBuildSizesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPartitionedAccelerationStructuresBuildSizesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV; };
     if constexpr (HasGetPartitionedAccelerationStructuresBuildSizesNV) {
       if (!std::strcmp("vkGetPartitionedAccelerationStructuresBuildSizesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPartitionedAccelerationStructuresBuildSizesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPartitionedAccelerationStructuresBuildSizesNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPastPresentationTimingGOOGLE = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPastPresentationTimingGOOGLE; };
     if constexpr (HasGetPastPresentationTimingGOOGLE) {
       if (!std::strcmp("vkGetPastPresentationTimingGOOGLE", name))
-        return (PFN_vkVoidFunction) &wrap_GetPastPresentationTimingGOOGLE<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPastPresentationTimingGOOGLE<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPerformanceParameterINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPerformanceParameterINTEL; };
     if constexpr (HasGetPerformanceParameterINTEL) {
       if (!std::strcmp("vkGetPerformanceParameterINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_GetPerformanceParameterINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPerformanceParameterINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineBinaryDataKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineBinaryDataKHR; };
     if constexpr (HasGetPipelineBinaryDataKHR) {
       if (!std::strcmp("vkGetPipelineBinaryDataKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineBinaryDataKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineBinaryDataKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineCacheData = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineCacheData; };
     if constexpr (HasGetPipelineCacheData) {
       if (!std::strcmp("vkGetPipelineCacheData", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineCacheData<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineCacheData<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineExecutableInternalRepresentationsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineExecutableInternalRepresentationsKHR; };
     if constexpr (HasGetPipelineExecutableInternalRepresentationsKHR) {
       if (!std::strcmp("vkGetPipelineExecutableInternalRepresentationsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutableInternalRepresentationsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutableInternalRepresentationsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineExecutablePropertiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineExecutablePropertiesKHR; };
     if constexpr (HasGetPipelineExecutablePropertiesKHR) {
       if (!std::strcmp("vkGetPipelineExecutablePropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutablePropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutablePropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineExecutableStatisticsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineExecutableStatisticsKHR; };
     if constexpr (HasGetPipelineExecutableStatisticsKHR) {
       if (!std::strcmp("vkGetPipelineExecutableStatisticsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutableStatisticsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineExecutableStatisticsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineIndirectDeviceAddressNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineIndirectDeviceAddressNV; };
     if constexpr (HasGetPipelineIndirectDeviceAddressNV) {
       if (!std::strcmp("vkGetPipelineIndirectDeviceAddressNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineIndirectDeviceAddressNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineIndirectDeviceAddressNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineIndirectMemoryRequirementsNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineIndirectMemoryRequirementsNV; };
     if constexpr (HasGetPipelineIndirectMemoryRequirementsNV) {
       if (!std::strcmp("vkGetPipelineIndirectMemoryRequirementsNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineIndirectMemoryRequirementsNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineIndirectMemoryRequirementsNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelineKeyKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelineKeyKHR; };
     if constexpr (HasGetPipelineKeyKHR) {
       if (!std::strcmp("vkGetPipelineKeyKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelineKeyKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelineKeyKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPipelinePropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPipelinePropertiesEXT; };
     if constexpr (HasGetPipelinePropertiesEXT) {
       if (!std::strcmp("vkGetPipelinePropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPipelinePropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPipelinePropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPrivateData = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPrivateData; };
     if constexpr (HasGetPrivateData) {
       if (!std::strcmp("vkGetPrivateData", name))
-        return (PFN_vkVoidFunction) &wrap_GetPrivateData<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPrivateData<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPrivateDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPrivateDataEXT; };
     if constexpr (HasGetPrivateDataEXT) {
       if (!std::strcmp("vkGetPrivateDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetPrivateDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetPrivateDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetQueryPoolResults = requires(const DeviceOverrides& t) { &DeviceOverrides::GetQueryPoolResults; };
     if constexpr (HasGetQueryPoolResults) {
       if (!std::strcmp("vkGetQueryPoolResults", name))
-        return (PFN_vkVoidFunction) &wrap_GetQueryPoolResults<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetQueryPoolResults<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetQueueCheckpointData2NV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetQueueCheckpointData2NV; };
     if constexpr (HasGetQueueCheckpointData2NV) {
       if (!std::strcmp("vkGetQueueCheckpointData2NV", name))
-        return (PFN_vkVoidFunction) &wrap_GetQueueCheckpointData2NV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetQueueCheckpointData2NV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetQueueCheckpointDataNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetQueueCheckpointDataNV; };
     if constexpr (HasGetQueueCheckpointDataNV) {
       if (!std::strcmp("vkGetQueueCheckpointDataNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetQueueCheckpointDataNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetQueueCheckpointDataNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRayTracingCaptureReplayShaderGroupHandlesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRayTracingCaptureReplayShaderGroupHandlesKHR; };
     if constexpr (HasGetRayTracingCaptureReplayShaderGroupHandlesKHR) {
       if (!std::strcmp("vkGetRayTracingCaptureReplayShaderGroupHandlesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetRayTracingCaptureReplayShaderGroupHandlesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRayTracingCaptureReplayShaderGroupHandlesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRayTracingShaderGroupHandlesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRayTracingShaderGroupHandlesKHR; };
     if constexpr (HasGetRayTracingShaderGroupHandlesKHR) {
       if (!std::strcmp("vkGetRayTracingShaderGroupHandlesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupHandlesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupHandlesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRayTracingShaderGroupHandlesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRayTracingShaderGroupHandlesNV; };
     if constexpr (HasGetRayTracingShaderGroupHandlesNV) {
       if (!std::strcmp("vkGetRayTracingShaderGroupHandlesNV", name))
-        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupHandlesNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupHandlesNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRayTracingShaderGroupStackSizeKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRayTracingShaderGroupStackSizeKHR; };
     if constexpr (HasGetRayTracingShaderGroupStackSizeKHR) {
       if (!std::strcmp("vkGetRayTracingShaderGroupStackSizeKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupStackSizeKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRayTracingShaderGroupStackSizeKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRefreshCycleDurationGOOGLE = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRefreshCycleDurationGOOGLE; };
     if constexpr (HasGetRefreshCycleDurationGOOGLE) {
       if (!std::strcmp("vkGetRefreshCycleDurationGOOGLE", name))
-        return (PFN_vkVoidFunction) &wrap_GetRefreshCycleDurationGOOGLE<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRefreshCycleDurationGOOGLE<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRenderAreaGranularity = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRenderAreaGranularity; };
     if constexpr (HasGetRenderAreaGranularity) {
       if (!std::strcmp("vkGetRenderAreaGranularity", name))
-        return (PFN_vkVoidFunction) &wrap_GetRenderAreaGranularity<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRenderAreaGranularity<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetRenderingAreaGranularityKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRenderingAreaGranularityKHR; };
     if constexpr (HasGetRenderingAreaGranularityKHR) {
       if (!std::strcmp("vkGetRenderingAreaGranularityKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetRenderingAreaGranularityKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetRenderingAreaGranularityKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSamplerOpaqueCaptureDescriptorDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSamplerOpaqueCaptureDescriptorDataEXT; };
     if constexpr (HasGetSamplerOpaqueCaptureDescriptorDataEXT) {
       if (!std::strcmp("vkGetSamplerOpaqueCaptureDescriptorDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetSamplerOpaqueCaptureDescriptorDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSamplerOpaqueCaptureDescriptorDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
     constexpr bool HasGetScreenBufferPropertiesQNX = requires(const DeviceOverrides& t) { &DeviceOverrides::GetScreenBufferPropertiesQNX; };
     if constexpr (HasGetScreenBufferPropertiesQNX) {
       if (!std::strcmp("vkGetScreenBufferPropertiesQNX", name))
-        return (PFN_vkVoidFunction) &wrap_GetScreenBufferPropertiesQNX<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetScreenBufferPropertiesQNX<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetSemaphoreCounterValue = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSemaphoreCounterValue; };
     if constexpr (HasGetSemaphoreCounterValue) {
       if (!std::strcmp("vkGetSemaphoreCounterValue", name))
-        return (PFN_vkVoidFunction) &wrap_GetSemaphoreCounterValue<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSemaphoreCounterValue<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSemaphoreCounterValueKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSemaphoreCounterValueKHR; };
     if constexpr (HasGetSemaphoreCounterValueKHR) {
       if (!std::strcmp("vkGetSemaphoreCounterValueKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetSemaphoreCounterValueKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSemaphoreCounterValueKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSemaphoreFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSemaphoreFdKHR; };
     if constexpr (HasGetSemaphoreFdKHR) {
       if (!std::strcmp("vkGetSemaphoreFdKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetSemaphoreFdKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSemaphoreFdKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasGetSemaphoreWin32HandleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSemaphoreWin32HandleKHR; };
     if constexpr (HasGetSemaphoreWin32HandleKHR) {
       if (!std::strcmp("vkGetSemaphoreWin32HandleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetSemaphoreWin32HandleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSemaphoreWin32HandleKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10836,107 +11344,107 @@ namespace vkroots {
     constexpr bool HasGetSemaphoreZirconHandleFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSemaphoreZirconHandleFUCHSIA; };
     if constexpr (HasGetSemaphoreZirconHandleFUCHSIA) {
       if (!std::strcmp("vkGetSemaphoreZirconHandleFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_GetSemaphoreZirconHandleFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSemaphoreZirconHandleFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasGetShaderBinaryDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderBinaryDataEXT; };
     if constexpr (HasGetShaderBinaryDataEXT) {
       if (!std::strcmp("vkGetShaderBinaryDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetShaderBinaryDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetShaderBinaryDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetShaderInfoAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderInfoAMD; };
     if constexpr (HasGetShaderInfoAMD) {
       if (!std::strcmp("vkGetShaderInfoAMD", name))
-        return (PFN_vkVoidFunction) &wrap_GetShaderInfoAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetShaderInfoAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetShaderModuleCreateInfoIdentifierEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT; };
     if constexpr (HasGetShaderModuleCreateInfoIdentifierEXT) {
       if (!std::strcmp("vkGetShaderModuleCreateInfoIdentifierEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetShaderModuleCreateInfoIdentifierEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetShaderModuleCreateInfoIdentifierEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetShaderModuleIdentifierEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetShaderModuleIdentifierEXT; };
     if constexpr (HasGetShaderModuleIdentifierEXT) {
       if (!std::strcmp("vkGetShaderModuleIdentifierEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetShaderModuleIdentifierEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetShaderModuleIdentifierEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSwapchainCounterEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainCounterEXT; };
     if constexpr (HasGetSwapchainCounterEXT) {
       if (!std::strcmp("vkGetSwapchainCounterEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetSwapchainCounterEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainCounterEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSwapchainImagesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainImagesKHR; };
     if constexpr (HasGetSwapchainImagesKHR) {
       if (!std::strcmp("vkGetSwapchainImagesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetSwapchainImagesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainImagesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetSwapchainStatusKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainStatusKHR; };
     if constexpr (HasGetSwapchainStatusKHR) {
       if (!std::strcmp("vkGetSwapchainStatusKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetSwapchainStatusKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainStatusKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetTensorMemoryRequirementsARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetTensorMemoryRequirementsARM; };
     if constexpr (HasGetTensorMemoryRequirementsARM) {
       if (!std::strcmp("vkGetTensorMemoryRequirementsARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetTensorMemoryRequirementsARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetTensorMemoryRequirementsARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetTensorOpaqueCaptureDescriptorDataARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetTensorOpaqueCaptureDescriptorDataARM; };
     if constexpr (HasGetTensorOpaqueCaptureDescriptorDataARM) {
       if (!std::strcmp("vkGetTensorOpaqueCaptureDescriptorDataARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetTensorOpaqueCaptureDescriptorDataARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetTensorOpaqueCaptureDescriptorDataARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetTensorViewOpaqueCaptureDescriptorDataARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetTensorViewOpaqueCaptureDescriptorDataARM; };
     if constexpr (HasGetTensorViewOpaqueCaptureDescriptorDataARM) {
       if (!std::strcmp("vkGetTensorViewOpaqueCaptureDescriptorDataARM", name))
-        return (PFN_vkVoidFunction) &wrap_GetTensorViewOpaqueCaptureDescriptorDataARM<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetTensorViewOpaqueCaptureDescriptorDataARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetValidationCacheDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetValidationCacheDataEXT; };
     if constexpr (HasGetValidationCacheDataEXT) {
       if (!std::strcmp("vkGetValidationCacheDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_GetValidationCacheDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetValidationCacheDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetVideoSessionMemoryRequirementsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetVideoSessionMemoryRequirementsKHR; };
     if constexpr (HasGetVideoSessionMemoryRequirementsKHR) {
       if (!std::strcmp("vkGetVideoSessionMemoryRequirementsKHR", name))
-        return (PFN_vkVoidFunction) &wrap_GetVideoSessionMemoryRequirementsKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_GetVideoSessionMemoryRequirementsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasImportFenceFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ImportFenceFdKHR; };
     if constexpr (HasImportFenceFdKHR) {
       if (!std::strcmp("vkImportFenceFdKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ImportFenceFdKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ImportFenceFdKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasImportFenceWin32HandleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ImportFenceWin32HandleKHR; };
     if constexpr (HasImportFenceWin32HandleKHR) {
       if (!std::strcmp("vkImportFenceWin32HandleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ImportFenceWin32HandleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ImportFenceWin32HandleKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasImportSemaphoreFdKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ImportSemaphoreFdKHR; };
     if constexpr (HasImportSemaphoreFdKHR) {
       if (!std::strcmp("vkImportSemaphoreFdKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreFdKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreFdKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasImportSemaphoreWin32HandleKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ImportSemaphoreWin32HandleKHR; };
     if constexpr (HasImportSemaphoreWin32HandleKHR) {
       if (!std::strcmp("vkImportSemaphoreWin32HandleKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreWin32HandleKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreWin32HandleKHR<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -10944,215 +11452,215 @@ namespace vkroots {
     constexpr bool HasImportSemaphoreZirconHandleFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::ImportSemaphoreZirconHandleFUCHSIA; };
     if constexpr (HasImportSemaphoreZirconHandleFUCHSIA) {
       if (!std::strcmp("vkImportSemaphoreZirconHandleFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreZirconHandleFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ImportSemaphoreZirconHandleFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasInitializePerformanceApiINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::InitializePerformanceApiINTEL; };
     if constexpr (HasInitializePerformanceApiINTEL) {
       if (!std::strcmp("vkInitializePerformanceApiINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_InitializePerformanceApiINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_InitializePerformanceApiINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasInvalidateMappedMemoryRanges = requires(const DeviceOverrides& t) { &DeviceOverrides::InvalidateMappedMemoryRanges; };
     if constexpr (HasInvalidateMappedMemoryRanges) {
       if (!std::strcmp("vkInvalidateMappedMemoryRanges", name))
-        return (PFN_vkVoidFunction) &wrap_InvalidateMappedMemoryRanges<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_InvalidateMappedMemoryRanges<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasLatencySleepNV = requires(const DeviceOverrides& t) { &DeviceOverrides::LatencySleepNV; };
     if constexpr (HasLatencySleepNV) {
       if (!std::strcmp("vkLatencySleepNV", name))
-        return (PFN_vkVoidFunction) &wrap_LatencySleepNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_LatencySleepNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasMapMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::MapMemory; };
     if constexpr (HasMapMemory) {
       if (!std::strcmp("vkMapMemory", name))
-        return (PFN_vkVoidFunction) &wrap_MapMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_MapMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasMapMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::MapMemory2KHR; };
     if constexpr (HasMapMemory2KHR) {
       if (!std::strcmp("vkMapMemory2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_MapMemory2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_MapMemory2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasMergePipelineCaches = requires(const DeviceOverrides& t) { &DeviceOverrides::MergePipelineCaches; };
     if constexpr (HasMergePipelineCaches) {
       if (!std::strcmp("vkMergePipelineCaches", name))
-        return (PFN_vkVoidFunction) &wrap_MergePipelineCaches<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_MergePipelineCaches<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasMergeValidationCachesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::MergeValidationCachesEXT; };
     if constexpr (HasMergeValidationCachesEXT) {
       if (!std::strcmp("vkMergeValidationCachesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_MergeValidationCachesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_MergeValidationCachesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueBeginDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueBeginDebugUtilsLabelEXT; };
     if constexpr (HasQueueBeginDebugUtilsLabelEXT) {
       if (!std::strcmp("vkQueueBeginDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_QueueBeginDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueBeginDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueBindSparse = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueBindSparse; };
     if constexpr (HasQueueBindSparse) {
       if (!std::strcmp("vkQueueBindSparse", name))
-        return (PFN_vkVoidFunction) &wrap_QueueBindSparse<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueBindSparse<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueEndDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueEndDebugUtilsLabelEXT; };
     if constexpr (HasQueueEndDebugUtilsLabelEXT) {
       if (!std::strcmp("vkQueueEndDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_QueueEndDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueEndDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueInsertDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueInsertDebugUtilsLabelEXT; };
     if constexpr (HasQueueInsertDebugUtilsLabelEXT) {
       if (!std::strcmp("vkQueueInsertDebugUtilsLabelEXT", name))
-        return (PFN_vkVoidFunction) &wrap_QueueInsertDebugUtilsLabelEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueInsertDebugUtilsLabelEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueNotifyOutOfBandNV = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueNotifyOutOfBandNV; };
     if constexpr (HasQueueNotifyOutOfBandNV) {
       if (!std::strcmp("vkQueueNotifyOutOfBandNV", name))
-        return (PFN_vkVoidFunction) &wrap_QueueNotifyOutOfBandNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueNotifyOutOfBandNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueuePresentKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::QueuePresentKHR; };
     if constexpr (HasQueuePresentKHR) {
       if (!std::strcmp("vkQueuePresentKHR", name))
-        return (PFN_vkVoidFunction) &wrap_QueuePresentKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueuePresentKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueSetPerformanceConfigurationINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSetPerformanceConfigurationINTEL; };
     if constexpr (HasQueueSetPerformanceConfigurationINTEL) {
       if (!std::strcmp("vkQueueSetPerformanceConfigurationINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_QueueSetPerformanceConfigurationINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueSetPerformanceConfigurationINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueSubmit = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSubmit; };
     if constexpr (HasQueueSubmit) {
       if (!std::strcmp("vkQueueSubmit", name))
-        return (PFN_vkVoidFunction) &wrap_QueueSubmit<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueSubmit<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueSubmit2 = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSubmit2; };
     if constexpr (HasQueueSubmit2) {
       if (!std::strcmp("vkQueueSubmit2", name))
-        return (PFN_vkVoidFunction) &wrap_QueueSubmit2<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueSubmit2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueSubmit2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSubmit2KHR; };
     if constexpr (HasQueueSubmit2KHR) {
       if (!std::strcmp("vkQueueSubmit2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_QueueSubmit2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueSubmit2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasQueueWaitIdle = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueWaitIdle; };
     if constexpr (HasQueueWaitIdle) {
       if (!std::strcmp("vkQueueWaitIdle", name))
-        return (PFN_vkVoidFunction) &wrap_QueueWaitIdle<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_QueueWaitIdle<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasRegisterDeviceEventEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::RegisterDeviceEventEXT; };
     if constexpr (HasRegisterDeviceEventEXT) {
       if (!std::strcmp("vkRegisterDeviceEventEXT", name))
-        return (PFN_vkVoidFunction) &wrap_RegisterDeviceEventEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_RegisterDeviceEventEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasRegisterDisplayEventEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::RegisterDisplayEventEXT; };
     if constexpr (HasRegisterDisplayEventEXT) {
       if (!std::strcmp("vkRegisterDisplayEventEXT", name))
-        return (PFN_vkVoidFunction) &wrap_RegisterDisplayEventEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_RegisterDisplayEventEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasReleaseCapturedPipelineDataKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleaseCapturedPipelineDataKHR; };
     if constexpr (HasReleaseCapturedPipelineDataKHR) {
       if (!std::strcmp("vkReleaseCapturedPipelineDataKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseCapturedPipelineDataKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseCapturedPipelineDataKHR<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     constexpr bool HasReleaseFullScreenExclusiveModeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleaseFullScreenExclusiveModeEXT; };
     if constexpr (HasReleaseFullScreenExclusiveModeEXT) {
       if (!std::strcmp("vkReleaseFullScreenExclusiveModeEXT", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseFullScreenExclusiveModeEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseFullScreenExclusiveModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasReleasePerformanceConfigurationINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleasePerformanceConfigurationINTEL; };
     if constexpr (HasReleasePerformanceConfigurationINTEL) {
       if (!std::strcmp("vkReleasePerformanceConfigurationINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_ReleasePerformanceConfigurationINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleasePerformanceConfigurationINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasReleaseProfilingLockKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleaseProfilingLockKHR; };
     if constexpr (HasReleaseProfilingLockKHR) {
       if (!std::strcmp("vkReleaseProfilingLockKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseProfilingLockKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseProfilingLockKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasReleaseSwapchainImagesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleaseSwapchainImagesEXT; };
     if constexpr (HasReleaseSwapchainImagesEXT) {
       if (!std::strcmp("vkReleaseSwapchainImagesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseSwapchainImagesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseSwapchainImagesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasReleaseSwapchainImagesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::ReleaseSwapchainImagesKHR; };
     if constexpr (HasReleaseSwapchainImagesKHR) {
       if (!std::strcmp("vkReleaseSwapchainImagesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_ReleaseSwapchainImagesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ReleaseSwapchainImagesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetCommandBuffer = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetCommandBuffer; };
     if constexpr (HasResetCommandBuffer) {
       if (!std::strcmp("vkResetCommandBuffer", name))
-        return (PFN_vkVoidFunction) &wrap_ResetCommandBuffer<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetCommandBuffer<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetCommandPool = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetCommandPool; };
     if constexpr (HasResetCommandPool) {
       if (!std::strcmp("vkResetCommandPool", name))
-        return (PFN_vkVoidFunction) &wrap_ResetCommandPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetCommandPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetDescriptorPool = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetDescriptorPool; };
     if constexpr (HasResetDescriptorPool) {
       if (!std::strcmp("vkResetDescriptorPool", name))
-        return (PFN_vkVoidFunction) &wrap_ResetDescriptorPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetDescriptorPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetEvent; };
     if constexpr (HasResetEvent) {
       if (!std::strcmp("vkResetEvent", name))
-        return (PFN_vkVoidFunction) &wrap_ResetEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetEvent<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetFences = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetFences; };
     if constexpr (HasResetFences) {
       if (!std::strcmp("vkResetFences", name))
-        return (PFN_vkVoidFunction) &wrap_ResetFences<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetFences<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetQueryPool = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetQueryPool; };
     if constexpr (HasResetQueryPool) {
       if (!std::strcmp("vkResetQueryPool", name))
-        return (PFN_vkVoidFunction) &wrap_ResetQueryPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetQueryPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasResetQueryPoolEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::ResetQueryPoolEXT; };
     if constexpr (HasResetQueryPoolEXT) {
       if (!std::strcmp("vkResetQueryPoolEXT", name))
-        return (PFN_vkVoidFunction) &wrap_ResetQueryPoolEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_ResetQueryPoolEXT<InstanceOverrides, DeviceOverrides>;
     }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
     constexpr bool HasSetBufferCollectionBufferConstraintsFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::SetBufferCollectionBufferConstraintsFUCHSIA; };
     if constexpr (HasSetBufferCollectionBufferConstraintsFUCHSIA) {
       if (!std::strcmp("vkSetBufferCollectionBufferConstraintsFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_SetBufferCollectionBufferConstraintsFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetBufferCollectionBufferConstraintsFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
@@ -11160,194 +11668,194 @@ namespace vkroots {
     constexpr bool HasSetBufferCollectionImageConstraintsFUCHSIA = requires(const DeviceOverrides& t) { &DeviceOverrides::SetBufferCollectionImageConstraintsFUCHSIA; };
     if constexpr (HasSetBufferCollectionImageConstraintsFUCHSIA) {
       if (!std::strcmp("vkSetBufferCollectionImageConstraintsFUCHSIA", name))
-        return (PFN_vkVoidFunction) &wrap_SetBufferCollectionImageConstraintsFUCHSIA<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetBufferCollectionImageConstraintsFUCHSIA<InstanceOverrides, DeviceOverrides>;
     }
 #endif
 
     constexpr bool HasSetDebugUtilsObjectNameEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetDebugUtilsObjectNameEXT; };
     if constexpr (HasSetDebugUtilsObjectNameEXT) {
       if (!std::strcmp("vkSetDebugUtilsObjectNameEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SetDebugUtilsObjectNameEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetDebugUtilsObjectNameEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetDebugUtilsObjectTagEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetDebugUtilsObjectTagEXT; };
     if constexpr (HasSetDebugUtilsObjectTagEXT) {
       if (!std::strcmp("vkSetDebugUtilsObjectTagEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SetDebugUtilsObjectTagEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetDebugUtilsObjectTagEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetDeviceMemoryPriorityEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetDeviceMemoryPriorityEXT; };
     if constexpr (HasSetDeviceMemoryPriorityEXT) {
       if (!std::strcmp("vkSetDeviceMemoryPriorityEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SetDeviceMemoryPriorityEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetDeviceMemoryPriorityEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetEvent = requires(const DeviceOverrides& t) { &DeviceOverrides::SetEvent; };
     if constexpr (HasSetEvent) {
       if (!std::strcmp("vkSetEvent", name))
-        return (PFN_vkVoidFunction) &wrap_SetEvent<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetEvent<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetHdrMetadataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetHdrMetadataEXT; };
     if constexpr (HasSetHdrMetadataEXT) {
       if (!std::strcmp("vkSetHdrMetadataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SetHdrMetadataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetHdrMetadataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetLatencyMarkerNV = requires(const DeviceOverrides& t) { &DeviceOverrides::SetLatencyMarkerNV; };
     if constexpr (HasSetLatencyMarkerNV) {
       if (!std::strcmp("vkSetLatencyMarkerNV", name))
-        return (PFN_vkVoidFunction) &wrap_SetLatencyMarkerNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetLatencyMarkerNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetLatencySleepModeNV = requires(const DeviceOverrides& t) { &DeviceOverrides::SetLatencySleepModeNV; };
     if constexpr (HasSetLatencySleepModeNV) {
       if (!std::strcmp("vkSetLatencySleepModeNV", name))
-        return (PFN_vkVoidFunction) &wrap_SetLatencySleepModeNV<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetLatencySleepModeNV<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetLocalDimmingAMD = requires(const DeviceOverrides& t) { &DeviceOverrides::SetLocalDimmingAMD; };
     if constexpr (HasSetLocalDimmingAMD) {
       if (!std::strcmp("vkSetLocalDimmingAMD", name))
-        return (PFN_vkVoidFunction) &wrap_SetLocalDimmingAMD<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetLocalDimmingAMD<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetPrivateData = requires(const DeviceOverrides& t) { &DeviceOverrides::SetPrivateData; };
     if constexpr (HasSetPrivateData) {
       if (!std::strcmp("vkSetPrivateData", name))
-        return (PFN_vkVoidFunction) &wrap_SetPrivateData<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetPrivateData<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSetPrivateDataEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetPrivateDataEXT; };
     if constexpr (HasSetPrivateDataEXT) {
       if (!std::strcmp("vkSetPrivateDataEXT", name))
-        return (PFN_vkVoidFunction) &wrap_SetPrivateDataEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SetPrivateDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSignalSemaphore = requires(const DeviceOverrides& t) { &DeviceOverrides::SignalSemaphore; };
     if constexpr (HasSignalSemaphore) {
       if (!std::strcmp("vkSignalSemaphore", name))
-        return (PFN_vkVoidFunction) &wrap_SignalSemaphore<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SignalSemaphore<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasSignalSemaphoreKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::SignalSemaphoreKHR; };
     if constexpr (HasSignalSemaphoreKHR) {
       if (!std::strcmp("vkSignalSemaphoreKHR", name))
-        return (PFN_vkVoidFunction) &wrap_SignalSemaphoreKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_SignalSemaphoreKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasTransitionImageLayoutEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::TransitionImageLayoutEXT; };
     if constexpr (HasTransitionImageLayoutEXT) {
       if (!std::strcmp("vkTransitionImageLayoutEXT", name))
-        return (PFN_vkVoidFunction) &wrap_TransitionImageLayoutEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_TransitionImageLayoutEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasTrimCommandPool = requires(const DeviceOverrides& t) { &DeviceOverrides::TrimCommandPool; };
     if constexpr (HasTrimCommandPool) {
       if (!std::strcmp("vkTrimCommandPool", name))
-        return (PFN_vkVoidFunction) &wrap_TrimCommandPool<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_TrimCommandPool<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasTrimCommandPoolKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::TrimCommandPoolKHR; };
     if constexpr (HasTrimCommandPoolKHR) {
       if (!std::strcmp("vkTrimCommandPoolKHR", name))
-        return (PFN_vkVoidFunction) &wrap_TrimCommandPoolKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_TrimCommandPoolKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUninitializePerformanceApiINTEL = requires(const DeviceOverrides& t) { &DeviceOverrides::UninitializePerformanceApiINTEL; };
     if constexpr (HasUninitializePerformanceApiINTEL) {
       if (!std::strcmp("vkUninitializePerformanceApiINTEL", name))
-        return (PFN_vkVoidFunction) &wrap_UninitializePerformanceApiINTEL<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UninitializePerformanceApiINTEL<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUnmapMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::UnmapMemory; };
     if constexpr (HasUnmapMemory) {
       if (!std::strcmp("vkUnmapMemory", name))
-        return (PFN_vkVoidFunction) &wrap_UnmapMemory<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UnmapMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUnmapMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::UnmapMemory2KHR; };
     if constexpr (HasUnmapMemory2KHR) {
       if (!std::strcmp("vkUnmapMemory2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_UnmapMemory2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UnmapMemory2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateDescriptorSetWithTemplate = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateDescriptorSetWithTemplate; };
     if constexpr (HasUpdateDescriptorSetWithTemplate) {
       if (!std::strcmp("vkUpdateDescriptorSetWithTemplate", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSetWithTemplate<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSetWithTemplate<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateDescriptorSetWithTemplateKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateDescriptorSetWithTemplateKHR; };
     if constexpr (HasUpdateDescriptorSetWithTemplateKHR) {
       if (!std::strcmp("vkUpdateDescriptorSetWithTemplateKHR", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSetWithTemplateKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSetWithTemplateKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateDescriptorSets = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateDescriptorSets; };
     if constexpr (HasUpdateDescriptorSets) {
       if (!std::strcmp("vkUpdateDescriptorSets", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSets<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateDescriptorSets<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateIndirectExecutionSetPipelineEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateIndirectExecutionSetPipelineEXT; };
     if constexpr (HasUpdateIndirectExecutionSetPipelineEXT) {
       if (!std::strcmp("vkUpdateIndirectExecutionSetPipelineEXT", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateIndirectExecutionSetPipelineEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateIndirectExecutionSetPipelineEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateIndirectExecutionSetShaderEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateIndirectExecutionSetShaderEXT; };
     if constexpr (HasUpdateIndirectExecutionSetShaderEXT) {
       if (!std::strcmp("vkUpdateIndirectExecutionSetShaderEXT", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateIndirectExecutionSetShaderEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateIndirectExecutionSetShaderEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUpdateVideoSessionParametersKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::UpdateVideoSessionParametersKHR; };
     if constexpr (HasUpdateVideoSessionParametersKHR) {
       if (!std::strcmp("vkUpdateVideoSessionParametersKHR", name))
-        return (PFN_vkVoidFunction) &wrap_UpdateVideoSessionParametersKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_UpdateVideoSessionParametersKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWaitForFences = requires(const DeviceOverrides& t) { &DeviceOverrides::WaitForFences; };
     if constexpr (HasWaitForFences) {
       if (!std::strcmp("vkWaitForFences", name))
-        return (PFN_vkVoidFunction) &wrap_WaitForFences<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WaitForFences<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWaitForPresent2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::WaitForPresent2KHR; };
     if constexpr (HasWaitForPresent2KHR) {
       if (!std::strcmp("vkWaitForPresent2KHR", name))
-        return (PFN_vkVoidFunction) &wrap_WaitForPresent2KHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WaitForPresent2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWaitForPresentKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::WaitForPresentKHR; };
     if constexpr (HasWaitForPresentKHR) {
       if (!std::strcmp("vkWaitForPresentKHR", name))
-        return (PFN_vkVoidFunction) &wrap_WaitForPresentKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WaitForPresentKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWaitSemaphores = requires(const DeviceOverrides& t) { &DeviceOverrides::WaitSemaphores; };
     if constexpr (HasWaitSemaphores) {
       if (!std::strcmp("vkWaitSemaphores", name))
-        return (PFN_vkVoidFunction) &wrap_WaitSemaphores<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WaitSemaphores<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWaitSemaphoresKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::WaitSemaphoresKHR; };
     if constexpr (HasWaitSemaphoresKHR) {
       if (!std::strcmp("vkWaitSemaphoresKHR", name))
-        return (PFN_vkVoidFunction) &wrap_WaitSemaphoresKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WaitSemaphoresKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWriteAccelerationStructuresPropertiesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::WriteAccelerationStructuresPropertiesKHR; };
     if constexpr (HasWriteAccelerationStructuresPropertiesKHR) {
       if (!std::strcmp("vkWriteAccelerationStructuresPropertiesKHR", name))
-        return (PFN_vkVoidFunction) &wrap_WriteAccelerationStructuresPropertiesKHR<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WriteAccelerationStructuresPropertiesKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasWriteMicromapsPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::WriteMicromapsPropertiesEXT; };
     if constexpr (HasWriteMicromapsPropertiesEXT) {
       if (!std::strcmp("vkWriteMicromapsPropertiesEXT", name))
-        return (PFN_vkVoidFunction) &wrap_WriteMicromapsPropertiesEXT<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+        return (PFN_vkVoidFunction) &wrap_WriteMicromapsPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     if (dispatch)
@@ -19903,6 +20411,20 @@ namespace vkroots {
 
 namespace vkroots {
 
+  class VkPhysicalDeviceDispatch
+  {
+  public:
+    VkPhysicalDeviceDispatch( const VkInstanceDispatch *pInstanceDispatch )
+      : pInstanceDispatch{ pInstanceDispatch }
+    {
+    }
+
+    const VkInstanceDispatch *pInstanceDispatch = nullptr;
+  };
+
+}
+namespace vkroots {
+
   static VkResult implicit_wrap_CreateInstance(
     const VkInstanceCreateInfo*  pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
@@ -19938,12 +20460,12 @@ namespace vkroots {
       const VkDeviceCreateInfo*    pCreateInfo,
       const VkAllocationCallbacks* pAllocator,
             VkDevice*              pDevice) {
-    const VkInstanceDispatch* dispatch = tables::LookupInstanceDispatch(physicalDevice);
+    const VkPhysicalDeviceDispatch* dispatch = tables::LookupPhysicalDeviceDispatch(physicalDevice);
     PFN_vkGetDeviceProcAddr deviceProcAddr;
     VkResult procAddrRes = GetProcAddrs(pCreateInfo, &deviceProcAddr);
     if (procAddrRes != VK_SUCCESS)
       return procAddrRes;
-    VkResult ret = dispatch->_RealCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
+    VkResult ret = dispatch->pInstanceDispatch->_RealCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
     if (ret == VK_SUCCESS)
       tables::CreateDispatchTable(pCreateInfo, deviceProcAddr, physicalDevice, *pDevice);
     return ret;
@@ -19983,8 +20505,7 @@ namespace vkroots {
 namespace vkroots::tables {
 
   static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance) {
-    auto instanceDispatch = InstanceDispatches.insert(instance, std::make_unique<VkInstanceDispatch>(nextInstanceProcAddr, instance));
-    auto physicalDeviceDispatch = PhysicalDeviceInstanceDispatches.insert(instance, std::make_unique<VkPhysicalDeviceDispatch>(nextPhysDevProcAddr, instance, instanceDispatch));
+    auto instanceDispatch = InstanceDispatches.insert(instance, std::make_unique<VkInstanceDispatch>(nextInstanceProcAddr, instance, nextPhysDevProcAddr));
 
     uint32_t physicalDeviceCount;
     VkResult res = instanceDispatch->EnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr);
@@ -19996,7 +20517,7 @@ namespace vkroots::tables {
     if (res != VK_SUCCESS) return;
 
     for (VkPhysicalDevice physicalDevice : physicalDevices)
-      PhysicalDeviceDispatches.insert(physicalDevice, RawPointer(physicalDeviceDispatch));
+      PhysicalDeviceDispatches.insert(physicalDevice, std::make_unique<VkPhysicalDeviceDispatch>(instanceDispatch));
   }
 
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
@@ -20033,7 +20554,6 @@ namespace vkroots::tables {
       }
     }
 
-    PhysicalDeviceInstanceDispatches.remove(instance);
     InstanceDispatches.remove(instance);
   }
 
@@ -20267,22 +20787,22 @@ namespace vkroots {
 }
 namespace vkroots {
 
-  template <typename InstanceOverrides, typename PhysicalDeviceOverrides, typename DeviceOverrides>
+  template <typename InstanceOverrides, typename DeviceOverrides>
   VkResult NegotiateLoaderLayerInterfaceVersion(VkNegotiateLayerInterface* pVersionStruct) {
     if (pVersionStruct->loaderLayerInterfaceVersion < 2)
       return VK_ERROR_INITIALIZATION_FAILED;
     pVersionStruct->loaderLayerInterfaceVersion = 2;
 
     // Can't optimize away not having instance overrides from the layer, need to track device creation and instance dispatch and stuff.
-    pVersionStruct->pfnGetInstanceProcAddr       = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
+    pVersionStruct->pfnGetInstanceProcAddr       = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetInstanceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
-    pVersionStruct->pfnGetPhysicalDeviceProcAddr = std::is_base_of<NoOverrides, PhysicalDeviceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
+                                                     : &GetInstanceProcAddr<InstanceOverrides, DeviceOverrides>;
+    pVersionStruct->pfnGetPhysicalDeviceProcAddr = std::is_base_of<NoOverrides, InstanceOverrides>::value && std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetPhysicalDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+                                                     : &GetPhysicalDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
     pVersionStruct->pfnGetDeviceProcAddr         = std::is_base_of<NoOverrides, DeviceOverrides>::value
                                                      ? nullptr
-                                                     : &GetDeviceProcAddr<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>;
+                                                     : &GetDeviceProcAddr<InstanceOverrides, DeviceOverrides>;
 
     return VK_SUCCESS;
   }
@@ -20314,7 +20834,7 @@ namespace vkroots {
 
 #endif
 
-#define VKROOTS_DEFINE_LAYER_INTERFACES(InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides)                                   \
+#define VKROOTS_DEFINE_LAYER_INTERFACES(InstanceOverrides, DeviceOverrides)                                   \
   VK_LAYER_EXPORT VKAPI_ATTR VkResult VKAPI_CALL VKROOTS_NEGOTIATION_INTERFACE(VkNegotiateLayerInterface* pVersionStruct) {            \
-    return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, PhysicalDeviceOverrides, DeviceOverrides>(pVersionStruct); \
+    return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, DeviceOverrides>(pVersionStruct); \
   }
