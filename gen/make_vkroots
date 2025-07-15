@@ -88,17 +88,36 @@ class VkGenerator(object):
         procaddr_normalized = f"Get{dispatch_type}ProcAddr"
         procaddr = f"vk{procaddr_normalized}"
 
+        is_wrapper = True if dispatch_type in ("PhysicalDevice", "Queue", "CommandBuffer", "ExternalComputeQueueNV") else False
+
+        prev_level = ""
+        if dispatch_type == "PhysicalDevice":
+            prev_level = "Instance"
+        if dispatch_type == "Queue":
+            prev_level = "Device"
+        if dispatch_type == "ExternalComputeQueueNV":
+            prev_level = "Device"
+        if dispatch_type == "CommandBuffer":
+            prev_level = "Device"
+        if dispatch_type == "Device":
+            prev_level = "PhysicalDevice"
+
         f.write(f"  class Vk{dispatch_type}Dispatch {{\n")
         f.write( "  public:\n")
-        additional_args = ""
-        if dispatch_type == "Instance":
-            additional_args += ", PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr"
-        if dispatch_type == "Device":
-            additional_args += ", VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch, const VkDeviceCreateInfo* pCreateInfo"
-        f.write(f"    Vk{dispatch_type}Dispatch(PFN_{procaddr} Next{procaddr_normalized}, Vk{procaddr_type} {procaddr_name}{additional_args}) {{\n")
+        if is_wrapper:
+            f.write(f"    Vk{dispatch_type}Dispatch(Vk{dispatch_type} p{dispatch_type}, const Vk{prev_level}Dispatch *p{prev_level}Dispatch) {{\n")
+            f.write(f"      this->{dispatch_type} = p{dispatch_type};\n")
+            f.write(f"      this->p{prev_level}Dispatch = p{prev_level}Dispatch;\n")
+        else:
+            additional_args = ""
+            if dispatch_type == "Instance":
+                additional_args += ", PFN_vkGetPhysicalDeviceProcAddr NextGetPhysicalDeviceProcAddr"
+            if dispatch_type == "Device":
+                additional_args += ", VkPhysicalDevice PhysicalDevice, const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch, const VkDeviceCreateInfo* pCreateInfo"
+            f.write(f"    Vk{dispatch_type}Dispatch(PFN_{procaddr} Next{procaddr_normalized}, Vk{procaddr_type} {procaddr_name}{additional_args}) {{\n")
         if dispatch_type == "Instance":
             f.write(f"      this->Instance = instance;\n")
-            f.write(f"      this->GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;\n")
+            f.write(f"      this->m_GetPhysicalDeviceProcAddr = NextGetPhysicalDeviceProcAddr;\n")
         if dispatch_type == "Device":
             f.write(f"      this->PhysicalDevice = PhysicalDevice;\n")
             f.write(f"      this->Device = device;\n")
@@ -115,50 +134,102 @@ class VkGenerator(object):
                 func_name_normalized = remove_vk_prefix(func.name)
                 self.print_object_platform_ifdef(f, func);
                 if func.name in ("vkGetInstanceProcAddr", "vkGetDeviceProcAddr"):
-                    f.write(f"      this->{func_name_normalized} = Next{procaddr_normalized};\n")
-                elif func.name in ("vkCreateInstance", "vkCreateDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                    f.write(f"      this->_Real{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
-                    f.write(f"      this->{func_name_normalized} = (PFN_{func.name}) implicit_wrap_{func_name_normalized};\n")
-                elif func.name in ("vkDestroyInstance", "vkDestroyDevice"):
-                    f.write(f"      this->_Real{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
-                    f.write(f"      this->{func_name_normalized} = (PFN_{func.name}) {func_name_normalized}Wrapper;\n")
+                    f.write(f"      this->m_{func_name_normalized} = Next{procaddr_normalized};\n")
                 else:
-                    f.write(f"      this->{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
+                    f.write(f"      this->m_{func_name_normalized} = (PFN_{func.name}) Next{procaddr_normalized}({procaddr_name}, \"{func.name}\");\n")
                 self.print_object_platform_endif(f, func);
         f.write(f"    }}\n\n")
         f.write( "    mutable uint64_t UserData = 0;\n")
+
+        if dispatch_type == "Instance":
+            f.write( "    PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char *pName) const { return m_GetPhysicalDeviceProcAddr(instance, pName); }")
+
+        for func in self.registry.funcs.values():
+            if not func.is_required():
+                continue
+
+            valid_for_dispatch_type = False
+            dispatch_level = "m_"
+            if func.get_func_type() == dispatch_type:
+                valid_for_dispatch_type = True
+            elif dispatch_type == "PhysicalDevice":
+                dispatch_level = "pInstanceDispatch->"
+                if func.get_func_type() == "Instance":
+                    valid_for_dispatch_type = True
+            elif dispatch_type == "Device":
+                dispatch_level = "pPhysicalDeviceDispatch->"
+                if func.get_func_type() in ("Instance", "PhysicalDevice"):
+                    valid_for_dispatch_type = True
+            elif dispatch_type in ("CommandBuffer", "Queue", "ExternalComputeQueueNV"):
+                dispatch_level = "pDeviceDispatch->"
+                if func.get_func_type() in ("Instance", "PhysicalDevice", "Device"):
+                    valid_for_dispatch_type = True
+
+            if valid_for_dispatch_type:
+                func_name_normalized = remove_vk_prefix(func.name)
+                self.print_object_platform_ifdef(f, func);
+                params   = ", ".join([p.definition() for p in func.params])
+                args     = ", ".join([p.name for p in func.params])
+
+                if func.get_func_type() == dispatch_type and func_name_normalized == f"Destroy{dispatch_type}":
+                    f.write(f"    void Destroy{dispatch_type}(Vk{dispatch_type} object, const VkAllocationCallbacks* pAllocator) const {{\n")
+                    f.write(f"      vkroots::tables::DestroyDispatchTable(object);\n")
+                    f.write(f"      m_Destroy{dispatch_type}(object, pAllocator);\n")
+                    f.write(f"    }}\n")
+                elif func.get_func_type() == dispatch_type and func_name_normalized == "CreateDevice":
+                    write_include(f, "vkroots_replace_CreateDevice.h")
+                elif func.get_func_type() == dispatch_type and func_name_normalized in ("AllocateCommandBuffers", "FreeCommandBuffers"):
+                    count = "1"
+                    pointer = f"{func.params[-1].name}"
+                    free = False
+                    if func.name == "vkAllocateCommandBuffers":
+                        count = "pAllocateInfo->commandBufferCount"
+                    elif func.name == "vkFreeCommandBuffers":
+                        count = "commandBufferCount"
+                        free = True
+
+                    f.write(f"      {func.type} {func_name_normalized}({params}) const {{\n")
+                    if free:
+                        f.write(f"          for (uint32_t i = 0; i < {count}; i++)\n")
+                        f.write(f"            tables::UnassignDispatchTable({pointer}[i]);\n")
+                        f.write(f"          {dispatch_level}{func_name_normalized}({args});\n")
+                    else:
+                        f.write(f"          VkResult ret = {dispatch_level}{func_name_normalized}({args});\n")
+                        f.write(f"          if (ret == VK_SUCCESS) {{\n")
+                        f.write(f"              for (uint32_t i = 0; i < {count}; i++)\n")
+                        f.write(f"                tables::AssignDispatchTable({pointer}[i], this);\n")
+                        f.write(f"          }}\n")
+                        f.write(f"          return ret;\n")
+                    f.write(f"      }};\n")
+                else:
+                    returnString = "" if func.type == "void" else "return "
+                    f.write(f"    {func.type} {func_name_normalized}({params}) const {{ {returnString}{dispatch_level}{func_name_normalized}({args}); }}\n")
+                self.print_object_platform_endif(f, func);
+
+        f.write( "  public:\n")
         if dispatch_type == "Instance":
             f.write( "    VkInstance Instance;\n")
-            f.write( "    PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;\n")
+            f.write( "  private:\n")
+            f.write( "    PFN_GetPhysicalDeviceProcAddr m_GetPhysicalDeviceProcAddr;\n")
+        if is_wrapper:
+            f.write(f"    Vk{dispatch_type} {dispatch_type};\n")
+            f.write(f"    const Vk{prev_level}Dispatch *p{prev_level}Dispatch;\n")
+            f.write( "  private:\n")
         if dispatch_type == "Device":
             f.write( "    VkDevice Device;\n")
             f.write( "    VkPhysicalDevice PhysicalDevice;\n")
             f.write( "    const VkPhysicalDeviceDispatch* pPhysicalDeviceDispatch;\n")
             f.write( "    std::vector<VkDeviceQueueCreateInfo> DeviceQueueInfos;\n") # mutable hack TODO: remove
+            f.write( "  private:\n")
         for func in self.registry.funcs.values():
             if not func.is_required():
                 continue
             if func.get_func_type() == dispatch_type:
                 func_name_normalized = remove_vk_prefix(func.name)
                 self.print_object_platform_ifdef(f, func);
-                if func.name in ("vkCreateInstance", "vkCreateDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                    f.write(f"    PFN_{func.name} _Real{func_name_normalized};\n")
-                f.write(f"    PFN_{func.name} {func_name_normalized};\n")
+                f.write(f"    PFN_{func.name} m_{func_name_normalized};\n")
                 self.print_object_platform_endif(f, func);
-        f.write("  private:\n")
-        if dispatch_type == "Instance" or dispatch_type == "Device":
-            f.write(f"    PFN_vkDestroy{dispatch_type} _RealDestroy{dispatch_type};\n");
-            f.write(f"    static void Destroy{dispatch_type}Wrapper(Vk{dispatch_type} object, const VkAllocationCallbacks* pAllocator) {{\n")
-            f.write(f"      auto dispatch = vkroots::tables::Lookup{dispatch_type}Dispatch(object);\n")
-            f.write(f"      auto destroyFunc = dispatch->_RealDestroy{dispatch_type};\n")
-            f.write(f"      vkroots::tables::DestroyDispatchTable(object);\n")
-            f.write(f"      destroyFunc(object, pAllocator);\n")
-            f.write(f"    }}\n")
         f.write( "  };\n\n")
-        if dispatch_type == "PhysicalDevice":
-            f.write( "  namespace tables {\n")
-            f.write( "    static inline const VkInstanceDispatch* LookupInstanceDispatch(VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice)->pInstanceDispatch; }\n")
-            f.write( "  }\n")
 
     def write_dispatch_funcs(self, f, dispatch_type, dispatch_name, procaddr_type, procaddr_name):
         for func in self.registry.funcs.values():
@@ -176,11 +247,17 @@ class VkGenerator(object):
                 local_dispatch_type = dispatch_type
                 if dispatch_type == "Instance" and func.params[0].type == "VkPhysicalDevice":
                     local_dispatch_type = "PhysicalDevice"
+                if dispatch_type == "Device" and func.params[0].type == "VkCommandBuffer":
+                    local_dispatch_type = "CommandBuffer"
+                if dispatch_type == "Device" and func.params[0].type == "VkQueue":
+                    local_dispatch_type = "Queue"
+                if dispatch_type == "Device" and func.params[0].type == "VkExternalComputeQueueNV":
+                    local_dispatch_type = "ExternalComputeQueueNV"
 
                 if func.name == "vkCreateInstance":
                     f.write(f"    {return_v}{local_dispatch_type}Overrides::{func_name_normalized}(implicit_wrap_CreateInstance, {args});\n")
                 else:
-                    f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = tables::Lookup{local_dispatch_type}Dispatch({func.params[0].name});\n")
+                    f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = tables::LookupDispatch({func.params[0].name});\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
                 if func.type != "void":
                     f.write(f"    return ret;\n")
@@ -193,15 +270,24 @@ class VkGenerator(object):
 
         f.write( "  template <typename InstanceOverrides, typename DeviceOverrides>\n")
         f.write(f"  static PFN_vkVoidFunction Get{dispatch_type}ProcAddr(Vk{procaddr_type} {procaddr_name}, const char* name) {{\n")
-        f.write(f"    const Vk{procaddr_type}Dispatch* dispatch = tables::Lookup{procaddr_type}Dispatch({procaddr_name});\n")
+        f.write(f"    const Vk{procaddr_type}Dispatch* dispatch = tables::LookupDispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
             if not func.is_required():
                 continue
             if func.get_func_type() == procaddr_type:
                 if dispatch_type == "PhysicalDevice" and func.params[0].type != "VkPhysicalDevice":
                     continue
+                if dispatch_type == "Queue" and func.params[0].type != "VkQueue":
+                    continue
+                if dispatch_type == "CommandBuffer" and func.params[0].type != "VkCommandBuffer":
+                    continue
+                if dispatch_type == "ExternalComputeQueueNV" and func.params[0].type != "VkExternalComputeQueueNV":
+                    continue
                 self.print_object_platform_ifdef(f, func)
                 func_name_normalized = remove_vk_prefix(func.name)
+                params   = ", ".join([p.definition() for p in func.params])
+                args     = ", ".join([p.name for p in func.params])
+                returnString = "" if func.type == "void" else "return "
                 if is_proc_addr_func(func.name):
                     f.write(f"    if (!std::strcmp(\"{func.name}\", name))\n")
                     f.write(f"      return (PFN_vkVoidFunction) &{func_name_normalized}<InstanceOverrides, DeviceOverrides>;\n")
@@ -215,28 +301,20 @@ class VkGenerator(object):
                     f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
                     f.write(f"        return (PFN_vkVoidFunction) &wrap_{func_name_normalized}<InstanceOverrides, DeviceOverrides>;\n")
                     f.write( "    }\n")
-                    if func.name == "vkCreateInstance":
+                    if func.name in ("vkCreateInstance"):
                         f.write( "    else {\n")
                         f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                        f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_CreateInstance;\n")
-                        f.write( "    }\n")
-                    if func.name in ("vkCreateDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                        f.write( "    else {\n")
-                        # If we don't have any overrides, don't hook this to make a dispatch table.
-                        f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
                         f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_{func_name_normalized};\n")
                         f.write( "    }\n")
-                    if func.name == "vkDestroyInstance":
+                    elif func.name in ("vkDestroyInstance", "vkCreateDevice", "vkDestroyDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
                         f.write( "    else {\n")
-                        f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                        f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_DestroyInstance;\n")
+                        if func.name in ("vkCreateDevice", "vkDestroyDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
+                            f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
+                        else:
+                            f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
+                        f.write(f"        return (PFN_vkVoidFunction) +[]({params}) -> {func.type} {{ const auto* dispatch = tables::LookupDispatch({func.params[0].name}); {returnString}dispatch->{func_name_normalized}({args}); }};\n")
                         f.write( "    }\n")
-                    if func.name == "vkDestroyDevice":
-                        f.write( "    else {\n")
-                        f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                        f.write(f"        return (PFN_vkVoidFunction) &implicit_wrap_DestroyDevice;\n")
-                        f.write( "    }\n")
-                self.print_object_platform_endif(f, func);
+                self.print_object_platform_endif(f, func)
                 f.write( "\n")
         # WHY DOES THIS EXIST????
         # PLEASE TELL ME.
@@ -253,7 +331,11 @@ class VkGenerator(object):
 
     def write_dispatch_classes(self, f):
         self.write_dispatch_class(f, "Instance", "instance",             "Instance", "instance")
+        self.write_dispatch_class(f, "PhysicalDevice", "physicalDevice",  "", "")
         self.write_dispatch_class(f, "Device", "device",                 "Device",   "device")
+        self.write_dispatch_class(f, "Queue", "queue",  "", "")
+        self.write_dispatch_class(f, "CommandBuffer", "commandBuffer",  "", "")
+        self.write_dispatch_class(f, "ExternalComputeQueueNV", "queue",  "", "")
 
         self.write_dispatch_funcs(f, "Instance", "instance",             "Instance", "instance")
         self.write_dispatch_funcs(f, "Device", "device",                 "Device",   "device")
@@ -341,25 +423,6 @@ def main():
         f.write( "namespace vkroots {\n")
 
         f.write("  static VkResult implicit_wrap_CreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance);\n")
-        f.write("  static VkResult implicit_wrap_CreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo*pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDevice* pDevice);\n")
-        f.write("  static void implicit_wrap_DestroyInstance(VkInstance instance, const VkAllocationCallbacks* pAllocator);\n")
-        f.write("  static void implicit_wrap_DestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator);\n")
-
-        for func in registry.funcs.values():
-            if not func.is_required():
-                continue
-            if func.name in ("vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                func_name_normalized = remove_vk_prefix(func.name)
-                params   = ", ".join([p.definition() for p in func.params])
-                free = False
-                if func.name == "vkFreeCommandBuffers":
-                    free = True
-
-                retval = "VkResult"
-                if free:
-                    retval = "void"
-
-                f.write(f"  static {retval} implicit_wrap_{func_name_normalized}({params});\n")
 
         f.write( "\n")
         f.write("  template <typename InstanceOverrides, typename DeviceOverrides>\n")
@@ -371,51 +434,9 @@ def main():
         f.write( "}\n")
         f.write( "\n")
 
-        write_include(f, "vkroots_extra_dispatch_tables.h")
-
         write_include(f, "vkroots_implicit_createinstance.h")
-        write_include(f, "vkroots_implicit_destroyinstance.h")
-        write_include(f, "vkroots_implicit_createdevice.h")
-        write_include(f, "vkroots_implicit_destroydevice.h")
 
         f.write( "namespace vkroots {\n")
-
-        for func in registry.funcs.values():
-            if not func.is_required():
-                continue
-            if func.name in ("vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                func_name_normalized = remove_vk_prefix(func.name)
-                params   = ", ".join([p.definition() for p in func.params])
-                args     = ", ".join([p.name for p in func.params])
-
-                count = "1"
-                pointer = f"{func.params[-1].name}"
-                free = False
-                if func.name == "vkAllocateCommandBuffers":
-                    count = "pAllocateInfo->commandBufferCount"
-                elif func.name == "vkFreeCommandBuffers":
-                    count = "commandBufferCount"
-                    free = True
-
-                retval = "VkResult"
-                if free:
-                    retval = "void"
-
-                f.write(f"      static {retval} implicit_wrap_{func_name_normalized}({params}){{\n")
-                if free:
-                    f.write(f"          const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch({func.params[0].name});\n")
-                    f.write(f"          for (uint32_t i = 0; i < {count}; i++)\n")
-                    f.write(f"            tables::UnassignDispatchTable({pointer}[i]);\n")
-                    f.write(f"          dispatch->_Real{func_name_normalized}({args});\n")
-                else:
-                    f.write(f"          const VkDeviceDispatch* dispatch = tables::LookupDeviceDispatch(device);\n")
-                    f.write(f"          VkResult ret = dispatch->_Real{func_name_normalized}({args});\n")
-                    f.write(f"          if (ret == VK_SUCCESS) {{\n")
-                    f.write(f"              for (uint32_t i = 0; i < {count}; i++)\n")
-                    f.write(f"                tables::AssignDispatchTable({pointer}[i], dispatch);\n")
-                    f.write(f"          }}\n")
-                    f.write(f"          return ret;\n")
-                f.write(f"      }};\n")
 
         f.write( "}\n")
         f.write( "\n")

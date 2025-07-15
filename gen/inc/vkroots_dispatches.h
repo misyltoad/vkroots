@@ -13,11 +13,11 @@ namespace vkroots::tables {
     if (res != VK_SUCCESS) return;
 
     for (VkPhysicalDevice physicalDevice : physicalDevices)
-      PhysicalDeviceDispatches.insert(physicalDevice, std::make_unique<VkPhysicalDeviceDispatch>(instanceDispatch));
+      tables::AssignDispatchTable(physicalDevice, instanceDispatch);
   }
 
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
-    auto physicalDeviceDispatch = vkroots::tables::LookupPhysicalDeviceDispatch(physicalDevice);
+    auto physicalDeviceDispatch = vkroots::tables::LookupDispatch(physicalDevice);
     auto deviceDispatch = DeviceDispatches.insert(device, std::make_unique<VkDeviceDispatch>(nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo));
 
     for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {
@@ -26,7 +26,7 @@ namespace vkroots::tables {
         VkQueue queue;
         deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, j, &queue);
 
-        QueueDispatches.insert(queue, RawPointer(deviceDispatch));
+        tables::AssignDispatchTable(queue, deviceDispatch);
       }
     }
   }
@@ -46,7 +46,7 @@ namespace vkroots::tables {
       assert(res == VK_SUCCESS); // Not like we can do anything else with the result lol.
       if (res == VK_SUCCESS) {
         for (VkPhysicalDevice physicalDevice : physicalDevices)
-          PhysicalDeviceDispatches.remove(physicalDevice);
+          tables::UnassignDispatchTable(physicalDevice);
       }
     }
 
@@ -63,7 +63,7 @@ namespace vkroots::tables {
       for (uint32_t i = 0; i < queueInfo.queueCount; i++) {
         VkQueue queue;
         deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, i, &queue);
-        QueueDispatches.remove(queue);
+        tables::UnassignDispatchTable(queue);
       }
     }
 

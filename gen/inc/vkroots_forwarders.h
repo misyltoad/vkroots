@@ -6,6 +6,9 @@ namespace vkroots {
   class VkInstanceDispatch;
   class VkPhysicalDeviceDispatch;
   class VkDeviceDispatch;
+  class VkQueueDispatch;
+  class VkCommandBufferDispatch;
+  class VkExternalComputeQueueNVDispatch;
 
   class NoOverrides { static constexpr bool IsNoOverrides = true; };
 
@@ -122,27 +125,33 @@ namespace vkroots {
     };
 
     // All our dispatchables...
-    inline VkDispatchTableMap<VkInstance,       VkInstanceDispatch,       std::unique_ptr<const VkInstanceDispatch>>       InstanceDispatches;
-    inline VkDispatchTableMap<VkPhysicalDevice, VkPhysicalDeviceDispatch, std::unique_ptr<const VkPhysicalDeviceDispatch>> PhysicalDeviceDispatches;
-    inline VkDispatchTableMap<VkDevice,         VkDeviceDispatch,         std::unique_ptr<const VkDeviceDispatch>>         DeviceDispatches;
-    inline VkDispatchTableMap<VkQueue,          VkDeviceDispatch,         RawPointer     <const VkDeviceDispatch>>         QueueDispatches;
-    inline VkDispatchTableMap<VkCommandBuffer,  VkDeviceDispatch,         RawPointer     <const VkDeviceDispatch>>         CommandBufferDispatches;
-    inline VkDispatchTableMap<VkExternalComputeQueueNV, VkDeviceDispatch, RawPointer     <const VkDeviceDispatch>>         ExternalComputeQueueDispatches;
+    inline VkDispatchTableMap<VkInstance,               VkInstanceDispatch,               std::unique_ptr<const VkInstanceDispatch>>       InstanceDispatches;
+    inline VkDispatchTableMap<VkPhysicalDevice,         VkPhysicalDeviceDispatch,         std::unique_ptr<const VkPhysicalDeviceDispatch>> PhysicalDeviceDispatches;
+    inline VkDispatchTableMap<VkDevice,                 VkDeviceDispatch,                 std::unique_ptr<const VkDeviceDispatch>>         DeviceDispatches;
+    inline VkDispatchTableMap<VkQueue,                  VkQueueDispatch,                  std::unique_ptr<const VkQueueDispatch>>          QueueDispatches;
+    inline VkDispatchTableMap<VkCommandBuffer,          VkCommandBufferDispatch,          std::unique_ptr<const VkCommandBufferDispatch>>  CommandBufferDispatches;
+    inline VkDispatchTableMap<VkExternalComputeQueueNV, VkExternalComputeQueueNVDispatch, std::unique_ptr<const VkExternalComputeQueueNVDispatch>> ExternalComputeQueueDispatches;
 
-    static inline const VkInstanceDispatch*       LookupInstanceDispatch      (VkInstance instance)             { return InstanceDispatches.find(instance); }
-    static inline const VkPhysicalDeviceDispatch* LookupPhysicalDeviceDispatch(VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice); }
-    static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkDevice device)                 { return DeviceDispatches.find(device); }
-    static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkQueue device)                  { return QueueDispatches.find(device); }
-    static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkCommandBuffer cmdBuffer)       { return CommandBufferDispatches.find(cmdBuffer); }
-    static inline const VkDeviceDispatch*         LookupDeviceDispatch        (VkExternalComputeQueueNV externalComputeQueueNV) { return ExternalComputeQueueDispatches.find(externalComputeQueueNV); }
+    static inline const VkInstanceDispatch*               LookupDispatch        (VkInstance instance)             { return InstanceDispatches.find(instance); }
+    static inline const VkPhysicalDeviceDispatch*         LookupDispatch        (VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice); }
+    static inline const VkDeviceDispatch*                 LookupDispatch        (VkDevice device)                 { return DeviceDispatches.find(device); }
+    static inline const VkQueueDispatch*                  LookupDispatch        (VkQueue device)                  { return QueueDispatches.find(device); }
+    static inline const VkCommandBufferDispatch*          LookupDispatch        (VkCommandBuffer cmdBuffer)       { return CommandBufferDispatches.find(cmdBuffer); }
+    static inline const VkExternalComputeQueueNVDispatch* LookupDispatch        (VkExternalComputeQueueNV externalComputeQueueNV) { return ExternalComputeQueueDispatches.find(externalComputeQueueNV); }
 
     static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance);
     static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device);
     static inline void DestroyDispatchTable(VkInstance instance);
     static inline void DestroyDispatchTable(VkDevice device);
 
-    static inline void AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { CommandBufferDispatches.insert(cmdBuffer, RawPointer(pDispatch)); }
+    static inline void AssignDispatchTable(VkPhysicalDevice physDev, const VkInstanceDispatch *pDispatch) { PhysicalDeviceDispatches.insert(physDev, std::make_unique<VkPhysicalDeviceDispatch>(physDev, pDispatch)); }
+    static inline void AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { CommandBufferDispatches.insert(cmdBuffer, std::make_unique<VkCommandBufferDispatch>(cmdBuffer, pDispatch)); }
+    static inline void AssignDispatchTable(VkQueue queue, const VkDeviceDispatch *pDispatch) { QueueDispatches.insert(queue, std::make_unique<VkQueueDispatch>(queue, pDispatch)); }
+    static inline void AssignDispatchTable(VkExternalComputeQueueNV queue, const VkDeviceDispatch *pDispatch) { ExternalComputeQueueDispatches.insert(queue, std::make_unique<VkExternalComputeQueueNVDispatch>(queue, pDispatch)); }
+    static inline void UnassignDispatchTable(VkPhysicalDevice physDev) { PhysicalDeviceDispatches.remove(physDev); }
     static inline void UnassignDispatchTable(VkCommandBuffer cmdBuffer) { CommandBufferDispatches.remove(cmdBuffer); }
+    static inline void UnassignDispatchTable(VkQueue queue) { QueueDispatches.remove(queue); }
+    static inline void UnassignDispatchTable(VkExternalComputeQueueNV queue) { ExternalComputeQueueDispatches.remove(queue); }
   }
 
   struct VkInstanceProcAddrFuncs {
