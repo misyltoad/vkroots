@@ -12,12 +12,17 @@ namespace vkroots::tables {
     assert(res == VK_SUCCESS); // Not like we can do anything else with the result lol.
     if (res != VK_SUCCESS) return;
 
-    for (VkPhysicalDevice physicalDevice : physicalDevices)
-      tables::AssignDispatchTable(physicalDevice, instanceDispatch);
+    instanceDispatch->PhysicalDevices.resize(physicalDevices.size());
+    instanceDispatch->PhysicalDeviceDispatches.resize(physicalDevices.size());
+    for (VkPhysicalDevice physicalDevice : physicalDevices) {
+      const vkroots::VkPhysicalDeviceDispatch *pPhysicalDeviceDispatch = tables::AssignDispatchTable(physicalDevice, instanceDispatch);
+      instanceDispatch->PhysicalDevices.push_back(physicalDevice);
+      instanceDispatch->PhysicalDeviceDispatches.push_back(pPhysicalDeviceDispatch);
+    }
   }
 
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
-    auto physicalDeviceDispatch = vkroots::tables::LookupDispatch(physicalDevice);
+    auto physicalDeviceDispatch = vkroots::LookupDispatch(physicalDevice);
     auto deviceDispatch = DeviceDispatches.create(device, nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo);
 
     for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {

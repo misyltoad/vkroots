@@ -142,7 +142,7 @@ class VkGenerator(object):
                 self.print_object_platform_endif(f, func);
         f.write(f"    }}\n\n")
         f.write( "    // Put your types you want to associate with any dispatchable object here. This is a std::any, so it's destructor will trigger when the dispatchable object is destroyed.\n")
-        f.write( "    mutable std::any UserData;\n")
+        f.write( "    mutable GenericUserData UserData;\n")
 
         if dispatch_type == "Instance":
             f.write( "    PFN_vkVoidFunction GetPhysicalDeviceProcAddr(VkInstance instance, const char *pName) const { return m_GetPhysicalDeviceProcAddr(instance, pName); }")
@@ -212,6 +212,8 @@ class VkGenerator(object):
         f.write( "  public:\n")
         if dispatch_type == "Instance":
             f.write( "    VkInstance Instance;\n")
+            f.write( "    mutable std::vector<VkPhysicalDevice> PhysicalDevices;\n") # timeline... :(
+            f.write( "    mutable std::vector<const vkroots::VkPhysicalDeviceDispatch *> PhysicalDeviceDispatches;\n")
             f.write( "  private:\n")
             f.write( "    PFN_GetPhysicalDeviceProcAddr m_GetPhysicalDeviceProcAddr;\n")
         if is_wrapper:
@@ -260,7 +262,7 @@ class VkGenerator(object):
                 if func.name == "vkCreateInstance":
                     f.write(f"    {return_v}{local_dispatch_type}Overrides::{func_name_normalized}(implicit_wrap_CreateInstance, {args});\n")
                 else:
-                    f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = tables::LookupDispatch({func.params[0].name});\n")
+                    f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = LookupDispatch({func.params[0].name});\n")
                     f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(*dispatch, {args});\n")
                 if func.type != "void":
                     f.write(f"    return ret;\n")
@@ -273,7 +275,7 @@ class VkGenerator(object):
 
         f.write( "  template <typename InstanceOverrides, typename DeviceOverrides>\n")
         f.write(f"  static PFN_vkVoidFunction Get{dispatch_type}ProcAddr(Vk{procaddr_type} {procaddr_name}, const char* name) {{\n")
-        f.write(f"    const Vk{procaddr_type}Dispatch* dispatch = tables::LookupDispatch({procaddr_name});\n")
+        f.write(f"    const Vk{procaddr_type}Dispatch* dispatch = LookupDispatch({procaddr_name});\n")
         for func in self.registry.funcs.values():
             if not func.is_required():
                 continue
@@ -329,7 +331,7 @@ class VkGenerator(object):
                             f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value &&{extra_check} !std::strcmp(\"{func.name}\", name))\n")
                         else:
                             f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
-                        f.write(f"        return (PFN_vkVoidFunction) +[]({params}) -> {func.type} {{ const auto* dispatch = tables::LookupDispatch({func.params[0].name}); {returnString}dispatch->{func_name_normalized}({args}); }};\n")
+                        f.write(f"        return (PFN_vkVoidFunction) +[]({params}) -> {func.type} {{ const auto* dispatch = LookupDispatch({func.params[0].name}); {returnString}dispatch->{func_name_normalized}({args}); }};\n")
                         f.write( "    }\n")
                 self.print_object_platform_endif(f, func)
                 f.write( "\n")

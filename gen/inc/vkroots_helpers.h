@@ -12,7 +12,7 @@ namespace vkroots {
     func(view);
   }
 
-  static bool contains(const std::vector<const char *> vec, std::string_view lookupValue) {
+  inline bool contains(const std::vector<const char *> vec, std::string_view lookupValue) {
     return std::ranges::any_of(vec, std::bind_front(std::equal_to{}, lookupValue));
   }
 
@@ -41,7 +41,7 @@ namespace vkroots {
   }
 
   // For dispatch functions, you might need eg:
-  //   [&] (auto... args) { dispatch.GetPhysicalDeviceQueueFamilyProperties(args...); },
+  //   vkr_dispatch_bind( dispatch, GetPhysicalDeviceQueueFamilyProperties )
   template <typename Func, typename OutArray, typename... Args>
   uint32_t enumerate(Func function, OutArray& outArray, Args&&... arguments) {
     uint32_t count = 0;
@@ -56,7 +56,7 @@ namespace vkroots {
   }
 
   // For dispatch functions, you might need eg:
-  //   [&] (auto... args) { dispatch.GetPhysicalDeviceQueueFamilyProperties(args...); },
+  //   vkr_dispatch_bind( dispatch, GetPhysicalDeviceQueueFamilyProperties )
   template <typename Func, typename InArray, typename OutType, typename... Args>
   VkResult append(Func function, const InArray& inArray, uint32_t* pOutCount, OutType* pOut, Args&&... arguments) {
     uint32_t baseCount = 0;
@@ -88,21 +88,43 @@ namespace vkroots {
     return nullptr;
   }
 
+  #define vkr_dispatch_bind( dispatch, FuncName ) ( [&](auto... args){ ( dispatch ) . FuncName (args...); } )
+
   template <typename Type, typename UserData = uint64_t>
   class ChainPatcher {
   public:
     template <typename AnyStruct>
     ChainPatcher(const AnyStruct *obj, std::function<bool(UserData&, Type *)> func) {
-      const Type *type = vkroots::FindInChain<Type>(obj);
-      if (type) {
-        func(m_ctx, const_cast<Type *>(type));
+      m_obj = (VkBaseOutStructure *)const_cast<AnyStruct*>(obj);
+
+      // Remove the old value from the pNext chain.
+      auto [in, header] = vkroots::RemoveFromChain<Type>(const_cast<AnyStruct *>(obj));
+      m_in = in;
+      m_header = header;
+
+      // Copy that to our local version
+      if (m_in) {
+        m_value = *m_in;
+        m_value.pNext = nullptr;
       } else {
-        if (func(m_ctx, &m_value)) {
-          AnyStruct *mutObj = const_cast<AnyStruct*>(obj);
-          m_value.sType = ResolveSType<Type>();
-          m_value.pNext = const_cast<void*>(std::exchange(mutObj->pNext, reinterpret_cast<const void*>(&m_value)));
-        }
+        m_value.sType = ResolveSType<Type>();
       }
+
+      // Add the function to pNext if func() returns true, OR we had it before.
+      if (func(m_ctx, &m_value) || m_in) {
+        m_value.pNext = std::exchange(m_obj->pNext, (VkBaseOutStructure*)&m_value);
+      }
+    }
+
+    ~ChainPatcher() {
+      auto [us, prev] = vkroots::RemoveFromChain<Type>(m_obj);
+      assert(us == &m_value);
+
+      // Patch up the pNext chain to undo our damage.
+      // Ie. If one already existed in the chain before, point its header back to it.
+      // For the other case, we needn't do anything as we already removed it with RemoveFromChain.
+      if (m_in)
+        m_header->pNext = (VkBaseOutStructure *)m_in; // Don't need to patch m_in's pNext as it will be what it was before.
     }
 
     template <typename AnyStruct>
@@ -111,6 +133,10 @@ namespace vkroots {
     }
 
   private:
+    VkBaseOutStructure *m_obj = nullptr; // The base object we started from in the chain.
+    Type *m_in = nullptr; // The pointer to the thing we removed.
+    VkBaseOutStructure *m_header = nullptr; // The pointer to the thing before the one we removed.
+
     Type m_value{};
     UserData m_ctx;
   };

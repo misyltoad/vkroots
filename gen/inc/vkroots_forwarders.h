@@ -200,27 +200,27 @@ namespace vkroots {
     inline ObjectMap<VkCommandBuffer,          const VkCommandBufferDispatch>          CommandBufferDispatches;
     inline ObjectMap<VkExternalComputeQueueNV, const VkExternalComputeQueueNVDispatch> ExternalComputeQueueDispatches;
 
-    static inline const VkInstanceDispatch*               LookupDispatch        (VkInstance instance)             { return InstanceDispatches.find(instance); }
-    static inline const VkPhysicalDeviceDispatch*         LookupDispatch        (VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice); }
-    static inline const VkDeviceDispatch*                 LookupDispatch        (VkDevice device)                 { return DeviceDispatches.find(device); }
-    static inline const VkQueueDispatch*                  LookupDispatch        (VkQueue device)                  { return QueueDispatches.find(device); }
-    static inline const VkCommandBufferDispatch*          LookupDispatch        (VkCommandBuffer cmdBuffer)       { return CommandBufferDispatches.find(cmdBuffer); }
-    static inline const VkExternalComputeQueueNVDispatch* LookupDispatch        (VkExternalComputeQueueNV externalComputeQueueNV) { return ExternalComputeQueueDispatches.find(externalComputeQueueNV); }
-
     static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance);
     static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device);
     static inline void DestroyDispatchTable(VkInstance instance);
     static inline void DestroyDispatchTable(VkDevice device);
 
-    static inline void AssignDispatchTable(VkPhysicalDevice physDev, const VkInstanceDispatch *pDispatch) { PhysicalDeviceDispatches.create(physDev, physDev, pDispatch); }
-    static inline void AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { CommandBufferDispatches.create(cmdBuffer, cmdBuffer, pDispatch); }
-    static inline void AssignDispatchTable(VkQueue queue, const VkDeviceDispatch *pDispatch) { QueueDispatches.create(queue, queue, pDispatch); }
-    static inline void AssignDispatchTable(VkExternalComputeQueueNV queue, const VkDeviceDispatch *pDispatch) { ExternalComputeQueueDispatches.create(queue, queue, pDispatch); }
+    static inline const VkPhysicalDeviceDispatch *AssignDispatchTable(VkPhysicalDevice physDev, const VkInstanceDispatch *pDispatch) { return PhysicalDeviceDispatches.create(physDev, physDev, pDispatch); }
+    static inline const VkCommandBufferDispatch *AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { return CommandBufferDispatches.create(cmdBuffer, cmdBuffer, pDispatch); }
+    static inline const VkQueueDispatch *AssignDispatchTable(VkQueue queue, const VkDeviceDispatch *pDispatch) { return QueueDispatches.create(queue, queue, pDispatch); }
+    static inline const VkExternalComputeQueueNVDispatch *AssignDispatchTable(VkExternalComputeQueueNV queue, const VkDeviceDispatch *pDispatch) { return ExternalComputeQueueDispatches.create(queue, queue, pDispatch); }
     static inline void UnassignDispatchTable(VkPhysicalDevice physDev) { PhysicalDeviceDispatches.erase(physDev); }
     static inline void UnassignDispatchTable(VkCommandBuffer cmdBuffer) { CommandBufferDispatches.erase(cmdBuffer); }
     static inline void UnassignDispatchTable(VkQueue queue) { QueueDispatches.erase(queue); }
     static inline void UnassignDispatchTable(VkExternalComputeQueueNV queue) { ExternalComputeQueueDispatches.erase(queue); }
   }
+
+  static inline const VkInstanceDispatch*               LookupDispatch        (VkInstance instance)                             { return tables::InstanceDispatches.find(instance); }
+  static inline const VkPhysicalDeviceDispatch*         LookupDispatch        (VkPhysicalDevice physicalDevice)                 { return tables::PhysicalDeviceDispatches.find(physicalDevice); }
+  static inline const VkDeviceDispatch*                 LookupDispatch        (VkDevice device)                                 { return tables::DeviceDispatches.find(device); }
+  static inline const VkQueueDispatch*                  LookupDispatch        (VkQueue device)                                  { return tables::QueueDispatches.find(device); }
+  static inline const VkCommandBufferDispatch*          LookupDispatch        (VkCommandBuffer cmdBuffer)                       { return tables::CommandBufferDispatches.find(cmdBuffer); }
+  static inline const VkExternalComputeQueueNVDispatch* LookupDispatch        (VkExternalComputeQueueNV externalComputeQueueNV) { return tables::ExternalComputeQueueDispatches.find(externalComputeQueueNV); }
 
   struct VkInstanceProcAddrFuncs {
     PFN_vkGetInstanceProcAddr NextGetInstanceProcAddr;
