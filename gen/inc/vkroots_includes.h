@@ -23,6 +23,7 @@
 #include <any>
 #include <shared_mutex>
 #include <atomic>
+#include <ranges>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1

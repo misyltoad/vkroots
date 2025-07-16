@@ -13,6 +13,10 @@ namespace vkroots::helpers {
     func(view);
   }
 
+  static bool contains(const std::vector<const char *> vec, std::string_view lookupValue) {
+    return std::ranges::any_of(vec, std::bind_front(std::equal_to{}, lookupValue));
+  }
+
   template <typename T, typename ArrType, typename Op>
   inline VkResult array(ArrType& arr, uint32_t *pCount, T* pOut, Op func) {
     const uint32_t count = uint32_t(arr.size());

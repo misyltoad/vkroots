@@ -23,6 +23,7 @@
 #include <any>
 #include <shared_mutex>
 #include <atomic>
+#include <ranges>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1
@@ -24968,6 +24969,10 @@ namespace vkroots::helpers {
       view = view.substr(pos + 1);
     }
     func(view);
+  }
+
+  static bool contains(const std::vector<const char *> vec, std::string_view lookupValue) {
+    return std::ranges::any_of(vec, std::bind_front(std::equal_to{}, lookupValue));
   }
 
   template <typename T, typename ArrType, typename Op>
