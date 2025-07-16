@@ -1,5 +1,4 @@
-
-namespace vkroots::helpers {
+namespace vkroots {
 
   template <typename Func>
   inline void delimitStringView(std::string_view view, std::string_view delim, Func func) {
@@ -85,9 +84,6 @@ namespace vkroots::helpers {
     return nullptr;
   }
 
-}
-
-namespace vkroots {
   template <typename Type, typename UserData = uint64_t>
   class ChainPatcher {
   public:
@@ -114,4 +110,139 @@ namespace vkroots {
     Type m_value{};
     UserData m_ctx;
   };
+
+  namespace log
+  {
+      enum LogLevel
+      {
+          Fatal,
+          Error,
+          Warning,
+          Info,
+          Debug,
+
+          Count
+      };
+
+      constexpr std::string_view ToString(LogLevel level)
+      {
+          switch (level)
+          {
+              case Fatal:   return "fatal";
+              case Error:   return "error";
+              case Warning: return "warning";
+              default:
+              case Info:    return "info";
+              case Debug:   return "debug";
+          }
+      }
+
+      constexpr LogLevel FromString(std::string_view scope)
+      {
+          if (scope == "fatal")
+              return Fatal;
+          else if (scope == "error")
+              return Error;
+          else if (scope == "warning")
+              return Warning;
+          else if (scope == "debug")
+              return Debug;
+          else
+              return Info;
+      }
+
+      constexpr std::string_view ToPrint(LogLevel level)
+      {
+          switch (level)
+          {
+              case Fatal:		return "\e[38;2;0;0;0;48;2;255;0;0m" "Fatal " "\e[0m";
+              case Error:		return "\e[0;31m" "Error " "\e[0m";
+              case Warning:	return " \e[0;33m" "Warn " "\e[0m";
+              default:
+              case Info:		return " \e[0;34m" "Info " "\e[0m";
+              case Debug:		return "\e[0;35m" "Debug " "\e[0m";
+          }
+      }
+
+      template <typename... Args>
+      void print_log(std::string_view file, int line, LogLevel level, std::string_view prefix, std::format_string<Args...> fmt, Args&&... args)
+      {
+          std::string msg = std::format(std::move(fmt), std::forward<Args>(args)...);
+          //std::print(stderr, "{} {}: {}\n", ToPrint(level), prefix, msg);
+          int spaceCount = std::max(13 - int(prefix.length()), 0);
+          std::string out = std::format("{}| {}{:>{}}| {} \e[0;90m({}:{})\e[0m", ToPrint(level), prefix, ' ', spaceCount, msg, file, line);
+          std::cout << out << std::endl;
+      }
+
+      class LogScope
+      {
+      public:
+          LogScope(std::string_view name, LogLevel maxLevel = log::Info)
+              : LogScope(name, name, maxLevel)
+          {
+          }
+
+          LogScope(std::string_view name, std::string_view prefix, LogLevel maxLevel = log::Info)
+              : m_name{ name }
+              , m_prefix{ prefix }
+              , m_maxLevel{ maxLevel }
+          {
+          }
+
+          ~LogScope()
+          {
+          }
+
+          bool Enabled(LogLevel level) const
+          {
+              return level <= m_maxLevel;
+          }
+
+          void SetLevel(LogLevel level)
+          {
+              m_maxLevel = level;
+          }
+
+          template <typename... Args> 
+          void log(std::string_view file, int line, LogLevel level, std::format_string<Args...> fmt, Args&&... args)
+          {
+              if (!Enabled(level))
+                  return;
+
+              print_log(file, line, level, m_prefix, std::move(fmt), std::forward<Args>(args)...);
+          }
+
+      private:
+          std::string_view m_name;
+          std::string_view m_prefix;
+
+          LogLevel m_maxLevel = vkroots::log::Info;
+      };
+
+      namespace util
+      {
+          template <typename T, size_t S>
+          constexpr size_t GetFileNameOffset(const T (& str)[S], size_t i = S - 1)
+          {
+              return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? GetFileNameOffset(str, i - 1) : 0);
+          }
+
+          template <typename T>
+          constexpr size_t GetFileNameOffset(T (& str)[1])
+          {
+              return 0;
+          }
+      }
+
+      #define vkr_log_generic(scope, level, ...) \
+          (log_ ## scope).log((&__FILE__[::vkroots::log::util::GetFileNameOffset(__FILE__)]), (__LINE__), (level), __VA_ARGS__)
+      #define vkr_log_debug(scope, ...) vkr_log_generic(scope, ::vkroots::log::Debug, __VA_ARGS__)
+      #define vkr_log_info(scope, ...) vkr_log_generic(scope, ::vkroots::log::Info, __VA_ARGS__)
+      #define vkr_log_warn(scope, ...) vkr_log_generic(scope, ::vkroots::log::Warning, __VA_ARGS__)
+      #define vkr_log_err(scope, ...) vkr_log_generic(scope, ::vkroots::log::Error, __VA_ARGS__)
+      #define vkr_log_fatal(scope, ...) vkr_log_generic(scope, ::vkroots::log::Fatal, __VA_ARGS__)
+
+  }
+
+
 }
