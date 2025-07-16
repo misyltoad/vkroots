@@ -84,119 +84,121 @@ namespace vkroots {
     return pType;
   }
 
-  namespace tables {
+  // RwLock impl by doitsujin
+  class RwLock {
+    static constexpr uint32_t ReadBit  = 1u;
+    static constexpr uint32_t WriteBit = 1u << 31u;
+  public:
 
-    template <typename T>
-    class RawPointer {
-    public:
-      RawPointer(T* value) : m_value(value) {}
-            T* get()       { return m_value; }
-      const T* get() const { return m_value; }
-    private:
-      T* m_value;
-    };
+    RwLock() = default;
 
-    // RwLock impl by doitsujin
-    class RwLock {
-      static constexpr uint32_t ReadBit  = 1u;
-      static constexpr uint32_t WriteBit = 1u << 31u;
-    public:
+    RwLock(const RwLock&) = delete;
 
-      RwLock() = default;
+    RwLock& operator = (const RwLock&) = delete;
 
-      RwLock(const RwLock&) = delete;
+    void lock() {
+      auto value = m_lock.load(std::memory_order_relaxed);
 
-      RwLock& operator = (const RwLock&) = delete;
+      while (value || !m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed)) {
+        m_lock.wait(value, std::memory_order_acquire);
+        value = m_lock.load(std::memory_order_relaxed);
+      }
+    }
 
-      void lock() {
-        auto value = m_lock.load(std::memory_order_relaxed);
+    bool try_lock() {
+      auto value = m_lock.load(std::memory_order_relaxed);
 
-        while (value || !m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed)) {
+      if (value)
+        return false;
+
+      return m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed);
+    }
+
+    void unlock() {
+      m_lock.store(0u, std::memory_order_release);
+      m_lock.notify_all();
+    }
+
+    void lock_shared() {
+      auto value = m_lock.load(std::memory_order_relaxed);
+
+      do {
+        while (value & WriteBit) {
           m_lock.wait(value, std::memory_order_acquire);
           value = m_lock.load(std::memory_order_relaxed);
         }
-      }
+      } while (!m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed));
+    }
 
-      bool try_lock() {
-        auto value = m_lock.load(std::memory_order_relaxed);
+    bool try_lock_shared() {
+      auto value = m_lock.load(std::memory_order_relaxed);
 
-        if (value)
-          return false;
+      if (value & WriteBit)
+        return false;
 
-        return m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed);
-      }
+      return m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed);
+    }
 
-      void unlock() {
-        m_lock.store(0u, std::memory_order_release);
-        m_lock.notify_all();
-      }
+    void unlock_shared() {
+      m_lock.fetch_sub(ReadBit, std::memory_order_release);
+      m_lock.notify_one();
+    }
 
-      void lock_shared() {
-        auto value = m_lock.load(std::memory_order_relaxed);
+  private:
 
-        do {
-          while (value & WriteBit) {
-            m_lock.wait(value, std::memory_order_acquire);
-            value = m_lock.load(std::memory_order_relaxed);
-          }
-        } while (!m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed));
-      }
+    std::atomic<uint32_t> m_lock = { 0u };
 
-      bool try_lock_shared() {
-        auto value = m_lock.load(std::memory_order_relaxed);
+  };
 
-        if (value & WriteBit)
-          return false;
+  template <typename K, typename V>
+  class ObjectMap {
+  public:
 
-        return m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed);
-      }
+    V *find(const K& key) const {
+      std::shared_lock lock(m_lock);
 
-      void unlock_shared() {
-        m_lock.fetch_sub(ReadBit, std::memory_order_release);
-        m_lock.notify_one();
-      }
+      auto entry = m_map.find(key);
 
-    private:
+      if (entry == m_map.end())
+        return nullptr;
 
-      std::atomic<uint32_t> m_lock = { 0u };
+      return entry->second.get();
+    }
 
-    };
 
-    template <typename Object, typename DispatchType, typename DispatchPtr>
-    class VkDispatchTableMap {
-    public:
-      const DispatchType* insert(Object obj, DispatchPtr ptr) {
-        assert(obj);
-        auto lock = std::unique_lock(m_mutex);
-        const DispatchType* val = ptr.get();
-        m_map.insert(std::make_pair(obj, std::move(ptr)));
-        return val;
-      }
-      void remove(Object obj) {
-        assert(obj);
-        auto lock = std::unique_lock(m_mutex);
-        m_map.erase(obj);
-      }
-      const DispatchType* find(Object obj) const {
-        if (!obj) return nullptr;
-        auto lock = std::shared_lock(m_mutex);
-        auto iter = m_map.find(obj);
-        if (iter == m_map.end())
-          return nullptr;
-        return iter->second.get();
-      }
-    private:
-      std::unordered_map<Object, DispatchPtr> m_map;
-      mutable RwLock m_mutex;
-    };
+    template<typename... Args>
+    V* create(const K& key, Args&&... args) {
+      std::unique_lock lock(m_lock);
+
+      auto result = m_map.emplace(std::piecewise_construct,
+        std::tuple(key),
+        std::tuple());
+
+      if (!result.second)
+        return nullptr;
+
+      result.first->second = std::make_unique<V>(std::forward<Args>(args)...);
+      return result.first->second.get();
+    }
+
+    void erase(const K& key) {
+      std::unique_lock lock(m_lock);
+      m_map.erase(key);
+    }
+  private:
+    std::unordered_map<K, std::unique_ptr<V>> m_map;
+    mutable RwLock m_lock;
+  };
+
+  namespace tables {
 
     // All our dispatchables...
-    inline VkDispatchTableMap<VkInstance,               VkInstanceDispatch,               std::unique_ptr<const VkInstanceDispatch>>       InstanceDispatches;
-    inline VkDispatchTableMap<VkPhysicalDevice,         VkPhysicalDeviceDispatch,         std::unique_ptr<const VkPhysicalDeviceDispatch>> PhysicalDeviceDispatches;
-    inline VkDispatchTableMap<VkDevice,                 VkDeviceDispatch,                 std::unique_ptr<const VkDeviceDispatch>>         DeviceDispatches;
-    inline VkDispatchTableMap<VkQueue,                  VkQueueDispatch,                  std::unique_ptr<const VkQueueDispatch>>          QueueDispatches;
-    inline VkDispatchTableMap<VkCommandBuffer,          VkCommandBufferDispatch,          std::unique_ptr<const VkCommandBufferDispatch>>  CommandBufferDispatches;
-    inline VkDispatchTableMap<VkExternalComputeQueueNV, VkExternalComputeQueueNVDispatch, std::unique_ptr<const VkExternalComputeQueueNVDispatch>> ExternalComputeQueueDispatches;
+    inline ObjectMap<VkInstance,               const VkInstanceDispatch>               InstanceDispatches;
+    inline ObjectMap<VkPhysicalDevice,         const VkPhysicalDeviceDispatch>         PhysicalDeviceDispatches;
+    inline ObjectMap<VkDevice,                 const VkDeviceDispatch>                 DeviceDispatches;
+    inline ObjectMap<VkQueue,                  const VkQueueDispatch>                  QueueDispatches;
+    inline ObjectMap<VkCommandBuffer,          const VkCommandBufferDispatch>          CommandBufferDispatches;
+    inline ObjectMap<VkExternalComputeQueueNV, const VkExternalComputeQueueNVDispatch> ExternalComputeQueueDispatches;
 
     static inline const VkInstanceDispatch*               LookupDispatch        (VkInstance instance)             { return InstanceDispatches.find(instance); }
     static inline const VkPhysicalDeviceDispatch*         LookupDispatch        (VkPhysicalDevice physicalDevice) { return PhysicalDeviceDispatches.find(physicalDevice); }
@@ -210,14 +212,14 @@ namespace vkroots {
     static inline void DestroyDispatchTable(VkInstance instance);
     static inline void DestroyDispatchTable(VkDevice device);
 
-    static inline void AssignDispatchTable(VkPhysicalDevice physDev, const VkInstanceDispatch *pDispatch) { PhysicalDeviceDispatches.insert(physDev, std::make_unique<VkPhysicalDeviceDispatch>(physDev, pDispatch)); }
-    static inline void AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { CommandBufferDispatches.insert(cmdBuffer, std::make_unique<VkCommandBufferDispatch>(cmdBuffer, pDispatch)); }
-    static inline void AssignDispatchTable(VkQueue queue, const VkDeviceDispatch *pDispatch) { QueueDispatches.insert(queue, std::make_unique<VkQueueDispatch>(queue, pDispatch)); }
-    static inline void AssignDispatchTable(VkExternalComputeQueueNV queue, const VkDeviceDispatch *pDispatch) { ExternalComputeQueueDispatches.insert(queue, std::make_unique<VkExternalComputeQueueNVDispatch>(queue, pDispatch)); }
-    static inline void UnassignDispatchTable(VkPhysicalDevice physDev) { PhysicalDeviceDispatches.remove(physDev); }
-    static inline void UnassignDispatchTable(VkCommandBuffer cmdBuffer) { CommandBufferDispatches.remove(cmdBuffer); }
-    static inline void UnassignDispatchTable(VkQueue queue) { QueueDispatches.remove(queue); }
-    static inline void UnassignDispatchTable(VkExternalComputeQueueNV queue) { ExternalComputeQueueDispatches.remove(queue); }
+    static inline void AssignDispatchTable(VkPhysicalDevice physDev, const VkInstanceDispatch *pDispatch) { PhysicalDeviceDispatches.create(physDev, physDev, pDispatch); }
+    static inline void AssignDispatchTable(VkCommandBuffer cmdBuffer, const VkDeviceDispatch *pDispatch) { CommandBufferDispatches.create(cmdBuffer, cmdBuffer, pDispatch); }
+    static inline void AssignDispatchTable(VkQueue queue, const VkDeviceDispatch *pDispatch) { QueueDispatches.create(queue, queue, pDispatch); }
+    static inline void AssignDispatchTable(VkExternalComputeQueueNV queue, const VkDeviceDispatch *pDispatch) { ExternalComputeQueueDispatches.create(queue, queue, pDispatch); }
+    static inline void UnassignDispatchTable(VkPhysicalDevice physDev) { PhysicalDeviceDispatches.erase(physDev); }
+    static inline void UnassignDispatchTable(VkCommandBuffer cmdBuffer) { CommandBufferDispatches.erase(cmdBuffer); }
+    static inline void UnassignDispatchTable(VkQueue queue) { QueueDispatches.erase(queue); }
+    static inline void UnassignDispatchTable(VkExternalComputeQueueNV queue) { ExternalComputeQueueDispatches.erase(queue); }
   }
 
   struct VkInstanceProcAddrFuncs {

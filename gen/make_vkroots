@@ -24,6 +24,8 @@
 import argparse
 import os
 import urllib.request
+import sys
+from subprocess import call
 
 VK_XML_VERSION = "1.4.322"
 

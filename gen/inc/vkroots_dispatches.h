@@ -1,7 +1,7 @@
 namespace vkroots::tables {
 
   static inline void CreateDispatchTable(PFN_vkGetInstanceProcAddr nextInstanceProcAddr, PFN_GetPhysicalDeviceProcAddr nextPhysDevProcAddr, VkInstance instance) {
-    auto instanceDispatch = InstanceDispatches.insert(instance, std::make_unique<VkInstanceDispatch>(nextInstanceProcAddr, instance, nextPhysDevProcAddr));
+    auto instanceDispatch = InstanceDispatches.create(instance, nextInstanceProcAddr, instance, nextPhysDevProcAddr);
 
     uint32_t physicalDeviceCount;
     VkResult res = instanceDispatch->EnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr);
@@ -18,7 +18,7 @@ namespace vkroots::tables {
 
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
     auto physicalDeviceDispatch = vkroots::tables::LookupDispatch(physicalDevice);
-    auto deviceDispatch = DeviceDispatches.insert(device, std::make_unique<VkDeviceDispatch>(nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo));
+    auto deviceDispatch = DeviceDispatches.create(device, nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo);
 
     for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {
       const auto &queueInfo = pCreateInfo->pQueueCreateInfos[i];
@@ -50,7 +50,7 @@ namespace vkroots::tables {
       }
     }
 
-    InstanceDispatches.remove(instance);
+    InstanceDispatches.erase(instance);
   }
 
   static inline void DestroyDispatchTable(VkDevice device) {
@@ -67,7 +67,7 @@ namespace vkroots::tables {
       }
     }
 
-    DeviceDispatches.remove(device);
+    DeviceDispatches.erase(device);
   }
 
 }
