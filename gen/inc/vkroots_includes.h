@@ -21,6 +21,8 @@
 #include <array>
 #include <functional>
 #include <any>
+#include <shared_mutex>
+#include <atomic>
 
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1

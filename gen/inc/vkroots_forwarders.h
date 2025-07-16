@@ -96,6 +96,72 @@ namespace vkroots {
       T* m_value;
     };
 
+    // RwLock impl by doitsujin
+    class RwLock {
+      static constexpr uint32_t ReadBit  = 1u;
+      static constexpr uint32_t WriteBit = 1u << 31u;
+    public:
+
+      RwLock() = default;
+
+      RwLock(const RwLock&) = delete;
+
+      RwLock& operator = (const RwLock&) = delete;
+
+      void lock() {
+        auto value = m_lock.load(std::memory_order_relaxed);
+
+        while (value || !m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed)) {
+          m_lock.wait(value, std::memory_order_acquire);
+          value = m_lock.load(std::memory_order_relaxed);
+        }
+      }
+
+      bool try_lock() {
+        auto value = m_lock.load(std::memory_order_relaxed);
+
+        if (value)
+          return false;
+
+        return m_lock.compare_exchange_strong(value, WriteBit, std::memory_order_acquire, std::memory_order_relaxed);
+      }
+
+      void unlock() {
+        m_lock.store(0u, std::memory_order_release);
+        m_lock.notify_all();
+      }
+
+      void lock_shared() {
+        auto value = m_lock.load(std::memory_order_relaxed);
+
+        do {
+          while (value & WriteBit) {
+            m_lock.wait(value, std::memory_order_acquire);
+            value = m_lock.load(std::memory_order_relaxed);
+          }
+        } while (!m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed));
+      }
+
+      bool try_lock_shared() {
+        auto value = m_lock.load(std::memory_order_relaxed);
+
+        if (value & WriteBit)
+          return false;
+
+        return m_lock.compare_exchange_strong(value, value + ReadBit, std::memory_order_acquire, std::memory_order_relaxed);
+      }
+
+      void unlock_shared() {
+        m_lock.fetch_sub(ReadBit, std::memory_order_release);
+        m_lock.notify_one();
+      }
+
+    private:
+
+      std::atomic<uint32_t> m_lock = { 0u };
+
+    };
+
     template <typename Object, typename DispatchType, typename DispatchPtr>
     class VkDispatchTableMap {
     public:
@@ -113,7 +179,7 @@ namespace vkroots {
       }
       const DispatchType* find(Object obj) const {
         if (!obj) return nullptr;
-        auto lock = std::unique_lock(m_mutex);
+        auto lock = std::shared_lock(m_mutex);
         auto iter = m_map.find(obj);
         if (iter == m_map.end())
           return nullptr;
@@ -121,7 +187,7 @@ namespace vkroots {
       }
     private:
       std::unordered_map<Object, DispatchPtr> m_map;
-      mutable std::mutex m_mutex;
+      mutable RwLock m_mutex;
     };
 
     // All our dispatchables...
