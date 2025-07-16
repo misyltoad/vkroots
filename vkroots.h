@@ -25001,6 +25001,8 @@ namespace vkroots {
     return array(arr, pCount, pOut, [](T& x, const T& y) { x = y; });
   }
 
+  // For pDispatch functions, you might need eg:
+  //   [=] (auto... args) { pDispatch->GetPhysicalDeviceQueueFamilyProperties(args...); },
   template <typename Func, typename OutArray, typename... Args>
   uint32_t enumerate(Func function, OutArray& outArray, Args&&... arguments) {
     uint32_t count = 0;
@@ -25014,6 +25016,8 @@ namespace vkroots {
     return count;
   }
 
+  // For pDispatch functions, you might need eg:
+  //   [=] (auto... args) { pDispatch->GetPhysicalDeviceQueueFamilyProperties(args...); },
   template <typename Func, typename InArray, typename OutType, typename... Args>
   VkResult append(Func function, const InArray& inArray, uint32_t* pOutCount, OutType* pOut, Args&&... arguments) {
     uint32_t baseCount = 0;
