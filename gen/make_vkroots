@@ -310,7 +310,21 @@ class VkGenerator(object):
                     elif func.name in ("vkDestroyInstance", "vkCreateDevice", "vkDestroyDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
                         f.write( "    else {\n")
                         if func.name in ("vkCreateDevice", "vkDestroyDevice", "vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
-                            f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value && !std::strcmp(\"{func.name}\", name))\n")
+                            extra_check = ""
+                            if func.name in ("vkAllocateCommandBuffers", "vkFreeCommandBuffers"):
+                                extra_check = " HasAnyCmdBufferOverrides &&"
+                                f.write(f"      constexpr bool HasAnyCmdBufferOverrides = false\n")
+                                for func2 in self.registry.funcs.values():
+                                    if not func2.is_required():
+                                        continue
+                                    if func2.params[0].type != "VkCommandBuffer":
+                                        continue
+                                    self.print_object_platform_ifdef(f, func2)
+                                    func2_name_normalized = remove_vk_prefix(func2.name)
+                                    f.write(f"        || ( requires(const {procaddr_type}Overrides& t) {{ &{procaddr_type}Overrides::{func2_name_normalized}; }} )\n")
+                                    self.print_object_platform_endif(f, func2)
+                                f.write(f"        ;\n")
+                            f.write(f"      if (!std::is_base_of<NoOverrides, DeviceOverrides>::value &&{extra_check} !std::strcmp(\"{func.name}\", name))\n")
                         else:
                             f.write(f"      if (!std::strcmp(\"{func.name}\", name))\n")
                         f.write(f"        return (PFN_vkVoidFunction) +[]({params}) -> {func.type} {{ const auto* dispatch = tables::LookupDispatch({func.params[0].name}); {returnString}dispatch->{func_name_normalized}({args}); }};\n")
