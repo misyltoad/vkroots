@@ -7,13 +7,13 @@ namespace MyLayer {
   class VkDeviceOverrides {
   public:
     static VkResult CreateImage(
-      const vkroots::VkDeviceDispatch* pDispatch,
+      const vkroots::VkDeviceDispatch& dispatch,
             VkDevice                   device,
       const VkImageCreateInfo*         pCreateInfo,
       const VkAllocationCallbacks*     pAllocator,
             VkImage*                   pImage) {
       printf("The app has made an image, I bet it's going to be frogtastically beautiful!\n");
-      return pDispatch->CreateImage(device, pCreateInfo, pAllocator, pImage);
+      return dispatch.CreateImage(device, pCreateInfo, pAllocator, pImage);
     }
   };
 

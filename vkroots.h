@@ -5889,7 +5889,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::AcquireDrmDisplayEXT(dispatch, physicalDevice, drmFd, display);
+    VkResult ret = InstanceOverrides::AcquireDrmDisplayEXT(*dispatch, physicalDevice, drmFd, display);
     return ret;
   }
 
@@ -5897,7 +5897,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::AcquireWinrtDisplayNV(dispatch, physicalDevice, display);
+    VkResult ret = InstanceOverrides::AcquireWinrtDisplayNV(*dispatch, physicalDevice, display);
     return ret;
   }
 
@@ -5906,7 +5906,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireXlibDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, VkDisplayKHR display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::AcquireXlibDisplayEXT(dispatch, physicalDevice, dpy, display);
+    VkResult ret = InstanceOverrides::AcquireXlibDisplayEXT(*dispatch, physicalDevice, dpy, display);
     return ret;
   }
 
@@ -5915,7 +5915,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAndroidSurfaceKHR(VkInstance instance, const VkAndroidSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateAndroidSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateAndroidSurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -5923,21 +5923,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugReportCallbackEXT *pCallback) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateDebugReportCallbackEXT(dispatch, instance, pCreateInfo, pAllocator, pCallback);
+    VkResult ret = InstanceOverrides::CreateDebugReportCallbackEXT(*dispatch, instance, pCreateInfo, pAllocator, pCallback);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pMessenger) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateDebugUtilsMessengerEXT(dispatch, instance, pCreateInfo, pAllocator, pMessenger);
+    VkResult ret = InstanceOverrides::CreateDebugUtilsMessengerEXT(*dispatch, instance, pCreateInfo, pAllocator, pMessenger);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDevice *pDevice) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::CreateDevice(dispatch, physicalDevice, pCreateInfo, pAllocator, pDevice);
+    VkResult ret = InstanceOverrides::CreateDevice(*dispatch, physicalDevice, pCreateInfo, pAllocator, pDevice);
     return ret;
   }
 
@@ -5945,7 +5945,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDirectFBSurfaceEXT(VkInstance instance, const VkDirectFBSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateDirectFBSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateDirectFBSurfaceEXT(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -5953,21 +5953,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDisplayModeKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, const VkDisplayModeCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDisplayModeKHR *pMode) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::CreateDisplayModeKHR(dispatch, physicalDevice, display, pCreateInfo, pAllocator, pMode);
+    VkResult ret = InstanceOverrides::CreateDisplayModeKHR(*dispatch, physicalDevice, display, pCreateInfo, pAllocator, pMode);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDisplayPlaneSurfaceKHR(VkInstance instance, const VkDisplaySurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateDisplayPlaneSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateDisplayPlaneSurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateHeadlessSurfaceEXT(VkInstance instance, const VkHeadlessSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateHeadlessSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateHeadlessSurfaceEXT(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -5975,7 +5975,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIOSSurfaceMVK(VkInstance instance, const VkIOSSurfaceCreateInfoMVK *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateIOSSurfaceMVK(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateIOSSurfaceMVK(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -5984,7 +5984,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImagePipeSurfaceFUCHSIA(VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateImagePipeSurfaceFUCHSIA(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateImagePipeSurfaceFUCHSIA(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -5999,7 +5999,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMacOSSurfaceMVK(VkInstance instance, const VkMacOSSurfaceCreateInfoMVK *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateMacOSSurfaceMVK(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateMacOSSurfaceMVK(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6008,7 +6008,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMetalSurfaceEXT(VkInstance instance, const VkMetalSurfaceCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateMetalSurfaceEXT(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateMetalSurfaceEXT(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6017,7 +6017,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateScreenSurfaceQNX(VkInstance instance, const VkScreenSurfaceCreateInfoQNX *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateScreenSurfaceQNX(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateScreenSurfaceQNX(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6026,7 +6026,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateStreamDescriptorSurfaceGGP(VkInstance instance, const VkStreamDescriptorSurfaceCreateInfoGGP *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateStreamDescriptorSurfaceGGP(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateStreamDescriptorSurfaceGGP(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6035,7 +6035,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSurfaceOHOS(VkInstance instance, const VkSurfaceCreateInfoOHOS *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateSurfaceOHOS(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateSurfaceOHOS(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6044,7 +6044,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateViSurfaceNN(VkInstance instance, const VkViSurfaceCreateInfoNN *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateViSurfaceNN(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateViSurfaceNN(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6053,7 +6053,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateWaylandSurfaceKHR(VkInstance instance, const VkWaylandSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateWaylandSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateWaylandSurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6062,7 +6062,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateWin32SurfaceKHR(VkInstance instance, const VkWin32SurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateWin32SurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateWin32SurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6071,7 +6071,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateXcbSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateXcbSurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6080,7 +6080,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSurfaceKHR *pSurface) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::CreateXlibSurfaceKHR(dispatch, instance, pCreateInfo, pAllocator, pSurface);
+    VkResult ret = InstanceOverrides::CreateXlibSurfaceKHR(*dispatch, instance, pCreateInfo, pAllocator, pSurface);
     return ret;
   }
 
@@ -6088,163 +6088,163 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DebugReportMessageEXT(VkInstance instance, VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char *pLayerPrefix, const char *pMessage) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::DebugReportMessageEXT(dispatch, instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage);
+    InstanceOverrides::DebugReportMessageEXT(*dispatch, instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::DestroyDebugReportCallbackEXT(dispatch, instance, callback, pAllocator);
+    InstanceOverrides::DestroyDebugReportCallbackEXT(*dispatch, instance, callback, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::DestroyDebugUtilsMessengerEXT(dispatch, instance, messenger, pAllocator);
+    InstanceOverrides::DestroyDebugUtilsMessengerEXT(*dispatch, instance, messenger, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyInstance(VkInstance instance, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::DestroyInstance(dispatch, instance, pAllocator);
+    InstanceOverrides::DestroyInstance(*dispatch, instance, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks *pAllocator) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::DestroySurfaceKHR(dispatch, instance, surface, pAllocator);
+    InstanceOverrides::DestroySurfaceKHR(*dispatch, instance, surface, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice, const char *pLayerName, uint32_t *pPropertyCount, VkExtensionProperties *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::EnumerateDeviceExtensionProperties(dispatch, physicalDevice, pLayerName, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::EnumerateDeviceExtensionProperties(*dispatch, physicalDevice, pLayerName, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::EnumerateDeviceLayerProperties(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::EnumerateDeviceLayerProperties(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroups(dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroups(*dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroupsKHR(dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroupsKHR(*dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(dispatch, physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(*dispatch, physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    VkResult ret = InstanceOverrides::EnumeratePhysicalDevices(dispatch, instance, pPhysicalDeviceCount, pPhysicalDevices);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDevices(*dispatch, instance, pPhysicalDeviceCount, pPhysicalDevices);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModeProperties2KHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDisplayModeProperties2KHR(dispatch, physicalDevice, display, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetDisplayModeProperties2KHR(*dispatch, physicalDevice, display, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayModePropertiesKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModePropertiesKHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDisplayModePropertiesKHR(dispatch, physicalDevice, display, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetDisplayModePropertiesKHR(*dispatch, physicalDevice, display, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayPlaneCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkDisplayPlaneInfo2KHR *pDisplayPlaneInfo, VkDisplayPlaneCapabilities2KHR *pCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilities2KHR(dispatch, physicalDevice, pDisplayPlaneInfo, pCapabilities);
+    VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilities2KHR(*dispatch, physicalDevice, pDisplayPlaneInfo, pCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayPlaneCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkDisplayModeKHR mode, uint32_t planeIndex, VkDisplayPlaneCapabilitiesKHR *pCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilitiesKHR(dispatch, physicalDevice, mode, planeIndex, pCapabilities);
+    VkResult ret = InstanceOverrides::GetDisplayPlaneCapabilitiesKHR(*dispatch, physicalDevice, mode, planeIndex, pCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDisplayPlaneSupportedDisplaysKHR(VkPhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t *pDisplayCount, VkDisplayKHR *pDisplays) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDisplayPlaneSupportedDisplaysKHR(dispatch, physicalDevice, planeIndex, pDisplayCount, pDisplays);
+    VkResult ret = InstanceOverrides::GetDisplayPlaneSupportedDisplaysKHR(*dispatch, physicalDevice, planeIndex, pDisplayCount, pDisplays);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, uint32_t connectorId, VkDisplayKHR *display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetDrmDisplayEXT(dispatch, physicalDevice, drmFd, connectorId, display);
+    VkResult ret = InstanceOverrides::GetDrmDisplayEXT(*dispatch, physicalDevice, drmFd, connectorId, display);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static PFN_vkVoidFunction wrap_GetInstanceProcAddr(VkInstance instance, const char *pName) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    PFN_vkVoidFunction ret = InstanceOverrides::GetInstanceProcAddr(dispatch, instance, pName);
+    PFN_vkVoidFunction ret = InstanceOverrides::GetInstanceProcAddr(*dispatch, instance, pName);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsEXT(*dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCalibrateableTimeDomainsKHR(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR(dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCalibrateableTimeDomainsKHR(*dispatch, physicalDevice, pTimeDomainCount, pTimeDomains);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixFlexibleDimensionsPropertiesNV *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesKHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesKHR(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCooperativeMatrixPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeMatrixPropertiesNV *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeMatrixPropertiesNV(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceCooperativeVectorPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkCooperativeVectorPropertiesNV *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceCooperativeVectorPropertiesNV(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
@@ -6252,7 +6252,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceDirectFBPresentationSupportEXT(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, IDirectFB *dfb) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT(dispatch, physicalDevice, queueFamilyIndex, dfb);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceDirectFBPresentationSupportEXT(*dispatch, physicalDevice, queueFamilyIndex, dfb);
     return ret;
   }
 
@@ -6260,242 +6260,242 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayPlaneProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlaneProperties2KHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlaneProperties2KHR(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayPlanePropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPlanePropertiesKHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPlanePropertiesKHR(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayProperties2KHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayProperties2KHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayProperties2KHR(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkDisplayPropertiesKHR *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPropertiesKHR(dispatch, physicalDevice, pPropertyCount, pProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceDisplayPropertiesKHR(*dispatch, physicalDevice, pPropertyCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalBufferProperties(dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalBufferProperties(*dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalBufferPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo, VkExternalBufferProperties *pExternalBufferProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR(dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalBufferPropertiesKHR(*dispatch, physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalFenceProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalFenceProperties(dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalFenceProperties(*dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalFencePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfo *pExternalFenceInfo, VkExternalFenceProperties *pExternalFenceProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR(dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalFencePropertiesKHR(*dispatch, physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceExternalImageFormatPropertiesNV(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkExternalMemoryHandleTypeFlagsNV externalHandleType, VkExternalImageFormatPropertiesNV *pExternalImageFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV(dispatch, physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceExternalImageFormatPropertiesNV(*dispatch, physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalSemaphoreProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfo *pExternalSemaphoreInfo, VkExternalSemaphoreProperties *pExternalSemaphoreProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalSemaphoreProperties(dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalSemaphoreProperties(*dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalSemaphorePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfo *pExternalSemaphoreInfo, VkExternalSemaphoreProperties *pExternalSemaphoreProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR(dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalSemaphorePropertiesKHR(*dispatch, physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceExternalTensorPropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalTensorInfoARM *pExternalTensorInfo, VkExternalTensorPropertiesARM *pExternalTensorProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM(dispatch, physicalDevice, pExternalTensorInfo, pExternalTensorProperties);
+    InstanceOverrides::GetPhysicalDeviceExternalTensorPropertiesARM(*dispatch, physicalDevice, pExternalTensorInfo, pExternalTensorProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures *pFeatures) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFeatures(dispatch, physicalDevice, pFeatures);
+    InstanceOverrides::GetPhysicalDeviceFeatures(*dispatch, physicalDevice, pFeatures);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFeatures2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2 *pFeatures) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFeatures2(dispatch, physicalDevice, pFeatures);
+    InstanceOverrides::GetPhysicalDeviceFeatures2(*dispatch, physicalDevice, pFeatures);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFeatures2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2 *pFeatures) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFeatures2KHR(dispatch, physicalDevice, pFeatures);
+    InstanceOverrides::GetPhysicalDeviceFeatures2KHR(*dispatch, physicalDevice, pFeatures);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties *pFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFormatProperties(dispatch, physicalDevice, format, pFormatProperties);
+    InstanceOverrides::GetPhysicalDeviceFormatProperties(*dispatch, physicalDevice, format, pFormatProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2 *pFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFormatProperties2(dispatch, physicalDevice, format, pFormatProperties);
+    InstanceOverrides::GetPhysicalDeviceFormatProperties2(*dispatch, physicalDevice, format, pFormatProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceFormatProperties2KHR(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2 *pFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceFormatProperties2KHR(dispatch, physicalDevice, format, pFormatProperties);
+    InstanceOverrides::GetPhysicalDeviceFormatProperties2KHR(*dispatch, physicalDevice, format, pFormatProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceFragmentShadingRatesKHR(VkPhysicalDevice physicalDevice, uint32_t *pFragmentShadingRateCount, VkPhysicalDeviceFragmentShadingRateKHR *pFragmentShadingRates) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR(dispatch, physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceFragmentShadingRatesKHR(*dispatch, physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkImageFormatProperties *pImageFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties(dispatch, physicalDevice, format, type, tiling, usage, flags, pImageFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties(*dispatch, physicalDevice, format, type, tiling, usage, flags, pImageFormatProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkImageFormatProperties2 *pImageFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2(dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2(*dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2 *pImageFormatInfo, VkImageFormatProperties2 *pImageFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2KHR(dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceImageFormatProperties2KHR(*dispatch, physicalDevice, pImageFormatInfo, pImageFormatProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMemoryProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties *pMemoryProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceMemoryProperties(dispatch, physicalDevice, pMemoryProperties);
+    InstanceOverrides::GetPhysicalDeviceMemoryProperties(*dispatch, physicalDevice, pMemoryProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMemoryProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2 *pMemoryProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceMemoryProperties2(dispatch, physicalDevice, pMemoryProperties);
+    InstanceOverrides::GetPhysicalDeviceMemoryProperties2(*dispatch, physicalDevice, pMemoryProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMemoryProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2 *pMemoryProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceMemoryProperties2KHR(dispatch, physicalDevice, pMemoryProperties);
+    InstanceOverrides::GetPhysicalDeviceMemoryProperties2KHR(*dispatch, physicalDevice, pMemoryProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceMultisamplePropertiesEXT(VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT *pMultisampleProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT(dispatch, physicalDevice, samples, pMultisampleProperties);
+    InstanceOverrides::GetPhysicalDeviceMultisamplePropertiesEXT(*dispatch, physicalDevice, samples, pMultisampleProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceOpticalFlowImageFormatsNV(VkPhysicalDevice physicalDevice, const VkOpticalFlowImageFormatInfoNV *pOpticalFlowImageFormatInfo, uint32_t *pFormatCount, VkOpticalFlowImageFormatPropertiesNV *pImageFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV(dispatch, physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceOpticalFlowImageFormatsNV(*dispatch, physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDevicePresentRectanglesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pRectCount, VkRect2D *pRects) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDevicePresentRectanglesKHR(dispatch, physicalDevice, surface, pRectCount, pRects);
+    VkResult ret = InstanceOverrides::GetPhysicalDevicePresentRectanglesKHR(*dispatch, physicalDevice, surface, pRectCount, pRects);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceProperties(dispatch, physicalDevice, pProperties);
+    InstanceOverrides::GetPhysicalDeviceProperties(*dispatch, physicalDevice, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2 *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceProperties2(dispatch, physicalDevice, pProperties);
+    InstanceOverrides::GetPhysicalDeviceProperties2(*dispatch, physicalDevice, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2 *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceProperties2KHR(dispatch, physicalDevice, pProperties);
+    InstanceOverrides::GetPhysicalDeviceProperties2KHR(*dispatch, physicalDevice, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM *pQueueFamilyDataGraphProcessingEngineInfo, VkQueueFamilyDataGraphProcessingEnginePropertiesARM *pQueueFamilyDataGraphProcessingEngineProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(dispatch, physicalDevice, pQueueFamilyDataGraphProcessingEngineInfo, pQueueFamilyDataGraphProcessingEngineProperties);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(*dispatch, physicalDevice, pQueueFamilyDataGraphProcessingEngineInfo, pQueueFamilyDataGraphProcessingEngineProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pQueueFamilyDataGraphPropertyCount, VkQueueFamilyDataGraphPropertiesARM *pQueueFamilyDataGraphProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(dispatch, physicalDevice, queueFamilyIndex, pQueueFamilyDataGraphPropertyCount, pQueueFamilyDataGraphProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(*dispatch, physicalDevice, queueFamilyIndex, pQueueFamilyDataGraphPropertyCount, pQueueFamilyDataGraphProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR *pPerformanceQueryCreateInfo, uint32_t *pNumPasses) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(dispatch, physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(*dispatch, physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyProperties(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties *pQueueFamilyProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties(*dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyProperties2(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2(*dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceQueueFamilyProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t *pQueueFamilyPropertyCount, VkQueueFamilyProperties2 *pQueueFamilyProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR(dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
+    InstanceOverrides::GetPhysicalDeviceQueueFamilyProperties2KHR(*dispatch, physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
   }
 
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceScreenPresentationSupportQNX(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct _screen_window *window) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX(dispatch, physicalDevice, queueFamilyIndex, window);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceScreenPresentationSupportQNX(*dispatch, physicalDevice, queueFamilyIndex, window);
     return ret;
   }
 
@@ -6503,60 +6503,60 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceSparseImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, uint32_t *pPropertyCount, VkSparseImageFormatProperties *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties(dispatch, physicalDevice, format, type, samples, usage, tiling, pPropertyCount, pProperties);
+    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties(*dispatch, physicalDevice, format, type, samples, usage, tiling, pPropertyCount, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceSparseImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2 *pFormatInfo, uint32_t *pPropertyCount, VkSparseImageFormatProperties2 *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2(dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
+    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2(*dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPhysicalDeviceSparseImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2 *pFormatInfo, uint32_t *pPropertyCount, VkSparseImageFormatProperties2 *pProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR(dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
+    InstanceOverrides::GetPhysicalDeviceSparseImageFormatProperties2KHR(*dispatch, physicalDevice, pFormatInfo, pPropertyCount, pProperties);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(VkPhysicalDevice physicalDevice, uint32_t *pCombinationCount, VkFramebufferMixedSamplesCombinationNV *pCombinations) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(dispatch, physicalDevice, pCombinationCount, pCombinations);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(*dispatch, physicalDevice, pCombinationCount, pCombinations);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceCapabilities2EXT(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT *pSurfaceCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT(dispatch, physicalDevice, surface, pSurfaceCapabilities);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2EXT(*dispatch, physicalDevice, surface, pSurfaceCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, VkSurfaceCapabilities2KHR *pSurfaceCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2KHR(dispatch, physicalDevice, pSurfaceInfo, pSurfaceCapabilities);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilities2KHR(*dispatch, physicalDevice, pSurfaceInfo, pSurfaceCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilitiesKHR(dispatch, physicalDevice, surface, pSurfaceCapabilities);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceCapabilitiesKHR(*dispatch, physicalDevice, surface, pSurfaceCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceFormats2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, uint32_t *pSurfaceFormatCount, VkSurfaceFormat2KHR *pSurfaceFormats) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormats2KHR(dispatch, physicalDevice, pSurfaceInfo, pSurfaceFormatCount, pSurfaceFormats);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormats2KHR(*dispatch, physicalDevice, pSurfaceInfo, pSurfaceFormatCount, pSurfaceFormats);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pSurfaceFormatCount, VkSurfaceFormatKHR *pSurfaceFormats) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormatsKHR(dispatch, physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceFormatsKHR(*dispatch, physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats);
     return ret;
   }
 
@@ -6564,7 +6564,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfacePresentModes2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT(dispatch, physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModes2EXT(*dispatch, physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
     return ret;
   }
 
@@ -6572,49 +6572,49 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfacePresentModesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t *pPresentModeCount, VkPresentModeKHR *pPresentModes) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModesKHR(dispatch, physicalDevice, surface, pPresentModeCount, pPresentModes);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfacePresentModesKHR(*dispatch, physicalDevice, surface, pPresentModeCount, pPresentModes);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceSurfaceSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32 *pSupported) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceSupportKHR(dispatch, physicalDevice, queueFamilyIndex, surface, pSupported);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceSurfaceSupportKHR(*dispatch, physicalDevice, queueFamilyIndex, surface, pSupported);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceToolProperties(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolProperties *pToolProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceToolProperties(dispatch, physicalDevice, pToolCount, pToolProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceToolProperties(*dispatch, physicalDevice, pToolCount, pToolProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t *pToolCount, VkPhysicalDeviceToolProperties *pToolProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceToolPropertiesEXT(dispatch, physicalDevice, pToolCount, pToolProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceToolPropertiesEXT(*dispatch, physicalDevice, pToolCount, pToolProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceVideoCapabilitiesKHR(VkPhysicalDevice physicalDevice, const VkVideoProfileInfoKHR *pVideoProfile, VkVideoCapabilitiesKHR *pCapabilities) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR(dispatch, physicalDevice, pVideoProfile, pCapabilities);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoCapabilitiesKHR(*dispatch, physicalDevice, pVideoProfile, pCapabilities);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *pQualityLevelInfo, VkVideoEncodeQualityLevelPropertiesKHR *pQualityLevelProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(dispatch, physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(*dispatch, physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPhysicalDeviceVideoFormatPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoFormatInfoKHR *pVideoFormatInfo, uint32_t *pVideoFormatPropertyCount, VkVideoFormatPropertiesKHR *pVideoFormatProperties) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR(dispatch, physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
+    VkResult ret = InstanceOverrides::GetPhysicalDeviceVideoFormatPropertiesKHR(*dispatch, physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
     return ret;
   }
 
@@ -6622,7 +6622,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display *display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWaylandPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, display);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWaylandPresentationSupportKHR(*dispatch, physicalDevice, queueFamilyIndex, display);
     return ret;
   }
 
@@ -6631,7 +6631,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceWin32PresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWin32PresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceWin32PresentationSupportKHR(*dispatch, physicalDevice, queueFamilyIndex);
     return ret;
   }
 
@@ -6640,7 +6640,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceXcbPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, xcb_connection_t *connection, xcb_visualid_t visual_id) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXcbPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, connection, visual_id);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXcbPresentationSupportKHR(*dispatch, physicalDevice, queueFamilyIndex, connection, visual_id);
     return ret;
   }
 
@@ -6649,7 +6649,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkBool32 wrap_GetPhysicalDeviceXlibPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, Display *dpy, VisualID visualID) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXlibPresentationSupportKHR(dispatch, physicalDevice, queueFamilyIndex, dpy, visualID);
+    VkBool32 ret = InstanceOverrides::GetPhysicalDeviceXlibPresentationSupportKHR(*dispatch, physicalDevice, queueFamilyIndex, dpy, visualID);
     return ret;
   }
 
@@ -6658,7 +6658,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRandROutputDisplayEXT(VkPhysicalDevice physicalDevice, Display *dpy, RROutput rrOutput, VkDisplayKHR *pDisplay) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetRandROutputDisplayEXT(dispatch, physicalDevice, dpy, rrOutput, pDisplay);
+    VkResult ret = InstanceOverrides::GetRandROutputDisplayEXT(*dispatch, physicalDevice, dpy, rrOutput, pDisplay);
     return ret;
   }
 
@@ -6667,7 +6667,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetWinrtDisplayNV(VkPhysicalDevice physicalDevice, uint32_t deviceRelativeId, VkDisplayKHR *pDisplay) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::GetWinrtDisplayNV(dispatch, physicalDevice, deviceRelativeId, pDisplay);
+    VkResult ret = InstanceOverrides::GetWinrtDisplayNV(*dispatch, physicalDevice, deviceRelativeId, pDisplay);
     return ret;
   }
 
@@ -6675,21 +6675,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseDisplayEXT(VkPhysicalDevice physicalDevice, VkDisplayKHR display) {
     const VkPhysicalDeviceDispatch* dispatch = tables::LookupDispatch(physicalDevice);
-    VkResult ret = InstanceOverrides::ReleaseDisplayEXT(dispatch, physicalDevice, display);
+    VkResult ret = InstanceOverrides::ReleaseDisplayEXT(*dispatch, physicalDevice, display);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) {
     const VkInstanceDispatch* dispatch = tables::LookupDispatch(instance);
-    InstanceOverrides::SubmitDebugUtilsMessageEXT(dispatch, instance, messageSeverity, messageTypes, pCallbackData);
+    InstanceOverrides::SubmitDebugUtilsMessageEXT(*dispatch, instance, messageSeverity, messageTypes, pCallbackData);
   }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AcquireFullScreenExclusiveModeEXT(dispatch, device, swapchain);
+    VkResult ret = DeviceOverrides::AcquireFullScreenExclusiveModeEXT(*dispatch, device, swapchain);
     return ret;
   }
 
@@ -6697,625 +6697,625 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AcquireNextImage2KHR(dispatch, device, pAcquireInfo, pImageIndex);
+    VkResult ret = DeviceOverrides::AcquireNextImage2KHR(*dispatch, device, pAcquireInfo, pImageIndex);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AcquireNextImageKHR(dispatch, device, swapchain, timeout, semaphore, fence, pImageIndex);
+    VkResult ret = DeviceOverrides::AcquireNextImageKHR(*dispatch, device, swapchain, timeout, semaphore, fence, pImageIndex);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquirePerformanceConfigurationINTEL(VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL *pAcquireInfo, VkPerformanceConfigurationINTEL *pConfiguration) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AcquirePerformanceConfigurationINTEL(dispatch, device, pAcquireInfo, pConfiguration);
+    VkResult ret = DeviceOverrides::AcquirePerformanceConfigurationINTEL(*dispatch, device, pAcquireInfo, pConfiguration);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireProfilingLockKHR(VkDevice device, const VkAcquireProfilingLockInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AcquireProfilingLockKHR(dispatch, device, pInfo);
+    VkResult ret = DeviceOverrides::AcquireProfilingLockKHR(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateCommandBuffers(VkDevice device, const VkCommandBufferAllocateInfo *pAllocateInfo, VkCommandBuffer *pCommandBuffers) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AllocateCommandBuffers(dispatch, device, pAllocateInfo, pCommandBuffers);
+    VkResult ret = DeviceOverrides::AllocateCommandBuffers(*dispatch, device, pAllocateInfo, pCommandBuffers);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateDescriptorSets(VkDevice device, const VkDescriptorSetAllocateInfo *pAllocateInfo, VkDescriptorSet *pDescriptorSets) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AllocateDescriptorSets(dispatch, device, pAllocateInfo, pDescriptorSets);
+    VkResult ret = DeviceOverrides::AllocateDescriptorSets(*dispatch, device, pAllocateInfo, pDescriptorSets);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AllocateMemory(VkDevice device, const VkMemoryAllocateInfo *pAllocateInfo, const VkAllocationCallbacks *pAllocator, VkDeviceMemory *pMemory) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::AllocateMemory(dispatch, device, pAllocateInfo, pAllocator, pMemory);
+    VkResult ret = DeviceOverrides::AllocateMemory(*dispatch, device, pAllocateInfo, pAllocator, pMemory);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_AntiLagUpdateAMD(VkDevice device, const VkAntiLagDataAMD *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::AntiLagUpdateAMD(dispatch, device, pData);
+    DeviceOverrides::AntiLagUpdateAMD(*dispatch, device, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BeginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo *pBeginInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::BeginCommandBuffer(dispatch, commandBuffer, pBeginInfo);
+    VkResult ret = DeviceOverrides::BeginCommandBuffer(*dispatch, commandBuffer, pBeginInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindAccelerationStructureMemoryNV(VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNV *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindAccelerationStructureMemoryNV(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindAccelerationStructureMemoryNV(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory(VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindBufferMemory(dispatch, device, buffer, memory, memoryOffset);
+    VkResult ret = DeviceOverrides::BindBufferMemory(*dispatch, device, buffer, memory, memoryOffset);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindBufferMemory2(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindBufferMemory2(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindBufferMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindBufferMemory2KHR(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindBufferMemory2KHR(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindDataGraphPipelineSessionMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindDataGraphPipelineSessionMemoryInfoARM *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindDataGraphPipelineSessionMemoryARM(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindDataGraphPipelineSessionMemoryARM(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory(VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindImageMemory(dispatch, device, image, memory, memoryOffset);
+    VkResult ret = DeviceOverrides::BindImageMemory(*dispatch, device, image, memory, memoryOffset);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindImageMemory2(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindImageMemory2(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindImageMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfo *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindImageMemory2KHR(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindImageMemory2KHR(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindOpticalFlowSessionImageNV(VkDevice device, VkOpticalFlowSessionNV session, VkOpticalFlowSessionBindingPointNV bindingPoint, VkImageView view, VkImageLayout layout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindOpticalFlowSessionImageNV(dispatch, device, session, bindingPoint, view, layout);
+    VkResult ret = DeviceOverrides::BindOpticalFlowSessionImageNV(*dispatch, device, session, bindingPoint, view, layout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindTensorMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindTensorMemoryInfoARM *pBindInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindTensorMemoryARM(dispatch, device, bindInfoCount, pBindInfos);
+    VkResult ret = DeviceOverrides::BindTensorMemoryARM(*dispatch, device, bindInfoCount, pBindInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BindVideoSessionMemoryKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t bindSessionMemoryInfoCount, const VkBindVideoSessionMemoryInfoKHR *pBindSessionMemoryInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BindVideoSessionMemoryKHR(dispatch, device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos);
+    VkResult ret = DeviceOverrides::BindVideoSessionMemoryKHR(*dispatch, device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BuildAccelerationStructuresKHR(dispatch, device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos);
+    VkResult ret = DeviceOverrides::BuildAccelerationStructuresKHR(*dispatch, device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::BuildMicromapsEXT(dispatch, device, deferredOperation, infoCount, pInfos);
+    VkResult ret = DeviceOverrides::BuildMicromapsEXT(*dispatch, device, deferredOperation, infoCount, pInfos);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginConditionalRenderingEXT(dispatch, commandBuffer, pConditionalRenderingBegin);
+    DeviceOverrides::CmdBeginConditionalRenderingEXT(*dispatch, commandBuffer, pConditionalRenderingBegin);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginDebugUtilsLabelEXT(dispatch, commandBuffer, pLabelInfo);
+    DeviceOverrides::CmdBeginDebugUtilsLabelEXT(*dispatch, commandBuffer, pLabelInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginPerTileExecutionQCOM(dispatch, commandBuffer, pPerTileBeginInfo);
+    DeviceOverrides::CmdBeginPerTileExecutionQCOM(*dispatch, commandBuffer, pPerTileBeginInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginQuery(dispatch, commandBuffer, queryPool, query, flags);
+    DeviceOverrides::CmdBeginQuery(*dispatch, commandBuffer, queryPool, query, flags);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags, uint32_t index) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginQueryIndexedEXT(dispatch, commandBuffer, queryPool, query, flags, index);
+    DeviceOverrides::CmdBeginQueryIndexedEXT(*dispatch, commandBuffer, queryPool, query, flags, index);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, VkSubpassContents contents) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginRenderPass(dispatch, commandBuffer, pRenderPassBegin, contents);
+    DeviceOverrides::CmdBeginRenderPass(*dispatch, commandBuffer, pRenderPassBegin, contents);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass2(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, const VkSubpassBeginInfo *pSubpassBeginInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginRenderPass2(dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
+    DeviceOverrides::CmdBeginRenderPass2(*dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderPass2KHR(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo *pRenderPassBegin, const VkSubpassBeginInfo *pSubpassBeginInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginRenderPass2KHR(dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
+    DeviceOverrides::CmdBeginRenderPass2KHR(*dispatch, commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRendering(VkCommandBuffer commandBuffer, const VkRenderingInfo *pRenderingInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginRendering(dispatch, commandBuffer, pRenderingInfo);
+    DeviceOverrides::CmdBeginRendering(*dispatch, commandBuffer, pRenderingInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginRenderingKHR(VkCommandBuffer commandBuffer, const VkRenderingInfo *pRenderingInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginRenderingKHR(dispatch, commandBuffer, pRenderingInfo);
+    DeviceOverrides::CmdBeginRenderingKHR(*dispatch, commandBuffer, pRenderingInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginTransformFeedbackEXT(dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
+    DeviceOverrides::CmdBeginTransformFeedbackEXT(*dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoBeginCodingInfoKHR *pBeginInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBeginVideoCodingKHR(dispatch, commandBuffer, pBeginInfo);
+    DeviceOverrides::CmdBeginVideoCodingKHR(*dispatch, commandBuffer, pBeginInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBufferEmbeddedSamplers2EXT(VkCommandBuffer commandBuffer, const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *pBindDescriptorBufferEmbeddedSamplersInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplers2EXT(dispatch, commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo);
+    DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplers2EXT(*dispatch, commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT(dispatch, commandBuffer, pipelineBindPoint, layout, set);
+    DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT(*dispatch, commandBuffer, pipelineBindPoint, layout, set);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindDescriptorBuffersEXT(dispatch, commandBuffer, bufferCount, pBindingInfos);
+    DeviceOverrides::CmdBindDescriptorBuffersEXT(*dispatch, commandBuffer, bufferCount, pBindingInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindDescriptorSets(dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
+    DeviceOverrides::CmdBindDescriptorSets(*dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindDescriptorSets2KHR(dispatch, commandBuffer, pBindDescriptorSetsInfo);
+    DeviceOverrides::CmdBindDescriptorSets2KHR(*dispatch, commandBuffer, pBindDescriptorSetsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindIndexBuffer(dispatch, commandBuffer, buffer, offset, indexType);
+    DeviceOverrides::CmdBindIndexBuffer(*dispatch, commandBuffer, buffer, offset, indexType);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindIndexBuffer2KHR(dispatch, commandBuffer, buffer, offset, size, indexType);
+    DeviceOverrides::CmdBindIndexBuffer2KHR(*dispatch, commandBuffer, buffer, offset, size, indexType);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindInvocationMaskHUAWEI(dispatch, commandBuffer, imageView, imageLayout);
+    DeviceOverrides::CmdBindInvocationMaskHUAWEI(*dispatch, commandBuffer, imageView, imageLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindPipeline(dispatch, commandBuffer, pipelineBindPoint, pipeline);
+    DeviceOverrides::CmdBindPipeline(*dispatch, commandBuffer, pipelineBindPoint, pipeline);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindPipelineShaderGroupNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline, uint32_t groupIndex) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindPipelineShaderGroupNV(dispatch, commandBuffer, pipelineBindPoint, pipeline, groupIndex);
+    DeviceOverrides::CmdBindPipelineShaderGroupNV(*dispatch, commandBuffer, pipelineBindPoint, pipeline, groupIndex);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindShadersEXT(VkCommandBuffer commandBuffer, uint32_t stageCount, const VkShaderStageFlagBits *pStages, const VkShaderEXT *pShaders) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindShadersEXT(dispatch, commandBuffer, stageCount, pStages, pShaders);
+    DeviceOverrides::CmdBindShadersEXT(*dispatch, commandBuffer, stageCount, pStages, pShaders);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindShadingRateImageNV(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindShadingRateImageNV(dispatch, commandBuffer, imageView, imageLayout);
+    DeviceOverrides::CmdBindShadingRateImageNV(*dispatch, commandBuffer, imageView, imageLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindTileMemoryQCOM(VkCommandBuffer commandBuffer, const VkTileMemoryBindInfoQCOM *pTileMemoryBindInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindTileMemoryQCOM(dispatch, commandBuffer, pTileMemoryBindInfo);
+    DeviceOverrides::CmdBindTileMemoryQCOM(*dispatch, commandBuffer, pTileMemoryBindInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindTransformFeedbackBuffersEXT(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes);
+    DeviceOverrides::CmdBindTransformFeedbackBuffersEXT(*dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindVertexBuffers(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets);
+    DeviceOverrides::CmdBindVertexBuffers(*dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers2(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes, const VkDeviceSize *pStrides) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindVertexBuffers2(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
+    DeviceOverrides::CmdBindVertexBuffers2(*dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindVertexBuffers2EXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer *pBuffers, const VkDeviceSize *pOffsets, const VkDeviceSize *pSizes, const VkDeviceSize *pStrides) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBindVertexBuffers2EXT(dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
+    DeviceOverrides::CmdBindVertexBuffers2EXT(*dispatch, commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageBlit *pRegions, VkFilter filter) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBlitImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
+    DeviceOverrides::CmdBlitImage(*dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage2(VkCommandBuffer commandBuffer, const VkBlitImageInfo2 *pBlitImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBlitImage2(dispatch, commandBuffer, pBlitImageInfo);
+    DeviceOverrides::CmdBlitImage2(*dispatch, commandBuffer, pBlitImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBlitImage2KHR(VkCommandBuffer commandBuffer, const VkBlitImageInfo2 *pBlitImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBlitImage2KHR(dispatch, commandBuffer, pBlitImageInfo);
+    DeviceOverrides::CmdBlitImage2KHR(*dispatch, commandBuffer, pBlitImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructureNV(VkCommandBuffer commandBuffer, const VkAccelerationStructureInfoNV *pInfo, VkBuffer instanceData, VkDeviceSize instanceOffset, VkBool32 update, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkBuffer scratch, VkDeviceSize scratchOffset) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildAccelerationStructureNV(dispatch, commandBuffer, pInfo, instanceData, instanceOffset, update, dst, src, scratch, scratchOffset);
+    DeviceOverrides::CmdBuildAccelerationStructureNV(*dispatch, commandBuffer, pInfo, instanceData, instanceOffset, update, dst, src, scratch, scratchOffset);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructuresIndirectKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides, const uint32_t * const*ppMaxPrimitiveCounts) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildAccelerationStructuresIndirectKHR(dispatch, commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts);
+    DeviceOverrides::CmdBuildAccelerationStructuresIndirectKHR(*dispatch, commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildAccelerationStructuresKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildAccelerationStructuresKHR(dispatch, commandBuffer, infoCount, pInfos, ppBuildRangeInfos);
+    DeviceOverrides::CmdBuildAccelerationStructuresKHR(*dispatch, commandBuffer, infoCount, pInfos, ppBuildRangeInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildClusterAccelerationStructureIndirectNV(VkCommandBuffer commandBuffer, const VkClusterAccelerationStructureCommandsInfoNV *pCommandInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildClusterAccelerationStructureIndirectNV(dispatch, commandBuffer, pCommandInfos);
+    DeviceOverrides::CmdBuildClusterAccelerationStructureIndirectNV(*dispatch, commandBuffer, pCommandInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildMicromapsEXT(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildMicromapsEXT(dispatch, commandBuffer, infoCount, pInfos);
+    DeviceOverrides::CmdBuildMicromapsEXT(*dispatch, commandBuffer, infoCount, pInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBuildPartitionedAccelerationStructuresNV(VkCommandBuffer commandBuffer, const VkBuildPartitionedAccelerationStructureInfoNV *pBuildInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdBuildPartitionedAccelerationStructuresNV(dispatch, commandBuffer, pBuildInfo);
+    DeviceOverrides::CmdBuildPartitionedAccelerationStructuresNV(*dispatch, commandBuffer, pBuildInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearAttachments(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkClearAttachment *pAttachments, uint32_t rectCount, const VkClearRect *pRects) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdClearAttachments(dispatch, commandBuffer, attachmentCount, pAttachments, rectCount, pRects);
+    DeviceOverrides::CmdClearAttachments(*dispatch, commandBuffer, attachmentCount, pAttachments, rectCount, pRects);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearColorImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearColorValue *pColor, uint32_t rangeCount, const VkImageSubresourceRange *pRanges) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdClearColorImage(dispatch, commandBuffer, image, imageLayout, pColor, rangeCount, pRanges);
+    DeviceOverrides::CmdClearColorImage(*dispatch, commandBuffer, image, imageLayout, pColor, rangeCount, pRanges);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdClearDepthStencilImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearDepthStencilValue *pDepthStencil, uint32_t rangeCount, const VkImageSubresourceRange *pRanges) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdClearDepthStencilImage(dispatch, commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
+    DeviceOverrides::CmdClearDepthStencilImage(*dispatch, commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdControlVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoCodingControlInfoKHR *pCodingControlInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdControlVideoCodingKHR(dispatch, commandBuffer, pCodingControlInfo);
+    DeviceOverrides::CmdControlVideoCodingKHR(*dispatch, commandBuffer, pCodingControlInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdConvertCooperativeVectorMatrixNV(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkConvertCooperativeVectorMatrixInfoNV *pInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdConvertCooperativeVectorMatrixNV(dispatch, commandBuffer, infoCount, pInfos);
+    DeviceOverrides::CmdConvertCooperativeVectorMatrixNV(*dispatch, commandBuffer, infoCount, pInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureInfoKHR *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyAccelerationStructureKHR(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyAccelerationStructureKHR(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureNV(VkCommandBuffer commandBuffer, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkCopyAccelerationStructureModeKHR mode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyAccelerationStructureNV(dispatch, commandBuffer, dst, src, mode);
+    DeviceOverrides::CmdCopyAccelerationStructureNV(*dispatch, commandBuffer, dst, src, mode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyAccelerationStructureToMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyAccelerationStructureToMemoryKHR(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyAccelerationStructureToMemoryKHR(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy *pRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBuffer(dispatch, commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
+    DeviceOverrides::CmdCopyBuffer(*dispatch, commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer2(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 *pCopyBufferInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBuffer2(dispatch, commandBuffer, pCopyBufferInfo);
+    DeviceOverrides::CmdCopyBuffer2(*dispatch, commandBuffer, pCopyBufferInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 *pCopyBufferInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBuffer2KHR(dispatch, commandBuffer, pCopyBufferInfo);
+    DeviceOverrides::CmdCopyBuffer2KHR(*dispatch, commandBuffer, pCopyBufferInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkBufferImageCopy *pRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBufferToImage(dispatch, commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions);
+    DeviceOverrides::CmdCopyBufferToImage(*dispatch, commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage2(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2 *pCopyBufferToImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBufferToImage2(dispatch, commandBuffer, pCopyBufferToImageInfo);
+    DeviceOverrides::CmdCopyBufferToImage2(*dispatch, commandBuffer, pCopyBufferToImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyBufferToImage2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2 *pCopyBufferToImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyBufferToImage2KHR(dispatch, commandBuffer, pCopyBufferToImageInfo);
+    DeviceOverrides::CmdCopyBufferToImage2KHR(*dispatch, commandBuffer, pCopyBufferToImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageCopy *pRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
+    DeviceOverrides::CmdCopyImage(*dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage2(VkCommandBuffer commandBuffer, const VkCopyImageInfo2 *pCopyImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImage2(dispatch, commandBuffer, pCopyImageInfo);
+    DeviceOverrides::CmdCopyImage2(*dispatch, commandBuffer, pCopyImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImage2KHR(VkCommandBuffer commandBuffer, const VkCopyImageInfo2 *pCopyImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImage2KHR(dispatch, commandBuffer, pCopyImageInfo);
+    DeviceOverrides::CmdCopyImage2KHR(*dispatch, commandBuffer, pCopyImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImageToBuffer(dispatch, commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions);
+    DeviceOverrides::CmdCopyImageToBuffer(*dispatch, commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImageToBuffer2(dispatch, commandBuffer, pCopyImageToBufferInfo);
+    DeviceOverrides::CmdCopyImageToBuffer2(*dispatch, commandBuffer, pCopyImageToBufferInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyImageToBuffer2KHR(dispatch, commandBuffer, pCopyImageToBufferInfo);
+    DeviceOverrides::CmdCopyImageToBuffer2KHR(*dispatch, commandBuffer, pCopyImageToBufferInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMemoryIndirectNV(dispatch, commandBuffer, copyBufferAddress, copyCount, stride);
+    DeviceOverrides::CmdCopyMemoryIndirectNV(*dispatch, commandBuffer, copyBufferAddress, copyCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMemoryToImageIndirectNV(dispatch, commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources);
+    DeviceOverrides::CmdCopyMemoryToImageIndirectNV(*dispatch, commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMemoryToMicromapEXT(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyMemoryToMicromapEXT(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMicromapEXT(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyMicromapEXT(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMicromapToMemoryEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapToMemoryInfoEXT *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyMicromapToMemoryEXT(dispatch, commandBuffer, pInfo);
+    DeviceOverrides::CmdCopyMicromapToMemoryEXT(*dispatch, commandBuffer, pInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyQueryPoolResults(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyQueryPoolResults(dispatch, commandBuffer, queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
+    DeviceOverrides::CmdCopyQueryPoolResults(*dispatch, commandBuffer, queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyTensorARM(VkCommandBuffer commandBuffer, const VkCopyTensorInfoARM *pCopyTensorInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCopyTensorARM(dispatch, commandBuffer, pCopyTensorInfo);
+    DeviceOverrides::CmdCopyTensorARM(*dispatch, commandBuffer, pCopyTensorInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCudaLaunchKernelNV(VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV *pLaunchInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdCudaLaunchKernelNV(dispatch, commandBuffer, pLaunchInfo);
+    DeviceOverrides::CmdCudaLaunchKernelNV(*dispatch, commandBuffer, pLaunchInfo);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerBeginEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDebugMarkerBeginEXT(dispatch, commandBuffer, pMarkerInfo);
+    DeviceOverrides::CmdDebugMarkerBeginEXT(*dispatch, commandBuffer, pMarkerInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDebugMarkerEndEXT(dispatch, commandBuffer);
+    DeviceOverrides::CmdDebugMarkerEndEXT(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDebugMarkerInsertEXT(dispatch, commandBuffer, pMarkerInfo);
+    DeviceOverrides::CmdDebugMarkerInsertEXT(*dispatch, commandBuffer, pMarkerInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDecodeVideoKHR(dispatch, commandBuffer, pDecodeInfo);
+    DeviceOverrides::CmdDecodeVideoKHR(*dispatch, commandBuffer, pDecodeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDecompressMemoryIndirectCountNV(dispatch, commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride);
+    DeviceOverrides::CmdDecompressMemoryIndirectCountNV(*dispatch, commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDecompressMemoryNV(dispatch, commandBuffer, decompressRegionCount, pDecompressMemoryRegions);
+    DeviceOverrides::CmdDecompressMemoryNV(*dispatch, commandBuffer, decompressRegionCount, pDecompressMemoryRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatch(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
+    DeviceOverrides::CmdDispatch(*dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchBase(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchBase(dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
+    DeviceOverrides::CmdDispatchBase(*dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchBaseKHR(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchBaseKHR(dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
+    DeviceOverrides::CmdDispatchBaseKHR(*dispatch, commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchDataGraphARM(VkCommandBuffer commandBuffer, VkDataGraphPipelineSessionARM session, const VkDataGraphPipelineDispatchInfoARM *pInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchDataGraphARM(dispatch, commandBuffer, session, pInfo);
+    DeviceOverrides::CmdDispatchDataGraphARM(*dispatch, commandBuffer, session, pInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX *pCountInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchGraphAMDX(dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
+    DeviceOverrides::CmdDispatchGraphAMDX(*dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
   }
 
 #endif
@@ -7323,7 +7323,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphIndirectAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX *pCountInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchGraphIndirectAMDX(dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
+    DeviceOverrides::CmdDispatchGraphIndirectAMDX(*dispatch, commandBuffer, scratch, scratchSize, pCountInfo);
   }
 
 #endif
@@ -7331,1220 +7331,1220 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchGraphIndirectCountAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, VkDeviceAddress countInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchGraphIndirectCountAMDX(dispatch, commandBuffer, scratch, scratchSize, countInfo);
+    DeviceOverrides::CmdDispatchGraphIndirectCountAMDX(*dispatch, commandBuffer, scratch, scratchSize, countInfo);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchIndirect(dispatch, commandBuffer, buffer, offset);
+    DeviceOverrides::CmdDispatchIndirect(*dispatch, commandBuffer, buffer, offset);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDispatchTileQCOM(VkCommandBuffer commandBuffer, const VkDispatchTileInfoQCOM *pDispatchTileInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDispatchTileQCOM(dispatch, commandBuffer, pDispatchTileInfo);
+    DeviceOverrides::CmdDispatchTileQCOM(*dispatch, commandBuffer, pDispatchTileInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDraw(VkCommandBuffer commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDraw(dispatch, commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
+    DeviceOverrides::CmdDraw(*dispatch, commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawClusterHUAWEI(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawClusterHUAWEI(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
+    DeviceOverrides::CmdDrawClusterHUAWEI(*dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawClusterIndirectHUAWEI(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawClusterIndirectHUAWEI(dispatch, commandBuffer, buffer, offset);
+    DeviceOverrides::CmdDrawClusterIndirectHUAWEI(*dispatch, commandBuffer, buffer, offset);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexed(VkCommandBuffer commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndexed(dispatch, commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
+    DeviceOverrides::CmdDrawIndexed(*dispatch, commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndexedIndirect(dispatch, commandBuffer, buffer, offset, drawCount, stride);
+    DeviceOverrides::CmdDrawIndexedIndirect(*dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndexedIndirectCount(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndexedIndirectCount(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndexedIndirectCountAMD(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndexedIndirectCountAMD(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndexedIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndexedIndirectCountKHR(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndexedIndirectCountKHR(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndirect(dispatch, commandBuffer, buffer, offset, drawCount, stride);
+    DeviceOverrides::CmdDrawIndirect(*dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectByteCountEXT(VkCommandBuffer commandBuffer, uint32_t instanceCount, uint32_t firstInstance, VkBuffer counterBuffer, VkDeviceSize counterBufferOffset, uint32_t counterOffset, uint32_t vertexStride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndirectByteCountEXT(dispatch, commandBuffer, instanceCount, firstInstance, counterBuffer, counterBufferOffset, counterOffset, vertexStride);
+    DeviceOverrides::CmdDrawIndirectByteCountEXT(*dispatch, commandBuffer, instanceCount, firstInstance, counterBuffer, counterBufferOffset, counterOffset, vertexStride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndirectCount(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndirectCount(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndirectCountAMD(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndirectCountAMD(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawIndirectCountKHR(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawIndirectCountKHR(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksEXT(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksEXT(dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
+    DeviceOverrides::CmdDrawMeshTasksEXT(*dispatch, commandBuffer, groupCountX, groupCountY, groupCountZ);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectCountEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksIndirectCountEXT(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawMeshTasksIndirectCountEXT(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectCountNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksIndirectCountNV(dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
+    DeviceOverrides::CmdDrawMeshTasksIndirectCountNV(*dispatch, commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksIndirectEXT(dispatch, commandBuffer, buffer, offset, drawCount, stride);
+    DeviceOverrides::CmdDrawMeshTasksIndirectEXT(*dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksIndirectNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksIndirectNV(dispatch, commandBuffer, buffer, offset, drawCount, stride);
+    DeviceOverrides::CmdDrawMeshTasksIndirectNV(*dispatch, commandBuffer, buffer, offset, drawCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMeshTasksNV(VkCommandBuffer commandBuffer, uint32_t taskCount, uint32_t firstTask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMeshTasksNV(dispatch, commandBuffer, taskCount, firstTask);
+    DeviceOverrides::CmdDrawMeshTasksNV(*dispatch, commandBuffer, taskCount, firstTask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMultiEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawInfoEXT *pVertexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMultiEXT(dispatch, commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride);
+    DeviceOverrides::CmdDrawMultiEXT(*dispatch, commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdDrawMultiIndexedEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawIndexedInfoEXT *pIndexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride, const int32_t *pVertexOffset) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdDrawMultiIndexedEXT(dispatch, commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset);
+    DeviceOverrides::CmdDrawMultiIndexedEXT(*dispatch, commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEncodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR *pEncodeInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEncodeVideoKHR(dispatch, commandBuffer, pEncodeInfo);
+    DeviceOverrides::CmdEncodeVideoKHR(*dispatch, commandBuffer, pEncodeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndConditionalRenderingEXT(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndConditionalRenderingEXT(dispatch, commandBuffer);
+    DeviceOverrides::CmdEndConditionalRenderingEXT(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndDebugUtilsLabelEXT(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndDebugUtilsLabelEXT(dispatch, commandBuffer);
+    DeviceOverrides::CmdEndDebugUtilsLabelEXT(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileEndInfoQCOM *pPerTileEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndPerTileExecutionQCOM(dispatch, commandBuffer, pPerTileEndInfo);
+    DeviceOverrides::CmdEndPerTileExecutionQCOM(*dispatch, commandBuffer, pPerTileEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndQuery(dispatch, commandBuffer, queryPool, query);
+    DeviceOverrides::CmdEndQuery(*dispatch, commandBuffer, queryPool, query);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, uint32_t index) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndQueryIndexedEXT(dispatch, commandBuffer, queryPool, query, index);
+    DeviceOverrides::CmdEndQueryIndexedEXT(*dispatch, commandBuffer, queryPool, query, index);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRenderPass(dispatch, commandBuffer);
+    DeviceOverrides::CmdEndRenderPass(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRenderPass2(dispatch, commandBuffer, pSubpassEndInfo);
+    DeviceOverrides::CmdEndRenderPass2(*dispatch, commandBuffer, pSubpassEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRenderPass2KHR(dispatch, commandBuffer, pSubpassEndInfo);
+    DeviceOverrides::CmdEndRenderPass2KHR(*dispatch, commandBuffer, pSubpassEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRendering(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRendering(dispatch, commandBuffer);
+    DeviceOverrides::CmdEndRendering(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRendering2EXT(dispatch, commandBuffer, pRenderingEndInfo);
+    DeviceOverrides::CmdEndRendering2EXT(*dispatch, commandBuffer, pRenderingEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndRenderingKHR(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndRenderingKHR(dispatch, commandBuffer);
+    DeviceOverrides::CmdEndRenderingKHR(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndTransformFeedbackEXT(dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
+    DeviceOverrides::CmdEndTransformFeedbackEXT(*dispatch, commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdEndVideoCodingKHR(dispatch, commandBuffer, pEndCodingInfo);
+    DeviceOverrides::CmdEndVideoCodingKHR(*dispatch, commandBuffer, pEndCodingInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteCommands(VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdExecuteCommands(dispatch, commandBuffer, commandBufferCount, pCommandBuffers);
+    DeviceOverrides::CmdExecuteCommands(*dispatch, commandBuffer, commandBufferCount, pCommandBuffers);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteGeneratedCommandsEXT(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdExecuteGeneratedCommandsEXT(dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
+    DeviceOverrides::CmdExecuteGeneratedCommandsEXT(*dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdExecuteGeneratedCommandsNV(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdExecuteGeneratedCommandsNV(dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
+    DeviceOverrides::CmdExecuteGeneratedCommandsNV(*dispatch, commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdFillBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdFillBuffer(dispatch, commandBuffer, dstBuffer, dstOffset, size, data);
+    DeviceOverrides::CmdFillBuffer(*dispatch, commandBuffer, dstBuffer, dstOffset, size, data);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdInitializeGraphScratchMemoryAMDX(VkCommandBuffer commandBuffer, VkPipeline executionGraph, VkDeviceAddress scratch, VkDeviceSize scratchSize) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdInitializeGraphScratchMemoryAMDX(dispatch, commandBuffer, executionGraph, scratch, scratchSize);
+    DeviceOverrides::CmdInitializeGraphScratchMemoryAMDX(*dispatch, commandBuffer, executionGraph, scratch, scratchSize);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdInsertDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdInsertDebugUtilsLabelEXT(dispatch, commandBuffer, pLabelInfo);
+    DeviceOverrides::CmdInsertDebugUtilsLabelEXT(*dispatch, commandBuffer, pLabelInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass(VkCommandBuffer commandBuffer, VkSubpassContents contents) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdNextSubpass(dispatch, commandBuffer, contents);
+    DeviceOverrides::CmdNextSubpass(*dispatch, commandBuffer, contents);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass2(VkCommandBuffer commandBuffer, const VkSubpassBeginInfo *pSubpassBeginInfo, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdNextSubpass2(dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
+    DeviceOverrides::CmdNextSubpass2(*dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdNextSubpass2KHR(VkCommandBuffer commandBuffer, const VkSubpassBeginInfo *pSubpassBeginInfo, const VkSubpassEndInfo *pSubpassEndInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdNextSubpass2KHR(dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
+    DeviceOverrides::CmdNextSubpass2KHR(*dispatch, commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdOpticalFlowExecuteNV(VkCommandBuffer commandBuffer, VkOpticalFlowSessionNV session, const VkOpticalFlowExecuteInfoNV *pExecuteInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdOpticalFlowExecuteNV(dispatch, commandBuffer, session, pExecuteInfo);
+    DeviceOverrides::CmdOpticalFlowExecuteNV(*dispatch, commandBuffer, session, pExecuteInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier(VkCommandBuffer commandBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPipelineBarrier(dispatch, commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
+    DeviceOverrides::CmdPipelineBarrier(*dispatch, commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo *pDependencyInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPipelineBarrier2(dispatch, commandBuffer, pDependencyInfo);
+    DeviceOverrides::CmdPipelineBarrier2(*dispatch, commandBuffer, pDependencyInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPipelineBarrier2KHR(VkCommandBuffer commandBuffer, const VkDependencyInfo *pDependencyInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPipelineBarrier2KHR(dispatch, commandBuffer, pDependencyInfo);
+    DeviceOverrides::CmdPipelineBarrier2KHR(*dispatch, commandBuffer, pDependencyInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPreprocessGeneratedCommandsEXT(dispatch, commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer);
+    DeviceOverrides::CmdPreprocessGeneratedCommandsEXT(*dispatch, commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPreprocessGeneratedCommandsNV(dispatch, commandBuffer, pGeneratedCommandsInfo);
+    DeviceOverrides::CmdPreprocessGeneratedCommandsNV(*dispatch, commandBuffer, pGeneratedCommandsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushConstants(dispatch, commandBuffer, layout, stageFlags, offset, size, pValues);
+    DeviceOverrides::CmdPushConstants(*dispatch, commandBuffer, layout, stageFlags, offset, size, pValues);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushConstants2KHR(dispatch, commandBuffer, pPushConstantsInfo);
+    DeviceOverrides::CmdPushConstants2KHR(*dispatch, commandBuffer, pPushConstantsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushDescriptorSet2KHR(dispatch, commandBuffer, pPushDescriptorSetInfo);
+    DeviceOverrides::CmdPushDescriptorSet2KHR(*dispatch, commandBuffer, pPushDescriptorSetInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushDescriptorSetKHR(dispatch, commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
+    DeviceOverrides::CmdPushDescriptorSetKHR(*dispatch, commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR(dispatch, commandBuffer, pPushDescriptorSetWithTemplateInfo);
+    DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR(*dispatch, commandBuffer, pPushDescriptorSetWithTemplateInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR(dispatch, commandBuffer, descriptorUpdateTemplate, layout, set, pData);
+    DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR(*dispatch, commandBuffer, descriptorUpdateTemplate, layout, set, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResetEvent(dispatch, commandBuffer, event, stageMask);
+    DeviceOverrides::CmdResetEvent(*dispatch, commandBuffer, event, stageMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent2(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2 stageMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResetEvent2(dispatch, commandBuffer, event, stageMask);
+    DeviceOverrides::CmdResetEvent2(*dispatch, commandBuffer, event, stageMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2 stageMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResetEvent2KHR(dispatch, commandBuffer, event, stageMask);
+    DeviceOverrides::CmdResetEvent2KHR(*dispatch, commandBuffer, event, stageMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResetQueryPool(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResetQueryPool(dispatch, commandBuffer, queryPool, firstQuery, queryCount);
+    DeviceOverrides::CmdResetQueryPool(*dispatch, commandBuffer, queryPool, firstQuery, queryCount);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageResolve *pRegions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResolveImage(dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
+    DeviceOverrides::CmdResolveImage(*dispatch, commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage2(VkCommandBuffer commandBuffer, const VkResolveImageInfo2 *pResolveImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResolveImage2(dispatch, commandBuffer, pResolveImageInfo);
+    DeviceOverrides::CmdResolveImage2(*dispatch, commandBuffer, pResolveImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdResolveImage2KHR(VkCommandBuffer commandBuffer, const VkResolveImageInfo2 *pResolveImageInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdResolveImage2KHR(dispatch, commandBuffer, pResolveImageInfo);
+    DeviceOverrides::CmdResolveImage2KHR(*dispatch, commandBuffer, pResolveImageInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAlphaToCoverageEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToCoverageEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetAlphaToCoverageEnableEXT(dispatch, commandBuffer, alphaToCoverageEnable);
+    DeviceOverrides::CmdSetAlphaToCoverageEnableEXT(*dispatch, commandBuffer, alphaToCoverageEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAlphaToOneEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToOneEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetAlphaToOneEnableEXT(dispatch, commandBuffer, alphaToOneEnable);
+    DeviceOverrides::CmdSetAlphaToOneEnableEXT(*dispatch, commandBuffer, alphaToOneEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetAttachmentFeedbackLoopEnableEXT(VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetAttachmentFeedbackLoopEnableEXT(dispatch, commandBuffer, aspectMask);
+    DeviceOverrides::CmdSetAttachmentFeedbackLoopEnableEXT(*dispatch, commandBuffer, aspectMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetBlendConstants(VkCommandBuffer commandBuffer, const float blendConstants[4]) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetBlendConstants(dispatch, commandBuffer, blendConstants);
+    DeviceOverrides::CmdSetBlendConstants(*dispatch, commandBuffer, blendConstants);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCheckpointNV(VkCommandBuffer commandBuffer, const void *pCheckpointMarker) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCheckpointNV(dispatch, commandBuffer, pCheckpointMarker);
+    DeviceOverrides::CmdSetCheckpointNV(*dispatch, commandBuffer, pCheckpointMarker);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoarseSampleOrderNV(VkCommandBuffer commandBuffer, VkCoarseSampleOrderTypeNV sampleOrderType, uint32_t customSampleOrderCount, const VkCoarseSampleOrderCustomNV *pCustomSampleOrders) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoarseSampleOrderNV(dispatch, commandBuffer, sampleOrderType, customSampleOrderCount, pCustomSampleOrders);
+    DeviceOverrides::CmdSetCoarseSampleOrderNV(*dispatch, commandBuffer, sampleOrderType, customSampleOrderCount, pCustomSampleOrders);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendAdvancedEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendAdvancedEXT *pColorBlendAdvanced) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetColorBlendAdvancedEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced);
+    DeviceOverrides::CmdSetColorBlendAdvancedEXT(*dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendEnableEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkBool32 *pColorBlendEnables) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetColorBlendEnableEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables);
+    DeviceOverrides::CmdSetColorBlendEnableEXT(*dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorBlendEquationEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendEquationEXT *pColorBlendEquations) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetColorBlendEquationEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations);
+    DeviceOverrides::CmdSetColorBlendEquationEXT(*dispatch, commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorWriteEnableEXT(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkBool32 *pColorWriteEnables) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetColorWriteEnableEXT(dispatch, commandBuffer, attachmentCount, pColorWriteEnables);
+    DeviceOverrides::CmdSetColorWriteEnableEXT(*dispatch, commandBuffer, attachmentCount, pColorWriteEnables);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetColorWriteMaskEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorComponentFlags *pColorWriteMasks) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetColorWriteMaskEXT(dispatch, commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks);
+    DeviceOverrides::CmdSetColorWriteMaskEXT(*dispatch, commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetConservativeRasterizationModeEXT(VkCommandBuffer commandBuffer, VkConservativeRasterizationModeEXT conservativeRasterizationMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetConservativeRasterizationModeEXT(dispatch, commandBuffer, conservativeRasterizationMode);
+    DeviceOverrides::CmdSetConservativeRasterizationModeEXT(*dispatch, commandBuffer, conservativeRasterizationMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationModeNV(VkCommandBuffer commandBuffer, VkCoverageModulationModeNV coverageModulationMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageModulationModeNV(dispatch, commandBuffer, coverageModulationMode);
+    DeviceOverrides::CmdSetCoverageModulationModeNV(*dispatch, commandBuffer, coverageModulationMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationTableEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageModulationTableEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageModulationTableEnableNV(dispatch, commandBuffer, coverageModulationTableEnable);
+    DeviceOverrides::CmdSetCoverageModulationTableEnableNV(*dispatch, commandBuffer, coverageModulationTableEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageModulationTableNV(VkCommandBuffer commandBuffer, uint32_t coverageModulationTableCount, const float *pCoverageModulationTable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageModulationTableNV(dispatch, commandBuffer, coverageModulationTableCount, pCoverageModulationTable);
+    DeviceOverrides::CmdSetCoverageModulationTableNV(*dispatch, commandBuffer, coverageModulationTableCount, pCoverageModulationTable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageReductionModeNV(VkCommandBuffer commandBuffer, VkCoverageReductionModeNV coverageReductionMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageReductionModeNV(dispatch, commandBuffer, coverageReductionMode);
+    DeviceOverrides::CmdSetCoverageReductionModeNV(*dispatch, commandBuffer, coverageReductionMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageToColorEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageToColorEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageToColorEnableNV(dispatch, commandBuffer, coverageToColorEnable);
+    DeviceOverrides::CmdSetCoverageToColorEnableNV(*dispatch, commandBuffer, coverageToColorEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCoverageToColorLocationNV(VkCommandBuffer commandBuffer, uint32_t coverageToColorLocation) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCoverageToColorLocationNV(dispatch, commandBuffer, coverageToColorLocation);
+    DeviceOverrides::CmdSetCoverageToColorLocationNV(*dispatch, commandBuffer, coverageToColorLocation);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCullMode(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCullMode(dispatch, commandBuffer, cullMode);
+    DeviceOverrides::CmdSetCullMode(*dispatch, commandBuffer, cullMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetCullModeEXT(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetCullModeEXT(dispatch, commandBuffer, cullMode);
+    DeviceOverrides::CmdSetCullModeEXT(*dispatch, commandBuffer, cullMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBias(VkCommandBuffer commandBuffer, float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBias(dispatch, commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
+    DeviceOverrides::CmdSetDepthBias(*dispatch, commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBias2EXT(VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT *pDepthBiasInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBias2EXT(dispatch, commandBuffer, pDepthBiasInfo);
+    DeviceOverrides::CmdSetDepthBias2EXT(*dispatch, commandBuffer, pDepthBiasInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBiasEnable(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBiasEnable(dispatch, commandBuffer, depthBiasEnable);
+    DeviceOverrides::CmdSetDepthBiasEnable(*dispatch, commandBuffer, depthBiasEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBiasEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBiasEnableEXT(dispatch, commandBuffer, depthBiasEnable);
+    DeviceOverrides::CmdSetDepthBiasEnableEXT(*dispatch, commandBuffer, depthBiasEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBounds(VkCommandBuffer commandBuffer, float minDepthBounds, float maxDepthBounds) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBounds(dispatch, commandBuffer, minDepthBounds, maxDepthBounds);
+    DeviceOverrides::CmdSetDepthBounds(*dispatch, commandBuffer, minDepthBounds, maxDepthBounds);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBoundsTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBoundsTestEnable(dispatch, commandBuffer, depthBoundsTestEnable);
+    DeviceOverrides::CmdSetDepthBoundsTestEnable(*dispatch, commandBuffer, depthBoundsTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthBoundsTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthBoundsTestEnableEXT(dispatch, commandBuffer, depthBoundsTestEnable);
+    DeviceOverrides::CmdSetDepthBoundsTestEnableEXT(*dispatch, commandBuffer, depthBoundsTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClampEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClampEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthClampEnableEXT(dispatch, commandBuffer, depthClampEnable);
+    DeviceOverrides::CmdSetDepthClampEnableEXT(*dispatch, commandBuffer, depthClampEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClampRangeEXT(VkCommandBuffer commandBuffer, VkDepthClampModeEXT depthClampMode, const VkDepthClampRangeEXT *pDepthClampRange) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthClampRangeEXT(dispatch, commandBuffer, depthClampMode, pDepthClampRange);
+    DeviceOverrides::CmdSetDepthClampRangeEXT(*dispatch, commandBuffer, depthClampMode, pDepthClampRange);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClipEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClipEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthClipEnableEXT(dispatch, commandBuffer, depthClipEnable);
+    DeviceOverrides::CmdSetDepthClipEnableEXT(*dispatch, commandBuffer, depthClipEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthClipNegativeOneToOneEXT(VkCommandBuffer commandBuffer, VkBool32 negativeOneToOne) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthClipNegativeOneToOneEXT(dispatch, commandBuffer, negativeOneToOne);
+    DeviceOverrides::CmdSetDepthClipNegativeOneToOneEXT(*dispatch, commandBuffer, negativeOneToOne);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthCompareOp(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthCompareOp(dispatch, commandBuffer, depthCompareOp);
+    DeviceOverrides::CmdSetDepthCompareOp(*dispatch, commandBuffer, depthCompareOp);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthCompareOpEXT(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthCompareOpEXT(dispatch, commandBuffer, depthCompareOp);
+    DeviceOverrides::CmdSetDepthCompareOpEXT(*dispatch, commandBuffer, depthCompareOp);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthTestEnable(dispatch, commandBuffer, depthTestEnable);
+    DeviceOverrides::CmdSetDepthTestEnable(*dispatch, commandBuffer, depthTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthTestEnableEXT(dispatch, commandBuffer, depthTestEnable);
+    DeviceOverrides::CmdSetDepthTestEnableEXT(*dispatch, commandBuffer, depthTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthWriteEnable(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthWriteEnable(dispatch, commandBuffer, depthWriteEnable);
+    DeviceOverrides::CmdSetDepthWriteEnable(*dispatch, commandBuffer, depthWriteEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDepthWriteEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDepthWriteEnableEXT(dispatch, commandBuffer, depthWriteEnable);
+    DeviceOverrides::CmdSetDepthWriteEnableEXT(*dispatch, commandBuffer, depthWriteEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDescriptorBufferOffsets2EXT(VkCommandBuffer commandBuffer, const VkSetDescriptorBufferOffsetsInfoEXT *pSetDescriptorBufferOffsetsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDescriptorBufferOffsets2EXT(dispatch, commandBuffer, pSetDescriptorBufferOffsetsInfo);
+    DeviceOverrides::CmdSetDescriptorBufferOffsets2EXT(*dispatch, commandBuffer, pSetDescriptorBufferOffsetsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDescriptorBufferOffsetsEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t setCount, const uint32_t *pBufferIndices, const VkDeviceSize *pOffsets) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDescriptorBufferOffsetsEXT(dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets);
+    DeviceOverrides::CmdSetDescriptorBufferOffsetsEXT(*dispatch, commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDeviceMask(VkCommandBuffer commandBuffer, uint32_t deviceMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDeviceMask(dispatch, commandBuffer, deviceMask);
+    DeviceOverrides::CmdSetDeviceMask(*dispatch, commandBuffer, deviceMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDeviceMaskKHR(VkCommandBuffer commandBuffer, uint32_t deviceMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDeviceMaskKHR(dispatch, commandBuffer, deviceMask);
+    DeviceOverrides::CmdSetDeviceMaskKHR(*dispatch, commandBuffer, deviceMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleEXT(VkCommandBuffer commandBuffer, uint32_t firstDiscardRectangle, uint32_t discardRectangleCount, const VkRect2D *pDiscardRectangles) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDiscardRectangleEXT(dispatch, commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles);
+    DeviceOverrides::CmdSetDiscardRectangleEXT(*dispatch, commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 discardRectangleEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDiscardRectangleEnableEXT(dispatch, commandBuffer, discardRectangleEnable);
+    DeviceOverrides::CmdSetDiscardRectangleEnableEXT(*dispatch, commandBuffer, discardRectangleEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetDiscardRectangleModeEXT(VkCommandBuffer commandBuffer, VkDiscardRectangleModeEXT discardRectangleMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetDiscardRectangleModeEXT(dispatch, commandBuffer, discardRectangleMode);
+    DeviceOverrides::CmdSetDiscardRectangleModeEXT(*dispatch, commandBuffer, discardRectangleMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetEvent(dispatch, commandBuffer, event, stageMask);
+    DeviceOverrides::CmdSetEvent(*dispatch, commandBuffer, event, stageMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent2(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo *pDependencyInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetEvent2(dispatch, commandBuffer, event, pDependencyInfo);
+    DeviceOverrides::CmdSetEvent2(*dispatch, commandBuffer, event, pDependencyInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo *pDependencyInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetEvent2KHR(dispatch, commandBuffer, event, pDependencyInfo);
+    DeviceOverrides::CmdSetEvent2KHR(*dispatch, commandBuffer, event, pDependencyInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExclusiveScissorEnableNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkBool32 *pExclusiveScissorEnables) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetExclusiveScissorEnableNV(dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissorEnables);
+    DeviceOverrides::CmdSetExclusiveScissorEnableNV(*dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissorEnables);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExclusiveScissorNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkRect2D *pExclusiveScissors) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetExclusiveScissorNV(dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors);
+    DeviceOverrides::CmdSetExclusiveScissorNV(*dispatch, commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetExtraPrimitiveOverestimationSizeEXT(VkCommandBuffer commandBuffer, float extraPrimitiveOverestimationSize) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetExtraPrimitiveOverestimationSizeEXT(dispatch, commandBuffer, extraPrimitiveOverestimationSize);
+    DeviceOverrides::CmdSetExtraPrimitiveOverestimationSizeEXT(*dispatch, commandBuffer, extraPrimitiveOverestimationSize);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFragmentShadingRateEnumNV(VkCommandBuffer commandBuffer, VkFragmentShadingRateNV shadingRate, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetFragmentShadingRateEnumNV(dispatch, commandBuffer, shadingRate, combinerOps);
+    DeviceOverrides::CmdSetFragmentShadingRateEnumNV(*dispatch, commandBuffer, shadingRate, combinerOps);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFragmentShadingRateKHR(VkCommandBuffer commandBuffer, const VkExtent2D *pFragmentSize, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetFragmentShadingRateKHR(dispatch, commandBuffer, pFragmentSize, combinerOps);
+    DeviceOverrides::CmdSetFragmentShadingRateKHR(*dispatch, commandBuffer, pFragmentSize, combinerOps);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetFrontFace(dispatch, commandBuffer, frontFace);
+    DeviceOverrides::CmdSetFrontFace(*dispatch, commandBuffer, frontFace);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetFrontFaceEXT(dispatch, commandBuffer, frontFace);
+    DeviceOverrides::CmdSetFrontFaceEXT(*dispatch, commandBuffer, frontFace);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLineRasterizationModeEXT(dispatch, commandBuffer, lineRasterizationMode);
+    DeviceOverrides::CmdSetLineRasterizationModeEXT(*dispatch, commandBuffer, lineRasterizationMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLineStippleEXT(dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
+    DeviceOverrides::CmdSetLineStippleEXT(*dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLineStippleEnableEXT(dispatch, commandBuffer, stippledLineEnable);
+    DeviceOverrides::CmdSetLineStippleEnableEXT(*dispatch, commandBuffer, stippledLineEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLineStippleKHR(dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
+    DeviceOverrides::CmdSetLineStippleKHR(*dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineWidth(VkCommandBuffer commandBuffer, float lineWidth) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLineWidth(dispatch, commandBuffer, lineWidth);
+    DeviceOverrides::CmdSetLineWidth(*dispatch, commandBuffer, lineWidth);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLogicOpEXT(VkCommandBuffer commandBuffer, VkLogicOp logicOp) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLogicOpEXT(dispatch, commandBuffer, logicOp);
+    DeviceOverrides::CmdSetLogicOpEXT(*dispatch, commandBuffer, logicOp);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLogicOpEnableEXT(VkCommandBuffer commandBuffer, VkBool32 logicOpEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetLogicOpEnableEXT(dispatch, commandBuffer, logicOpEnable);
+    DeviceOverrides::CmdSetLogicOpEnableEXT(*dispatch, commandBuffer, logicOpEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPatchControlPointsEXT(VkCommandBuffer commandBuffer, uint32_t patchControlPoints) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPatchControlPointsEXT(dispatch, commandBuffer, patchControlPoints);
+    DeviceOverrides::CmdSetPatchControlPointsEXT(*dispatch, commandBuffer, patchControlPoints);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceMarkerInfoINTEL *pMarkerInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::CmdSetPerformanceMarkerINTEL(dispatch, commandBuffer, pMarkerInfo);
+    VkResult ret = DeviceOverrides::CmdSetPerformanceMarkerINTEL(*dispatch, commandBuffer, pMarkerInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceOverrideINTEL(VkCommandBuffer commandBuffer, const VkPerformanceOverrideInfoINTEL *pOverrideInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::CmdSetPerformanceOverrideINTEL(dispatch, commandBuffer, pOverrideInfo);
+    VkResult ret = DeviceOverrides::CmdSetPerformanceOverrideINTEL(*dispatch, commandBuffer, pOverrideInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CmdSetPerformanceStreamMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceStreamMarkerInfoINTEL *pMarkerInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::CmdSetPerformanceStreamMarkerINTEL(dispatch, commandBuffer, pMarkerInfo);
+    VkResult ret = DeviceOverrides::CmdSetPerformanceStreamMarkerINTEL(*dispatch, commandBuffer, pMarkerInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPolygonModeEXT(VkCommandBuffer commandBuffer, VkPolygonMode polygonMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPolygonModeEXT(dispatch, commandBuffer, polygonMode);
+    DeviceOverrides::CmdSetPolygonModeEXT(*dispatch, commandBuffer, polygonMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveRestartEnable(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPrimitiveRestartEnable(dispatch, commandBuffer, primitiveRestartEnable);
+    DeviceOverrides::CmdSetPrimitiveRestartEnable(*dispatch, commandBuffer, primitiveRestartEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveRestartEnableEXT(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPrimitiveRestartEnableEXT(dispatch, commandBuffer, primitiveRestartEnable);
+    DeviceOverrides::CmdSetPrimitiveRestartEnableEXT(*dispatch, commandBuffer, primitiveRestartEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveTopology(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPrimitiveTopology(dispatch, commandBuffer, primitiveTopology);
+    DeviceOverrides::CmdSetPrimitiveTopology(*dispatch, commandBuffer, primitiveTopology);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetPrimitiveTopologyEXT(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetPrimitiveTopologyEXT(dispatch, commandBuffer, primitiveTopology);
+    DeviceOverrides::CmdSetPrimitiveTopologyEXT(*dispatch, commandBuffer, primitiveTopology);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetProvokingVertexModeEXT(VkCommandBuffer commandBuffer, VkProvokingVertexModeEXT provokingVertexMode) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetProvokingVertexModeEXT(dispatch, commandBuffer, provokingVertexMode);
+    DeviceOverrides::CmdSetProvokingVertexModeEXT(*dispatch, commandBuffer, provokingVertexMode);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizationSamplesEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits rasterizationSamples) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRasterizationSamplesEXT(dispatch, commandBuffer, rasterizationSamples);
+    DeviceOverrides::CmdSetRasterizationSamplesEXT(*dispatch, commandBuffer, rasterizationSamples);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizationStreamEXT(VkCommandBuffer commandBuffer, uint32_t rasterizationStream) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRasterizationStreamEXT(dispatch, commandBuffer, rasterizationStream);
+    DeviceOverrides::CmdSetRasterizationStreamEXT(*dispatch, commandBuffer, rasterizationStream);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRasterizerDiscardEnable(dispatch, commandBuffer, rasterizerDiscardEnable);
+    DeviceOverrides::CmdSetRasterizerDiscardEnable(*dispatch, commandBuffer, rasterizerDiscardEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRasterizerDiscardEnableEXT(dispatch, commandBuffer, rasterizerDiscardEnable);
+    DeviceOverrides::CmdSetRasterizerDiscardEnableEXT(*dispatch, commandBuffer, rasterizerDiscardEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR(dispatch, commandBuffer, pipelineStackSize);
+    DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR(*dispatch, commandBuffer, pipelineStackSize);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR(dispatch, commandBuffer, pLocationInfo);
+    DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR(*dispatch, commandBuffer, pLocationInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR(dispatch, commandBuffer, pInputAttachmentIndexInfo);
+    DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR(*dispatch, commandBuffer, pInputAttachmentIndexInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV(dispatch, commandBuffer, representativeFragmentTestEnable);
+    DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV(*dispatch, commandBuffer, representativeFragmentTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetSampleLocationsEXT(dispatch, commandBuffer, pSampleLocationsInfo);
+    DeviceOverrides::CmdSetSampleLocationsEXT(*dispatch, commandBuffer, pSampleLocationsInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleLocationsEnableEXT(VkCommandBuffer commandBuffer, VkBool32 sampleLocationsEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetSampleLocationsEnableEXT(dispatch, commandBuffer, sampleLocationsEnable);
+    DeviceOverrides::CmdSetSampleLocationsEnableEXT(*dispatch, commandBuffer, sampleLocationsEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetSampleMaskEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, const VkSampleMask *pSampleMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetSampleMaskEXT(dispatch, commandBuffer, samples, pSampleMask);
+    DeviceOverrides::CmdSetSampleMaskEXT(*dispatch, commandBuffer, samples, pSampleMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissor(VkCommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetScissor(dispatch, commandBuffer, firstScissor, scissorCount, pScissors);
+    DeviceOverrides::CmdSetScissor(*dispatch, commandBuffer, firstScissor, scissorCount, pScissors);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissorWithCount(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetScissorWithCount(dispatch, commandBuffer, scissorCount, pScissors);
+    DeviceOverrides::CmdSetScissorWithCount(*dispatch, commandBuffer, scissorCount, pScissors);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetScissorWithCountEXT(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D *pScissors) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetScissorWithCountEXT(dispatch, commandBuffer, scissorCount, pScissors);
+    DeviceOverrides::CmdSetScissorWithCountEXT(*dispatch, commandBuffer, scissorCount, pScissors);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetShadingRateImageEnableNV(VkCommandBuffer commandBuffer, VkBool32 shadingRateImageEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetShadingRateImageEnableNV(dispatch, commandBuffer, shadingRateImageEnable);
+    DeviceOverrides::CmdSetShadingRateImageEnableNV(*dispatch, commandBuffer, shadingRateImageEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilCompareMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t compareMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilCompareMask(dispatch, commandBuffer, faceMask, compareMask);
+    DeviceOverrides::CmdSetStencilCompareMask(*dispatch, commandBuffer, faceMask, compareMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilOp(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilOp(dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
+    DeviceOverrides::CmdSetStencilOp(*dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilOpEXT(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilOpEXT(dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
+    DeviceOverrides::CmdSetStencilOpEXT(*dispatch, commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilReference(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t reference) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilReference(dispatch, commandBuffer, faceMask, reference);
+    DeviceOverrides::CmdSetStencilReference(*dispatch, commandBuffer, faceMask, reference);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilTestEnable(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilTestEnable(dispatch, commandBuffer, stencilTestEnable);
+    DeviceOverrides::CmdSetStencilTestEnable(*dispatch, commandBuffer, stencilTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilTestEnableEXT(dispatch, commandBuffer, stencilTestEnable);
+    DeviceOverrides::CmdSetStencilTestEnableEXT(*dispatch, commandBuffer, stencilTestEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetStencilWriteMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t writeMask) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetStencilWriteMask(dispatch, commandBuffer, faceMask, writeMask);
+    DeviceOverrides::CmdSetStencilWriteMask(*dispatch, commandBuffer, faceMask, writeMask);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetTessellationDomainOriginEXT(VkCommandBuffer commandBuffer, VkTessellationDomainOrigin domainOrigin) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetTessellationDomainOriginEXT(dispatch, commandBuffer, domainOrigin);
+    DeviceOverrides::CmdSetTessellationDomainOriginEXT(*dispatch, commandBuffer, domainOrigin);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetVertexInputEXT(VkCommandBuffer commandBuffer, uint32_t vertexBindingDescriptionCount, const VkVertexInputBindingDescription2EXT *pVertexBindingDescriptions, uint32_t vertexAttributeDescriptionCount, const VkVertexInputAttributeDescription2EXT *pVertexAttributeDescriptions) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetVertexInputEXT(dispatch, commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions);
+    DeviceOverrides::CmdSetVertexInputEXT(*dispatch, commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewport(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewport(dispatch, commandBuffer, firstViewport, viewportCount, pViewports);
+    DeviceOverrides::CmdSetViewport(*dispatch, commandBuffer, firstViewport, viewportCount, pViewports);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportShadingRatePaletteNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkShadingRatePaletteNV *pShadingRatePalettes) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportShadingRatePaletteNV(dispatch, commandBuffer, firstViewport, viewportCount, pShadingRatePalettes);
+    DeviceOverrides::CmdSetViewportShadingRatePaletteNV(*dispatch, commandBuffer, firstViewport, viewportCount, pShadingRatePalettes);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportSwizzleNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportSwizzleNV *pViewportSwizzles) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportSwizzleNV(dispatch, commandBuffer, firstViewport, viewportCount, pViewportSwizzles);
+    DeviceOverrides::CmdSetViewportSwizzleNV(*dispatch, commandBuffer, firstViewport, viewportCount, pViewportSwizzles);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWScalingEnableNV(VkCommandBuffer commandBuffer, VkBool32 viewportWScalingEnable) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportWScalingEnableNV(dispatch, commandBuffer, viewportWScalingEnable);
+    DeviceOverrides::CmdSetViewportWScalingEnableNV(*dispatch, commandBuffer, viewportWScalingEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWScalingNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportWScalingNV *pViewportWScalings) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportWScalingNV(dispatch, commandBuffer, firstViewport, viewportCount, pViewportWScalings);
+    DeviceOverrides::CmdSetViewportWScalingNV(*dispatch, commandBuffer, firstViewport, viewportCount, pViewportWScalings);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWithCount(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportWithCount(dispatch, commandBuffer, viewportCount, pViewports);
+    DeviceOverrides::CmdSetViewportWithCount(*dispatch, commandBuffer, viewportCount, pViewports);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetViewportWithCountEXT(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport *pViewports) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSetViewportWithCountEXT(dispatch, commandBuffer, viewportCount, pViewports);
+    DeviceOverrides::CmdSetViewportWithCountEXT(*dispatch, commandBuffer, viewportCount, pViewports);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSubpassShadingHUAWEI(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdSubpassShadingHUAWEI(dispatch, commandBuffer);
+    DeviceOverrides::CmdSubpassShadingHUAWEI(*dispatch, commandBuffer);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysIndirect2KHR(VkCommandBuffer commandBuffer, VkDeviceAddress indirectDeviceAddress) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdTraceRaysIndirect2KHR(dispatch, commandBuffer, indirectDeviceAddress);
+    DeviceOverrides::CmdTraceRaysIndirect2KHR(*dispatch, commandBuffer, indirectDeviceAddress);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysIndirectKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR *pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pCallableShaderBindingTable, VkDeviceAddress indirectDeviceAddress) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdTraceRaysIndirectKHR(dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, indirectDeviceAddress);
+    DeviceOverrides::CmdTraceRaysIndirectKHR(*dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, indirectDeviceAddress);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR *pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR *pCallableShaderBindingTable, uint32_t width, uint32_t height, uint32_t depth) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdTraceRaysKHR(dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, width, height, depth);
+    DeviceOverrides::CmdTraceRaysKHR(*dispatch, commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, width, height, depth);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdTraceRaysNV(VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, VkBuffer callableShaderBindingTableBuffer, VkDeviceSize callableShaderBindingOffset, VkDeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdTraceRaysNV(dispatch, commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, callableShaderBindingTableBuffer, callableShaderBindingOffset, callableShaderBindingStride, width, height, depth);
+    DeviceOverrides::CmdTraceRaysNV(*dispatch, commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, callableShaderBindingTableBuffer, callableShaderBindingOffset, callableShaderBindingStride, width, height, depth);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdUpdateBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void *pData) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdUpdateBuffer(dispatch, commandBuffer, dstBuffer, dstOffset, dataSize, pData);
+    DeviceOverrides::CmdUpdateBuffer(*dispatch, commandBuffer, dstBuffer, dstOffset, dataSize, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdUpdatePipelineIndirectBufferNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdUpdatePipelineIndirectBufferNV(dispatch, commandBuffer, pipelineBindPoint, pipeline);
+    DeviceOverrides::CmdUpdatePipelineIndirectBufferNV(*dispatch, commandBuffer, pipelineBindPoint, pipeline);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier *pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier *pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier *pImageMemoryBarriers) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWaitEvents(dispatch, commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
+    DeviceOverrides::CmdWaitEvents(*dispatch, commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents2(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfo *pDependencyInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWaitEvents2(dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
+    DeviceOverrides::CmdWaitEvents2(*dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWaitEvents2KHR(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent *pEvents, const VkDependencyInfo *pDependencyInfos) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWaitEvents2KHR(dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
+    DeviceOverrides::CmdWaitEvents2KHR(*dispatch, commandBuffer, eventCount, pEvents, pDependencyInfos);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteAccelerationStructuresPropertiesKHR(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteAccelerationStructuresPropertiesKHR(dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
+    DeviceOverrides::CmdWriteAccelerationStructuresPropertiesKHR(*dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteAccelerationStructuresPropertiesNV(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureNV *pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteAccelerationStructuresPropertiesNV(dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
+    DeviceOverrides::CmdWriteAccelerationStructuresPropertiesNV(*dispatch, commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteBufferMarker2AMD(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteBufferMarker2AMD(dispatch, commandBuffer, stage, dstBuffer, dstOffset, marker);
+    DeviceOverrides::CmdWriteBufferMarker2AMD(*dispatch, commandBuffer, stage, dstBuffer, dstOffset, marker);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteBufferMarkerAMD(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteBufferMarkerAMD(dispatch, commandBuffer, pipelineStage, dstBuffer, dstOffset, marker);
+    DeviceOverrides::CmdWriteBufferMarkerAMD(*dispatch, commandBuffer, pipelineStage, dstBuffer, dstOffset, marker);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteMicromapsPropertiesEXT(VkCommandBuffer commandBuffer, uint32_t micromapCount, const VkMicromapEXT *pMicromaps, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteMicromapsPropertiesEXT(dispatch, commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery);
+    DeviceOverrides::CmdWriteMicromapsPropertiesEXT(*dispatch, commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, uint32_t query) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteTimestamp(dispatch, commandBuffer, pipelineStage, queryPool, query);
+    DeviceOverrides::CmdWriteTimestamp(*dispatch, commandBuffer, pipelineStage, queryPool, query);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkQueryPool queryPool, uint32_t query) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteTimestamp2(dispatch, commandBuffer, stage, queryPool, query);
+    DeviceOverrides::CmdWriteTimestamp2(*dispatch, commandBuffer, stage, queryPool, query);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdWriteTimestamp2KHR(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkQueryPool queryPool, uint32_t query) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    DeviceOverrides::CmdWriteTimestamp2KHR(dispatch, commandBuffer, stage, queryPool, query);
+    DeviceOverrides::CmdWriteTimestamp2KHR(*dispatch, commandBuffer, stage, queryPool, query);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CompileDeferredNV(VkDevice device, VkPipeline pipeline, uint32_t shader) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CompileDeferredNV(dispatch, device, pipeline, shader);
+    VkResult ret = DeviceOverrides::CompileDeferredNV(*dispatch, device, pipeline, shader);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ConvertCooperativeVectorMatrixNV(dispatch, device, pInfo);
+    VkResult ret = DeviceOverrides::ConvertCooperativeVectorMatrixNV(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyAccelerationStructureKHR(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyAccelerationStructureKHR(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyAccelerationStructureToMemoryKHR(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyAccelerationStructureToMemoryKHR(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyImageToImageEXT(dispatch, device, pCopyImageToImageInfo);
+    VkResult ret = DeviceOverrides::CopyImageToImageEXT(*dispatch, device, pCopyImageToImageInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyImageToMemoryEXT(dispatch, device, pCopyImageToMemoryInfo);
+    VkResult ret = DeviceOverrides::CopyImageToMemoryEXT(*dispatch, device, pCopyImageToMemoryInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyMemoryToAccelerationStructureKHR(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyMemoryToAccelerationStructureKHR(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyMemoryToImageEXT(dispatch, device, pCopyMemoryToImageInfo);
+    VkResult ret = DeviceOverrides::CopyMemoryToImageEXT(*dispatch, device, pCopyMemoryToImageInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyMemoryToMicromapEXT(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyMemoryToMicromapEXT(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyMicromapEXT(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyMicromapEXT(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyMicromapToMemoryEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapToMemoryInfoEXT *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CopyMicromapToMemoryEXT(dispatch, device, deferredOperation, pInfo);
+    VkResult ret = DeviceOverrides::CopyMicromapToMemoryEXT(*dispatch, device, deferredOperation, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAccelerationStructureKHR(VkDevice device, const VkAccelerationStructureCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkAccelerationStructureKHR *pAccelerationStructure) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateAccelerationStructureKHR(dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
+    VkResult ret = DeviceOverrides::CreateAccelerationStructureKHR(*dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateAccelerationStructureNV(VkDevice device, const VkAccelerationStructureCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkAccelerationStructureNV *pAccelerationStructure) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateAccelerationStructureNV(dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
+    VkResult ret = DeviceOverrides::CreateAccelerationStructureNV(*dispatch, device, pCreateInfo, pAllocator, pAccelerationStructure);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBuffer(VkDevice device, const VkBufferCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBuffer *pBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateBuffer(dispatch, device, pCreateInfo, pAllocator, pBuffer);
+    VkResult ret = DeviceOverrides::CreateBuffer(*dispatch, device, pCreateInfo, pAllocator, pBuffer);
     return ret;
   }
 
@@ -8552,7 +8552,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBufferCollectionFUCHSIA(VkDevice device, const VkBufferCollectionCreateInfoFUCHSIA *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBufferCollectionFUCHSIA *pCollection) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateBufferCollectionFUCHSIA(dispatch, device, pCreateInfo, pAllocator, pCollection);
+    VkResult ret = DeviceOverrides::CreateBufferCollectionFUCHSIA(*dispatch, device, pCreateInfo, pAllocator, pCollection);
     return ret;
   }
 
@@ -8560,21 +8560,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateBufferView(VkDevice device, const VkBufferViewCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkBufferView *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateBufferView(dispatch, device, pCreateInfo, pAllocator, pView);
+    VkResult ret = DeviceOverrides::CreateBufferView(*dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCommandPool(VkDevice device, const VkCommandPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCommandPool *pCommandPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateCommandPool(dispatch, device, pCreateInfo, pAllocator, pCommandPool);
+    VkResult ret = DeviceOverrides::CreateCommandPool(*dispatch, device, pCreateInfo, pAllocator, pCommandPool);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateComputePipelines(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateComputePipelines(*dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
@@ -8582,7 +8582,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCudaFunctionNV(VkDevice device, const VkCudaFunctionCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCudaFunctionNV *pFunction) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateCudaFunctionNV(dispatch, device, pCreateInfo, pAllocator, pFunction);
+    VkResult ret = DeviceOverrides::CreateCudaFunctionNV(*dispatch, device, pCreateInfo, pAllocator, pFunction);
     return ret;
   }
 
@@ -8591,7 +8591,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkCudaModuleNV *pModule) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateCudaModuleNV(dispatch, device, pCreateInfo, pAllocator, pModule);
+    VkResult ret = DeviceOverrides::CreateCudaModuleNV(*dispatch, device, pCreateInfo, pAllocator, pModule);
     return ret;
   }
 
@@ -8599,56 +8599,56 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDataGraphPipelineSessionARM(VkDevice device, const VkDataGraphPipelineSessionCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDataGraphPipelineSessionARM *pSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDataGraphPipelineSessionARM(dispatch, device, pCreateInfo, pAllocator, pSession);
+    VkResult ret = DeviceOverrides::CreateDataGraphPipelineSessionARM(*dispatch, device, pCreateInfo, pAllocator, pSession);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDataGraphPipelinesARM(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkDataGraphPipelineCreateInfoARM *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDataGraphPipelinesARM(dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateDataGraphPipelinesARM(*dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDeferredOperationKHR(VkDevice device, const VkAllocationCallbacks *pAllocator, VkDeferredOperationKHR *pDeferredOperation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDeferredOperationKHR(dispatch, device, pAllocator, pDeferredOperation);
+    VkResult ret = DeviceOverrides::CreateDeferredOperationKHR(*dispatch, device, pAllocator, pDeferredOperation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorPool(VkDevice device, const VkDescriptorPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorPool *pDescriptorPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDescriptorPool(dispatch, device, pCreateInfo, pAllocator, pDescriptorPool);
+    VkResult ret = DeviceOverrides::CreateDescriptorPool(*dispatch, device, pCreateInfo, pAllocator, pDescriptorPool);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorSetLayout(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorSetLayout *pSetLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDescriptorSetLayout(dispatch, device, pCreateInfo, pAllocator, pSetLayout);
+    VkResult ret = DeviceOverrides::CreateDescriptorSetLayout(*dispatch, device, pCreateInfo, pAllocator, pSetLayout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorUpdateTemplate(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorUpdateTemplate *pDescriptorUpdateTemplate) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplate(dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
+    VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplate(*dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateDescriptorUpdateTemplateKHR(VkDevice device, const VkDescriptorUpdateTemplateCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDescriptorUpdateTemplate *pDescriptorUpdateTemplate) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplateKHR(dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
+    VkResult ret = DeviceOverrides::CreateDescriptorUpdateTemplateKHR(*dispatch, device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateEvent(VkDevice device, const VkEventCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkEvent *pEvent) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateEvent(dispatch, device, pCreateInfo, pAllocator, pEvent);
+    VkResult ret = DeviceOverrides::CreateEvent(*dispatch, device, pCreateInfo, pAllocator, pEvent);
     return ret;
   }
 
@@ -8656,7 +8656,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateExecutionGraphPipelinesAMDX(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkExecutionGraphPipelineCreateInfoAMDX *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateExecutionGraphPipelinesAMDX(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateExecutionGraphPipelinesAMDX(*dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
@@ -8664,312 +8664,312 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateExternalComputeQueueNV(VkDevice device, const VkExternalComputeQueueCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkExternalComputeQueueNV *pExternalQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateExternalComputeQueueNV(dispatch, device, pCreateInfo, pAllocator, pExternalQueue);
+    VkResult ret = DeviceOverrides::CreateExternalComputeQueueNV(*dispatch, device, pCreateInfo, pAllocator, pExternalQueue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateFence(VkDevice device, const VkFenceCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateFence(dispatch, device, pCreateInfo, pAllocator, pFence);
+    VkResult ret = DeviceOverrides::CreateFence(*dispatch, device, pCreateInfo, pAllocator, pFence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateFramebuffer(VkDevice device, const VkFramebufferCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkFramebuffer *pFramebuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateFramebuffer(dispatch, device, pCreateInfo, pAllocator, pFramebuffer);
+    VkResult ret = DeviceOverrides::CreateFramebuffer(*dispatch, device, pCreateInfo, pAllocator, pFramebuffer);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateGraphicsPipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkGraphicsPipelineCreateInfo *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateGraphicsPipelines(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateGraphicsPipelines(*dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImage(VkDevice device, const VkImageCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkImage *pImage) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateImage(dispatch, device, pCreateInfo, pAllocator, pImage);
+    VkResult ret = DeviceOverrides::CreateImage(*dispatch, device, pCreateInfo, pAllocator, pImage);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateImageView(VkDevice device, const VkImageViewCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkImageView *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateImageView(dispatch, device, pCreateInfo, pAllocator, pView);
+    VkResult ret = DeviceOverrides::CreateImageView(*dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectCommandsLayoutEXT(VkDevice device, const VkIndirectCommandsLayoutCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectCommandsLayoutEXT *pIndirectCommandsLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutEXT(dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
+    VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutEXT(*dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectCommandsLayoutNV(VkDevice device, const VkIndirectCommandsLayoutCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectCommandsLayoutNV *pIndirectCommandsLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutNV(dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
+    VkResult ret = DeviceOverrides::CreateIndirectCommandsLayoutNV(*dispatch, device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateIndirectExecutionSetEXT(VkDevice device, const VkIndirectExecutionSetCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkIndirectExecutionSetEXT *pIndirectExecutionSet) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateIndirectExecutionSetEXT(dispatch, device, pCreateInfo, pAllocator, pIndirectExecutionSet);
+    VkResult ret = DeviceOverrides::CreateIndirectExecutionSetEXT(*dispatch, device, pCreateInfo, pAllocator, pIndirectExecutionSet);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateMicromapEXT(VkDevice device, const VkMicromapCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkMicromapEXT *pMicromap) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateMicromapEXT(dispatch, device, pCreateInfo, pAllocator, pMicromap);
+    VkResult ret = DeviceOverrides::CreateMicromapEXT(*dispatch, device, pCreateInfo, pAllocator, pMicromap);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateOpticalFlowSessionNV(VkDevice device, const VkOpticalFlowSessionCreateInfoNV *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkOpticalFlowSessionNV *pSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateOpticalFlowSessionNV(dispatch, device, pCreateInfo, pAllocator, pSession);
+    VkResult ret = DeviceOverrides::CreateOpticalFlowSessionNV(*dispatch, device, pCreateInfo, pAllocator, pSession);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineBinariesKHR(VkDevice device, const VkPipelineBinaryCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineBinaryHandlesInfoKHR *pBinaries) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreatePipelineBinariesKHR(dispatch, device, pCreateInfo, pAllocator, pBinaries);
+    VkResult ret = DeviceOverrides::CreatePipelineBinariesKHR(*dispatch, device, pCreateInfo, pAllocator, pBinaries);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineCache(VkDevice device, const VkPipelineCacheCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineCache *pPipelineCache) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreatePipelineCache(dispatch, device, pCreateInfo, pAllocator, pPipelineCache);
+    VkResult ret = DeviceOverrides::CreatePipelineCache(*dispatch, device, pCreateInfo, pAllocator, pPipelineCache);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPipelineLayout *pPipelineLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreatePipelineLayout(dispatch, device, pCreateInfo, pAllocator, pPipelineLayout);
+    VkResult ret = DeviceOverrides::CreatePipelineLayout(*dispatch, device, pCreateInfo, pAllocator, pPipelineLayout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlotCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPrivateDataSlot *pPrivateDataSlot) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreatePrivateDataSlot(dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
+    VkResult ret = DeviceOverrides::CreatePrivateDataSlot(*dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkPrivateDataSlot *pPrivateDataSlot) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreatePrivateDataSlotEXT(dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
+    VkResult ret = DeviceOverrides::CreatePrivateDataSlotEXT(*dispatch, device, pCreateInfo, pAllocator, pPrivateDataSlot);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateQueryPool(VkDevice device, const VkQueryPoolCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkQueryPool *pQueryPool) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateQueryPool(dispatch, device, pCreateInfo, pAllocator, pQueryPool);
+    VkResult ret = DeviceOverrides::CreateQueryPool(*dispatch, device, pCreateInfo, pAllocator, pQueryPool);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRayTracingPipelinesKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoKHR *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateRayTracingPipelinesKHR(dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateRayTracingPipelinesKHR(*dispatch, device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRayTracingPipelinesNV(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoNV *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkPipeline *pPipelines) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateRayTracingPipelinesNV(dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
+    VkResult ret = DeviceOverrides::CreateRayTracingPipelinesNV(*dispatch, device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass(VkDevice device, const VkRenderPassCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateRenderPass(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
+    VkResult ret = DeviceOverrides::CreateRenderPass(*dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass2(VkDevice device, const VkRenderPassCreateInfo2 *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateRenderPass2(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
+    VkResult ret = DeviceOverrides::CreateRenderPass2(*dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateRenderPass2KHR(VkDevice device, const VkRenderPassCreateInfo2 *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkRenderPass *pRenderPass) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateRenderPass2KHR(dispatch, device, pCreateInfo, pAllocator, pRenderPass);
+    VkResult ret = DeviceOverrides::CreateRenderPass2KHR(*dispatch, device, pCreateInfo, pAllocator, pRenderPass);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSampler(VkDevice device, const VkSamplerCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSampler *pSampler) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSampler(dispatch, device, pCreateInfo, pAllocator, pSampler);
+    VkResult ret = DeviceOverrides::CreateSampler(*dispatch, device, pCreateInfo, pAllocator, pSampler);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSamplerYcbcrConversion *pYcbcrConversion) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversion(dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
+    VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversion(*dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSamplerYcbcrConversionKHR(VkDevice device, const VkSamplerYcbcrConversionCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSamplerYcbcrConversion *pYcbcrConversion) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversionKHR(dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
+    VkResult ret = DeviceOverrides::CreateSamplerYcbcrConversionKHR(*dispatch, device, pCreateInfo, pAllocator, pYcbcrConversion);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSemaphore(VkDevice device, const VkSemaphoreCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSemaphore *pSemaphore) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSemaphore(dispatch, device, pCreateInfo, pAllocator, pSemaphore);
+    VkResult ret = DeviceOverrides::CreateSemaphore(*dispatch, device, pCreateInfo, pAllocator, pSemaphore);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateShaderModule(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkShaderModule *pShaderModule) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateShaderModule(dispatch, device, pCreateInfo, pAllocator, pShaderModule);
+    VkResult ret = DeviceOverrides::CreateShaderModule(*dispatch, device, pCreateInfo, pAllocator, pShaderModule);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateShadersEXT(VkDevice device, uint32_t createInfoCount, const VkShaderCreateInfoEXT *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkShaderEXT *pShaders) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateShadersEXT(dispatch, device, createInfoCount, pCreateInfos, pAllocator, pShaders);
+    VkResult ret = DeviceOverrides::CreateShadersEXT(*dispatch, device, createInfoCount, pCreateInfos, pAllocator, pShaders);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSharedSwapchainsKHR(VkDevice device, uint32_t swapchainCount, const VkSwapchainCreateInfoKHR *pCreateInfos, const VkAllocationCallbacks *pAllocator, VkSwapchainKHR *pSwapchains) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSharedSwapchainsKHR(dispatch, device, swapchainCount, pCreateInfos, pAllocator, pSwapchains);
+    VkResult ret = DeviceOverrides::CreateSharedSwapchainsKHR(*dispatch, device, swapchainCount, pCreateInfos, pAllocator, pSwapchains);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkSwapchainKHR *pSwapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateSwapchainKHR(dispatch, device, pCreateInfo, pAllocator, pSwapchain);
+    VkResult ret = DeviceOverrides::CreateSwapchainKHR(*dispatch, device, pCreateInfo, pAllocator, pSwapchain);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateTensorARM(VkDevice device, const VkTensorCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkTensorARM *pTensor) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateTensorARM(dispatch, device, pCreateInfo, pAllocator, pTensor);
+    VkResult ret = DeviceOverrides::CreateTensorARM(*dispatch, device, pCreateInfo, pAllocator, pTensor);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateTensorViewARM(VkDevice device, const VkTensorViewCreateInfoARM *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkTensorViewARM *pView) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateTensorViewARM(dispatch, device, pCreateInfo, pAllocator, pView);
+    VkResult ret = DeviceOverrides::CreateTensorViewARM(*dispatch, device, pCreateInfo, pAllocator, pView);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateValidationCacheEXT(VkDevice device, const VkValidationCacheCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkValidationCacheEXT *pValidationCache) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateValidationCacheEXT(dispatch, device, pCreateInfo, pAllocator, pValidationCache);
+    VkResult ret = DeviceOverrides::CreateValidationCacheEXT(*dispatch, device, pCreateInfo, pAllocator, pValidationCache);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateVideoSessionKHR(VkDevice device, const VkVideoSessionCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkVideoSessionKHR *pVideoSession) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateVideoSessionKHR(dispatch, device, pCreateInfo, pAllocator, pVideoSession);
+    VkResult ret = DeviceOverrides::CreateVideoSessionKHR(*dispatch, device, pCreateInfo, pAllocator, pVideoSession);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CreateVideoSessionParametersKHR(VkDevice device, const VkVideoSessionParametersCreateInfoKHR *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkVideoSessionParametersKHR *pVideoSessionParameters) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::CreateVideoSessionParametersKHR(dispatch, device, pCreateInfo, pAllocator, pVideoSessionParameters);
+    VkResult ret = DeviceOverrides::CreateVideoSessionParametersKHR(*dispatch, device, pCreateInfo, pAllocator, pVideoSessionParameters);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DebugMarkerSetObjectNameEXT(VkDevice device, const VkDebugMarkerObjectNameInfoEXT *pNameInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::DebugMarkerSetObjectNameEXT(dispatch, device, pNameInfo);
+    VkResult ret = DeviceOverrides::DebugMarkerSetObjectNameEXT(*dispatch, device, pNameInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DebugMarkerSetObjectTagEXT(VkDevice device, const VkDebugMarkerObjectTagInfoEXT *pTagInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::DebugMarkerSetObjectTagEXT(dispatch, device, pTagInfo);
+    VkResult ret = DeviceOverrides::DebugMarkerSetObjectTagEXT(*dispatch, device, pTagInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DeferredOperationJoinKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::DeferredOperationJoinKHR(dispatch, device, operation);
+    VkResult ret = DeviceOverrides::DeferredOperationJoinKHR(*dispatch, device, operation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyAccelerationStructureKHR(VkDevice device, VkAccelerationStructureKHR accelerationStructure, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyAccelerationStructureKHR(dispatch, device, accelerationStructure, pAllocator);
+    DeviceOverrides::DestroyAccelerationStructureKHR(*dispatch, device, accelerationStructure, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyAccelerationStructureNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyAccelerationStructureNV(dispatch, device, accelerationStructure, pAllocator);
+    DeviceOverrides::DestroyAccelerationStructureNV(*dispatch, device, accelerationStructure, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBuffer(VkDevice device, VkBuffer buffer, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyBuffer(dispatch, device, buffer, pAllocator);
+    DeviceOverrides::DestroyBuffer(*dispatch, device, buffer, pAllocator);
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBufferCollectionFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyBufferCollectionFUCHSIA(dispatch, device, collection, pAllocator);
+    DeviceOverrides::DestroyBufferCollectionFUCHSIA(*dispatch, device, collection, pAllocator);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyBufferView(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyBufferView(dispatch, device, bufferView, pAllocator);
+    DeviceOverrides::DestroyBufferView(*dispatch, device, bufferView, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCommandPool(VkDevice device, VkCommandPool commandPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyCommandPool(dispatch, device, commandPool, pAllocator);
+    DeviceOverrides::DestroyCommandPool(*dispatch, device, commandPool, pAllocator);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCudaFunctionNV(VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyCudaFunctionNV(dispatch, device, function, pAllocator);
+    DeviceOverrides::DestroyCudaFunctionNV(*dispatch, device, function, pAllocator);
   }
 
 #endif
@@ -8977,256 +8977,256 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyCudaModuleNV(VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyCudaModuleNV(dispatch, device, module, pAllocator);
+    DeviceOverrides::DestroyCudaModuleNV(*dispatch, device, module, pAllocator);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDataGraphPipelineSessionARM(VkDevice device, VkDataGraphPipelineSessionARM session, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDataGraphPipelineSessionARM(dispatch, device, session, pAllocator);
+    DeviceOverrides::DestroyDataGraphPipelineSessionARM(*dispatch, device, session, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDeferredOperationKHR(VkDevice device, VkDeferredOperationKHR operation, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDeferredOperationKHR(dispatch, device, operation, pAllocator);
+    DeviceOverrides::DestroyDeferredOperationKHR(*dispatch, device, operation, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDescriptorPool(dispatch, device, descriptorPool, pAllocator);
+    DeviceOverrides::DestroyDescriptorPool(*dispatch, device, descriptorPool, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDescriptorSetLayout(dispatch, device, descriptorSetLayout, pAllocator);
+    DeviceOverrides::DestroyDescriptorSetLayout(*dispatch, device, descriptorSetLayout, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorUpdateTemplate(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDescriptorUpdateTemplate(dispatch, device, descriptorUpdateTemplate, pAllocator);
+    DeviceOverrides::DestroyDescriptorUpdateTemplate(*dispatch, device, descriptorUpdateTemplate, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDescriptorUpdateTemplateKHR(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDescriptorUpdateTemplateKHR(dispatch, device, descriptorUpdateTemplate, pAllocator);
+    DeviceOverrides::DestroyDescriptorUpdateTemplateKHR(*dispatch, device, descriptorUpdateTemplate, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyDevice(VkDevice device, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyDevice(dispatch, device, pAllocator);
+    DeviceOverrides::DestroyDevice(*dispatch, device, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyEvent(VkDevice device, VkEvent event, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyEvent(dispatch, device, event, pAllocator);
+    DeviceOverrides::DestroyEvent(*dispatch, device, event, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyExternalComputeQueueNV(VkDevice device, VkExternalComputeQueueNV externalQueue, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyExternalComputeQueueNV(dispatch, device, externalQueue, pAllocator);
+    DeviceOverrides::DestroyExternalComputeQueueNV(*dispatch, device, externalQueue, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyFence(VkDevice device, VkFence fence, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyFence(dispatch, device, fence, pAllocator);
+    DeviceOverrides::DestroyFence(*dispatch, device, fence, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyFramebuffer(VkDevice device, VkFramebuffer framebuffer, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyFramebuffer(dispatch, device, framebuffer, pAllocator);
+    DeviceOverrides::DestroyFramebuffer(*dispatch, device, framebuffer, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyImage(VkDevice device, VkImage image, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyImage(dispatch, device, image, pAllocator);
+    DeviceOverrides::DestroyImage(*dispatch, device, image, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyImageView(dispatch, device, imageView, pAllocator);
+    DeviceOverrides::DestroyImageView(*dispatch, device, imageView, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectCommandsLayoutEXT(VkDevice device, VkIndirectCommandsLayoutEXT indirectCommandsLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyIndirectCommandsLayoutEXT(dispatch, device, indirectCommandsLayout, pAllocator);
+    DeviceOverrides::DestroyIndirectCommandsLayoutEXT(*dispatch, device, indirectCommandsLayout, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectCommandsLayoutNV(VkDevice device, VkIndirectCommandsLayoutNV indirectCommandsLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyIndirectCommandsLayoutNV(dispatch, device, indirectCommandsLayout, pAllocator);
+    DeviceOverrides::DestroyIndirectCommandsLayoutNV(*dispatch, device, indirectCommandsLayout, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyIndirectExecutionSetEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyIndirectExecutionSetEXT(dispatch, device, indirectExecutionSet, pAllocator);
+    DeviceOverrides::DestroyIndirectExecutionSetEXT(*dispatch, device, indirectExecutionSet, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyMicromapEXT(VkDevice device, VkMicromapEXT micromap, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyMicromapEXT(dispatch, device, micromap, pAllocator);
+    DeviceOverrides::DestroyMicromapEXT(*dispatch, device, micromap, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyOpticalFlowSessionNV(VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyOpticalFlowSessionNV(dispatch, device, session, pAllocator);
+    DeviceOverrides::DestroyOpticalFlowSessionNV(*dispatch, device, session, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipeline(VkDevice device, VkPipeline pipeline, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPipeline(dispatch, device, pipeline, pAllocator);
+    DeviceOverrides::DestroyPipeline(*dispatch, device, pipeline, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineBinaryKHR(VkDevice device, VkPipelineBinaryKHR pipelineBinary, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPipelineBinaryKHR(dispatch, device, pipelineBinary, pAllocator);
+    DeviceOverrides::DestroyPipelineBinaryKHR(*dispatch, device, pipelineBinary, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineCache(VkDevice device, VkPipelineCache pipelineCache, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPipelineCache(dispatch, device, pipelineCache, pAllocator);
+    DeviceOverrides::DestroyPipelineCache(*dispatch, device, pipelineCache, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPipelineLayout(dispatch, device, pipelineLayout, pAllocator);
+    DeviceOverrides::DestroyPipelineLayout(*dispatch, device, pipelineLayout, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPrivateDataSlot(dispatch, device, privateDataSlot, pAllocator);
+    DeviceOverrides::DestroyPrivateDataSlot(*dispatch, device, privateDataSlot, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyPrivateDataSlotEXT(dispatch, device, privateDataSlot, pAllocator);
+    DeviceOverrides::DestroyPrivateDataSlotEXT(*dispatch, device, privateDataSlot, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyQueryPool(VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyQueryPool(dispatch, device, queryPool, pAllocator);
+    DeviceOverrides::DestroyQueryPool(*dispatch, device, queryPool, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyRenderPass(VkDevice device, VkRenderPass renderPass, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyRenderPass(dispatch, device, renderPass, pAllocator);
+    DeviceOverrides::DestroyRenderPass(*dispatch, device, renderPass, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroySampler(dispatch, device, sampler, pAllocator);
+    DeviceOverrides::DestroySampler(*dispatch, device, sampler, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroySamplerYcbcrConversion(dispatch, device, ycbcrConversion, pAllocator);
+    DeviceOverrides::DestroySamplerYcbcrConversion(*dispatch, device, ycbcrConversion, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySamplerYcbcrConversionKHR(VkDevice device, VkSamplerYcbcrConversion ycbcrConversion, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroySamplerYcbcrConversionKHR(dispatch, device, ycbcrConversion, pAllocator);
+    DeviceOverrides::DestroySamplerYcbcrConversionKHR(*dispatch, device, ycbcrConversion, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySemaphore(VkDevice device, VkSemaphore semaphore, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroySemaphore(dispatch, device, semaphore, pAllocator);
+    DeviceOverrides::DestroySemaphore(*dispatch, device, semaphore, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyShaderEXT(VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyShaderEXT(dispatch, device, shader, pAllocator);
+    DeviceOverrides::DestroyShaderEXT(*dispatch, device, shader, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyShaderModule(VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyShaderModule(dispatch, device, shaderModule, pAllocator);
+    DeviceOverrides::DestroyShaderModule(*dispatch, device, shaderModule, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroySwapchainKHR(dispatch, device, swapchain, pAllocator);
+    DeviceOverrides::DestroySwapchainKHR(*dispatch, device, swapchain, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyTensorARM(VkDevice device, VkTensorARM tensor, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyTensorARM(dispatch, device, tensor, pAllocator);
+    DeviceOverrides::DestroyTensorARM(*dispatch, device, tensor, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyTensorViewARM(VkDevice device, VkTensorViewARM tensorView, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyTensorViewARM(dispatch, device, tensorView, pAllocator);
+    DeviceOverrides::DestroyTensorViewARM(*dispatch, device, tensorView, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyValidationCacheEXT(VkDevice device, VkValidationCacheEXT validationCache, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyValidationCacheEXT(dispatch, device, validationCache, pAllocator);
+    DeviceOverrides::DestroyValidationCacheEXT(*dispatch, device, validationCache, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyVideoSessionKHR(VkDevice device, VkVideoSessionKHR videoSession, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyVideoSessionKHR(dispatch, device, videoSession, pAllocator);
+    DeviceOverrides::DestroyVideoSessionKHR(*dispatch, device, videoSession, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_DestroyVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::DestroyVideoSessionParametersKHR(dispatch, device, videoSessionParameters, pAllocator);
+    DeviceOverrides::DestroyVideoSessionParametersKHR(*dispatch, device, videoSessionParameters, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DeviceWaitIdle(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::DeviceWaitIdle(dispatch, device);
+    VkResult ret = DeviceOverrides::DeviceWaitIdle(*dispatch, device);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_DisplayPowerControlEXT(VkDevice device, VkDisplayKHR display, const VkDisplayPowerInfoEXT *pDisplayPowerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::DisplayPowerControlEXT(dispatch, device, display, pDisplayPowerInfo);
+    VkResult ret = DeviceOverrides::DisplayPowerControlEXT(*dispatch, device, display, pDisplayPowerInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_EndCommandBuffer(VkCommandBuffer commandBuffer) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::EndCommandBuffer(dispatch, commandBuffer);
+    VkResult ret = DeviceOverrides::EndCommandBuffer(*dispatch, commandBuffer);
     return ret;
   }
 
@@ -9234,66 +9234,66 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ExportMetalObjectsEXT(VkDevice device, VkExportMetalObjectsInfoEXT *pMetalObjectsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::ExportMetalObjectsEXT(dispatch, device, pMetalObjectsInfo);
+    DeviceOverrides::ExportMetalObjectsEXT(*dispatch, device, pMetalObjectsInfo);
   }
 
 #endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_FlushMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::FlushMappedMemoryRanges(dispatch, device, memoryRangeCount, pMemoryRanges);
+    VkResult ret = DeviceOverrides::FlushMappedMemoryRanges(*dispatch, device, memoryRangeCount, pMemoryRanges);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_FreeCommandBuffers(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer *pCommandBuffers) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::FreeCommandBuffers(dispatch, device, commandPool, commandBufferCount, pCommandBuffers);
+    DeviceOverrides::FreeCommandBuffers(*dispatch, device, commandPool, commandBufferCount, pCommandBuffers);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_FreeDescriptorSets(VkDevice device, VkDescriptorPool descriptorPool, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::FreeDescriptorSets(dispatch, device, descriptorPool, descriptorSetCount, pDescriptorSets);
+    VkResult ret = DeviceOverrides::FreeDescriptorSets(*dispatch, device, descriptorPool, descriptorSetCount, pDescriptorSets);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_FreeMemory(VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::FreeMemory(dispatch, device, memory, pAllocator);
+    DeviceOverrides::FreeMemory(*dispatch, device, memory, pAllocator);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetAccelerationStructureBuildSizesKHR(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo, const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetAccelerationStructureBuildSizesKHR(dispatch, device, buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo);
+    DeviceOverrides::GetAccelerationStructureBuildSizesKHR(*dispatch, device, buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetAccelerationStructureDeviceAddressKHR(VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceAddress ret = DeviceOverrides::GetAccelerationStructureDeviceAddressKHR(dispatch, device, pInfo);
+    VkDeviceAddress ret = DeviceOverrides::GetAccelerationStructureDeviceAddressKHR(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAccelerationStructureHandleNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetAccelerationStructureHandleNV(dispatch, device, accelerationStructure, dataSize, pData);
+    VkResult ret = DeviceOverrides::GetAccelerationStructureHandleNV(*dispatch, device, accelerationStructure, dataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetAccelerationStructureMemoryRequirementsNV(VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV *pInfo, VkMemoryRequirements2KHR *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetAccelerationStructureMemoryRequirementsNV(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetAccelerationStructureMemoryRequirementsNV(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAccelerationStructureOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkAccelerationStructureCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetAccelerationStructureOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetAccelerationStructureOpaqueCaptureDescriptorDataEXT(*dispatch, device, pInfo, pData);
     return ret;
   }
 
@@ -9301,7 +9301,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetAndroidHardwareBufferPropertiesANDROID(VkDevice device, const struct AHardwareBuffer *buffer, VkAndroidHardwareBufferPropertiesANDROID *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetAndroidHardwareBufferPropertiesANDROID(dispatch, device, buffer, pProperties);
+    VkResult ret = DeviceOverrides::GetAndroidHardwareBufferPropertiesANDROID(*dispatch, device, buffer, pProperties);
     return ret;
   }
 
@@ -9310,7 +9310,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetBufferCollectionPropertiesFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, VkBufferCollectionPropertiesFUCHSIA *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetBufferCollectionPropertiesFUCHSIA(dispatch, device, collection, pProperties);
+    VkResult ret = DeviceOverrides::GetBufferCollectionPropertiesFUCHSIA(*dispatch, device, collection, pProperties);
     return ret;
   }
 
@@ -9318,88 +9318,88 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddress(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddress(dispatch, device, pInfo);
+    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddress(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddressEXT(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressEXT(dispatch, device, pInfo);
+    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressEXT(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetBufferDeviceAddressKHR(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressKHR(dispatch, device, pInfo);
+    VkDeviceAddress ret = DeviceOverrides::GetBufferDeviceAddressKHR(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements(VkDevice device, VkBuffer buffer, VkMemoryRequirements *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetBufferMemoryRequirements(dispatch, device, buffer, pMemoryRequirements);
+    DeviceOverrides::GetBufferMemoryRequirements(*dispatch, device, buffer, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements2(VkDevice device, const VkBufferMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetBufferMemoryRequirements2(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetBufferMemoryRequirements2(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetBufferMemoryRequirements2KHR(VkDevice device, const VkBufferMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetBufferMemoryRequirements2KHR(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetBufferMemoryRequirements2KHR(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetBufferOpaqueCaptureAddress(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddress(dispatch, device, pInfo);
+    uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddress(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetBufferOpaqueCaptureAddressKHR(VkDevice device, const VkBufferDeviceAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddressKHR(dispatch, device, pInfo);
+    uint64_t ret = DeviceOverrides::GetBufferOpaqueCaptureAddressKHR(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetBufferOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkBufferCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetBufferOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetBufferOpaqueCaptureDescriptorDataEXT(*dispatch, device, pInfo, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCalibratedTimestampsEXT(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoKHR *pTimestampInfos, uint64_t *pTimestamps, uint64_t *pMaxDeviation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetCalibratedTimestampsEXT(dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
+    VkResult ret = DeviceOverrides::GetCalibratedTimestampsEXT(*dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCalibratedTimestampsKHR(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoKHR *pTimestampInfos, uint64_t *pTimestamps, uint64_t *pMaxDeviation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetCalibratedTimestampsKHR(dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
+    VkResult ret = DeviceOverrides::GetCalibratedTimestampsKHR(*dispatch, device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetClusterAccelerationStructureBuildSizesNV(VkDevice device, const VkClusterAccelerationStructureInputInfoNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetClusterAccelerationStructureBuildSizesNV(dispatch, device, pInfo, pSizeInfo);
+    DeviceOverrides::GetClusterAccelerationStructureBuildSizesNV(*dispatch, device, pInfo, pSizeInfo);
   }
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetCudaModuleCacheNV(VkDevice device, VkCudaModuleNV module, size_t *pCacheSize, void *pCacheData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetCudaModuleCacheNV(dispatch, device, module, pCacheSize, pCacheData);
+    VkResult ret = DeviceOverrides::GetCudaModuleCacheNV(*dispatch, device, module, pCacheSize, pCacheData);
     return ret;
   }
 
@@ -9407,127 +9407,127 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelineAvailablePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM *pPipelineInfo, uint32_t *pPropertiesCount, VkDataGraphPipelinePropertyARM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDataGraphPipelineAvailablePropertiesARM(dispatch, device, pPipelineInfo, pPropertiesCount, pProperties);
+    VkResult ret = DeviceOverrides::GetDataGraphPipelineAvailablePropertiesARM(*dispatch, device, pPipelineInfo, pPropertiesCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelinePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM *pPipelineInfo, uint32_t propertiesCount, VkDataGraphPipelinePropertyQueryResultARM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDataGraphPipelinePropertiesARM(dispatch, device, pPipelineInfo, propertiesCount, pProperties);
+    VkResult ret = DeviceOverrides::GetDataGraphPipelinePropertiesARM(*dispatch, device, pPipelineInfo, propertiesCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDataGraphPipelineSessionBindPointRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionBindPointRequirementsInfoARM *pInfo, uint32_t *pBindPointRequirementCount, VkDataGraphPipelineSessionBindPointRequirementARM *pBindPointRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDataGraphPipelineSessionBindPointRequirementsARM(dispatch, device, pInfo, pBindPointRequirementCount, pBindPointRequirements);
+    VkResult ret = DeviceOverrides::GetDataGraphPipelineSessionBindPointRequirementsARM(*dispatch, device, pInfo, pBindPointRequirementCount, pBindPointRequirements);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDataGraphPipelineSessionMemoryRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDataGraphPipelineSessionMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDataGraphPipelineSessionMemoryRequirementsARM(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static uint32_t wrap_GetDeferredOperationMaxConcurrencyKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    uint32_t ret = DeviceOverrides::GetDeferredOperationMaxConcurrencyKHR(dispatch, device, operation);
+    uint32_t ret = DeviceOverrides::GetDeferredOperationMaxConcurrencyKHR(*dispatch, device, operation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeferredOperationResultKHR(VkDevice device, VkDeferredOperationKHR operation) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeferredOperationResultKHR(dispatch, device, operation);
+    VkResult ret = DeviceOverrides::GetDeferredOperationResultKHR(*dispatch, device, operation);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorEXT(VkDevice device, const VkDescriptorGetInfoEXT *pDescriptorInfo, size_t dataSize, void *pDescriptor) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorEXT(dispatch, device, pDescriptorInfo, dataSize, pDescriptor);
+    DeviceOverrides::GetDescriptorEXT(*dispatch, device, pDescriptorInfo, dataSize, pDescriptor);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetHostMappingVALVE(VkDevice device, VkDescriptorSet descriptorSet, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetHostMappingVALVE(dispatch, device, descriptorSet, ppData);
+    DeviceOverrides::GetDescriptorSetHostMappingVALVE(*dispatch, device, descriptorSet, ppData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutBindingOffsetEXT(VkDevice device, VkDescriptorSetLayout layout, uint32_t binding, VkDeviceSize *pOffset) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetLayoutBindingOffsetEXT(dispatch, device, layout, binding, pOffset);
+    DeviceOverrides::GetDescriptorSetLayoutBindingOffsetEXT(*dispatch, device, layout, binding, pOffset);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutHostMappingInfoVALVE(VkDevice device, const VkDescriptorSetBindingReferenceVALVE *pBindingReference, VkDescriptorSetLayoutHostMappingInfoVALVE *pHostMapping) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetLayoutHostMappingInfoVALVE(dispatch, device, pBindingReference, pHostMapping);
+    DeviceOverrides::GetDescriptorSetLayoutHostMappingInfoVALVE(*dispatch, device, pBindingReference, pHostMapping);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSizeEXT(VkDevice device, VkDescriptorSetLayout layout, VkDeviceSize *pLayoutSizeInBytes) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetLayoutSizeEXT(dispatch, device, layout, pLayoutSizeInBytes);
+    DeviceOverrides::GetDescriptorSetLayoutSizeEXT(*dispatch, device, layout, pLayoutSizeInBytes);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSupport(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, VkDescriptorSetLayoutSupport *pSupport) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetLayoutSupport(dispatch, device, pCreateInfo, pSupport);
+    DeviceOverrides::GetDescriptorSetLayoutSupport(*dispatch, device, pCreateInfo, pSupport);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDescriptorSetLayoutSupportKHR(VkDevice device, const VkDescriptorSetLayoutCreateInfo *pCreateInfo, VkDescriptorSetLayoutSupport *pSupport) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDescriptorSetLayoutSupportKHR(dispatch, device, pCreateInfo, pSupport);
+    DeviceOverrides::GetDescriptorSetLayoutSupportKHR(*dispatch, device, pCreateInfo, pSupport);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceAccelerationStructureCompatibilityKHR(VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo, VkAccelerationStructureCompatibilityKHR *pCompatibility) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceAccelerationStructureCompatibilityKHR(dispatch, device, pVersionInfo, pCompatibility);
+    DeviceOverrides::GetDeviceAccelerationStructureCompatibilityKHR(*dispatch, device, pVersionInfo, pCompatibility);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceBufferMemoryRequirements(VkDevice device, const VkDeviceBufferMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceBufferMemoryRequirements(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDeviceBufferMemoryRequirements(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceBufferMemoryRequirementsKHR(VkDevice device, const VkDeviceBufferMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceBufferMemoryRequirementsKHR(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDeviceBufferMemoryRequirementsKHR(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceFaultInfoEXT(VkDevice device, VkDeviceFaultCountsEXT *pFaultCounts, VkDeviceFaultInfoEXT *pFaultInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeviceFaultInfoEXT(dispatch, device, pFaultCounts, pFaultInfo);
+    VkResult ret = DeviceOverrides::GetDeviceFaultInfoEXT(*dispatch, device, pFaultCounts, pFaultInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags *pPeerMemoryFeatures) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceGroupPeerMemoryFeatures(dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
+    DeviceOverrides::GetDeviceGroupPeerMemoryFeatures(*dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceGroupPeerMemoryFeaturesKHR(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlags *pPeerMemoryFeatures) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceGroupPeerMemoryFeaturesKHR(dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
+    DeviceOverrides::GetDeviceGroupPeerMemoryFeaturesKHR(*dispatch, device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupPresentCapabilitiesKHR(VkDevice device, VkDeviceGroupPresentCapabilitiesKHR *pDeviceGroupPresentCapabilities) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeviceGroupPresentCapabilitiesKHR(dispatch, device, pDeviceGroupPresentCapabilities);
+    VkResult ret = DeviceOverrides::GetDeviceGroupPresentCapabilitiesKHR(*dispatch, device, pDeviceGroupPresentCapabilities);
     return ret;
   }
 
@@ -9535,7 +9535,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupSurfacePresentModes2EXT(VkDevice device, const VkPhysicalDeviceSurfaceInfo2KHR *pSurfaceInfo, VkDeviceGroupPresentModeFlagsKHR *pModes) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModes2EXT(dispatch, device, pSurfaceInfo, pModes);
+    VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModes2EXT(*dispatch, device, pSurfaceInfo, pModes);
     return ret;
   }
 
@@ -9543,109 +9543,109 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceGroupSurfacePresentModesKHR(VkDevice device, VkSurfaceKHR surface, VkDeviceGroupPresentModeFlagsKHR *pModes) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModesKHR(dispatch, device, surface, pModes);
+    VkResult ret = DeviceOverrides::GetDeviceGroupSurfacePresentModesKHR(*dispatch, device, surface, pModes);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceImageMemoryRequirements(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDeviceImageMemoryRequirements(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceImageMemoryRequirementsKHR(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDeviceImageMemoryRequirementsKHR(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceImageSparseMemoryRequirements(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+    DeviceOverrides::GetDeviceImageSparseMemoryRequirements(*dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceImageSparseMemoryRequirementsKHR(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+    DeviceOverrides::GetDeviceImageSparseMemoryRequirementsKHR(*dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceImageSubresourceLayoutKHR(dispatch, device, pInfo, pLayout);
+    DeviceOverrides::GetDeviceImageSubresourceLayoutKHR(*dispatch, device, pInfo, pLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceMemoryCommitment(dispatch, device, memory, pCommittedMemoryInBytes);
+    DeviceOverrides::GetDeviceMemoryCommitment(*dispatch, device, memory, pCommittedMemoryInBytes);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddress(dispatch, device, pInfo);
+    uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddress(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static uint64_t wrap_GetDeviceMemoryOpaqueCaptureAddressKHR(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddressKHR(dispatch, device, pInfo);
+    uint64_t ret = DeviceOverrides::GetDeviceMemoryOpaqueCaptureAddressKHR(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceMicromapCompatibilityEXT(VkDevice device, const VkMicromapVersionInfoEXT *pVersionInfo, VkAccelerationStructureCompatibilityKHR *pCompatibility) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceMicromapCompatibilityEXT(dispatch, device, pVersionInfo, pCompatibility);
+    DeviceOverrides::GetDeviceMicromapCompatibilityEXT(*dispatch, device, pVersionInfo, pCompatibility);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceQueue(VkDevice device, uint32_t queueFamilyIndex, uint32_t queueIndex, VkQueue *pQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceQueue(dispatch, device, queueFamilyIndex, queueIndex, pQueue);
+    DeviceOverrides::GetDeviceQueue(*dispatch, device, queueFamilyIndex, queueIndex, pQueue);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceQueue2(VkDevice device, const VkDeviceQueueInfo2 *pQueueInfo, VkQueue *pQueue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceQueue2(dispatch, device, pQueueInfo, pQueue);
+    DeviceOverrides::GetDeviceQueue2(*dispatch, device, pQueueInfo, pQueue);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(VkDevice device, VkRenderPass renderpass, VkExtent2D *pMaxWorkgroupSize) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(dispatch, device, renderpass, pMaxWorkgroupSize);
+    VkResult ret = DeviceOverrides::GetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(*dispatch, device, renderpass, pMaxWorkgroupSize);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceTensorMemoryRequirementsARM(VkDevice device, const VkDeviceTensorMemoryRequirementsARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetDeviceTensorMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetDeviceTensorMemoryRequirementsARM(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetDynamicRenderingTilePropertiesQCOM(VkDevice device, const VkRenderingInfo *pRenderingInfo, VkTilePropertiesQCOM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetDynamicRenderingTilePropertiesQCOM(dispatch, device, pRenderingInfo, pProperties);
+    VkResult ret = DeviceOverrides::GetDynamicRenderingTilePropertiesQCOM(*dispatch, device, pRenderingInfo, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetEncodedVideoSessionParametersKHR(VkDevice device, const VkVideoEncodeSessionParametersGetInfoKHR *pVideoSessionParametersInfo, VkVideoEncodeSessionParametersFeedbackInfoKHR *pFeedbackInfo, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetEncodedVideoSessionParametersKHR(dispatch, device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData);
+    VkResult ret = DeviceOverrides::GetEncodedVideoSessionParametersKHR(*dispatch, device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetEventStatus(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetEventStatus(dispatch, device, event);
+    VkResult ret = DeviceOverrides::GetEventStatus(*dispatch, device, event);
     return ret;
   }
 
@@ -9653,7 +9653,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetExecutionGraphPipelineNodeIndexAMDX(VkDevice device, VkPipeline executionGraph, const VkPipelineShaderStageNodeCreateInfoAMDX *pNodeInfo, uint32_t *pNodeIndex) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetExecutionGraphPipelineNodeIndexAMDX(dispatch, device, executionGraph, pNodeInfo, pNodeIndex);
+    VkResult ret = DeviceOverrides::GetExecutionGraphPipelineNodeIndexAMDX(*dispatch, device, executionGraph, pNodeInfo, pNodeIndex);
     return ret;
   }
 
@@ -9662,7 +9662,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetExecutionGraphPipelineScratchSizeAMDX(VkDevice device, VkPipeline executionGraph, VkExecutionGraphPipelineScratchSizeAMDX *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetExecutionGraphPipelineScratchSizeAMDX(dispatch, device, executionGraph, pSizeInfo);
+    VkResult ret = DeviceOverrides::GetExecutionGraphPipelineScratchSizeAMDX(*dispatch, device, executionGraph, pSizeInfo);
     return ret;
   }
 
@@ -9670,20 +9670,20 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetExternalComputeQueueDataNV(VkExternalComputeQueueNV externalQueue, VkExternalComputeQueueDataParamsNV *params, void *pData) {
     const VkExternalComputeQueueNVDispatch* dispatch = tables::LookupDispatch(externalQueue);
-    DeviceOverrides::GetExternalComputeQueueDataNV(dispatch, externalQueue, params, pData);
+    DeviceOverrides::GetExternalComputeQueueDataNV(*dispatch, externalQueue, params, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceFdKHR(VkDevice device, const VkFenceGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetFenceFdKHR(dispatch, device, pGetFdInfo, pFd);
+    VkResult ret = DeviceOverrides::GetFenceFdKHR(*dispatch, device, pGetFdInfo, pFd);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceStatus(VkDevice device, VkFence fence) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetFenceStatus(dispatch, device, fence);
+    VkResult ret = DeviceOverrides::GetFenceStatus(*dispatch, device, fence);
     return ret;
   }
 
@@ -9691,7 +9691,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFenceWin32HandleKHR(VkDevice device, const VkFenceGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetFenceWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
+    VkResult ret = DeviceOverrides::GetFenceWin32HandleKHR(*dispatch, device, pGetWin32HandleInfo, pHandle);
     return ret;
   }
 
@@ -9699,108 +9699,108 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetFramebufferTilePropertiesQCOM(VkDevice device, VkFramebuffer framebuffer, uint32_t *pPropertiesCount, VkTilePropertiesQCOM *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetFramebufferTilePropertiesQCOM(dispatch, device, framebuffer, pPropertiesCount, pProperties);
+    VkResult ret = DeviceOverrides::GetFramebufferTilePropertiesQCOM(*dispatch, device, framebuffer, pPropertiesCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetGeneratedCommandsMemoryRequirementsEXT(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoEXT *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetGeneratedCommandsMemoryRequirementsEXT(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetGeneratedCommandsMemoryRequirementsEXT(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetGeneratedCommandsMemoryRequirementsNV(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoNV *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetGeneratedCommandsMemoryRequirementsNV(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetGeneratedCommandsMemoryRequirementsNV(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetImageDrmFormatModifierPropertiesEXT(dispatch, device, image, pProperties);
+    VkResult ret = DeviceOverrides::GetImageDrmFormatModifierPropertiesEXT(*dispatch, device, image, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements(VkDevice device, VkImage image, VkMemoryRequirements *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageMemoryRequirements(dispatch, device, image, pMemoryRequirements);
+    DeviceOverrides::GetImageMemoryRequirements(*dispatch, device, image, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements2(VkDevice device, const VkImageMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageMemoryRequirements2(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetImageMemoryRequirements2(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageMemoryRequirements2KHR(VkDevice device, const VkImageMemoryRequirementsInfo2 *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageMemoryRequirements2KHR(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetImageMemoryRequirements2KHR(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetImageOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetImageOpaqueCaptureDescriptorDataEXT(*dispatch, device, pInfo, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements(VkDevice device, VkImage image, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSparseMemoryRequirements(dispatch, device, image, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+    DeviceOverrides::GetImageSparseMemoryRequirements(*dispatch, device, image, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSparseMemoryRequirements2(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+    DeviceOverrides::GetImageSparseMemoryRequirements2(*dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSparseMemoryRequirements2KHR(dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
+    DeviceOverrides::GetImageSparseMemoryRequirements2KHR(*dispatch, device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSubresourceLayout(dispatch, device, image, pSubresource, pLayout);
+    DeviceOverrides::GetImageSubresourceLayout(*dispatch, device, image, pSubresource, pLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSubresourceLayout2EXT(dispatch, device, image, pSubresource, pLayout);
+    DeviceOverrides::GetImageSubresourceLayout2EXT(*dispatch, device, image, pSubresource, pLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetImageSubresourceLayout2KHR(dispatch, device, image, pSubresource, pLayout);
+    DeviceOverrides::GetImageSubresourceLayout2KHR(*dispatch, device, image, pSubresource, pLayout);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetImageViewOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetImageViewOpaqueCaptureDescriptorDataEXT(*dispatch, device, pInfo, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetLatencyTimingsNV(VkDevice device, VkSwapchainKHR swapchain, VkGetLatencyMarkerInfoNV *pLatencyMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetLatencyTimingsNV(dispatch, device, swapchain, pLatencyMarkerInfo);
+    DeviceOverrides::GetLatencyTimingsNV(*dispatch, device, swapchain, pLatencyMarkerInfo);
   }
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryAndroidHardwareBufferANDROID(VkDevice device, const VkMemoryGetAndroidHardwareBufferInfoANDROID *pInfo, struct AHardwareBuffer **pBuffer) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryAndroidHardwareBufferANDROID(dispatch, device, pInfo, pBuffer);
+    VkResult ret = DeviceOverrides::GetMemoryAndroidHardwareBufferANDROID(*dispatch, device, pInfo, pBuffer);
     return ret;
   }
 
@@ -9808,21 +9808,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryFdKHR(dispatch, device, pGetFdInfo, pFd);
+    VkResult ret = DeviceOverrides::GetMemoryFdKHR(*dispatch, device, pGetFdInfo, pFd);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR *pMemoryFdProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryFdPropertiesKHR(dispatch, device, handleType, fd, pMemoryFdProperties);
+    VkResult ret = DeviceOverrides::GetMemoryFdPropertiesKHR(*dispatch, device, handleType, fd, pMemoryFdProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryHostPointerPropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHostPointer, VkMemoryHostPointerPropertiesEXT *pMemoryHostPointerProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryHostPointerPropertiesEXT(dispatch, device, handleType, pHostPointer, pMemoryHostPointerProperties);
+    VkResult ret = DeviceOverrides::GetMemoryHostPointerPropertiesEXT(*dispatch, device, handleType, pHostPointer, pMemoryHostPointerProperties);
     return ret;
   }
 
@@ -9830,7 +9830,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryMetalHandleEXT(VkDevice device, const VkMemoryGetMetalHandleInfoEXT *pGetMetalHandleInfo, void **pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryMetalHandleEXT(dispatch, device, pGetMetalHandleInfo, pHandle);
+    VkResult ret = DeviceOverrides::GetMemoryMetalHandleEXT(*dispatch, device, pGetMetalHandleInfo, pHandle);
     return ret;
   }
 
@@ -9839,7 +9839,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryMetalHandlePropertiesEXT(dispatch, device, handleType, pHandle, pMemoryMetalHandleProperties);
+    VkResult ret = DeviceOverrides::GetMemoryMetalHandlePropertiesEXT(*dispatch, device, handleType, pHandle, pMemoryMetalHandleProperties);
     return ret;
   }
 
@@ -9847,7 +9847,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryRemoteAddressNV(dispatch, device, pMemoryGetRemoteAddressInfo, pAddress);
+    VkResult ret = DeviceOverrides::GetMemoryRemoteAddressNV(*dispatch, device, pMemoryGetRemoteAddressInfo, pAddress);
     return ret;
   }
 
@@ -9855,7 +9855,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandleKHR(VkDevice device, const VkMemoryGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
+    VkResult ret = DeviceOverrides::GetMemoryWin32HandleKHR(*dispatch, device, pGetWin32HandleInfo, pHandle);
     return ret;
   }
 
@@ -9864,7 +9864,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandleNV(VkDevice device, VkDeviceMemory memory, VkExternalMemoryHandleTypeFlagsNV handleType, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryWin32HandleNV(dispatch, device, memory, handleType, pHandle);
+    VkResult ret = DeviceOverrides::GetMemoryWin32HandleNV(*dispatch, device, memory, handleType, pHandle);
     return ret;
   }
 
@@ -9873,7 +9873,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryWin32HandlePropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, HANDLE handle, VkMemoryWin32HandlePropertiesKHR *pMemoryWin32HandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryWin32HandlePropertiesKHR(dispatch, device, handleType, handle, pMemoryWin32HandleProperties);
+    VkResult ret = DeviceOverrides::GetMemoryWin32HandlePropertiesKHR(*dispatch, device, handleType, handle, pMemoryWin32HandleProperties);
     return ret;
   }
 
@@ -9882,7 +9882,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryZirconHandleFUCHSIA(VkDevice device, const VkMemoryGetZirconHandleInfoFUCHSIA *pGetZirconHandleInfo, zx_handle_t *pZirconHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryZirconHandleFUCHSIA(dispatch, device, pGetZirconHandleInfo, pZirconHandle);
+    VkResult ret = DeviceOverrides::GetMemoryZirconHandleFUCHSIA(*dispatch, device, pGetZirconHandleInfo, pZirconHandle);
     return ret;
   }
 
@@ -9891,7 +9891,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetMemoryZirconHandlePropertiesFUCHSIA(dispatch, device, handleType, zirconHandle, pMemoryZirconHandleProperties);
+    VkResult ret = DeviceOverrides::GetMemoryZirconHandlePropertiesFUCHSIA(*dispatch, device, handleType, zirconHandle, pMemoryZirconHandleProperties);
     return ret;
   }
 
@@ -9899,173 +9899,173 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetMicromapBuildSizesEXT(dispatch, device, buildType, pBuildInfo, pSizeInfo);
+    DeviceOverrides::GetMicromapBuildSizesEXT(*dispatch, device, buildType, pBuildInfo, pSizeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV(dispatch, device, pInfo, pSizeInfo);
+    DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV(*dispatch, device, pInfo, pSizeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPastPresentationTimingGOOGLE(dispatch, device, swapchain, pPresentationTimingCount, pPresentationTimings);
+    VkResult ret = DeviceOverrides::GetPastPresentationTimingGOOGLE(*dispatch, device, swapchain, pPresentationTimingCount, pPresentationTimings);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPerformanceParameterINTEL(dispatch, device, parameter, pValue);
+    VkResult ret = DeviceOverrides::GetPerformanceParameterINTEL(*dispatch, device, parameter, pValue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineBinaryDataKHR(VkDevice device, const VkPipelineBinaryDataInfoKHR *pInfo, VkPipelineBinaryKeyKHR *pPipelineBinaryKey, size_t *pPipelineBinaryDataSize, void *pPipelineBinaryData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineBinaryDataKHR(dispatch, device, pInfo, pPipelineBinaryKey, pPipelineBinaryDataSize, pPipelineBinaryData);
+    VkResult ret = DeviceOverrides::GetPipelineBinaryDataKHR(*dispatch, device, pInfo, pPipelineBinaryKey, pPipelineBinaryDataSize, pPipelineBinaryData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineCacheData(VkDevice device, VkPipelineCache pipelineCache, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineCacheData(dispatch, device, pipelineCache, pDataSize, pData);
+    VkResult ret = DeviceOverrides::GetPipelineCacheData(*dispatch, device, pipelineCache, pDataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutableInternalRepresentationsKHR(VkDevice device, const VkPipelineExecutableInfoKHR *pExecutableInfo, uint32_t *pInternalRepresentationCount, VkPipelineExecutableInternalRepresentationKHR *pInternalRepresentations) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineExecutableInternalRepresentationsKHR(dispatch, device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations);
+    VkResult ret = DeviceOverrides::GetPipelineExecutableInternalRepresentationsKHR(*dispatch, device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutablePropertiesKHR(VkDevice device, const VkPipelineInfoKHR *pPipelineInfo, uint32_t *pExecutableCount, VkPipelineExecutablePropertiesKHR *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineExecutablePropertiesKHR(dispatch, device, pPipelineInfo, pExecutableCount, pProperties);
+    VkResult ret = DeviceOverrides::GetPipelineExecutablePropertiesKHR(*dispatch, device, pPipelineInfo, pExecutableCount, pProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineExecutableStatisticsKHR(VkDevice device, const VkPipelineExecutableInfoKHR *pExecutableInfo, uint32_t *pStatisticCount, VkPipelineExecutableStatisticKHR *pStatistics) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineExecutableStatisticsKHR(dispatch, device, pExecutableInfo, pStatisticCount, pStatistics);
+    VkResult ret = DeviceOverrides::GetPipelineExecutableStatisticsKHR(*dispatch, device, pExecutableInfo, pStatisticCount, pStatistics);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceAddress wrap_GetPipelineIndirectDeviceAddressNV(VkDevice device, const VkPipelineIndirectDeviceAddressInfoNV *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceAddress ret = DeviceOverrides::GetPipelineIndirectDeviceAddressNV(dispatch, device, pInfo);
+    VkDeviceAddress ret = DeviceOverrides::GetPipelineIndirectDeviceAddressNV(*dispatch, device, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPipelineIndirectMemoryRequirementsNV(VkDevice device, const VkComputePipelineCreateInfo *pCreateInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetPipelineIndirectMemoryRequirementsNV(dispatch, device, pCreateInfo, pMemoryRequirements);
+    DeviceOverrides::GetPipelineIndirectMemoryRequirementsNV(*dispatch, device, pCreateInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelineKeyKHR(VkDevice device, const VkPipelineCreateInfoKHR *pPipelineCreateInfo, VkPipelineBinaryKeyKHR *pPipelineKey) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelineKeyKHR(dispatch, device, pPipelineCreateInfo, pPipelineKey);
+    VkResult ret = DeviceOverrides::GetPipelineKeyKHR(*dispatch, device, pPipelineCreateInfo, pPipelineKey);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoEXT *pPipelineInfo, VkBaseOutStructure *pPipelineProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetPipelinePropertiesEXT(dispatch, device, pPipelineInfo, pPipelineProperties);
+    VkResult ret = DeviceOverrides::GetPipelinePropertiesEXT(*dispatch, device, pPipelineInfo, pPipelineProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetPrivateData(dispatch, device, objectType, objectHandle, privateDataSlot, pData);
+    DeviceOverrides::GetPrivateData(*dispatch, device, objectType, objectHandle, privateDataSlot, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetPrivateDataEXT(dispatch, device, objectType, objectHandle, privateDataSlot, pData);
+    DeviceOverrides::GetPrivateDataEXT(*dispatch, device, objectType, objectHandle, privateDataSlot, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetQueryPoolResults(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void *pData, VkDeviceSize stride, VkQueryResultFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetQueryPoolResults(dispatch, device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
+    VkResult ret = DeviceOverrides::GetQueryPoolResults(*dispatch, device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetQueueCheckpointData2NV(VkQueue queue, uint32_t *pCheckpointDataCount, VkCheckpointData2NV *pCheckpointData) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::GetQueueCheckpointData2NV(dispatch, queue, pCheckpointDataCount, pCheckpointData);
+    DeviceOverrides::GetQueueCheckpointData2NV(*dispatch, queue, pCheckpointDataCount, pCheckpointData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetQueueCheckpointDataNV(VkQueue queue, uint32_t *pCheckpointDataCount, VkCheckpointDataNV *pCheckpointData) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::GetQueueCheckpointDataNV(dispatch, queue, pCheckpointDataCount, pCheckpointData);
+    DeviceOverrides::GetQueueCheckpointDataNV(*dispatch, queue, pCheckpointDataCount, pCheckpointData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingCaptureReplayShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetRayTracingCaptureReplayShaderGroupHandlesKHR(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
+    VkResult ret = DeviceOverrides::GetRayTracingCaptureReplayShaderGroupHandlesKHR(*dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesKHR(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
+    VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesKHR(*dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRayTracingShaderGroupHandlesNV(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesNV(dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
+    VkResult ret = DeviceOverrides::GetRayTracingShaderGroupHandlesNV(*dispatch, device, pipeline, firstGroup, groupCount, dataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkDeviceSize wrap_GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkDeviceSize ret = DeviceOverrides::GetRayTracingShaderGroupStackSizeKHR(dispatch, device, pipeline, group, groupShader);
+    VkDeviceSize ret = DeviceOverrides::GetRayTracingShaderGroupStackSizeKHR(*dispatch, device, pipeline, group, groupShader);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetRefreshCycleDurationGOOGLE(dispatch, device, swapchain, pDisplayTimingProperties);
+    VkResult ret = DeviceOverrides::GetRefreshCycleDurationGOOGLE(*dispatch, device, swapchain, pDisplayTimingProperties);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetRenderAreaGranularity(dispatch, device, renderPass, pGranularity);
+    DeviceOverrides::GetRenderAreaGranularity(*dispatch, device, renderPass, pGranularity);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetRenderingAreaGranularityKHR(dispatch, device, pRenderingAreaInfo, pGranularity);
+    DeviceOverrides::GetRenderingAreaGranularityKHR(*dispatch, device, pRenderingAreaInfo, pGranularity);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSamplerOpaqueCaptureDescriptorDataEXT(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetSamplerOpaqueCaptureDescriptorDataEXT(*dispatch, device, pInfo, pData);
     return ret;
   }
 
@@ -10073,7 +10073,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetScreenBufferPropertiesQNX(VkDevice device, const struct _screen_buffer *buffer, VkScreenBufferPropertiesQNX *pProperties) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetScreenBufferPropertiesQNX(dispatch, device, buffer, pProperties);
+    VkResult ret = DeviceOverrides::GetScreenBufferPropertiesQNX(*dispatch, device, buffer, pProperties);
     return ret;
   }
 
@@ -10081,21 +10081,21 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreCounterValue(VkDevice device, VkSemaphore semaphore, uint64_t *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSemaphoreCounterValue(dispatch, device, semaphore, pValue);
+    VkResult ret = DeviceOverrides::GetSemaphoreCounterValue(*dispatch, device, semaphore, pValue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreCounterValueKHR(VkDevice device, VkSemaphore semaphore, uint64_t *pValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSemaphoreCounterValueKHR(dispatch, device, semaphore, pValue);
+    VkResult ret = DeviceOverrides::GetSemaphoreCounterValueKHR(*dispatch, device, semaphore, pValue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR *pGetFdInfo, int *pFd) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSemaphoreFdKHR(dispatch, device, pGetFdInfo, pFd);
+    VkResult ret = DeviceOverrides::GetSemaphoreFdKHR(*dispatch, device, pGetFdInfo, pFd);
     return ret;
   }
 
@@ -10103,7 +10103,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreWin32HandleKHR(VkDevice device, const VkSemaphoreGetWin32HandleInfoKHR *pGetWin32HandleInfo, HANDLE *pHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSemaphoreWin32HandleKHR(dispatch, device, pGetWin32HandleInfo, pHandle);
+    VkResult ret = DeviceOverrides::GetSemaphoreWin32HandleKHR(*dispatch, device, pGetWin32HandleInfo, pHandle);
     return ret;
   }
 
@@ -10112,7 +10112,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkSemaphoreGetZirconHandleInfoFUCHSIA *pGetZirconHandleInfo, zx_handle_t *pZirconHandle) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSemaphoreZirconHandleFUCHSIA(dispatch, device, pGetZirconHandleInfo, pZirconHandle);
+    VkResult ret = DeviceOverrides::GetSemaphoreZirconHandleFUCHSIA(*dispatch, device, pGetZirconHandleInfo, pZirconHandle);
     return ret;
   }
 
@@ -10120,88 +10120,88 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetShaderBinaryDataEXT(VkDevice device, VkShaderEXT shader, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetShaderBinaryDataEXT(dispatch, device, shader, pDataSize, pData);
+    VkResult ret = DeviceOverrides::GetShaderBinaryDataEXT(*dispatch, device, shader, pDataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetShaderInfoAMD(VkDevice device, VkPipeline pipeline, VkShaderStageFlagBits shaderStage, VkShaderInfoTypeAMD infoType, size_t *pInfoSize, void *pInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetShaderInfoAMD(dispatch, device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
+    VkResult ret = DeviceOverrides::GetShaderInfoAMD(*dispatch, device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT(dispatch, device, pCreateInfo, pIdentifier);
+    DeviceOverrides::GetShaderModuleCreateInfoIdentifierEXT(*dispatch, device, pCreateInfo, pIdentifier);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetShaderModuleIdentifierEXT(dispatch, device, shaderModule, pIdentifier);
+    DeviceOverrides::GetShaderModuleIdentifierEXT(*dispatch, device, shaderModule, pIdentifier);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSwapchainCounterEXT(dispatch, device, swapchain, counter, pCounterValue);
+    VkResult ret = DeviceOverrides::GetSwapchainCounterEXT(*dispatch, device, swapchain, counter, pCounterValue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSwapchainImagesKHR(dispatch, device, swapchain, pSwapchainImageCount, pSwapchainImages);
+    VkResult ret = DeviceOverrides::GetSwapchainImagesKHR(*dispatch, device, swapchain, pSwapchainImageCount, pSwapchainImages);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetSwapchainStatusKHR(dispatch, device, swapchain);
+    VkResult ret = DeviceOverrides::GetSwapchainStatusKHR(*dispatch, device, swapchain);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::GetTensorMemoryRequirementsARM(dispatch, device, pInfo, pMemoryRequirements);
+    DeviceOverrides::GetTensorMemoryRequirementsARM(*dispatch, device, pInfo, pMemoryRequirements);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetTensorOpaqueCaptureDescriptorDataARM(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetTensorOpaqueCaptureDescriptorDataARM(*dispatch, device, pInfo, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetTensorViewOpaqueCaptureDescriptorDataARM(dispatch, device, pInfo, pData);
+    VkResult ret = DeviceOverrides::GetTensorViewOpaqueCaptureDescriptorDataARM(*dispatch, device, pInfo, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetValidationCacheDataEXT(VkDevice device, VkValidationCacheEXT validationCache, size_t *pDataSize, void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetValidationCacheDataEXT(dispatch, device, validationCache, pDataSize, pData);
+    VkResult ret = DeviceOverrides::GetValidationCacheDataEXT(*dispatch, device, validationCache, pDataSize, pData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetVideoSessionMemoryRequirementsKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t *pMemoryRequirementsCount, VkVideoSessionMemoryRequirementsKHR *pMemoryRequirements) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::GetVideoSessionMemoryRequirementsKHR(dispatch, device, videoSession, pMemoryRequirementsCount, pMemoryRequirements);
+    VkResult ret = DeviceOverrides::GetVideoSessionMemoryRequirementsKHR(*dispatch, device, videoSession, pMemoryRequirementsCount, pMemoryRequirements);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportFenceFdKHR(VkDevice device, const VkImportFenceFdInfoKHR *pImportFenceFdInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ImportFenceFdKHR(dispatch, device, pImportFenceFdInfo);
+    VkResult ret = DeviceOverrides::ImportFenceFdKHR(*dispatch, device, pImportFenceFdInfo);
     return ret;
   }
 
@@ -10209,7 +10209,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportFenceWin32HandleKHR(VkDevice device, const VkImportFenceWin32HandleInfoKHR *pImportFenceWin32HandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ImportFenceWin32HandleKHR(dispatch, device, pImportFenceWin32HandleInfo);
+    VkResult ret = DeviceOverrides::ImportFenceWin32HandleKHR(*dispatch, device, pImportFenceWin32HandleInfo);
     return ret;
   }
 
@@ -10217,7 +10217,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreFdKHR(VkDevice device, const VkImportSemaphoreFdInfoKHR *pImportSemaphoreFdInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ImportSemaphoreFdKHR(dispatch, device, pImportSemaphoreFdInfo);
+    VkResult ret = DeviceOverrides::ImportSemaphoreFdKHR(*dispatch, device, pImportSemaphoreFdInfo);
     return ret;
   }
 
@@ -10225,7 +10225,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreWin32HandleKHR(VkDevice device, const VkImportSemaphoreWin32HandleInfoKHR *pImportSemaphoreWin32HandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ImportSemaphoreWin32HandleKHR(dispatch, device, pImportSemaphoreWin32HandleInfo);
+    VkResult ret = DeviceOverrides::ImportSemaphoreWin32HandleKHR(*dispatch, device, pImportSemaphoreWin32HandleInfo);
     return ret;
   }
 
@@ -10234,7 +10234,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ImportSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA *pImportSemaphoreZirconHandleInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ImportSemaphoreZirconHandleFUCHSIA(dispatch, device, pImportSemaphoreZirconHandleInfo);
+    VkResult ret = DeviceOverrides::ImportSemaphoreZirconHandleFUCHSIA(*dispatch, device, pImportSemaphoreZirconHandleInfo);
     return ret;
   }
 
@@ -10242,143 +10242,143 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_InitializePerformanceApiINTEL(VkDevice device, const VkInitializePerformanceApiInfoINTEL *pInitializeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::InitializePerformanceApiINTEL(dispatch, device, pInitializeInfo);
+    VkResult ret = DeviceOverrides::InitializePerformanceApiINTEL(*dispatch, device, pInitializeInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::InvalidateMappedMemoryRanges(dispatch, device, memoryRangeCount, pMemoryRanges);
+    VkResult ret = DeviceOverrides::InvalidateMappedMemoryRanges(*dispatch, device, memoryRangeCount, pMemoryRanges);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::LatencySleepNV(dispatch, device, swapchain, pSleepInfo);
+    VkResult ret = DeviceOverrides::LatencySleepNV(*dispatch, device, swapchain, pSleepInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::MapMemory(dispatch, device, memory, offset, size, flags, ppData);
+    VkResult ret = DeviceOverrides::MapMemory(*dispatch, device, memory, offset, size, flags, ppData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::MapMemory2KHR(dispatch, device, pMemoryMapInfo, ppData);
+    VkResult ret = DeviceOverrides::MapMemory2KHR(*dispatch, device, pMemoryMapInfo, ppData);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::MergePipelineCaches(dispatch, device, dstCache, srcCacheCount, pSrcCaches);
+    VkResult ret = DeviceOverrides::MergePipelineCaches(*dispatch, device, dstCache, srcCacheCount, pSrcCaches);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::MergeValidationCachesEXT(dispatch, device, dstCache, srcCacheCount, pSrcCaches);
+    VkResult ret = DeviceOverrides::MergeValidationCachesEXT(*dispatch, device, dstCache, srcCacheCount, pSrcCaches);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueBeginDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::QueueBeginDebugUtilsLabelEXT(dispatch, queue, pLabelInfo);
+    DeviceOverrides::QueueBeginDebugUtilsLabelEXT(*dispatch, queue, pLabelInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueBindSparse(VkQueue queue, uint32_t bindInfoCount, const VkBindSparseInfo *pBindInfo, VkFence fence) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueBindSparse(dispatch, queue, bindInfoCount, pBindInfo, fence);
+    VkResult ret = DeviceOverrides::QueueBindSparse(*dispatch, queue, bindInfoCount, pBindInfo, fence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueEndDebugUtilsLabelEXT(VkQueue queue) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::QueueEndDebugUtilsLabelEXT(dispatch, queue);
+    DeviceOverrides::QueueEndDebugUtilsLabelEXT(*dispatch, queue);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueInsertDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::QueueInsertDebugUtilsLabelEXT(dispatch, queue, pLabelInfo);
+    DeviceOverrides::QueueInsertDebugUtilsLabelEXT(*dispatch, queue, pLabelInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    DeviceOverrides::QueueNotifyOutOfBandNV(dispatch, queue, pQueueTypeInfo);
+    DeviceOverrides::QueueNotifyOutOfBandNV(*dispatch, queue, pQueueTypeInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueuePresentKHR(dispatch, queue, pPresentInfo);
+    VkResult ret = DeviceOverrides::QueuePresentKHR(*dispatch, queue, pPresentInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueSetPerformanceConfigurationINTEL(dispatch, queue, configuration);
+    VkResult ret = DeviceOverrides::QueueSetPerformanceConfigurationINTEL(*dispatch, queue, configuration);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueSubmit(dispatch, queue, submitCount, pSubmits, fence);
+    VkResult ret = DeviceOverrides::QueueSubmit(*dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueSubmit2(dispatch, queue, submitCount, pSubmits, fence);
+    VkResult ret = DeviceOverrides::QueueSubmit2(*dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueSubmit2KHR(dispatch, queue, submitCount, pSubmits, fence);
+    VkResult ret = DeviceOverrides::QueueSubmit2KHR(*dispatch, queue, submitCount, pSubmits, fence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueWaitIdle(VkQueue queue) {
     const VkQueueDispatch* dispatch = tables::LookupDispatch(queue);
-    VkResult ret = DeviceOverrides::QueueWaitIdle(dispatch, queue);
+    VkResult ret = DeviceOverrides::QueueWaitIdle(*dispatch, queue);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_RegisterDeviceEventEXT(VkDevice device, const VkDeviceEventInfoEXT *pDeviceEventInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::RegisterDeviceEventEXT(dispatch, device, pDeviceEventInfo, pAllocator, pFence);
+    VkResult ret = DeviceOverrides::RegisterDeviceEventEXT(*dispatch, device, pDeviceEventInfo, pAllocator, pFence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_RegisterDisplayEventEXT(VkDevice device, VkDisplayKHR display, const VkDisplayEventInfoEXT *pDisplayEventInfo, const VkAllocationCallbacks *pAllocator, VkFence *pFence) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::RegisterDisplayEventEXT(dispatch, device, display, pDisplayEventInfo, pAllocator, pFence);
+    VkResult ret = DeviceOverrides::RegisterDisplayEventEXT(*dispatch, device, display, pDisplayEventInfo, pAllocator, pFence);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseCapturedPipelineDataKHR(VkDevice device, const VkReleaseCapturedPipelineDataInfoKHR *pInfo, const VkAllocationCallbacks *pAllocator) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ReleaseCapturedPipelineDataKHR(dispatch, device, pInfo, pAllocator);
+    VkResult ret = DeviceOverrides::ReleaseCapturedPipelineDataKHR(*dispatch, device, pInfo, pAllocator);
     return ret;
   }
 
@@ -10386,7 +10386,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ReleaseFullScreenExclusiveModeEXT(dispatch, device, swapchain);
+    VkResult ret = DeviceOverrides::ReleaseFullScreenExclusiveModeEXT(*dispatch, device, swapchain);
     return ret;
   }
 
@@ -10394,82 +10394,82 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleasePerformanceConfigurationINTEL(VkDevice device, VkPerformanceConfigurationINTEL configuration) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ReleasePerformanceConfigurationINTEL(dispatch, device, configuration);
+    VkResult ret = DeviceOverrides::ReleasePerformanceConfigurationINTEL(*dispatch, device, configuration);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ReleaseProfilingLockKHR(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::ReleaseProfilingLockKHR(dispatch, device);
+    DeviceOverrides::ReleaseProfilingLockKHR(*dispatch, device);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseSwapchainImagesEXT(VkDevice device, const VkReleaseSwapchainImagesInfoKHR *pReleaseInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ReleaseSwapchainImagesEXT(dispatch, device, pReleaseInfo);
+    VkResult ret = DeviceOverrides::ReleaseSwapchainImagesEXT(*dispatch, device, pReleaseInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ReleaseSwapchainImagesKHR(VkDevice device, const VkReleaseSwapchainImagesInfoKHR *pReleaseInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ReleaseSwapchainImagesKHR(dispatch, device, pReleaseInfo);
+    VkResult ret = DeviceOverrides::ReleaseSwapchainImagesKHR(*dispatch, device, pReleaseInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetCommandBuffer(VkCommandBuffer commandBuffer, VkCommandBufferResetFlags flags) {
     const VkCommandBufferDispatch* dispatch = tables::LookupDispatch(commandBuffer);
-    VkResult ret = DeviceOverrides::ResetCommandBuffer(dispatch, commandBuffer, flags);
+    VkResult ret = DeviceOverrides::ResetCommandBuffer(*dispatch, commandBuffer, flags);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ResetCommandPool(dispatch, device, commandPool, flags);
+    VkResult ret = DeviceOverrides::ResetCommandPool(*dispatch, device, commandPool, flags);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, VkDescriptorPoolResetFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ResetDescriptorPool(dispatch, device, descriptorPool, flags);
+    VkResult ret = DeviceOverrides::ResetDescriptorPool(*dispatch, device, descriptorPool, flags);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetEvent(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ResetEvent(dispatch, device, event);
+    VkResult ret = DeviceOverrides::ResetEvent(*dispatch, device, event);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_ResetFences(VkDevice device, uint32_t fenceCount, const VkFence *pFences) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::ResetFences(dispatch, device, fenceCount, pFences);
+    VkResult ret = DeviceOverrides::ResetFences(*dispatch, device, fenceCount, pFences);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ResetQueryPool(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::ResetQueryPool(dispatch, device, queryPool, firstQuery, queryCount);
+    DeviceOverrides::ResetQueryPool(*dispatch, device, queryPool, firstQuery, queryCount);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_ResetQueryPoolEXT(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::ResetQueryPoolEXT(dispatch, device, queryPool, firstQuery, queryCount);
+    DeviceOverrides::ResetQueryPoolEXT(*dispatch, device, queryPool, firstQuery, queryCount);
   }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetBufferCollectionBufferConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkBufferConstraintsInfoFUCHSIA *pBufferConstraintsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetBufferCollectionBufferConstraintsFUCHSIA(dispatch, device, collection, pBufferConstraintsInfo);
+    VkResult ret = DeviceOverrides::SetBufferCollectionBufferConstraintsFUCHSIA(*dispatch, device, collection, pBufferConstraintsInfo);
     return ret;
   }
 
@@ -10478,7 +10478,7 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetBufferCollectionImageConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkImageConstraintsInfoFUCHSIA *pImageConstraintsInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetBufferCollectionImageConstraintsFUCHSIA(dispatch, device, collection, pImageConstraintsInfo);
+    VkResult ret = DeviceOverrides::SetBufferCollectionImageConstraintsFUCHSIA(*dispatch, device, collection, pImageConstraintsInfo);
     return ret;
   }
 
@@ -10486,204 +10486,204 @@ namespace vkroots {
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetDebugUtilsObjectNameEXT(VkDevice device, const VkDebugUtilsObjectNameInfoEXT *pNameInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetDebugUtilsObjectNameEXT(dispatch, device, pNameInfo);
+    VkResult ret = DeviceOverrides::SetDebugUtilsObjectNameEXT(*dispatch, device, pNameInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetDebugUtilsObjectTagEXT(VkDevice device, const VkDebugUtilsObjectTagInfoEXT *pTagInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetDebugUtilsObjectTagEXT(dispatch, device, pTagInfo);
+    VkResult ret = DeviceOverrides::SetDebugUtilsObjectTagEXT(*dispatch, device, pTagInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetDeviceMemoryPriorityEXT(VkDevice device, VkDeviceMemory memory, float priority) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::SetDeviceMemoryPriorityEXT(dispatch, device, memory, priority);
+    DeviceOverrides::SetDeviceMemoryPriorityEXT(*dispatch, device, memory, priority);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetEvent(VkDevice device, VkEvent event) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetEvent(dispatch, device, event);
+    VkResult ret = DeviceOverrides::SetEvent(*dispatch, device, event);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetHdrMetadataEXT(VkDevice device, uint32_t swapchainCount, const VkSwapchainKHR *pSwapchains, const VkHdrMetadataEXT *pMetadata) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::SetHdrMetadataEXT(dispatch, device, swapchainCount, pSwapchains, pMetadata);
+    DeviceOverrides::SetHdrMetadataEXT(*dispatch, device, swapchainCount, pSwapchains, pMetadata);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetLatencyMarkerNV(VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV *pLatencyMarkerInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::SetLatencyMarkerNV(dispatch, device, swapchain, pLatencyMarkerInfo);
+    DeviceOverrides::SetLatencyMarkerNV(*dispatch, device, swapchain, pLatencyMarkerInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetLatencySleepModeNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV *pSleepModeInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetLatencySleepModeNV(dispatch, device, swapchain, pSleepModeInfo);
+    VkResult ret = DeviceOverrides::SetLatencySleepModeNV(*dispatch, device, swapchain, pSleepModeInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::SetLocalDimmingAMD(dispatch, device, swapChain, localDimmingEnable);
+    DeviceOverrides::SetLocalDimmingAMD(*dispatch, device, swapChain, localDimmingEnable);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetPrivateData(dispatch, device, objectType, objectHandle, privateDataSlot, data);
+    VkResult ret = DeviceOverrides::SetPrivateData(*dispatch, device, objectType, objectHandle, privateDataSlot, data);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SetPrivateDataEXT(dispatch, device, objectType, objectHandle, privateDataSlot, data);
+    VkResult ret = DeviceOverrides::SetPrivateDataEXT(*dispatch, device, objectType, objectHandle, privateDataSlot, data);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SignalSemaphore(dispatch, device, pSignalInfo);
+    VkResult ret = DeviceOverrides::SignalSemaphore(*dispatch, device, pSignalInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::SignalSemaphoreKHR(dispatch, device, pSignalInfo);
+    VkResult ret = DeviceOverrides::SignalSemaphoreKHR(*dispatch, device, pSignalInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::TransitionImageLayoutEXT(dispatch, device, transitionCount, pTransitions);
+    VkResult ret = DeviceOverrides::TransitionImageLayoutEXT(*dispatch, device, transitionCount, pTransitions);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::TrimCommandPool(dispatch, device, commandPool, flags);
+    DeviceOverrides::TrimCommandPool(*dispatch, device, commandPool, flags);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::TrimCommandPoolKHR(dispatch, device, commandPool, flags);
+    DeviceOverrides::TrimCommandPoolKHR(*dispatch, device, commandPool, flags);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UninitializePerformanceApiINTEL(VkDevice device) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UninitializePerformanceApiINTEL(dispatch, device);
+    DeviceOverrides::UninitializePerformanceApiINTEL(*dispatch, device);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UnmapMemory(VkDevice device, VkDeviceMemory memory) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UnmapMemory(dispatch, device, memory);
+    DeviceOverrides::UnmapMemory(*dispatch, device, memory);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::UnmapMemory2KHR(dispatch, device, pMemoryUnmapInfo);
+    VkResult ret = DeviceOverrides::UnmapMemory2KHR(*dispatch, device, pMemoryUnmapInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UpdateDescriptorSetWithTemplate(dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
+    DeviceOverrides::UpdateDescriptorSetWithTemplate(*dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UpdateDescriptorSetWithTemplateKHR(dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
+    DeviceOverrides::UpdateDescriptorSetWithTemplateKHR(*dispatch, device, descriptorSet, descriptorUpdateTemplate, pData);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateDescriptorSets(VkDevice device, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet *pDescriptorCopies) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UpdateDescriptorSets(dispatch, device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
+    DeviceOverrides::UpdateDescriptorSets(*dispatch, device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateIndirectExecutionSetPipelineEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetPipelineEXT *pExecutionSetWrites) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UpdateIndirectExecutionSetPipelineEXT(dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
+    DeviceOverrides::UpdateIndirectExecutionSetPipelineEXT(*dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_UpdateIndirectExecutionSetShaderEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetShaderEXT *pExecutionSetWrites) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    DeviceOverrides::UpdateIndirectExecutionSetShaderEXT(dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
+    DeviceOverrides::UpdateIndirectExecutionSetShaderEXT(*dispatch, device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_UpdateVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkVideoSessionParametersUpdateInfoKHR *pUpdateInfo) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::UpdateVideoSessionParametersKHR(dispatch, device, videoSessionParameters, pUpdateInfo);
+    VkResult ret = DeviceOverrides::UpdateVideoSessionParametersKHR(*dispatch, device, videoSessionParameters, pUpdateInfo);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForFences(VkDevice device, uint32_t fenceCount, const VkFence *pFences, VkBool32 waitAll, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WaitForFences(dispatch, device, fenceCount, pFences, waitAll, timeout);
+    VkResult ret = DeviceOverrides::WaitForFences(*dispatch, device, fenceCount, pFences, waitAll, timeout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForPresent2KHR(VkDevice device, VkSwapchainKHR swapchain, const VkPresentWait2InfoKHR *pPresentWait2Info) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WaitForPresent2KHR(dispatch, device, swapchain, pPresentWait2Info);
+    VkResult ret = DeviceOverrides::WaitForPresent2KHR(*dispatch, device, swapchain, pPresentWait2Info);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitForPresentKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t presentId, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WaitForPresentKHR(dispatch, device, swapchain, presentId, timeout);
+    VkResult ret = DeviceOverrides::WaitForPresentKHR(*dispatch, device, swapchain, presentId, timeout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitSemaphores(VkDevice device, const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WaitSemaphores(dispatch, device, pWaitInfo, timeout);
+    VkResult ret = DeviceOverrides::WaitSemaphores(*dispatch, device, pWaitInfo, timeout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WaitSemaphoresKHR(VkDevice device, const VkSemaphoreWaitInfo *pWaitInfo, uint64_t timeout) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WaitSemaphoresKHR(dispatch, device, pWaitInfo, timeout);
+    VkResult ret = DeviceOverrides::WaitSemaphoresKHR(*dispatch, device, pWaitInfo, timeout);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WriteAccelerationStructuresPropertiesKHR(VkDevice device, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType, size_t dataSize, void *pData, size_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WriteAccelerationStructuresPropertiesKHR(dispatch, device, accelerationStructureCount, pAccelerationStructures, queryType, dataSize, pData, stride);
+    VkResult ret = DeviceOverrides::WriteAccelerationStructuresPropertiesKHR(*dispatch, device, accelerationStructureCount, pAccelerationStructures, queryType, dataSize, pData, stride);
     return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_WriteMicromapsPropertiesEXT(VkDevice device, uint32_t micromapCount, const VkMicromapEXT *pMicromaps, VkQueryType queryType, size_t dataSize, void *pData, size_t stride) {
     const VkDeviceDispatch* dispatch = tables::LookupDispatch(device);
-    VkResult ret = DeviceOverrides::WriteMicromapsPropertiesEXT(dispatch, device, micromapCount, pMicromaps, queryType, dataSize, pData, stride);
+    VkResult ret = DeviceOverrides::WriteMicromapsPropertiesEXT(*dispatch, device, micromapCount, pMicromaps, queryType, dataSize, pData, stride);
     return ret;
   }
 

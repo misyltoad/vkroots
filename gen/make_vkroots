@@ -261,7 +261,7 @@ class VkGenerator(object):
                     f.write(f"    {return_v}{local_dispatch_type}Overrides::{func_name_normalized}(implicit_wrap_CreateInstance, {args});\n")
                 else:
                     f.write(f"    const Vk{local_dispatch_type}Dispatch* dispatch = tables::LookupDispatch({func.params[0].name});\n")
-                    f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(dispatch, {args});\n")
+                    f.write(f"    {return_v}{dispatch_type}Overrides::{func_name_normalized}(*dispatch, {args});\n")
                 if func.type != "void":
                     f.write(f"    return ret;\n")
                 f.write("  }\n\n")
