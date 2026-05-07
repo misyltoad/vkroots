@@ -51,3 +51,5 @@ namespace vkroots {
   VK_LAYER_EXPORT VKAPI_ATTR VkResult VKAPI_CALL VKROOTS_NEGOTIATION_INTERFACE(VkNegotiateLayerInterface* pVersionStruct) {            \
     return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, DeviceOverrides>(pVersionStruct); \
   }
+
+#pragma GCC visibility pop

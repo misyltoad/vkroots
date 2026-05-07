@@ -27,6 +27,10 @@
 #include <iostream>
 #include <algorithm>
 
+// Make sure we don't leak any of vkroots' symbols, otherwise we
+// will conflict if there are any other layers using vkroots.
+#pragma GCC visibility push(hidden)
+
 #define VKROOTS_VERSION_MAJOR 0
 #define VKROOTS_VERSION_MINOR 1
 #define VKROOTS_VERSION_PATCH 0
@@ -25365,3 +25369,5 @@ namespace vkroots {
   VK_LAYER_EXPORT VKAPI_ATTR VkResult VKAPI_CALL VKROOTS_NEGOTIATION_INTERFACE(VkNegotiateLayerInterface* pVersionStruct) {            \
     return vkroots::NegotiateLoaderLayerInterfaceVersion<InstanceOverrides, DeviceOverrides>(pVersionStruct); \
   }
+
+#pragma GCC visibility pop
