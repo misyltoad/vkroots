@@ -462,38 +462,51 @@ class VkFunctionPointer(object):
             return None
 
         members = []
-        begin = None
+        proto = funcpointer.find("proto")
 
-        for t in funcpointer.findall("type"):
-            # General form:
-            # <type>void</type>*       pUserData,
-            # Parsing of the tail (anything past </type>) is tricky since there
-            # can be other data on the next line like: const <type>int</type>..
+        if proto is not None:
+            # New XML format (vulkan-headers 1.4.341+):
+            # <proto><type>void</type> <name>PFN_foo</name></proto>
+            # <param><type>typeA</type>* <name>parmA</name></param>
+            proto_type_elem = proto.find("type")
+            ret_type = proto_type_elem.text
+            ret_ptr = "*" if proto_type_elem.tail and "*" in proto_type_elem.tail else ""
+            _type = "typedef {}{} (VKAPI_PTR *".format(ret_type, ret_ptr)
+            name = proto.find("name").text
 
-            const = True if begin and "const" in begin else False
-            _type = t.text
-            lines = t.tail.split(",\n")
-            if lines[0][0] == "*":
-                pointer = "*"
-                name = lines[0][1:].strip()
-            else:
-                pointer = None
-                name = lines[0].strip()
+            for param in funcpointer.findall("param"):
+                member = VkMember.from_xml(param, False, None)
+                if member:
+                    members.append(member)
+        else:
+            # Old XML format:
+            # typedef void (VKAPI_PTR *<name>PFN_foo</name>)(
+            #     <type>typeA</type>* parmA,
+            begin = None
+            for t in funcpointer.findall("type"):
+                const = True if begin and "const" in begin else False
+                param_type = t.text
+                lines = t.tail.split(",\n")
+                if lines[0][0] == "*":
+                    pointer = "*"
+                    param_name = lines[0][1:].strip()
+                else:
+                    pointer = None
+                    param_name = lines[0].strip()
 
-            # Filter out ); if it is contained.
-            name = name.partition(");")[0]
+                # Filter out ); if it is contained.
+                param_name = param_name.partition(");")[0]
 
-            # If tail encompasses multiple lines, assign the second line to begin
-            # for the next line.
-            try:
-                begin = lines[1].strip()
-            except IndexError:
-                begin = None
+                try:
+                    begin = lines[1].strip()
+                except IndexError:
+                    begin = None
 
-            members.append(VkMember(const=const, _type=_type, pointer=pointer, name=name))
+                members.append(VkMember(const=const, _type=param_type, pointer=pointer, name=param_name))
 
-        _type = funcpointer.text
-        name = funcpointer.find("name").text
+            _type = funcpointer.text
+            name = funcpointer.find("name").text
+
         if "requires" in funcpointer.attrib:
             forward_decls = funcpointer.attrib.get("requires").split(",")
         else:
@@ -2069,10 +2082,13 @@ class VkRegistry(object):
                     continue
 
             # Name is in general within a name tag else it is an optional
-            # attribute on the type tag.
+            # attribute on the type tag. For the new funcpointer format,
+            # the name is nested inside <proto><name>...</name></proto>.
             name_elem = t.find("name")
             if name_elem is not None:
                 type_info["name"] = name_elem.text
+            elif t.find("proto/name") is not None:
+                type_info["name"] = t.find("proto/name").text
             else:
                 type_info["name"] = t.attrib.get("name", None)
 
