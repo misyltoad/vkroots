@@ -21,6 +21,28 @@ namespace vkroots::tables {
     }
   }
 
+  // Queues created with non-zero VkDeviceQueueCreateFlags (eg. PROTECTED_BIT or
+  // INTERNALLY_SYNCHRONIZED_BIT_KHR) cannot be retrieved with vkGetDeviceQueue,
+  // which returns VK_NULL_HANDLE for them. Use vkGetDeviceQueue2 with matching
+  // flags for those, and keep the original call for flag-less queues so
+  // Vulkan 1.0 devices remain unaffected.
+  static inline VkQueue GetDeviceQueueByCreateInfo(const VkDeviceDispatch *deviceDispatch, VkDevice device, const VkDeviceQueueCreateInfo& queueInfo, uint32_t queueIndex) {
+    VkQueue queue = VK_NULL_HANDLE;
+    if (queueInfo.flags) {
+      VkDeviceQueueInfo2 queueInfo2 = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2,
+        .pNext = nullptr,
+        .flags = queueInfo.flags,
+        .queueFamilyIndex = queueInfo.queueFamilyIndex,
+        .queueIndex = queueIndex,
+      };
+      deviceDispatch->GetDeviceQueue2(device, &queueInfo2, &queue);
+    } else {
+      deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, queueIndex, &queue);
+    }
+    return queue;
+  }
+
   static inline void CreateDispatchTable(const VkDeviceCreateInfo* pCreateInfo, PFN_vkGetDeviceProcAddr nextProcAddr, VkPhysicalDevice physicalDevice, VkDevice device) {
     auto physicalDeviceDispatch = vkroots::LookupDispatch(physicalDevice);
     auto deviceDispatch = DeviceDispatches.create(device, nextProcAddr, device, physicalDevice, physicalDeviceDispatch, pCreateInfo);
@@ -28,8 +50,7 @@ namespace vkroots::tables {
     for (uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++) {
       const auto &queueInfo = pCreateInfo->pQueueCreateInfos[i];
       for (uint32_t j = 0; j < queueInfo.queueCount; j++) {
-        VkQueue queue;
-        deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, j, &queue);
+        VkQueue queue = GetDeviceQueueByCreateInfo(deviceDispatch, device, queueInfo, j);
 
         tables::AssignDispatchTable(queue, deviceDispatch);
       }
@@ -66,8 +87,7 @@ namespace vkroots::tables {
 
     for (const auto& queueInfo : deviceDispatch->DeviceQueueInfos) {
       for (uint32_t i = 0; i < queueInfo.queueCount; i++) {
-        VkQueue queue;
-        deviceDispatch->GetDeviceQueue(device, queueInfo.queueFamilyIndex, i, &queue);
+        VkQueue queue = GetDeviceQueueByCreateInfo(deviceDispatch, device, queueInfo, i);
         tables::UnassignDispatchTable(queue);
       }
     }
