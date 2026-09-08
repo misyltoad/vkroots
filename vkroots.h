@@ -444,6 +444,7 @@ namespace vkroots {
       this->m_EnumerateDeviceLayerProperties = (PFN_vkEnumerateDeviceLayerProperties) NextGetInstanceProcAddr(instance, "vkEnumerateDeviceLayerProperties");
       this->m_EnumeratePhysicalDeviceGroups = (PFN_vkEnumeratePhysicalDeviceGroups) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceGroups");
       this->m_EnumeratePhysicalDeviceGroupsKHR = (PFN_vkEnumeratePhysicalDeviceGroupsKHR) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceGroupsKHR");
+      this->m_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = (PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM");
       this->m_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = (PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR");
       this->m_EnumeratePhysicalDevices = (PFN_vkEnumeratePhysicalDevices) NextGetInstanceProcAddr(instance, "vkEnumeratePhysicalDevices");
       this->m_GetDisplayModeProperties2KHR = (PFN_vkGetDisplayModeProperties2KHR) NextGetInstanceProcAddr(instance, "vkGetDisplayModeProperties2KHR");
@@ -628,6 +629,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return m_EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return m_EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return m_EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return m_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return m_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return m_EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
     VkResult GetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModeProperties2KHR *pProperties) const { return m_GetDisplayModeProperties2KHR(physicalDevice, display, pPropertyCount, pProperties); }
@@ -796,6 +798,7 @@ namespace vkroots {
     PFN_vkEnumerateDeviceLayerProperties m_EnumerateDeviceLayerProperties;
     PFN_vkEnumeratePhysicalDeviceGroups m_EnumeratePhysicalDeviceGroups;
     PFN_vkEnumeratePhysicalDeviceGroupsKHR m_EnumeratePhysicalDeviceGroupsKHR;
+    PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM m_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
     PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR m_EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR;
     PFN_vkEnumeratePhysicalDevices m_EnumeratePhysicalDevices;
     PFN_vkGetDisplayModeProperties2KHR m_GetDisplayModeProperties2KHR;
@@ -969,6 +972,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return pInstanceDispatch->EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pInstanceDispatch->EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pInstanceDispatch->EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return pInstanceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return pInstanceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return pInstanceDispatch->EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
     VkResult GetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount, VkDisplayModeProperties2KHR *pProperties) const { return pInstanceDispatch->GetDisplayModeProperties2KHR(physicalDevice, display, pPropertyCount, pProperties); }
@@ -1086,6 +1090,9 @@ namespace vkroots {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
       this->m_AcquireFullScreenExclusiveModeEXT = (PFN_vkAcquireFullScreenExclusiveModeEXT) NextGetDeviceProcAddr(device, "vkAcquireFullScreenExclusiveModeEXT");
 #endif
+#ifdef VK_USE_PLATFORM_OHOS
+      this->m_AcquireImageOHOS = (PFN_vkAcquireImageOHOS) NextGetDeviceProcAddr(device, "vkAcquireImageOHOS");
+#endif
       this->m_AcquireNextImage2KHR = (PFN_vkAcquireNextImage2KHR) NextGetDeviceProcAddr(device, "vkAcquireNextImage2KHR");
       this->m_AcquireNextImageKHR = (PFN_vkAcquireNextImageKHR) NextGetDeviceProcAddr(device, "vkAcquireNextImageKHR");
       this->m_AcquirePerformanceConfigurationINTEL = (PFN_vkAcquirePerformanceConfigurationINTEL) NextGetDeviceProcAddr(device, "vkAcquirePerformanceConfigurationINTEL");
@@ -1109,6 +1116,7 @@ namespace vkroots {
       this->m_BuildAccelerationStructuresKHR = (PFN_vkBuildAccelerationStructuresKHR) NextGetDeviceProcAddr(device, "vkBuildAccelerationStructuresKHR");
       this->m_BuildMicromapsEXT = (PFN_vkBuildMicromapsEXT) NextGetDeviceProcAddr(device, "vkBuildMicromapsEXT");
       this->m_CmdBeginConditionalRenderingEXT = (PFN_vkCmdBeginConditionalRenderingEXT) NextGetDeviceProcAddr(device, "vkCmdBeginConditionalRenderingEXT");
+      this->m_CmdBeginCustomResolveEXT = (PFN_vkCmdBeginCustomResolveEXT) NextGetDeviceProcAddr(device, "vkCmdBeginCustomResolveEXT");
       this->m_CmdBeginDebugUtilsLabelEXT = (PFN_vkCmdBeginDebugUtilsLabelEXT) NextGetDeviceProcAddr(device, "vkCmdBeginDebugUtilsLabelEXT");
       this->m_CmdBeginPerTileExecutionQCOM = (PFN_vkCmdBeginPerTileExecutionQCOM) NextGetDeviceProcAddr(device, "vkCmdBeginPerTileExecutionQCOM");
       this->m_CmdBeginQuery = (PFN_vkCmdBeginQuery) NextGetDeviceProcAddr(device, "vkCmdBeginQuery");
@@ -1124,8 +1132,10 @@ namespace vkroots {
       this->m_CmdBindDescriptorBufferEmbeddedSamplersEXT = (PFN_vkCmdBindDescriptorBufferEmbeddedSamplersEXT) NextGetDeviceProcAddr(device, "vkCmdBindDescriptorBufferEmbeddedSamplersEXT");
       this->m_CmdBindDescriptorBuffersEXT = (PFN_vkCmdBindDescriptorBuffersEXT) NextGetDeviceProcAddr(device, "vkCmdBindDescriptorBuffersEXT");
       this->m_CmdBindDescriptorSets = (PFN_vkCmdBindDescriptorSets) NextGetDeviceProcAddr(device, "vkCmdBindDescriptorSets");
+      this->m_CmdBindDescriptorSets2 = (PFN_vkCmdBindDescriptorSets2) NextGetDeviceProcAddr(device, "vkCmdBindDescriptorSets2");
       this->m_CmdBindDescriptorSets2KHR = (PFN_vkCmdBindDescriptorSets2KHR) NextGetDeviceProcAddr(device, "vkCmdBindDescriptorSets2KHR");
       this->m_CmdBindIndexBuffer = (PFN_vkCmdBindIndexBuffer) NextGetDeviceProcAddr(device, "vkCmdBindIndexBuffer");
+      this->m_CmdBindIndexBuffer2 = (PFN_vkCmdBindIndexBuffer2) NextGetDeviceProcAddr(device, "vkCmdBindIndexBuffer2");
       this->m_CmdBindIndexBuffer2KHR = (PFN_vkCmdBindIndexBuffer2KHR) NextGetDeviceProcAddr(device, "vkCmdBindIndexBuffer2KHR");
       this->m_CmdBindInvocationMaskHUAWEI = (PFN_vkCmdBindInvocationMaskHUAWEI) NextGetDeviceProcAddr(device, "vkCmdBindInvocationMaskHUAWEI");
       this->m_CmdBindPipeline = (PFN_vkCmdBindPipeline) NextGetDeviceProcAddr(device, "vkCmdBindPipeline");
@@ -1166,8 +1176,10 @@ namespace vkroots {
       this->m_CmdCopyImageToBuffer = (PFN_vkCmdCopyImageToBuffer) NextGetDeviceProcAddr(device, "vkCmdCopyImageToBuffer");
       this->m_CmdCopyImageToBuffer2 = (PFN_vkCmdCopyImageToBuffer2) NextGetDeviceProcAddr(device, "vkCmdCopyImageToBuffer2");
       this->m_CmdCopyImageToBuffer2KHR = (PFN_vkCmdCopyImageToBuffer2KHR) NextGetDeviceProcAddr(device, "vkCmdCopyImageToBuffer2KHR");
+      this->m_CmdCopyMemoryIndirectKHR = (PFN_vkCmdCopyMemoryIndirectKHR) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryIndirectKHR");
       this->m_CmdCopyMemoryIndirectNV = (PFN_vkCmdCopyMemoryIndirectNV) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryIndirectNV");
       this->m_CmdCopyMemoryToAccelerationStructureKHR = (PFN_vkCmdCopyMemoryToAccelerationStructureKHR) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryToAccelerationStructureKHR");
+      this->m_CmdCopyMemoryToImageIndirectKHR = (PFN_vkCmdCopyMemoryToImageIndirectKHR) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryToImageIndirectKHR");
       this->m_CmdCopyMemoryToImageIndirectNV = (PFN_vkCmdCopyMemoryToImageIndirectNV) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryToImageIndirectNV");
       this->m_CmdCopyMemoryToMicromapEXT = (PFN_vkCmdCopyMemoryToMicromapEXT) NextGetDeviceProcAddr(device, "vkCmdCopyMemoryToMicromapEXT");
       this->m_CmdCopyMicromapEXT = (PFN_vkCmdCopyMicromapEXT) NextGetDeviceProcAddr(device, "vkCmdCopyMicromapEXT");
@@ -1181,6 +1193,8 @@ namespace vkroots {
       this->m_CmdDebugMarkerEndEXT = (PFN_vkCmdDebugMarkerEndEXT) NextGetDeviceProcAddr(device, "vkCmdDebugMarkerEndEXT");
       this->m_CmdDebugMarkerInsertEXT = (PFN_vkCmdDebugMarkerInsertEXT) NextGetDeviceProcAddr(device, "vkCmdDebugMarkerInsertEXT");
       this->m_CmdDecodeVideoKHR = (PFN_vkCmdDecodeVideoKHR) NextGetDeviceProcAddr(device, "vkCmdDecodeVideoKHR");
+      this->m_CmdDecompressMemoryEXT = (PFN_vkCmdDecompressMemoryEXT) NextGetDeviceProcAddr(device, "vkCmdDecompressMemoryEXT");
+      this->m_CmdDecompressMemoryIndirectCountEXT = (PFN_vkCmdDecompressMemoryIndirectCountEXT) NextGetDeviceProcAddr(device, "vkCmdDecompressMemoryIndirectCountEXT");
       this->m_CmdDecompressMemoryIndirectCountNV = (PFN_vkCmdDecompressMemoryIndirectCountNV) NextGetDeviceProcAddr(device, "vkCmdDecompressMemoryIndirectCountNV");
       this->m_CmdDecompressMemoryNV = (PFN_vkCmdDecompressMemoryNV) NextGetDeviceProcAddr(device, "vkCmdDecompressMemoryNV");
       this->m_CmdDispatch = (PFN_vkCmdDispatch) NextGetDeviceProcAddr(device, "vkCmdDispatch");
@@ -1230,6 +1244,7 @@ namespace vkroots {
       this->m_CmdEndRenderPass2KHR = (PFN_vkCmdEndRenderPass2KHR) NextGetDeviceProcAddr(device, "vkCmdEndRenderPass2KHR");
       this->m_CmdEndRendering = (PFN_vkCmdEndRendering) NextGetDeviceProcAddr(device, "vkCmdEndRendering");
       this->m_CmdEndRendering2EXT = (PFN_vkCmdEndRendering2EXT) NextGetDeviceProcAddr(device, "vkCmdEndRendering2EXT");
+      this->m_CmdEndRendering2KHR = (PFN_vkCmdEndRendering2KHR) NextGetDeviceProcAddr(device, "vkCmdEndRendering2KHR");
       this->m_CmdEndRenderingKHR = (PFN_vkCmdEndRenderingKHR) NextGetDeviceProcAddr(device, "vkCmdEndRenderingKHR");
       this->m_CmdEndTransformFeedbackEXT = (PFN_vkCmdEndTransformFeedbackEXT) NextGetDeviceProcAddr(device, "vkCmdEndTransformFeedbackEXT");
       this->m_CmdEndVideoCodingKHR = (PFN_vkCmdEndVideoCodingKHR) NextGetDeviceProcAddr(device, "vkCmdEndVideoCodingKHR");
@@ -1251,9 +1266,14 @@ namespace vkroots {
       this->m_CmdPreprocessGeneratedCommandsEXT = (PFN_vkCmdPreprocessGeneratedCommandsEXT) NextGetDeviceProcAddr(device, "vkCmdPreprocessGeneratedCommandsEXT");
       this->m_CmdPreprocessGeneratedCommandsNV = (PFN_vkCmdPreprocessGeneratedCommandsNV) NextGetDeviceProcAddr(device, "vkCmdPreprocessGeneratedCommandsNV");
       this->m_CmdPushConstants = (PFN_vkCmdPushConstants) NextGetDeviceProcAddr(device, "vkCmdPushConstants");
+      this->m_CmdPushConstants2 = (PFN_vkCmdPushConstants2) NextGetDeviceProcAddr(device, "vkCmdPushConstants2");
       this->m_CmdPushConstants2KHR = (PFN_vkCmdPushConstants2KHR) NextGetDeviceProcAddr(device, "vkCmdPushConstants2KHR");
+      this->m_CmdPushDescriptorSet = (PFN_vkCmdPushDescriptorSet) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSet");
+      this->m_CmdPushDescriptorSet2 = (PFN_vkCmdPushDescriptorSet2) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSet2");
       this->m_CmdPushDescriptorSet2KHR = (PFN_vkCmdPushDescriptorSet2KHR) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSet2KHR");
       this->m_CmdPushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSetKHR");
+      this->m_CmdPushDescriptorSetWithTemplate = (PFN_vkCmdPushDescriptorSetWithTemplate) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSetWithTemplate");
+      this->m_CmdPushDescriptorSetWithTemplate2 = (PFN_vkCmdPushDescriptorSetWithTemplate2) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSetWithTemplate2");
       this->m_CmdPushDescriptorSetWithTemplate2KHR = (PFN_vkCmdPushDescriptorSetWithTemplate2KHR) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSetWithTemplate2KHR");
       this->m_CmdPushDescriptorSetWithTemplateKHR = (PFN_vkCmdPushDescriptorSetWithTemplateKHR) NextGetDeviceProcAddr(device, "vkCmdPushDescriptorSetWithTemplateKHR");
       this->m_CmdResetEvent = (PFN_vkCmdResetEvent) NextGetDeviceProcAddr(device, "vkCmdResetEvent");
@@ -1318,6 +1338,7 @@ namespace vkroots {
       this->m_CmdSetFrontFace = (PFN_vkCmdSetFrontFace) NextGetDeviceProcAddr(device, "vkCmdSetFrontFace");
       this->m_CmdSetFrontFaceEXT = (PFN_vkCmdSetFrontFaceEXT) NextGetDeviceProcAddr(device, "vkCmdSetFrontFaceEXT");
       this->m_CmdSetLineRasterizationModeEXT = (PFN_vkCmdSetLineRasterizationModeEXT) NextGetDeviceProcAddr(device, "vkCmdSetLineRasterizationModeEXT");
+      this->m_CmdSetLineStipple = (PFN_vkCmdSetLineStipple) NextGetDeviceProcAddr(device, "vkCmdSetLineStipple");
       this->m_CmdSetLineStippleEXT = (PFN_vkCmdSetLineStippleEXT) NextGetDeviceProcAddr(device, "vkCmdSetLineStippleEXT");
       this->m_CmdSetLineStippleEnableEXT = (PFN_vkCmdSetLineStippleEnableEXT) NextGetDeviceProcAddr(device, "vkCmdSetLineStippleEnableEXT");
       this->m_CmdSetLineStippleKHR = (PFN_vkCmdSetLineStippleKHR) NextGetDeviceProcAddr(device, "vkCmdSetLineStippleKHR");
@@ -1339,7 +1360,9 @@ namespace vkroots {
       this->m_CmdSetRasterizerDiscardEnable = (PFN_vkCmdSetRasterizerDiscardEnable) NextGetDeviceProcAddr(device, "vkCmdSetRasterizerDiscardEnable");
       this->m_CmdSetRasterizerDiscardEnableEXT = (PFN_vkCmdSetRasterizerDiscardEnableEXT) NextGetDeviceProcAddr(device, "vkCmdSetRasterizerDiscardEnableEXT");
       this->m_CmdSetRayTracingPipelineStackSizeKHR = (PFN_vkCmdSetRayTracingPipelineStackSizeKHR) NextGetDeviceProcAddr(device, "vkCmdSetRayTracingPipelineStackSizeKHR");
+      this->m_CmdSetRenderingAttachmentLocations = (PFN_vkCmdSetRenderingAttachmentLocations) NextGetDeviceProcAddr(device, "vkCmdSetRenderingAttachmentLocations");
       this->m_CmdSetRenderingAttachmentLocationsKHR = (PFN_vkCmdSetRenderingAttachmentLocationsKHR) NextGetDeviceProcAddr(device, "vkCmdSetRenderingAttachmentLocationsKHR");
+      this->m_CmdSetRenderingInputAttachmentIndices = (PFN_vkCmdSetRenderingInputAttachmentIndices) NextGetDeviceProcAddr(device, "vkCmdSetRenderingInputAttachmentIndices");
       this->m_CmdSetRenderingInputAttachmentIndicesKHR = (PFN_vkCmdSetRenderingInputAttachmentIndicesKHR) NextGetDeviceProcAddr(device, "vkCmdSetRenderingInputAttachmentIndicesKHR");
       this->m_CmdSetRepresentativeFragmentTestEnableNV = (PFN_vkCmdSetRepresentativeFragmentTestEnableNV) NextGetDeviceProcAddr(device, "vkCmdSetRepresentativeFragmentTestEnableNV");
       this->m_CmdSetSampleLocationsEXT = (PFN_vkCmdSetSampleLocationsEXT) NextGetDeviceProcAddr(device, "vkCmdSetSampleLocationsEXT");
@@ -1387,9 +1410,12 @@ namespace vkroots {
       this->m_ConvertCooperativeVectorMatrixNV = (PFN_vkConvertCooperativeVectorMatrixNV) NextGetDeviceProcAddr(device, "vkConvertCooperativeVectorMatrixNV");
       this->m_CopyAccelerationStructureKHR = (PFN_vkCopyAccelerationStructureKHR) NextGetDeviceProcAddr(device, "vkCopyAccelerationStructureKHR");
       this->m_CopyAccelerationStructureToMemoryKHR = (PFN_vkCopyAccelerationStructureToMemoryKHR) NextGetDeviceProcAddr(device, "vkCopyAccelerationStructureToMemoryKHR");
+      this->m_CopyImageToImage = (PFN_vkCopyImageToImage) NextGetDeviceProcAddr(device, "vkCopyImageToImage");
       this->m_CopyImageToImageEXT = (PFN_vkCopyImageToImageEXT) NextGetDeviceProcAddr(device, "vkCopyImageToImageEXT");
+      this->m_CopyImageToMemory = (PFN_vkCopyImageToMemory) NextGetDeviceProcAddr(device, "vkCopyImageToMemory");
       this->m_CopyImageToMemoryEXT = (PFN_vkCopyImageToMemoryEXT) NextGetDeviceProcAddr(device, "vkCopyImageToMemoryEXT");
       this->m_CopyMemoryToAccelerationStructureKHR = (PFN_vkCopyMemoryToAccelerationStructureKHR) NextGetDeviceProcAddr(device, "vkCopyMemoryToAccelerationStructureKHR");
+      this->m_CopyMemoryToImage = (PFN_vkCopyMemoryToImage) NextGetDeviceProcAddr(device, "vkCopyMemoryToImage");
       this->m_CopyMemoryToImageEXT = (PFN_vkCopyMemoryToImageEXT) NextGetDeviceProcAddr(device, "vkCopyMemoryToImageEXT");
       this->m_CopyMemoryToMicromapEXT = (PFN_vkCopyMemoryToMicromapEXT) NextGetDeviceProcAddr(device, "vkCopyMemoryToMicromapEXT");
       this->m_CopyMicromapEXT = (PFN_vkCopyMicromapEXT) NextGetDeviceProcAddr(device, "vkCopyMicromapEXT");
@@ -1574,6 +1600,7 @@ namespace vkroots {
       this->m_GetDeviceImageMemoryRequirementsKHR = (PFN_vkGetDeviceImageMemoryRequirementsKHR) NextGetDeviceProcAddr(device, "vkGetDeviceImageMemoryRequirementsKHR");
       this->m_GetDeviceImageSparseMemoryRequirements = (PFN_vkGetDeviceImageSparseMemoryRequirements) NextGetDeviceProcAddr(device, "vkGetDeviceImageSparseMemoryRequirements");
       this->m_GetDeviceImageSparseMemoryRequirementsKHR = (PFN_vkGetDeviceImageSparseMemoryRequirementsKHR) NextGetDeviceProcAddr(device, "vkGetDeviceImageSparseMemoryRequirementsKHR");
+      this->m_GetDeviceImageSubresourceLayout = (PFN_vkGetDeviceImageSubresourceLayout) NextGetDeviceProcAddr(device, "vkGetDeviceImageSubresourceLayout");
       this->m_GetDeviceImageSubresourceLayoutKHR = (PFN_vkGetDeviceImageSubresourceLayoutKHR) NextGetDeviceProcAddr(device, "vkGetDeviceImageSubresourceLayoutKHR");
       this->m_GetDeviceMemoryCommitment = (PFN_vkGetDeviceMemoryCommitment) NextGetDeviceProcAddr(device, "vkGetDeviceMemoryCommitment");
       this->m_GetDeviceMemoryOpaqueCaptureAddress = (PFN_vkGetDeviceMemoryOpaqueCaptureAddress) NextGetDeviceProcAddr(device, "vkGetDeviceMemoryOpaqueCaptureAddress");
@@ -1611,6 +1638,7 @@ namespace vkroots {
       this->m_GetImageSparseMemoryRequirements2 = (PFN_vkGetImageSparseMemoryRequirements2) NextGetDeviceProcAddr(device, "vkGetImageSparseMemoryRequirements2");
       this->m_GetImageSparseMemoryRequirements2KHR = (PFN_vkGetImageSparseMemoryRequirements2KHR) NextGetDeviceProcAddr(device, "vkGetImageSparseMemoryRequirements2KHR");
       this->m_GetImageSubresourceLayout = (PFN_vkGetImageSubresourceLayout) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout");
+      this->m_GetImageSubresourceLayout2 = (PFN_vkGetImageSubresourceLayout2) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout2");
       this->m_GetImageSubresourceLayout2EXT = (PFN_vkGetImageSubresourceLayout2EXT) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout2EXT");
       this->m_GetImageSubresourceLayout2KHR = (PFN_vkGetImageSubresourceLayout2KHR) NextGetDeviceProcAddr(device, "vkGetImageSubresourceLayout2KHR");
       this->m_GetImageViewOpaqueCaptureDescriptorDataEXT = (PFN_vkGetImageViewOpaqueCaptureDescriptorDataEXT) NextGetDeviceProcAddr(device, "vkGetImageViewOpaqueCaptureDescriptorDataEXT");
@@ -1626,6 +1654,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
       this->m_GetMemoryMetalHandlePropertiesEXT = (PFN_vkGetMemoryMetalHandlePropertiesEXT) NextGetDeviceProcAddr(device, "vkGetMemoryMetalHandlePropertiesEXT");
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+      this->m_GetMemoryNativeBufferOHOS = (PFN_vkGetMemoryNativeBufferOHOS) NextGetDeviceProcAddr(device, "vkGetMemoryNativeBufferOHOS");
 #endif
       this->m_GetMemoryRemoteAddressNV = (PFN_vkGetMemoryRemoteAddressNV) NextGetDeviceProcAddr(device, "vkGetMemoryRemoteAddressNV");
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -1644,7 +1675,11 @@ namespace vkroots {
       this->m_GetMemoryZirconHandlePropertiesFUCHSIA = (PFN_vkGetMemoryZirconHandlePropertiesFUCHSIA) NextGetDeviceProcAddr(device, "vkGetMemoryZirconHandlePropertiesFUCHSIA");
 #endif
       this->m_GetMicromapBuildSizesEXT = (PFN_vkGetMicromapBuildSizesEXT) NextGetDeviceProcAddr(device, "vkGetMicromapBuildSizesEXT");
+#ifdef VK_USE_PLATFORM_OHOS
+      this->m_GetNativeBufferPropertiesOHOS = (PFN_vkGetNativeBufferPropertiesOHOS) NextGetDeviceProcAddr(device, "vkGetNativeBufferPropertiesOHOS");
+#endif
       this->m_GetPartitionedAccelerationStructuresBuildSizesNV = (PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV) NextGetDeviceProcAddr(device, "vkGetPartitionedAccelerationStructuresBuildSizesNV");
+      this->m_GetPastPresentationTimingEXT = (PFN_vkGetPastPresentationTimingEXT) NextGetDeviceProcAddr(device, "vkGetPastPresentationTimingEXT");
       this->m_GetPastPresentationTimingGOOGLE = (PFN_vkGetPastPresentationTimingGOOGLE) NextGetDeviceProcAddr(device, "vkGetPastPresentationTimingGOOGLE");
       this->m_GetPerformanceParameterINTEL = (PFN_vkGetPerformanceParameterINTEL) NextGetDeviceProcAddr(device, "vkGetPerformanceParameterINTEL");
       this->m_GetPipelineBinaryDataKHR = (PFN_vkGetPipelineBinaryDataKHR) NextGetDeviceProcAddr(device, "vkGetPipelineBinaryDataKHR");
@@ -1667,6 +1702,7 @@ namespace vkroots {
       this->m_GetRayTracingShaderGroupStackSizeKHR = (PFN_vkGetRayTracingShaderGroupStackSizeKHR) NextGetDeviceProcAddr(device, "vkGetRayTracingShaderGroupStackSizeKHR");
       this->m_GetRefreshCycleDurationGOOGLE = (PFN_vkGetRefreshCycleDurationGOOGLE) NextGetDeviceProcAddr(device, "vkGetRefreshCycleDurationGOOGLE");
       this->m_GetRenderAreaGranularity = (PFN_vkGetRenderAreaGranularity) NextGetDeviceProcAddr(device, "vkGetRenderAreaGranularity");
+      this->m_GetRenderingAreaGranularity = (PFN_vkGetRenderingAreaGranularity) NextGetDeviceProcAddr(device, "vkGetRenderingAreaGranularity");
       this->m_GetRenderingAreaGranularityKHR = (PFN_vkGetRenderingAreaGranularityKHR) NextGetDeviceProcAddr(device, "vkGetRenderingAreaGranularityKHR");
       this->m_GetSamplerOpaqueCaptureDescriptorDataEXT = (PFN_vkGetSamplerOpaqueCaptureDescriptorDataEXT) NextGetDeviceProcAddr(device, "vkGetSamplerOpaqueCaptureDescriptorDataEXT");
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -1686,8 +1722,13 @@ namespace vkroots {
       this->m_GetShaderModuleCreateInfoIdentifierEXT = (PFN_vkGetShaderModuleCreateInfoIdentifierEXT) NextGetDeviceProcAddr(device, "vkGetShaderModuleCreateInfoIdentifierEXT");
       this->m_GetShaderModuleIdentifierEXT = (PFN_vkGetShaderModuleIdentifierEXT) NextGetDeviceProcAddr(device, "vkGetShaderModuleIdentifierEXT");
       this->m_GetSwapchainCounterEXT = (PFN_vkGetSwapchainCounterEXT) NextGetDeviceProcAddr(device, "vkGetSwapchainCounterEXT");
+#ifdef VK_USE_PLATFORM_OHOS
+      this->m_GetSwapchainGrallocUsageOHOS = (PFN_vkGetSwapchainGrallocUsageOHOS) NextGetDeviceProcAddr(device, "vkGetSwapchainGrallocUsageOHOS");
+#endif
       this->m_GetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR) NextGetDeviceProcAddr(device, "vkGetSwapchainImagesKHR");
       this->m_GetSwapchainStatusKHR = (PFN_vkGetSwapchainStatusKHR) NextGetDeviceProcAddr(device, "vkGetSwapchainStatusKHR");
+      this->m_GetSwapchainTimeDomainPropertiesEXT = (PFN_vkGetSwapchainTimeDomainPropertiesEXT) NextGetDeviceProcAddr(device, "vkGetSwapchainTimeDomainPropertiesEXT");
+      this->m_GetSwapchainTimingPropertiesEXT = (PFN_vkGetSwapchainTimingPropertiesEXT) NextGetDeviceProcAddr(device, "vkGetSwapchainTimingPropertiesEXT");
       this->m_GetTensorMemoryRequirementsARM = (PFN_vkGetTensorMemoryRequirementsARM) NextGetDeviceProcAddr(device, "vkGetTensorMemoryRequirementsARM");
       this->m_GetTensorOpaqueCaptureDescriptorDataARM = (PFN_vkGetTensorOpaqueCaptureDescriptorDataARM) NextGetDeviceProcAddr(device, "vkGetTensorOpaqueCaptureDescriptorDataARM");
       this->m_GetTensorViewOpaqueCaptureDescriptorDataARM = (PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM) NextGetDeviceProcAddr(device, "vkGetTensorViewOpaqueCaptureDescriptorDataARM");
@@ -1708,6 +1749,7 @@ namespace vkroots {
       this->m_InvalidateMappedMemoryRanges = (PFN_vkInvalidateMappedMemoryRanges) NextGetDeviceProcAddr(device, "vkInvalidateMappedMemoryRanges");
       this->m_LatencySleepNV = (PFN_vkLatencySleepNV) NextGetDeviceProcAddr(device, "vkLatencySleepNV");
       this->m_MapMemory = (PFN_vkMapMemory) NextGetDeviceProcAddr(device, "vkMapMemory");
+      this->m_MapMemory2 = (PFN_vkMapMemory2) NextGetDeviceProcAddr(device, "vkMapMemory2");
       this->m_MapMemory2KHR = (PFN_vkMapMemory2KHR) NextGetDeviceProcAddr(device, "vkMapMemory2KHR");
       this->m_MergePipelineCaches = (PFN_vkMergePipelineCaches) NextGetDeviceProcAddr(device, "vkMergePipelineCaches");
       this->m_MergeValidationCachesEXT = (PFN_vkMergeValidationCachesEXT) NextGetDeviceProcAddr(device, "vkMergeValidationCachesEXT");
@@ -1718,6 +1760,9 @@ namespace vkroots {
       this->m_QueueNotifyOutOfBandNV = (PFN_vkQueueNotifyOutOfBandNV) NextGetDeviceProcAddr(device, "vkQueueNotifyOutOfBandNV");
       this->m_QueuePresentKHR = (PFN_vkQueuePresentKHR) NextGetDeviceProcAddr(device, "vkQueuePresentKHR");
       this->m_QueueSetPerformanceConfigurationINTEL = (PFN_vkQueueSetPerformanceConfigurationINTEL) NextGetDeviceProcAddr(device, "vkQueueSetPerformanceConfigurationINTEL");
+#ifdef VK_USE_PLATFORM_OHOS
+      this->m_QueueSignalReleaseImageOHOS = (PFN_vkQueueSignalReleaseImageOHOS) NextGetDeviceProcAddr(device, "vkQueueSignalReleaseImageOHOS");
+#endif
       this->m_QueueSubmit = (PFN_vkQueueSubmit) NextGetDeviceProcAddr(device, "vkQueueSubmit");
       this->m_QueueSubmit2 = (PFN_vkQueueSubmit2) NextGetDeviceProcAddr(device, "vkQueueSubmit2");
       this->m_QueueSubmit2KHR = (PFN_vkQueueSubmit2KHR) NextGetDeviceProcAddr(device, "vkQueueSubmit2KHR");
@@ -1755,13 +1800,16 @@ namespace vkroots {
       this->m_SetLocalDimmingAMD = (PFN_vkSetLocalDimmingAMD) NextGetDeviceProcAddr(device, "vkSetLocalDimmingAMD");
       this->m_SetPrivateData = (PFN_vkSetPrivateData) NextGetDeviceProcAddr(device, "vkSetPrivateData");
       this->m_SetPrivateDataEXT = (PFN_vkSetPrivateDataEXT) NextGetDeviceProcAddr(device, "vkSetPrivateDataEXT");
+      this->m_SetSwapchainPresentTimingQueueSizeEXT = (PFN_vkSetSwapchainPresentTimingQueueSizeEXT) NextGetDeviceProcAddr(device, "vkSetSwapchainPresentTimingQueueSizeEXT");
       this->m_SignalSemaphore = (PFN_vkSignalSemaphore) NextGetDeviceProcAddr(device, "vkSignalSemaphore");
       this->m_SignalSemaphoreKHR = (PFN_vkSignalSemaphoreKHR) NextGetDeviceProcAddr(device, "vkSignalSemaphoreKHR");
+      this->m_TransitionImageLayout = (PFN_vkTransitionImageLayout) NextGetDeviceProcAddr(device, "vkTransitionImageLayout");
       this->m_TransitionImageLayoutEXT = (PFN_vkTransitionImageLayoutEXT) NextGetDeviceProcAddr(device, "vkTransitionImageLayoutEXT");
       this->m_TrimCommandPool = (PFN_vkTrimCommandPool) NextGetDeviceProcAddr(device, "vkTrimCommandPool");
       this->m_TrimCommandPoolKHR = (PFN_vkTrimCommandPoolKHR) NextGetDeviceProcAddr(device, "vkTrimCommandPoolKHR");
       this->m_UninitializePerformanceApiINTEL = (PFN_vkUninitializePerformanceApiINTEL) NextGetDeviceProcAddr(device, "vkUninitializePerformanceApiINTEL");
       this->m_UnmapMemory = (PFN_vkUnmapMemory) NextGetDeviceProcAddr(device, "vkUnmapMemory");
+      this->m_UnmapMemory2 = (PFN_vkUnmapMemory2) NextGetDeviceProcAddr(device, "vkUnmapMemory2");
       this->m_UnmapMemory2KHR = (PFN_vkUnmapMemory2KHR) NextGetDeviceProcAddr(device, "vkUnmapMemory2KHR");
       this->m_UpdateDescriptorSetWithTemplate = (PFN_vkUpdateDescriptorSetWithTemplate) NextGetDeviceProcAddr(device, "vkUpdateDescriptorSetWithTemplate");
       this->m_UpdateDescriptorSetWithTemplateKHR = (PFN_vkUpdateDescriptorSetWithTemplateKHR) NextGetDeviceProcAddr(device, "vkUpdateDescriptorSetWithTemplateKHR");
@@ -1783,6 +1831,9 @@ namespace vkroots {
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pPhysicalDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return m_AcquireFullScreenExclusiveModeEXT(device, swapchain); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult AcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) const { return m_AcquireImageOHOS(device, image, nativeFenceFd, semaphore, fence); }
 #endif
     VkResult AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) const { return m_AcquireNextImage2KHR(device, pAcquireInfo, pImageIndex); }
     VkResult AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) const { return m_AcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex); }
@@ -1820,6 +1871,7 @@ namespace vkroots {
     VkResult BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) const { return m_BuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos); }
     VkResult BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) const { return m_BuildMicromapsEXT(device, deferredOperation, infoCount, pInfos); }
     void CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) const { m_CmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin); }
+    void CmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT *pBeginCustomResolveInfo) const { m_CmdBeginCustomResolveEXT(commandBuffer, pBeginCustomResolveInfo); }
     void CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) const { m_CmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo); }
     void CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) const { m_CmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo); }
     void CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const { m_CmdBeginQuery(commandBuffer, queryPool, query, flags); }
@@ -1835,8 +1887,10 @@ namespace vkroots {
     void CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) const { m_CmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set); }
     void CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) const { m_CmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos); }
     void CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) const { m_CmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets); }
+    void CmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { m_CmdBindDescriptorSets2(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { m_CmdBindDescriptorSets2KHR(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) const { m_CmdBindIndexBuffer(commandBuffer, buffer, offset, indexType); }
+    void CmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { m_CmdBindIndexBuffer2(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { m_CmdBindIndexBuffer2KHR(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const { m_CmdBindInvocationMaskHUAWEI(commandBuffer, imageView, imageLayout); }
     void CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const { m_CmdBindPipeline(commandBuffer, pipelineBindPoint, pipeline); }
@@ -1877,8 +1931,10 @@ namespace vkroots {
     void CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) const { m_CmdCopyImageToBuffer(commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions); }
     void CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { m_CmdCopyImageToBuffer2(commandBuffer, pCopyImageToBufferInfo); }
     void CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { m_CmdCopyImageToBuffer2KHR(commandBuffer, pCopyImageToBufferInfo); }
+    void CmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR *pCopyMemoryIndirectInfo) const { m_CmdCopyMemoryIndirectKHR(commandBuffer, pCopyMemoryIndirectInfo); }
     void CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const { m_CmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride); }
     void CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { m_CmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo); }
+    void CmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR *pCopyMemoryToImageIndirectInfo) const { m_CmdCopyMemoryToImageIndirectKHR(commandBuffer, pCopyMemoryToImageIndirectInfo); }
     void CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) const { m_CmdCopyMemoryToImageIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources); }
     void CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { m_CmdCopyMemoryToMicromapEXT(commandBuffer, pInfo); }
     void CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) const { m_CmdCopyMicromapEXT(commandBuffer, pInfo); }
@@ -1892,6 +1948,8 @@ namespace vkroots {
     void CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) const { m_CmdDebugMarkerEndEXT(commandBuffer); }
     void CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) const { m_CmdDebugMarkerInsertEXT(commandBuffer, pMarkerInfo); }
     void CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) const { m_CmdDecodeVideoKHR(commandBuffer, pDecodeInfo); }
+    void CmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT *pDecompressMemoryInfoEXT) const { m_CmdDecompressMemoryEXT(commandBuffer, pDecompressMemoryInfoEXT); }
+    void CmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) const { m_CmdDecompressMemoryIndirectCountEXT(commandBuffer, decompressionMethod, indirectCommandsAddress, indirectCommandsCountAddress, maxDecompressionCount, stride); }
     void CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const { m_CmdDecompressMemoryIndirectCountNV(commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride); }
     void CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) const { m_CmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions); }
     void CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const { m_CmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ); }
@@ -1940,7 +1998,8 @@ namespace vkroots {
     void CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { m_CmdEndRenderPass2(commandBuffer, pSubpassEndInfo); }
     void CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { m_CmdEndRenderPass2KHR(commandBuffer, pSubpassEndInfo); }
     void CmdEndRendering(VkCommandBuffer commandBuffer) const { m_CmdEndRendering(commandBuffer); }
-    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) const { m_CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { m_CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { m_CmdEndRendering2KHR(commandBuffer, pRenderingEndInfo); }
     void CmdEndRenderingKHR(VkCommandBuffer commandBuffer) const { m_CmdEndRenderingKHR(commandBuffer); }
     void CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) const { m_CmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets); }
     void CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) const { m_CmdEndVideoCodingKHR(commandBuffer, pEndCodingInfo); }
@@ -1962,9 +2021,14 @@ namespace vkroots {
     void CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const { m_CmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer); }
     void CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) const { m_CmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo); }
     void CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) const { m_CmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues); }
+    void CmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { m_CmdPushConstants2(commandBuffer, pPushConstantsInfo); }
     void CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { m_CmdPushConstants2KHR(commandBuffer, pPushConstantsInfo); }
+    void CmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { m_CmdPushDescriptorSet(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { m_CmdPushDescriptorSet2(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { m_CmdPushDescriptorSet2KHR(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { m_CmdPushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { m_CmdPushDescriptorSetWithTemplate(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
+    void CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { m_CmdPushDescriptorSetWithTemplate2(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { m_CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { m_CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
     void CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const { m_CmdResetEvent(commandBuffer, event, stageMask); }
@@ -2029,6 +2093,7 @@ namespace vkroots {
     void CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { m_CmdSetFrontFace(commandBuffer, frontFace); }
     void CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { m_CmdSetFrontFaceEXT(commandBuffer, frontFace); }
     void CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const { m_CmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode); }
+    void CmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { m_CmdSetLineStipple(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { m_CmdSetLineStippleEXT(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const { m_CmdSetLineStippleEnableEXT(commandBuffer, stippledLineEnable); }
     void CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { m_CmdSetLineStippleKHR(commandBuffer, lineStippleFactor, lineStipplePattern); }
@@ -2050,7 +2115,9 @@ namespace vkroots {
     void CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { m_CmdSetRasterizerDiscardEnable(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { m_CmdSetRasterizerDiscardEnableEXT(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const { m_CmdSetRayTracingPipelineStackSizeKHR(commandBuffer, pipelineStackSize); }
+    void CmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { m_CmdSetRenderingAttachmentLocations(commandBuffer, pLocationInfo); }
     void CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { m_CmdSetRenderingAttachmentLocationsKHR(commandBuffer, pLocationInfo); }
+    void CmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { m_CmdSetRenderingInputAttachmentIndices(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { m_CmdSetRenderingInputAttachmentIndicesKHR(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const { m_CmdSetRepresentativeFragmentTestEnableNV(commandBuffer, representativeFragmentTestEnable); }
     void CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) const { m_CmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo); }
@@ -2098,9 +2165,12 @@ namespace vkroots {
     VkResult ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) const { return m_ConvertCooperativeVectorMatrixNV(device, pInfo); }
     VkResult CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) const { return m_CopyAccelerationStructureKHR(device, deferredOperation, pInfo); }
     VkResult CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) const { return m_CopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo); }
+    VkResult CopyImageToImage(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return m_CopyImageToImage(device, pCopyImageToImageInfo); }
     VkResult CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return m_CopyImageToImageEXT(device, pCopyImageToImageInfo); }
+    VkResult CopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return m_CopyImageToMemory(device, pCopyImageToMemoryInfo); }
     VkResult CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return m_CopyImageToMemoryEXT(device, pCopyImageToMemoryInfo); }
     VkResult CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { return m_CopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo); }
+    VkResult CopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return m_CopyMemoryToImage(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return m_CopyMemoryToImageEXT(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { return m_CopyMemoryToMicromapEXT(device, deferredOperation, pInfo); }
     VkResult CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) const { return m_CopyMicromapEXT(device, deferredOperation, pInfo); }
@@ -2285,6 +2355,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return pPhysicalDeviceDispatch->EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pPhysicalDeviceDispatch->EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pPhysicalDeviceDispatch->EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return pPhysicalDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return pPhysicalDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return pPhysicalDeviceDispatch->EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
 #ifdef VK_USE_PLATFORM_METAL_EXT
@@ -2352,6 +2423,7 @@ namespace vkroots {
     void GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { m_GetDeviceImageMemoryRequirementsKHR(device, pInfo, pMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { m_GetDeviceImageSparseMemoryRequirements(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { m_GetDeviceImageSparseMemoryRequirementsKHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
+    void GetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { m_GetDeviceImageSubresourceLayout(device, pInfo, pLayout); }
     void GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { m_GetDeviceImageSubresourceLayoutKHR(device, pInfo, pLayout); }
     void GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) const { m_GetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes); }
     uint64_t GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) const { return m_GetDeviceMemoryOpaqueCaptureAddress(device, pInfo); }
@@ -2395,6 +2467,7 @@ namespace vkroots {
     void GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { m_GetImageSparseMemoryRequirements2(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { m_GetImageSparseMemoryRequirements2KHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const { m_GetImageSubresourceLayout(device, image, pSubresource, pLayout); }
+    void GetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { m_GetImageSubresourceLayout2(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { m_GetImageSubresourceLayout2EXT(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { m_GetImageSubresourceLayout2KHR(device, image, pSubresource, pLayout); }
     VkResult GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return m_GetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
@@ -2411,6 +2484,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
     VkResult GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) const { return m_GetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS *pInfo, struct OH_NativeBuffer **pBuffer) const { return m_GetMemoryNativeBufferOHOS(device, pInfo, pBuffer); }
 #endif
     VkResult GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) const { return m_GetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -2429,7 +2505,11 @@ namespace vkroots {
     VkResult GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) const { return m_GetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties); }
 #endif
     void GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) const { m_GetMicromapBuildSizesEXT(device, buildType, pBuildInfo, pSizeInfo); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer *buffer, VkNativeBufferPropertiesOHOS *pProperties) const { return m_GetNativeBufferPropertiesOHOS(device, buffer, pProperties); }
+#endif
     void GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) const { m_GetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo); }
+    VkResult GetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT *pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT *pPastPresentationTimingProperties) const { return m_GetPastPresentationTimingEXT(device, pPastPresentationTimingInfo, pPastPresentationTimingProperties); }
     VkResult GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) const { return m_GetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings); }
     VkResult GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) const { return m_GetPerformanceParameterINTEL(device, parameter, pValue); }
     VkResult GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) const { return pPhysicalDeviceDispatch->GetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains); }
@@ -2535,6 +2615,7 @@ namespace vkroots {
     VkDeviceSize GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const { return m_GetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader); }
     VkResult GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) const { return m_GetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties); }
     void GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) const { m_GetRenderAreaGranularity(device, renderPass, pGranularity); }
+    void GetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { m_GetRenderingAreaGranularity(device, pRenderingAreaInfo, pGranularity); }
     void GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { m_GetRenderingAreaGranularityKHR(device, pRenderingAreaInfo, pGranularity); }
     VkResult GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return m_GetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -2554,8 +2635,13 @@ namespace vkroots {
     void GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) const { m_GetShaderModuleCreateInfoIdentifierEXT(device, pCreateInfo, pIdentifier); }
     void GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) const { m_GetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier); }
     VkResult GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) const { return m_GetSwapchainCounterEXT(device, swapchain, counter, pCounterValue); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t *grallocUsage) const { return m_GetSwapchainGrallocUsageOHOS(device, format, imageUsage, grallocUsage); }
+#endif
     VkResult GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const { return m_GetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages); }
     VkResult GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const { return m_GetSwapchainStatusKHR(device, swapchain); }
+    VkResult GetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT *pSwapchainTimeDomainProperties, uint64_t *pTimeDomainsCounter) const { return m_GetSwapchainTimeDomainPropertiesEXT(device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter); }
+    VkResult GetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT *pSwapchainTimingProperties, uint64_t *pSwapchainTimingPropertiesCounter) const { return m_GetSwapchainTimingPropertiesEXT(device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter); }
     void GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { m_GetTensorMemoryRequirementsARM(device, pInfo, pMemoryRequirements); }
     VkResult GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return m_GetTensorOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
     VkResult GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return m_GetTensorViewOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
@@ -2579,6 +2665,7 @@ namespace vkroots {
     VkResult InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) const { return m_InvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges); }
     VkResult LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) const { return m_LatencySleepNV(device, swapchain, pSleepInfo); }
     VkResult MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) const { return m_MapMemory(device, memory, offset, size, flags, ppData); }
+    VkResult MapMemory2(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return m_MapMemory2(device, pMemoryMapInfo, ppData); }
     VkResult MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return m_MapMemory2KHR(device, pMemoryMapInfo, ppData); }
     VkResult MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) const { return m_MergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches); }
     VkResult MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) const { return m_MergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches); }
@@ -2589,6 +2676,9 @@ namespace vkroots {
     void QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) const { m_QueueNotifyOutOfBandNV(queue, pQueueTypeInfo); }
     VkResult QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) const { return m_QueuePresentKHR(queue, pPresentInfo); }
     VkResult QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) const { return m_QueueSetPerformanceConfigurationINTEL(queue, configuration); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult QueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore *pWaitSemaphores, VkImage image, int32_t *pNativeFenceFd) const { return m_QueueSignalReleaseImageOHOS(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd); }
+#endif
     VkResult QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) const { return m_QueueSubmit(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return m_QueueSubmit2(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return m_QueueSubmit2KHR(queue, submitCount, pSubmits, fence); }
@@ -2627,14 +2717,17 @@ namespace vkroots {
     void SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const { m_SetLocalDimmingAMD(device, swapChain, localDimmingEnable); }
     VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return m_SetPrivateData(device, objectType, objectHandle, privateDataSlot, data); }
     VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return m_SetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data); }
+    VkResult SetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) const { return m_SetSwapchainPresentTimingQueueSizeEXT(device, swapchain, size); }
     VkResult SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return m_SignalSemaphore(device, pSignalInfo); }
     VkResult SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return m_SignalSemaphoreKHR(device, pSignalInfo); }
     void SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) const { pPhysicalDeviceDispatch->SubmitDebugUtilsMessageEXT(instance, messageSeverity, messageTypes, pCallbackData); }
+    VkResult TransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return m_TransitionImageLayout(device, transitionCount, pTransitions); }
     VkResult TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return m_TransitionImageLayoutEXT(device, transitionCount, pTransitions); }
     void TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { m_TrimCommandPool(device, commandPool, flags); }
     void TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { m_TrimCommandPoolKHR(device, commandPool, flags); }
     void UninitializePerformanceApiINTEL(VkDevice device) const { m_UninitializePerformanceApiINTEL(device); }
     void UnmapMemory(VkDevice device, VkDeviceMemory memory) const { m_UnmapMemory(device, memory); }
+    VkResult UnmapMemory2(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return m_UnmapMemory2(device, pMemoryUnmapInfo); }
     VkResult UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return m_UnmapMemory2KHR(device, pMemoryUnmapInfo); }
     void UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { m_UpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData); }
     void UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { m_UpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData); }
@@ -2657,6 +2750,9 @@ namespace vkroots {
   private:
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkAcquireFullScreenExclusiveModeEXT m_AcquireFullScreenExclusiveModeEXT;
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    PFN_vkAcquireImageOHOS m_AcquireImageOHOS;
 #endif
     PFN_vkAcquireNextImage2KHR m_AcquireNextImage2KHR;
     PFN_vkAcquireNextImageKHR m_AcquireNextImageKHR;
@@ -2681,6 +2777,7 @@ namespace vkroots {
     PFN_vkBuildAccelerationStructuresKHR m_BuildAccelerationStructuresKHR;
     PFN_vkBuildMicromapsEXT m_BuildMicromapsEXT;
     PFN_vkCmdBeginConditionalRenderingEXT m_CmdBeginConditionalRenderingEXT;
+    PFN_vkCmdBeginCustomResolveEXT m_CmdBeginCustomResolveEXT;
     PFN_vkCmdBeginDebugUtilsLabelEXT m_CmdBeginDebugUtilsLabelEXT;
     PFN_vkCmdBeginPerTileExecutionQCOM m_CmdBeginPerTileExecutionQCOM;
     PFN_vkCmdBeginQuery m_CmdBeginQuery;
@@ -2696,8 +2793,10 @@ namespace vkroots {
     PFN_vkCmdBindDescriptorBufferEmbeddedSamplersEXT m_CmdBindDescriptorBufferEmbeddedSamplersEXT;
     PFN_vkCmdBindDescriptorBuffersEXT m_CmdBindDescriptorBuffersEXT;
     PFN_vkCmdBindDescriptorSets m_CmdBindDescriptorSets;
+    PFN_vkCmdBindDescriptorSets2 m_CmdBindDescriptorSets2;
     PFN_vkCmdBindDescriptorSets2KHR m_CmdBindDescriptorSets2KHR;
     PFN_vkCmdBindIndexBuffer m_CmdBindIndexBuffer;
+    PFN_vkCmdBindIndexBuffer2 m_CmdBindIndexBuffer2;
     PFN_vkCmdBindIndexBuffer2KHR m_CmdBindIndexBuffer2KHR;
     PFN_vkCmdBindInvocationMaskHUAWEI m_CmdBindInvocationMaskHUAWEI;
     PFN_vkCmdBindPipeline m_CmdBindPipeline;
@@ -2738,8 +2837,10 @@ namespace vkroots {
     PFN_vkCmdCopyImageToBuffer m_CmdCopyImageToBuffer;
     PFN_vkCmdCopyImageToBuffer2 m_CmdCopyImageToBuffer2;
     PFN_vkCmdCopyImageToBuffer2KHR m_CmdCopyImageToBuffer2KHR;
+    PFN_vkCmdCopyMemoryIndirectKHR m_CmdCopyMemoryIndirectKHR;
     PFN_vkCmdCopyMemoryIndirectNV m_CmdCopyMemoryIndirectNV;
     PFN_vkCmdCopyMemoryToAccelerationStructureKHR m_CmdCopyMemoryToAccelerationStructureKHR;
+    PFN_vkCmdCopyMemoryToImageIndirectKHR m_CmdCopyMemoryToImageIndirectKHR;
     PFN_vkCmdCopyMemoryToImageIndirectNV m_CmdCopyMemoryToImageIndirectNV;
     PFN_vkCmdCopyMemoryToMicromapEXT m_CmdCopyMemoryToMicromapEXT;
     PFN_vkCmdCopyMicromapEXT m_CmdCopyMicromapEXT;
@@ -2753,6 +2854,8 @@ namespace vkroots {
     PFN_vkCmdDebugMarkerEndEXT m_CmdDebugMarkerEndEXT;
     PFN_vkCmdDebugMarkerInsertEXT m_CmdDebugMarkerInsertEXT;
     PFN_vkCmdDecodeVideoKHR m_CmdDecodeVideoKHR;
+    PFN_vkCmdDecompressMemoryEXT m_CmdDecompressMemoryEXT;
+    PFN_vkCmdDecompressMemoryIndirectCountEXT m_CmdDecompressMemoryIndirectCountEXT;
     PFN_vkCmdDecompressMemoryIndirectCountNV m_CmdDecompressMemoryIndirectCountNV;
     PFN_vkCmdDecompressMemoryNV m_CmdDecompressMemoryNV;
     PFN_vkCmdDispatch m_CmdDispatch;
@@ -2802,6 +2905,7 @@ namespace vkroots {
     PFN_vkCmdEndRenderPass2KHR m_CmdEndRenderPass2KHR;
     PFN_vkCmdEndRendering m_CmdEndRendering;
     PFN_vkCmdEndRendering2EXT m_CmdEndRendering2EXT;
+    PFN_vkCmdEndRendering2KHR m_CmdEndRendering2KHR;
     PFN_vkCmdEndRenderingKHR m_CmdEndRenderingKHR;
     PFN_vkCmdEndTransformFeedbackEXT m_CmdEndTransformFeedbackEXT;
     PFN_vkCmdEndVideoCodingKHR m_CmdEndVideoCodingKHR;
@@ -2823,9 +2927,14 @@ namespace vkroots {
     PFN_vkCmdPreprocessGeneratedCommandsEXT m_CmdPreprocessGeneratedCommandsEXT;
     PFN_vkCmdPreprocessGeneratedCommandsNV m_CmdPreprocessGeneratedCommandsNV;
     PFN_vkCmdPushConstants m_CmdPushConstants;
+    PFN_vkCmdPushConstants2 m_CmdPushConstants2;
     PFN_vkCmdPushConstants2KHR m_CmdPushConstants2KHR;
+    PFN_vkCmdPushDescriptorSet m_CmdPushDescriptorSet;
+    PFN_vkCmdPushDescriptorSet2 m_CmdPushDescriptorSet2;
     PFN_vkCmdPushDescriptorSet2KHR m_CmdPushDescriptorSet2KHR;
     PFN_vkCmdPushDescriptorSetKHR m_CmdPushDescriptorSetKHR;
+    PFN_vkCmdPushDescriptorSetWithTemplate m_CmdPushDescriptorSetWithTemplate;
+    PFN_vkCmdPushDescriptorSetWithTemplate2 m_CmdPushDescriptorSetWithTemplate2;
     PFN_vkCmdPushDescriptorSetWithTemplate2KHR m_CmdPushDescriptorSetWithTemplate2KHR;
     PFN_vkCmdPushDescriptorSetWithTemplateKHR m_CmdPushDescriptorSetWithTemplateKHR;
     PFN_vkCmdResetEvent m_CmdResetEvent;
@@ -2890,6 +2999,7 @@ namespace vkroots {
     PFN_vkCmdSetFrontFace m_CmdSetFrontFace;
     PFN_vkCmdSetFrontFaceEXT m_CmdSetFrontFaceEXT;
     PFN_vkCmdSetLineRasterizationModeEXT m_CmdSetLineRasterizationModeEXT;
+    PFN_vkCmdSetLineStipple m_CmdSetLineStipple;
     PFN_vkCmdSetLineStippleEXT m_CmdSetLineStippleEXT;
     PFN_vkCmdSetLineStippleEnableEXT m_CmdSetLineStippleEnableEXT;
     PFN_vkCmdSetLineStippleKHR m_CmdSetLineStippleKHR;
@@ -2911,7 +3021,9 @@ namespace vkroots {
     PFN_vkCmdSetRasterizerDiscardEnable m_CmdSetRasterizerDiscardEnable;
     PFN_vkCmdSetRasterizerDiscardEnableEXT m_CmdSetRasterizerDiscardEnableEXT;
     PFN_vkCmdSetRayTracingPipelineStackSizeKHR m_CmdSetRayTracingPipelineStackSizeKHR;
+    PFN_vkCmdSetRenderingAttachmentLocations m_CmdSetRenderingAttachmentLocations;
     PFN_vkCmdSetRenderingAttachmentLocationsKHR m_CmdSetRenderingAttachmentLocationsKHR;
+    PFN_vkCmdSetRenderingInputAttachmentIndices m_CmdSetRenderingInputAttachmentIndices;
     PFN_vkCmdSetRenderingInputAttachmentIndicesKHR m_CmdSetRenderingInputAttachmentIndicesKHR;
     PFN_vkCmdSetRepresentativeFragmentTestEnableNV m_CmdSetRepresentativeFragmentTestEnableNV;
     PFN_vkCmdSetSampleLocationsEXT m_CmdSetSampleLocationsEXT;
@@ -2959,9 +3071,12 @@ namespace vkroots {
     PFN_vkConvertCooperativeVectorMatrixNV m_ConvertCooperativeVectorMatrixNV;
     PFN_vkCopyAccelerationStructureKHR m_CopyAccelerationStructureKHR;
     PFN_vkCopyAccelerationStructureToMemoryKHR m_CopyAccelerationStructureToMemoryKHR;
+    PFN_vkCopyImageToImage m_CopyImageToImage;
     PFN_vkCopyImageToImageEXT m_CopyImageToImageEXT;
+    PFN_vkCopyImageToMemory m_CopyImageToMemory;
     PFN_vkCopyImageToMemoryEXT m_CopyImageToMemoryEXT;
     PFN_vkCopyMemoryToAccelerationStructureKHR m_CopyMemoryToAccelerationStructureKHR;
+    PFN_vkCopyMemoryToImage m_CopyMemoryToImage;
     PFN_vkCopyMemoryToImageEXT m_CopyMemoryToImageEXT;
     PFN_vkCopyMemoryToMicromapEXT m_CopyMemoryToMicromapEXT;
     PFN_vkCopyMicromapEXT m_CopyMicromapEXT;
@@ -3146,6 +3261,7 @@ namespace vkroots {
     PFN_vkGetDeviceImageMemoryRequirementsKHR m_GetDeviceImageMemoryRequirementsKHR;
     PFN_vkGetDeviceImageSparseMemoryRequirements m_GetDeviceImageSparseMemoryRequirements;
     PFN_vkGetDeviceImageSparseMemoryRequirementsKHR m_GetDeviceImageSparseMemoryRequirementsKHR;
+    PFN_vkGetDeviceImageSubresourceLayout m_GetDeviceImageSubresourceLayout;
     PFN_vkGetDeviceImageSubresourceLayoutKHR m_GetDeviceImageSubresourceLayoutKHR;
     PFN_vkGetDeviceMemoryCommitment m_GetDeviceMemoryCommitment;
     PFN_vkGetDeviceMemoryOpaqueCaptureAddress m_GetDeviceMemoryOpaqueCaptureAddress;
@@ -3183,6 +3299,7 @@ namespace vkroots {
     PFN_vkGetImageSparseMemoryRequirements2 m_GetImageSparseMemoryRequirements2;
     PFN_vkGetImageSparseMemoryRequirements2KHR m_GetImageSparseMemoryRequirements2KHR;
     PFN_vkGetImageSubresourceLayout m_GetImageSubresourceLayout;
+    PFN_vkGetImageSubresourceLayout2 m_GetImageSubresourceLayout2;
     PFN_vkGetImageSubresourceLayout2EXT m_GetImageSubresourceLayout2EXT;
     PFN_vkGetImageSubresourceLayout2KHR m_GetImageSubresourceLayout2KHR;
     PFN_vkGetImageViewOpaqueCaptureDescriptorDataEXT m_GetImageViewOpaqueCaptureDescriptorDataEXT;
@@ -3198,6 +3315,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
     PFN_vkGetMemoryMetalHandlePropertiesEXT m_GetMemoryMetalHandlePropertiesEXT;
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    PFN_vkGetMemoryNativeBufferOHOS m_GetMemoryNativeBufferOHOS;
 #endif
     PFN_vkGetMemoryRemoteAddressNV m_GetMemoryRemoteAddressNV;
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -3216,7 +3336,11 @@ namespace vkroots {
     PFN_vkGetMemoryZirconHandlePropertiesFUCHSIA m_GetMemoryZirconHandlePropertiesFUCHSIA;
 #endif
     PFN_vkGetMicromapBuildSizesEXT m_GetMicromapBuildSizesEXT;
+#ifdef VK_USE_PLATFORM_OHOS
+    PFN_vkGetNativeBufferPropertiesOHOS m_GetNativeBufferPropertiesOHOS;
+#endif
     PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV m_GetPartitionedAccelerationStructuresBuildSizesNV;
+    PFN_vkGetPastPresentationTimingEXT m_GetPastPresentationTimingEXT;
     PFN_vkGetPastPresentationTimingGOOGLE m_GetPastPresentationTimingGOOGLE;
     PFN_vkGetPerformanceParameterINTEL m_GetPerformanceParameterINTEL;
     PFN_vkGetPipelineBinaryDataKHR m_GetPipelineBinaryDataKHR;
@@ -3239,6 +3363,7 @@ namespace vkroots {
     PFN_vkGetRayTracingShaderGroupStackSizeKHR m_GetRayTracingShaderGroupStackSizeKHR;
     PFN_vkGetRefreshCycleDurationGOOGLE m_GetRefreshCycleDurationGOOGLE;
     PFN_vkGetRenderAreaGranularity m_GetRenderAreaGranularity;
+    PFN_vkGetRenderingAreaGranularity m_GetRenderingAreaGranularity;
     PFN_vkGetRenderingAreaGranularityKHR m_GetRenderingAreaGranularityKHR;
     PFN_vkGetSamplerOpaqueCaptureDescriptorDataEXT m_GetSamplerOpaqueCaptureDescriptorDataEXT;
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -3258,8 +3383,13 @@ namespace vkroots {
     PFN_vkGetShaderModuleCreateInfoIdentifierEXT m_GetShaderModuleCreateInfoIdentifierEXT;
     PFN_vkGetShaderModuleIdentifierEXT m_GetShaderModuleIdentifierEXT;
     PFN_vkGetSwapchainCounterEXT m_GetSwapchainCounterEXT;
+#ifdef VK_USE_PLATFORM_OHOS
+    PFN_vkGetSwapchainGrallocUsageOHOS m_GetSwapchainGrallocUsageOHOS;
+#endif
     PFN_vkGetSwapchainImagesKHR m_GetSwapchainImagesKHR;
     PFN_vkGetSwapchainStatusKHR m_GetSwapchainStatusKHR;
+    PFN_vkGetSwapchainTimeDomainPropertiesEXT m_GetSwapchainTimeDomainPropertiesEXT;
+    PFN_vkGetSwapchainTimingPropertiesEXT m_GetSwapchainTimingPropertiesEXT;
     PFN_vkGetTensorMemoryRequirementsARM m_GetTensorMemoryRequirementsARM;
     PFN_vkGetTensorOpaqueCaptureDescriptorDataARM m_GetTensorOpaqueCaptureDescriptorDataARM;
     PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM m_GetTensorViewOpaqueCaptureDescriptorDataARM;
@@ -3280,6 +3410,7 @@ namespace vkroots {
     PFN_vkInvalidateMappedMemoryRanges m_InvalidateMappedMemoryRanges;
     PFN_vkLatencySleepNV m_LatencySleepNV;
     PFN_vkMapMemory m_MapMemory;
+    PFN_vkMapMemory2 m_MapMemory2;
     PFN_vkMapMemory2KHR m_MapMemory2KHR;
     PFN_vkMergePipelineCaches m_MergePipelineCaches;
     PFN_vkMergeValidationCachesEXT m_MergeValidationCachesEXT;
@@ -3290,6 +3421,9 @@ namespace vkroots {
     PFN_vkQueueNotifyOutOfBandNV m_QueueNotifyOutOfBandNV;
     PFN_vkQueuePresentKHR m_QueuePresentKHR;
     PFN_vkQueueSetPerformanceConfigurationINTEL m_QueueSetPerformanceConfigurationINTEL;
+#ifdef VK_USE_PLATFORM_OHOS
+    PFN_vkQueueSignalReleaseImageOHOS m_QueueSignalReleaseImageOHOS;
+#endif
     PFN_vkQueueSubmit m_QueueSubmit;
     PFN_vkQueueSubmit2 m_QueueSubmit2;
     PFN_vkQueueSubmit2KHR m_QueueSubmit2KHR;
@@ -3327,13 +3461,16 @@ namespace vkroots {
     PFN_vkSetLocalDimmingAMD m_SetLocalDimmingAMD;
     PFN_vkSetPrivateData m_SetPrivateData;
     PFN_vkSetPrivateDataEXT m_SetPrivateDataEXT;
+    PFN_vkSetSwapchainPresentTimingQueueSizeEXT m_SetSwapchainPresentTimingQueueSizeEXT;
     PFN_vkSignalSemaphore m_SignalSemaphore;
     PFN_vkSignalSemaphoreKHR m_SignalSemaphoreKHR;
+    PFN_vkTransitionImageLayout m_TransitionImageLayout;
     PFN_vkTransitionImageLayoutEXT m_TransitionImageLayoutEXT;
     PFN_vkTrimCommandPool m_TrimCommandPool;
     PFN_vkTrimCommandPoolKHR m_TrimCommandPoolKHR;
     PFN_vkUninitializePerformanceApiINTEL m_UninitializePerformanceApiINTEL;
     PFN_vkUnmapMemory m_UnmapMemory;
+    PFN_vkUnmapMemory2 m_UnmapMemory2;
     PFN_vkUnmapMemory2KHR m_UnmapMemory2KHR;
     PFN_vkUpdateDescriptorSetWithTemplate m_UpdateDescriptorSetWithTemplate;
     PFN_vkUpdateDescriptorSetWithTemplateKHR m_UpdateDescriptorSetWithTemplateKHR;
@@ -3362,6 +3499,9 @@ namespace vkroots {
     VkResult AcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const { return pDeviceDispatch->AcquireDrmDisplayEXT(physicalDevice, drmFd, display); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult AcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) const { return pDeviceDispatch->AcquireImageOHOS(device, image, nativeFenceFd, semaphore, fence); }
 #endif
     VkResult AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImage2KHR(device, pAcquireInfo, pImageIndex); }
     VkResult AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex); }
@@ -3392,6 +3532,7 @@ namespace vkroots {
     VkResult BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) const { return pDeviceDispatch->BuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos); }
     VkResult BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) const { return pDeviceDispatch->BuildMicromapsEXT(device, deferredOperation, infoCount, pInfos); }
     void CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) const { pDeviceDispatch->CmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin); }
+    void CmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT *pBeginCustomResolveInfo) const { pDeviceDispatch->CmdBeginCustomResolveEXT(commandBuffer, pBeginCustomResolveInfo); }
     void CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) const { pDeviceDispatch->CmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo); }
     void CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) const { pDeviceDispatch->CmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo); }
     void CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const { pDeviceDispatch->CmdBeginQuery(commandBuffer, queryPool, query, flags); }
@@ -3407,8 +3548,10 @@ namespace vkroots {
     void CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) const { pDeviceDispatch->CmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set); }
     void CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) const { pDeviceDispatch->CmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos); }
     void CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) const { pDeviceDispatch->CmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets); }
+    void CmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2KHR(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer(commandBuffer, buffer, offset, indexType); }
+    void CmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2KHR(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const { pDeviceDispatch->CmdBindInvocationMaskHUAWEI(commandBuffer, imageView, imageLayout); }
     void CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const { pDeviceDispatch->CmdBindPipeline(commandBuffer, pipelineBindPoint, pipeline); }
@@ -3449,8 +3592,10 @@ namespace vkroots {
     void CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) const { pDeviceDispatch->CmdCopyImageToBuffer(commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions); }
     void CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2(commandBuffer, pCopyImageToBufferInfo); }
     void CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2KHR(commandBuffer, pCopyImageToBufferInfo); }
+    void CmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR *pCopyMemoryIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryIndirectKHR(commandBuffer, pCopyMemoryIndirectInfo); }
     void CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const { pDeviceDispatch->CmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride); }
     void CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { pDeviceDispatch->CmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo); }
+    void CmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR *pCopyMemoryToImageIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectKHR(commandBuffer, pCopyMemoryToImageIndirectInfo); }
     void CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources); }
     void CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMemoryToMicromapEXT(commandBuffer, pInfo); }
     void CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMicromapEXT(commandBuffer, pInfo); }
@@ -3464,6 +3609,8 @@ namespace vkroots {
     void CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdDebugMarkerEndEXT(commandBuffer); }
     void CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) const { pDeviceDispatch->CmdDebugMarkerInsertEXT(commandBuffer, pMarkerInfo); }
     void CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) const { pDeviceDispatch->CmdDecodeVideoKHR(commandBuffer, pDecodeInfo); }
+    void CmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT *pDecompressMemoryInfoEXT) const { pDeviceDispatch->CmdDecompressMemoryEXT(commandBuffer, pDecompressMemoryInfoEXT); }
+    void CmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountEXT(commandBuffer, decompressionMethod, indirectCommandsAddress, indirectCommandsCountAddress, maxDecompressionCount, stride); }
     void CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountNV(commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride); }
     void CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) const { pDeviceDispatch->CmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions); }
     void CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const { pDeviceDispatch->CmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ); }
@@ -3512,7 +3659,8 @@ namespace vkroots {
     void CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2(commandBuffer, pSubpassEndInfo); }
     void CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2KHR(commandBuffer, pSubpassEndInfo); }
     void CmdEndRendering(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRendering(commandBuffer); }
-    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2KHR(commandBuffer, pRenderingEndInfo); }
     void CmdEndRenderingKHR(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRenderingKHR(commandBuffer); }
     void CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) const { pDeviceDispatch->CmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets); }
     void CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) const { pDeviceDispatch->CmdEndVideoCodingKHR(commandBuffer, pEndCodingInfo); }
@@ -3534,9 +3682,14 @@ namespace vkroots {
     void CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer); }
     void CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo); }
     void CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) const { pDeviceDispatch->CmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues); }
+    void CmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2(commandBuffer, pPushConstantsInfo); }
     void CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2KHR(commandBuffer, pPushConstantsInfo); }
+    void CmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSet(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2KHR(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
+    void CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
     void CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const { pDeviceDispatch->CmdResetEvent(commandBuffer, event, stageMask); }
@@ -3601,6 +3754,7 @@ namespace vkroots {
     void CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFace(commandBuffer, frontFace); }
     void CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFaceEXT(commandBuffer, frontFace); }
     void CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const { pDeviceDispatch->CmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode); }
+    void CmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStipple(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleEXT(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const { pDeviceDispatch->CmdSetLineStippleEnableEXT(commandBuffer, stippledLineEnable); }
     void CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleKHR(commandBuffer, lineStippleFactor, lineStipplePattern); }
@@ -3622,7 +3776,9 @@ namespace vkroots {
     void CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnable(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnableEXT(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const { pDeviceDispatch->CmdSetRayTracingPipelineStackSizeKHR(commandBuffer, pipelineStackSize); }
+    void CmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocations(commandBuffer, pLocationInfo); }
     void CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocationsKHR(commandBuffer, pLocationInfo); }
+    void CmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndices(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndicesKHR(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const { pDeviceDispatch->CmdSetRepresentativeFragmentTestEnableNV(commandBuffer, representativeFragmentTestEnable); }
     void CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) const { pDeviceDispatch->CmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo); }
@@ -3670,9 +3826,12 @@ namespace vkroots {
     VkResult ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) const { return pDeviceDispatch->ConvertCooperativeVectorMatrixNV(device, pInfo); }
     VkResult CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureKHR(device, deferredOperation, pInfo); }
     VkResult CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo); }
+    VkResult CopyImageToImage(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImage(device, pCopyImageToImageInfo); }
     VkResult CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImageEXT(device, pCopyImageToImageInfo); }
+    VkResult CopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemory(device, pCopyImageToMemoryInfo); }
     VkResult CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemoryEXT(device, pCopyImageToMemoryInfo); }
     VkResult CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo); }
+    VkResult CopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImage(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImageEXT(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMemoryToMicromapEXT(device, deferredOperation, pInfo); }
     VkResult CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMicromapEXT(device, deferredOperation, pInfo); }
@@ -3854,6 +4013,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return pDeviceDispatch->EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return pDeviceDispatch->EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
 #ifdef VK_USE_PLATFORM_METAL_EXT
@@ -3917,6 +4077,7 @@ namespace vkroots {
     void GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetDeviceImageMemoryRequirementsKHR(device, pInfo, pMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirements(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirementsKHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
+    void GetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayout(device, pInfo, pLayout); }
     void GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayoutKHR(device, pInfo, pLayout); }
     void GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) const { pDeviceDispatch->GetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes); }
     uint64_t GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) const { return pDeviceDispatch->GetDeviceMemoryOpaqueCaptureAddress(device, pInfo); }
@@ -3960,6 +4121,7 @@ namespace vkroots {
     void GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2KHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout(device, image, pSubresource, pLayout); }
+    void GetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2EXT(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2KHR(device, image, pSubresource, pLayout); }
     VkResult GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
@@ -3976,6 +4138,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
     VkResult GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) const { return pDeviceDispatch->GetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS *pInfo, struct OH_NativeBuffer **pBuffer) const { return pDeviceDispatch->GetMemoryNativeBufferOHOS(device, pInfo, pBuffer); }
 #endif
     VkResult GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) const { return pDeviceDispatch->GetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -3994,7 +4159,11 @@ namespace vkroots {
     VkResult GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) const { return pDeviceDispatch->GetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties); }
 #endif
     void GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) const { pDeviceDispatch->GetMicromapBuildSizesEXT(device, buildType, pBuildInfo, pSizeInfo); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer *buffer, VkNativeBufferPropertiesOHOS *pProperties) const { return pDeviceDispatch->GetNativeBufferPropertiesOHOS(device, buffer, pProperties); }
+#endif
     void GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) const { pDeviceDispatch->GetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo); }
+    VkResult GetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT *pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT *pPastPresentationTimingProperties) const { return pDeviceDispatch->GetPastPresentationTimingEXT(device, pPastPresentationTimingInfo, pPastPresentationTimingProperties); }
     VkResult GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) const { return pDeviceDispatch->GetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings); }
     VkResult GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) const { return pDeviceDispatch->GetPerformanceParameterINTEL(device, parameter, pValue); }
     VkResult GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) const { return pDeviceDispatch->GetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains); }
@@ -4100,6 +4269,7 @@ namespace vkroots {
     VkDeviceSize GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const { return pDeviceDispatch->GetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader); }
     VkResult GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) const { return pDeviceDispatch->GetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties); }
     void GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderAreaGranularity(device, renderPass, pGranularity); }
+    void GetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularity(device, pRenderingAreaInfo, pGranularity); }
     void GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularityKHR(device, pRenderingAreaInfo, pGranularity); }
     VkResult GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -4119,8 +4289,13 @@ namespace vkroots {
     void GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleCreateInfoIdentifierEXT(device, pCreateInfo, pIdentifier); }
     void GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier); }
     VkResult GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) const { return pDeviceDispatch->GetSwapchainCounterEXT(device, swapchain, counter, pCounterValue); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t *grallocUsage) const { return pDeviceDispatch->GetSwapchainGrallocUsageOHOS(device, format, imageUsage, grallocUsage); }
+#endif
     VkResult GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const { return pDeviceDispatch->GetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages); }
     VkResult GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->GetSwapchainStatusKHR(device, swapchain); }
+    VkResult GetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT *pSwapchainTimeDomainProperties, uint64_t *pTimeDomainsCounter) const { return pDeviceDispatch->GetSwapchainTimeDomainPropertiesEXT(device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter); }
+    VkResult GetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT *pSwapchainTimingProperties, uint64_t *pSwapchainTimingPropertiesCounter) const { return pDeviceDispatch->GetSwapchainTimingPropertiesEXT(device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter); }
     void GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetTensorMemoryRequirementsARM(device, pInfo, pMemoryRequirements); }
     VkResult GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
     VkResult GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorViewOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
@@ -4144,6 +4319,7 @@ namespace vkroots {
     VkResult InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) const { return pDeviceDispatch->InvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges); }
     VkResult LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) const { return pDeviceDispatch->LatencySleepNV(device, swapchain, pSleepInfo); }
     VkResult MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) const { return pDeviceDispatch->MapMemory(device, memory, offset, size, flags, ppData); }
+    VkResult MapMemory2(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2(device, pMemoryMapInfo, ppData); }
     VkResult MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2KHR(device, pMemoryMapInfo, ppData); }
     VkResult MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) const { return pDeviceDispatch->MergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches); }
     VkResult MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) const { return pDeviceDispatch->MergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches); }
@@ -4154,6 +4330,9 @@ namespace vkroots {
     void QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) const { pDeviceDispatch->QueueNotifyOutOfBandNV(queue, pQueueTypeInfo); }
     VkResult QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) const { return pDeviceDispatch->QueuePresentKHR(queue, pPresentInfo); }
     VkResult QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) const { return pDeviceDispatch->QueueSetPerformanceConfigurationINTEL(queue, configuration); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult QueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore *pWaitSemaphores, VkImage image, int32_t *pNativeFenceFd) const { return pDeviceDispatch->QueueSignalReleaseImageOHOS(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd); }
+#endif
     VkResult QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2KHR(queue, submitCount, pSubmits, fence); }
@@ -4192,14 +4371,17 @@ namespace vkroots {
     void SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const { pDeviceDispatch->SetLocalDimmingAMD(device, swapChain, localDimmingEnable); }
     VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateData(device, objectType, objectHandle, privateDataSlot, data); }
     VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data); }
+    VkResult SetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) const { return pDeviceDispatch->SetSwapchainPresentTimingQueueSizeEXT(device, swapchain, size); }
     VkResult SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphore(device, pSignalInfo); }
     VkResult SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphoreKHR(device, pSignalInfo); }
     void SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) const { pDeviceDispatch->SubmitDebugUtilsMessageEXT(instance, messageSeverity, messageTypes, pCallbackData); }
+    VkResult TransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayout(device, transitionCount, pTransitions); }
     VkResult TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayoutEXT(device, transitionCount, pTransitions); }
     void TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPool(device, commandPool, flags); }
     void TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPoolKHR(device, commandPool, flags); }
     void UninitializePerformanceApiINTEL(VkDevice device) const { pDeviceDispatch->UninitializePerformanceApiINTEL(device); }
     void UnmapMemory(VkDevice device, VkDeviceMemory memory) const { pDeviceDispatch->UnmapMemory(device, memory); }
+    VkResult UnmapMemory2(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2(device, pMemoryUnmapInfo); }
     VkResult UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2KHR(device, pMemoryUnmapInfo); }
     void UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData); }
     void UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData); }
@@ -4233,6 +4415,9 @@ namespace vkroots {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }
 #endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult AcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) const { return pDeviceDispatch->AcquireImageOHOS(device, image, nativeFenceFd, semaphore, fence); }
+#endif
     VkResult AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImage2KHR(device, pAcquireInfo, pImageIndex); }
     VkResult AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex); }
     VkResult AcquirePerformanceConfigurationINTEL(VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL *pAcquireInfo, VkPerformanceConfigurationINTEL *pConfiguration) const { return pDeviceDispatch->AcquirePerformanceConfigurationINTEL(device, pAcquireInfo, pConfiguration); }
@@ -4262,6 +4447,7 @@ namespace vkroots {
     VkResult BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) const { return pDeviceDispatch->BuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos); }
     VkResult BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) const { return pDeviceDispatch->BuildMicromapsEXT(device, deferredOperation, infoCount, pInfos); }
     void CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) const { pDeviceDispatch->CmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin); }
+    void CmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT *pBeginCustomResolveInfo) const { pDeviceDispatch->CmdBeginCustomResolveEXT(commandBuffer, pBeginCustomResolveInfo); }
     void CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) const { pDeviceDispatch->CmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo); }
     void CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) const { pDeviceDispatch->CmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo); }
     void CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const { pDeviceDispatch->CmdBeginQuery(commandBuffer, queryPool, query, flags); }
@@ -4277,8 +4463,10 @@ namespace vkroots {
     void CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) const { pDeviceDispatch->CmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set); }
     void CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) const { pDeviceDispatch->CmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos); }
     void CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) const { pDeviceDispatch->CmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets); }
+    void CmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2KHR(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer(commandBuffer, buffer, offset, indexType); }
+    void CmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2KHR(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const { pDeviceDispatch->CmdBindInvocationMaskHUAWEI(commandBuffer, imageView, imageLayout); }
     void CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const { pDeviceDispatch->CmdBindPipeline(commandBuffer, pipelineBindPoint, pipeline); }
@@ -4319,8 +4507,10 @@ namespace vkroots {
     void CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) const { pDeviceDispatch->CmdCopyImageToBuffer(commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions); }
     void CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2(commandBuffer, pCopyImageToBufferInfo); }
     void CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2KHR(commandBuffer, pCopyImageToBufferInfo); }
+    void CmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR *pCopyMemoryIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryIndirectKHR(commandBuffer, pCopyMemoryIndirectInfo); }
     void CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const { pDeviceDispatch->CmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride); }
     void CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { pDeviceDispatch->CmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo); }
+    void CmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR *pCopyMemoryToImageIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectKHR(commandBuffer, pCopyMemoryToImageIndirectInfo); }
     void CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources); }
     void CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMemoryToMicromapEXT(commandBuffer, pInfo); }
     void CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMicromapEXT(commandBuffer, pInfo); }
@@ -4334,6 +4524,8 @@ namespace vkroots {
     void CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdDebugMarkerEndEXT(commandBuffer); }
     void CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) const { pDeviceDispatch->CmdDebugMarkerInsertEXT(commandBuffer, pMarkerInfo); }
     void CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) const { pDeviceDispatch->CmdDecodeVideoKHR(commandBuffer, pDecodeInfo); }
+    void CmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT *pDecompressMemoryInfoEXT) const { pDeviceDispatch->CmdDecompressMemoryEXT(commandBuffer, pDecompressMemoryInfoEXT); }
+    void CmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountEXT(commandBuffer, decompressionMethod, indirectCommandsAddress, indirectCommandsCountAddress, maxDecompressionCount, stride); }
     void CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountNV(commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride); }
     void CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) const { pDeviceDispatch->CmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions); }
     void CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const { pDeviceDispatch->CmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ); }
@@ -4382,7 +4574,8 @@ namespace vkroots {
     void CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2(commandBuffer, pSubpassEndInfo); }
     void CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2KHR(commandBuffer, pSubpassEndInfo); }
     void CmdEndRendering(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRendering(commandBuffer); }
-    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2KHR(commandBuffer, pRenderingEndInfo); }
     void CmdEndRenderingKHR(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRenderingKHR(commandBuffer); }
     void CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) const { pDeviceDispatch->CmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets); }
     void CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) const { pDeviceDispatch->CmdEndVideoCodingKHR(commandBuffer, pEndCodingInfo); }
@@ -4404,9 +4597,14 @@ namespace vkroots {
     void CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer); }
     void CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo); }
     void CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) const { pDeviceDispatch->CmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues); }
+    void CmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2(commandBuffer, pPushConstantsInfo); }
     void CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2KHR(commandBuffer, pPushConstantsInfo); }
+    void CmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSet(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2KHR(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
+    void CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
     void CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const { pDeviceDispatch->CmdResetEvent(commandBuffer, event, stageMask); }
@@ -4471,6 +4669,7 @@ namespace vkroots {
     void CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFace(commandBuffer, frontFace); }
     void CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFaceEXT(commandBuffer, frontFace); }
     void CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const { pDeviceDispatch->CmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode); }
+    void CmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStipple(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleEXT(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const { pDeviceDispatch->CmdSetLineStippleEnableEXT(commandBuffer, stippledLineEnable); }
     void CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleKHR(commandBuffer, lineStippleFactor, lineStipplePattern); }
@@ -4492,7 +4691,9 @@ namespace vkroots {
     void CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnable(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnableEXT(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const { pDeviceDispatch->CmdSetRayTracingPipelineStackSizeKHR(commandBuffer, pipelineStackSize); }
+    void CmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocations(commandBuffer, pLocationInfo); }
     void CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocationsKHR(commandBuffer, pLocationInfo); }
+    void CmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndices(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndicesKHR(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const { pDeviceDispatch->CmdSetRepresentativeFragmentTestEnableNV(commandBuffer, representativeFragmentTestEnable); }
     void CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) const { pDeviceDispatch->CmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo); }
@@ -4540,9 +4741,12 @@ namespace vkroots {
     VkResult ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) const { return pDeviceDispatch->ConvertCooperativeVectorMatrixNV(device, pInfo); }
     VkResult CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureKHR(device, deferredOperation, pInfo); }
     VkResult CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo); }
+    VkResult CopyImageToImage(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImage(device, pCopyImageToImageInfo); }
     VkResult CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImageEXT(device, pCopyImageToImageInfo); }
+    VkResult CopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemory(device, pCopyImageToMemoryInfo); }
     VkResult CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemoryEXT(device, pCopyImageToMemoryInfo); }
     VkResult CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo); }
+    VkResult CopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImage(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImageEXT(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMemoryToMicromapEXT(device, deferredOperation, pInfo); }
     VkResult CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMicromapEXT(device, deferredOperation, pInfo); }
@@ -4724,6 +4928,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return pDeviceDispatch->EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return pDeviceDispatch->EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
 #ifdef VK_USE_PLATFORM_METAL_EXT
@@ -4787,6 +4992,7 @@ namespace vkroots {
     void GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetDeviceImageMemoryRequirementsKHR(device, pInfo, pMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirements(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirementsKHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
+    void GetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayout(device, pInfo, pLayout); }
     void GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayoutKHR(device, pInfo, pLayout); }
     void GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) const { pDeviceDispatch->GetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes); }
     uint64_t GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) const { return pDeviceDispatch->GetDeviceMemoryOpaqueCaptureAddress(device, pInfo); }
@@ -4830,6 +5036,7 @@ namespace vkroots {
     void GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2KHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout(device, image, pSubresource, pLayout); }
+    void GetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2EXT(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2KHR(device, image, pSubresource, pLayout); }
     VkResult GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
@@ -4846,6 +5053,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
     VkResult GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) const { return pDeviceDispatch->GetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS *pInfo, struct OH_NativeBuffer **pBuffer) const { return pDeviceDispatch->GetMemoryNativeBufferOHOS(device, pInfo, pBuffer); }
 #endif
     VkResult GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) const { return pDeviceDispatch->GetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -4864,7 +5074,11 @@ namespace vkroots {
     VkResult GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) const { return pDeviceDispatch->GetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties); }
 #endif
     void GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) const { pDeviceDispatch->GetMicromapBuildSizesEXT(device, buildType, pBuildInfo, pSizeInfo); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer *buffer, VkNativeBufferPropertiesOHOS *pProperties) const { return pDeviceDispatch->GetNativeBufferPropertiesOHOS(device, buffer, pProperties); }
+#endif
     void GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) const { pDeviceDispatch->GetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo); }
+    VkResult GetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT *pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT *pPastPresentationTimingProperties) const { return pDeviceDispatch->GetPastPresentationTimingEXT(device, pPastPresentationTimingInfo, pPastPresentationTimingProperties); }
     VkResult GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) const { return pDeviceDispatch->GetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings); }
     VkResult GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) const { return pDeviceDispatch->GetPerformanceParameterINTEL(device, parameter, pValue); }
     VkResult GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) const { return pDeviceDispatch->GetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains); }
@@ -4970,6 +5184,7 @@ namespace vkroots {
     VkDeviceSize GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const { return pDeviceDispatch->GetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader); }
     VkResult GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) const { return pDeviceDispatch->GetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties); }
     void GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderAreaGranularity(device, renderPass, pGranularity); }
+    void GetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularity(device, pRenderingAreaInfo, pGranularity); }
     void GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularityKHR(device, pRenderingAreaInfo, pGranularity); }
     VkResult GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -4989,8 +5204,13 @@ namespace vkroots {
     void GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleCreateInfoIdentifierEXT(device, pCreateInfo, pIdentifier); }
     void GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier); }
     VkResult GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) const { return pDeviceDispatch->GetSwapchainCounterEXT(device, swapchain, counter, pCounterValue); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t *grallocUsage) const { return pDeviceDispatch->GetSwapchainGrallocUsageOHOS(device, format, imageUsage, grallocUsage); }
+#endif
     VkResult GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const { return pDeviceDispatch->GetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages); }
     VkResult GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->GetSwapchainStatusKHR(device, swapchain); }
+    VkResult GetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT *pSwapchainTimeDomainProperties, uint64_t *pTimeDomainsCounter) const { return pDeviceDispatch->GetSwapchainTimeDomainPropertiesEXT(device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter); }
+    VkResult GetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT *pSwapchainTimingProperties, uint64_t *pSwapchainTimingPropertiesCounter) const { return pDeviceDispatch->GetSwapchainTimingPropertiesEXT(device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter); }
     void GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetTensorMemoryRequirementsARM(device, pInfo, pMemoryRequirements); }
     VkResult GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
     VkResult GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorViewOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
@@ -5014,6 +5234,7 @@ namespace vkroots {
     VkResult InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) const { return pDeviceDispatch->InvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges); }
     VkResult LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) const { return pDeviceDispatch->LatencySleepNV(device, swapchain, pSleepInfo); }
     VkResult MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) const { return pDeviceDispatch->MapMemory(device, memory, offset, size, flags, ppData); }
+    VkResult MapMemory2(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2(device, pMemoryMapInfo, ppData); }
     VkResult MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2KHR(device, pMemoryMapInfo, ppData); }
     VkResult MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) const { return pDeviceDispatch->MergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches); }
     VkResult MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) const { return pDeviceDispatch->MergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches); }
@@ -5024,6 +5245,9 @@ namespace vkroots {
     void QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) const { pDeviceDispatch->QueueNotifyOutOfBandNV(queue, pQueueTypeInfo); }
     VkResult QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) const { return pDeviceDispatch->QueuePresentKHR(queue, pPresentInfo); }
     VkResult QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) const { return pDeviceDispatch->QueueSetPerformanceConfigurationINTEL(queue, configuration); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult QueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore *pWaitSemaphores, VkImage image, int32_t *pNativeFenceFd) const { return pDeviceDispatch->QueueSignalReleaseImageOHOS(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd); }
+#endif
     VkResult QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2KHR(queue, submitCount, pSubmits, fence); }
@@ -5062,14 +5286,17 @@ namespace vkroots {
     void SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const { pDeviceDispatch->SetLocalDimmingAMD(device, swapChain, localDimmingEnable); }
     VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateData(device, objectType, objectHandle, privateDataSlot, data); }
     VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data); }
+    VkResult SetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) const { return pDeviceDispatch->SetSwapchainPresentTimingQueueSizeEXT(device, swapchain, size); }
     VkResult SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphore(device, pSignalInfo); }
     VkResult SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphoreKHR(device, pSignalInfo); }
     void SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) const { pDeviceDispatch->SubmitDebugUtilsMessageEXT(instance, messageSeverity, messageTypes, pCallbackData); }
+    VkResult TransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayout(device, transitionCount, pTransitions); }
     VkResult TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayoutEXT(device, transitionCount, pTransitions); }
     void TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPool(device, commandPool, flags); }
     void TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPoolKHR(device, commandPool, flags); }
     void UninitializePerformanceApiINTEL(VkDevice device) const { pDeviceDispatch->UninitializePerformanceApiINTEL(device); }
     void UnmapMemory(VkDevice device, VkDeviceMemory memory) const { pDeviceDispatch->UnmapMemory(device, memory); }
+    VkResult UnmapMemory2(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2(device, pMemoryUnmapInfo); }
     VkResult UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2KHR(device, pMemoryUnmapInfo); }
     void UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData); }
     void UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData); }
@@ -5103,6 +5330,9 @@ namespace vkroots {
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     VkResult AcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->AcquireFullScreenExclusiveModeEXT(device, swapchain); }
 #endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult AcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) const { return pDeviceDispatch->AcquireImageOHOS(device, image, nativeFenceFd, semaphore, fence); }
+#endif
     VkResult AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImage2KHR(device, pAcquireInfo, pImageIndex); }
     VkResult AcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex) const { return pDeviceDispatch->AcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex); }
     VkResult AcquirePerformanceConfigurationINTEL(VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL *pAcquireInfo, VkPerformanceConfigurationINTEL *pConfiguration) const { return pDeviceDispatch->AcquirePerformanceConfigurationINTEL(device, pAcquireInfo, pConfiguration); }
@@ -5132,6 +5362,7 @@ namespace vkroots {
     VkResult BuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *pInfos, const VkAccelerationStructureBuildRangeInfoKHR * const*ppBuildRangeInfos) const { return pDeviceDispatch->BuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos); }
     VkResult BuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT *pInfos) const { return pDeviceDispatch->BuildMicromapsEXT(device, deferredOperation, infoCount, pInfos); }
     void CmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT *pConditionalRenderingBegin) const { pDeviceDispatch->CmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin); }
+    void CmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT *pBeginCustomResolveInfo) const { pDeviceDispatch->CmdBeginCustomResolveEXT(commandBuffer, pBeginCustomResolveInfo); }
     void CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) const { pDeviceDispatch->CmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo); }
     void CmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM *pPerTileBeginInfo) const { pDeviceDispatch->CmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo); }
     void CmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const { pDeviceDispatch->CmdBeginQuery(commandBuffer, queryPool, query, flags); }
@@ -5147,8 +5378,10 @@ namespace vkroots {
     void CmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) const { pDeviceDispatch->CmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set); }
     void CmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT *pBindingInfos) const { pDeviceDispatch->CmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos); }
     void CmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet *pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t *pDynamicOffsets) const { pDeviceDispatch->CmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets); }
+    void CmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) const { pDeviceDispatch->CmdBindDescriptorSets2KHR(commandBuffer, pBindDescriptorSetsInfo); }
     void CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer(commandBuffer, buffer, offset, indexType); }
+    void CmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const { pDeviceDispatch->CmdBindIndexBuffer2KHR(commandBuffer, buffer, offset, size, indexType); }
     void CmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const { pDeviceDispatch->CmdBindInvocationMaskHUAWEI(commandBuffer, imageView, imageLayout); }
     void CmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const { pDeviceDispatch->CmdBindPipeline(commandBuffer, pipelineBindPoint, pipeline); }
@@ -5189,8 +5422,10 @@ namespace vkroots {
     void CmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy *pRegions) const { pDeviceDispatch->CmdCopyImageToBuffer(commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions); }
     void CmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2(commandBuffer, pCopyImageToBufferInfo); }
     void CmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2 *pCopyImageToBufferInfo) const { pDeviceDispatch->CmdCopyImageToBuffer2KHR(commandBuffer, pCopyImageToBufferInfo); }
+    void CmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR *pCopyMemoryIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryIndirectKHR(commandBuffer, pCopyMemoryIndirectInfo); }
     void CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const { pDeviceDispatch->CmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride); }
     void CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { pDeviceDispatch->CmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo); }
+    void CmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR *pCopyMemoryToImageIndirectInfo) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectKHR(commandBuffer, pCopyMemoryToImageIndirectInfo); }
     void CmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers *pImageSubresources) const { pDeviceDispatch->CmdCopyMemoryToImageIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources); }
     void CmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMemoryToMicromapEXT(commandBuffer, pInfo); }
     void CmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT *pInfo) const { pDeviceDispatch->CmdCopyMicromapEXT(commandBuffer, pInfo); }
@@ -5204,6 +5439,8 @@ namespace vkroots {
     void CmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdDebugMarkerEndEXT(commandBuffer); }
     void CmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT *pMarkerInfo) const { pDeviceDispatch->CmdDebugMarkerInsertEXT(commandBuffer, pMarkerInfo); }
     void CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) const { pDeviceDispatch->CmdDecodeVideoKHR(commandBuffer, pDecodeInfo); }
+    void CmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT *pDecompressMemoryInfoEXT) const { pDeviceDispatch->CmdDecompressMemoryEXT(commandBuffer, pDecompressMemoryInfoEXT); }
+    void CmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountEXT(commandBuffer, decompressionMethod, indirectCommandsAddress, indirectCommandsCountAddress, maxDecompressionCount, stride); }
     void CmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const { pDeviceDispatch->CmdDecompressMemoryIndirectCountNV(commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride); }
     void CmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV *pDecompressMemoryRegions) const { pDeviceDispatch->CmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions); }
     void CmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const { pDeviceDispatch->CmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ); }
@@ -5252,7 +5489,8 @@ namespace vkroots {
     void CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2(commandBuffer, pSubpassEndInfo); }
     void CmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfo *pSubpassEndInfo) const { pDeviceDispatch->CmdEndRenderPass2KHR(commandBuffer, pSubpassEndInfo); }
     void CmdEndRendering(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRendering(commandBuffer); }
-    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2EXT(commandBuffer, pRenderingEndInfo); }
+    void CmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) const { pDeviceDispatch->CmdEndRendering2KHR(commandBuffer, pRenderingEndInfo); }
     void CmdEndRenderingKHR(VkCommandBuffer commandBuffer) const { pDeviceDispatch->CmdEndRenderingKHR(commandBuffer); }
     void CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer *pCounterBuffers, const VkDeviceSize *pCounterBufferOffsets) const { pDeviceDispatch->CmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets); }
     void CmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR *pEndCodingInfo) const { pDeviceDispatch->CmdEndVideoCodingKHR(commandBuffer, pEndCodingInfo); }
@@ -5274,9 +5512,14 @@ namespace vkroots {
     void CmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT *pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer); }
     void CmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV *pGeneratedCommandsInfo) const { pDeviceDispatch->CmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo); }
     void CmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void *pValues) const { pDeviceDispatch->CmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues); }
+    void CmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2(commandBuffer, pPushConstantsInfo); }
     void CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) const { pDeviceDispatch->CmdPushConstants2KHR(commandBuffer, pPushConstantsInfo); }
+    void CmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSet(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) const { pDeviceDispatch->CmdPushDescriptorSet2KHR(commandBuffer, pPushDescriptorSetInfo); }
     void CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) const { pDeviceDispatch->CmdPushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites); }
+    void CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
+    void CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo); }
     void CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) const { pDeviceDispatch->CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set, pData); }
     void CmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const { pDeviceDispatch->CmdResetEvent(commandBuffer, event, stageMask); }
@@ -5341,6 +5584,7 @@ namespace vkroots {
     void CmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFace(commandBuffer, frontFace); }
     void CmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const { pDeviceDispatch->CmdSetFrontFaceEXT(commandBuffer, frontFace); }
     void CmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const { pDeviceDispatch->CmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode); }
+    void CmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStipple(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleEXT(commandBuffer, lineStippleFactor, lineStipplePattern); }
     void CmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const { pDeviceDispatch->CmdSetLineStippleEnableEXT(commandBuffer, stippledLineEnable); }
     void CmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const { pDeviceDispatch->CmdSetLineStippleKHR(commandBuffer, lineStippleFactor, lineStipplePattern); }
@@ -5362,7 +5606,9 @@ namespace vkroots {
     void CmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnable(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const { pDeviceDispatch->CmdSetRasterizerDiscardEnableEXT(commandBuffer, rasterizerDiscardEnable); }
     void CmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const { pDeviceDispatch->CmdSetRayTracingPipelineStackSizeKHR(commandBuffer, pipelineStackSize); }
+    void CmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocations(commandBuffer, pLocationInfo); }
     void CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) const { pDeviceDispatch->CmdSetRenderingAttachmentLocationsKHR(commandBuffer, pLocationInfo); }
+    void CmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndices(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) const { pDeviceDispatch->CmdSetRenderingInputAttachmentIndicesKHR(commandBuffer, pInputAttachmentIndexInfo); }
     void CmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const { pDeviceDispatch->CmdSetRepresentativeFragmentTestEnableNV(commandBuffer, representativeFragmentTestEnable); }
     void CmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT *pSampleLocationsInfo) const { pDeviceDispatch->CmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo); }
@@ -5410,9 +5656,12 @@ namespace vkroots {
     VkResult ConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV *pInfo) const { return pDeviceDispatch->ConvertCooperativeVectorMatrixNV(device, pInfo); }
     VkResult CopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureKHR(device, deferredOperation, pInfo); }
     VkResult CopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo) const { return pDeviceDispatch->CopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo); }
+    VkResult CopyImageToImage(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImage(device, pCopyImageToImageInfo); }
     VkResult CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) const { return pDeviceDispatch->CopyImageToImageEXT(device, pCopyImageToImageInfo); }
+    VkResult CopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemory(device, pCopyImageToMemoryInfo); }
     VkResult CopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) const { return pDeviceDispatch->CopyImageToMemoryEXT(device, pCopyImageToMemoryInfo); }
     VkResult CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) const { return pDeviceDispatch->CopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo); }
+    VkResult CopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImage(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) const { return pDeviceDispatch->CopyMemoryToImageEXT(device, pCopyMemoryToImageInfo); }
     VkResult CopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMemoryToMicromapEXT(device, deferredOperation, pInfo); }
     VkResult CopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT *pInfo) const { return pDeviceDispatch->CopyMicromapEXT(device, deferredOperation, pInfo); }
@@ -5594,6 +5843,7 @@ namespace vkroots {
     VkResult EnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount, VkLayerProperties *pProperties) const { return pDeviceDispatch->EnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties); }
     VkResult EnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
     VkResult EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) const { return pDeviceDispatch->EnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties); }
+    VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterKHR *pCounters, VkPerformanceCounterDescriptionKHR *pCounterDescriptions) const { return pDeviceDispatch->EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions); }
     VkResult EnumeratePhysicalDevices(VkInstance instance, uint32_t *pPhysicalDeviceCount, VkPhysicalDevice *pPhysicalDevices) const { return pDeviceDispatch->EnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices); }
 #ifdef VK_USE_PLATFORM_METAL_EXT
@@ -5657,6 +5907,7 @@ namespace vkroots {
     void GetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetDeviceImageMemoryRequirementsKHR(device, pInfo, pMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirements(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirements *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetDeviceImageSparseMemoryRequirementsKHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
+    void GetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayout(device, pInfo, pLayout); }
     void GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetDeviceImageSubresourceLayoutKHR(device, pInfo, pLayout); }
     void GetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize *pCommittedMemoryInBytes) const { pDeviceDispatch->GetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes); }
     uint64_t GetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfo *pInfo) const { return pDeviceDispatch->GetDeviceMemoryOpaqueCaptureAddress(device, pInfo); }
@@ -5700,6 +5951,7 @@ namespace vkroots {
     void GetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2 *pInfo, uint32_t *pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2 *pSparseMemoryRequirements) const { pDeviceDispatch->GetImageSparseMemoryRequirements2KHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements); }
     void GetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource *pSubresource, VkSubresourceLayout *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout(device, image, pSubresource, pLayout); }
+    void GetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2EXT(device, image, pSubresource, pLayout); }
     void GetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) const { pDeviceDispatch->GetImageSubresourceLayout2KHR(device, image, pSubresource, pLayout); }
     VkResult GetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
@@ -5716,6 +5968,9 @@ namespace vkroots {
 #endif
 #ifdef VK_USE_PLATFORM_METAL_EXT
     VkResult GetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void *pHandle, VkMemoryMetalHandlePropertiesEXT *pMemoryMetalHandleProperties) const { return pDeviceDispatch->GetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties); }
+#endif
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS *pInfo, struct OH_NativeBuffer **pBuffer) const { return pDeviceDispatch->GetMemoryNativeBufferOHOS(device, pInfo, pBuffer); }
 #endif
     VkResult GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) const { return pDeviceDispatch->GetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress); }
 #ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -5734,7 +5989,11 @@ namespace vkroots {
     VkResult GetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA *pMemoryZirconHandleProperties) const { return pDeviceDispatch->GetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties); }
 #endif
     void GetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT *pBuildInfo, VkMicromapBuildSizesInfoEXT *pSizeInfo) const { pDeviceDispatch->GetMicromapBuildSizesEXT(device, buildType, pBuildInfo, pSizeInfo); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer *buffer, VkNativeBufferPropertiesOHOS *pProperties) const { return pDeviceDispatch->GetNativeBufferPropertiesOHOS(device, buffer, pProperties); }
+#endif
     void GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) const { pDeviceDispatch->GetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo); }
+    VkResult GetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT *pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT *pPastPresentationTimingProperties) const { return pDeviceDispatch->GetPastPresentationTimingEXT(device, pPastPresentationTimingInfo, pPastPresentationTimingProperties); }
     VkResult GetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pPresentationTimingCount, VkPastPresentationTimingGOOGLE *pPresentationTimings) const { return pDeviceDispatch->GetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings); }
     VkResult GetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL *pValue) const { return pDeviceDispatch->GetPerformanceParameterINTEL(device, parameter, pValue); }
     VkResult GetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t *pTimeDomainCount, VkTimeDomainKHR *pTimeDomains) const { return pDeviceDispatch->GetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains); }
@@ -5840,6 +6099,7 @@ namespace vkroots {
     VkDeviceSize GetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const { return pDeviceDispatch->GetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader); }
     VkResult GetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE *pDisplayTimingProperties) const { return pDeviceDispatch->GetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties); }
     void GetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderAreaGranularity(device, renderPass, pGranularity); }
+    void GetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularity(device, pRenderingAreaInfo, pGranularity); }
     void GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) const { pDeviceDispatch->GetRenderingAreaGranularityKHR(device, pRenderingAreaInfo, pGranularity); }
     VkResult GetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT *pInfo, void *pData) const { return pDeviceDispatch->GetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData); }
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
@@ -5859,8 +6119,13 @@ namespace vkroots {
     void GetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo *pCreateInfo, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleCreateInfoIdentifierEXT(device, pCreateInfo, pIdentifier); }
     void GetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT *pIdentifier) const { pDeviceDispatch->GetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier); }
     VkResult GetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t *pCounterValue) const { return pDeviceDispatch->GetSwapchainCounterEXT(device, swapchain, counter, pCounterValue); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult GetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t *grallocUsage) const { return pDeviceDispatch->GetSwapchainGrallocUsageOHOS(device, format, imageUsage, grallocUsage); }
+#endif
     VkResult GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) const { return pDeviceDispatch->GetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages); }
     VkResult GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const { return pDeviceDispatch->GetSwapchainStatusKHR(device, swapchain); }
+    VkResult GetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT *pSwapchainTimeDomainProperties, uint64_t *pTimeDomainsCounter) const { return pDeviceDispatch->GetSwapchainTimeDomainPropertiesEXT(device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter); }
+    VkResult GetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT *pSwapchainTimingProperties, uint64_t *pSwapchainTimingPropertiesCounter) const { return pDeviceDispatch->GetSwapchainTimingPropertiesEXT(device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter); }
     void GetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM *pInfo, VkMemoryRequirements2 *pMemoryRequirements) const { pDeviceDispatch->GetTensorMemoryRequirementsARM(device, pInfo, pMemoryRequirements); }
     VkResult GetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
     VkResult GetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM *pInfo, void *pData) const { return pDeviceDispatch->GetTensorViewOpaqueCaptureDescriptorDataARM(device, pInfo, pData); }
@@ -5884,6 +6149,7 @@ namespace vkroots {
     VkResult InvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange *pMemoryRanges) const { return pDeviceDispatch->InvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges); }
     VkResult LatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV *pSleepInfo) const { return pDeviceDispatch->LatencySleepNV(device, swapchain, pSleepInfo); }
     VkResult MapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **ppData) const { return pDeviceDispatch->MapMemory(device, memory, offset, size, flags, ppData); }
+    VkResult MapMemory2(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2(device, pMemoryMapInfo, ppData); }
     VkResult MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) const { return pDeviceDispatch->MapMemory2KHR(device, pMemoryMapInfo, ppData); }
     VkResult MergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache *pSrcCaches) const { return pDeviceDispatch->MergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches); }
     VkResult MergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT *pSrcCaches) const { return pDeviceDispatch->MergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches); }
@@ -5894,6 +6160,9 @@ namespace vkroots {
     void QueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV *pQueueTypeInfo) const { pDeviceDispatch->QueueNotifyOutOfBandNV(queue, pQueueTypeInfo); }
     VkResult QueuePresentKHR(VkQueue queue, const VkPresentInfoKHR *pPresentInfo) const { return pDeviceDispatch->QueuePresentKHR(queue, pPresentInfo); }
     VkResult QueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) const { return pDeviceDispatch->QueueSetPerformanceConfigurationINTEL(queue, configuration); }
+#ifdef VK_USE_PLATFORM_OHOS
+    VkResult QueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore *pWaitSemaphores, VkImage image, int32_t *pNativeFenceFd) const { return pDeviceDispatch->QueueSignalReleaseImageOHOS(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd); }
+#endif
     VkResult QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2(queue, submitCount, pSubmits, fence); }
     VkResult QueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 *pSubmits, VkFence fence) const { return pDeviceDispatch->QueueSubmit2KHR(queue, submitCount, pSubmits, fence); }
@@ -5932,14 +6201,17 @@ namespace vkroots {
     void SetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const { pDeviceDispatch->SetLocalDimmingAMD(device, swapChain, localDimmingEnable); }
     VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateData(device, objectType, objectHandle, privateDataSlot, data); }
     VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot, uint64_t data) const { return pDeviceDispatch->SetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data); }
+    VkResult SetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) const { return pDeviceDispatch->SetSwapchainPresentTimingQueueSizeEXT(device, swapchain, size); }
     VkResult SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphore(device, pSignalInfo); }
     VkResult SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) const { return pDeviceDispatch->SignalSemaphoreKHR(device, pSignalInfo); }
     void SubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData) const { pDeviceDispatch->SubmitDebugUtilsMessageEXT(instance, messageSeverity, messageTypes, pCallbackData); }
+    VkResult TransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayout(device, transitionCount, pTransitions); }
     VkResult TransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) const { return pDeviceDispatch->TransitionImageLayoutEXT(device, transitionCount, pTransitions); }
     void TrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPool(device, commandPool, flags); }
     void TrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlags flags) const { pDeviceDispatch->TrimCommandPoolKHR(device, commandPool, flags); }
     void UninitializePerformanceApiINTEL(VkDevice device) const { pDeviceDispatch->UninitializePerformanceApiINTEL(device); }
     void UnmapMemory(VkDevice device, VkDeviceMemory memory) const { pDeviceDispatch->UnmapMemory(device, memory); }
+    VkResult UnmapMemory2(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2(device, pMemoryUnmapInfo); }
     VkResult UnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) const { return pDeviceDispatch->UnmapMemory2KHR(device, pMemoryUnmapInfo); }
     void UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData); }
     void UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) const { pDeviceDispatch->UpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData); }
@@ -6214,6 +6486,13 @@ namespace vkroots {
   static VkResult wrap_EnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t *pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupProperties *pPhysicalDeviceGroupProperties) {
     const VkInstanceDispatch* dispatch = LookupDispatch(instance);
     VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceGroupsKHR(*dispatch, instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t *pCounterCount, VkPerformanceCounterARM *pCounters, VkPerformanceCounterDescriptionARM *pCounterDescriptions) {
+    const VkPhysicalDeviceDispatch* dispatch = LookupDispatch(physicalDevice);
+    VkResult ret = InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(*dispatch, physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
     return ret;
   }
 
@@ -6768,6 +7047,15 @@ namespace vkroots {
   }
 
 #endif
+#ifdef VK_USE_PLATFORM_OHOS
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_AcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::AcquireImageOHOS(*dispatch, device, image, nativeFenceFd, semaphore, fence);
+    return ret;
+  }
+
+#endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_AcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR *pAcquireInfo, uint32_t *pImageIndex) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
@@ -6928,6 +7216,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT *pBeginCustomResolveInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdBeginCustomResolveEXT(*dispatch, commandBuffer, pBeginCustomResolveInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT *pLabelInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdBeginDebugUtilsLabelEXT(*dispatch, commandBuffer, pLabelInfo);
@@ -7018,6 +7312,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdBindDescriptorSets2(*dispatch, commandBuffer, pBindDescriptorSetsInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfo *pBindDescriptorSetsInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdBindDescriptorSets2KHR(*dispatch, commandBuffer, pBindDescriptorSetsInfo);
@@ -7027,6 +7327,12 @@ namespace vkroots {
   static void wrap_CmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdBindIndexBuffer(*dispatch, commandBuffer, buffer, offset, indexType);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdBindIndexBuffer2(*dispatch, commandBuffer, buffer, offset, size, indexType);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -7270,6 +7576,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR *pCopyMemoryIndirectInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdCopyMemoryIndirectKHR(*dispatch, commandBuffer, pCopyMemoryIndirectInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryIndirectNV(*dispatch, commandBuffer, copyBufferAddress, copyCount, stride);
@@ -7279,6 +7591,12 @@ namespace vkroots {
   static void wrap_CmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR(*dispatch, commandBuffer, pInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR *pCopyMemoryToImageIndirectInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdCopyMemoryToImageIndirectKHR(*dispatch, commandBuffer, pCopyMemoryToImageIndirectInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -7347,6 +7665,18 @@ namespace vkroots {
   static void wrap_CmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR *pDecodeInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdDecodeVideoKHR(*dispatch, commandBuffer, pDecodeInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT *pDecompressMemoryInfoEXT) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdDecompressMemoryEXT(*dispatch, commandBuffer, pDecompressMemoryInfoEXT);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdDecompressMemoryIndirectCountEXT(*dispatch, commandBuffer, decompressionMethod, indirectCommandsAddress, indirectCommandsCountAddress, maxDecompressionCount, stride);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -7608,9 +7938,15 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
-  static void wrap_CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT *pRenderingEndInfo) {
+  static void wrap_CmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdEndRendering2EXT(*dispatch, commandBuffer, pRenderingEndInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR *pRenderingEndInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdEndRendering2KHR(*dispatch, commandBuffer, pRenderingEndInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -7730,9 +8066,27 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdPushConstants2(*dispatch, commandBuffer, pPushConstantsInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfo *pPushConstantsInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdPushConstants2KHR(*dispatch, commandBuffer, pPushConstantsInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdPushDescriptorSet(*dispatch, commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfo *pPushDescriptorSetInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdPushDescriptorSet2(*dispatch, commandBuffer, pPushDescriptorSetInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -7745,6 +8099,18 @@ namespace vkroots {
   static void wrap_CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet *pDescriptorWrites) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdPushDescriptorSetKHR(*dispatch, commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplate descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void *pData) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdPushDescriptorSetWithTemplate(*dispatch, commandBuffer, descriptorUpdateTemplate, layout, set, pData);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdPushDescriptorSetWithTemplate2(*dispatch, commandBuffer, pPushDescriptorSetWithTemplateInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -8132,6 +8498,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdSetLineStipple(*dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdSetLineStippleEXT(*dispatch, commandBuffer, lineStippleFactor, lineStipplePattern);
@@ -8261,9 +8633,21 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdSetRenderingAttachmentLocations(*dispatch, commandBuffer, pLocationInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_CmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfo *pLocationInfo) {
     const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
     DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR(*dispatch, commandBuffer, pLocationInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_CmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfo *pInputAttachmentIndexInfo) {
+    const VkCommandBufferDispatch* dispatch = LookupDispatch(commandBuffer);
+    DeviceOverrides::CmdSetRenderingInputAttachmentIndices(*dispatch, commandBuffer, pInputAttachmentIndexInfo);
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -8553,9 +8937,23 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_CopyImageToImage(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::CopyImageToImage(*dispatch, device, pCopyImageToImageInfo);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_CopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfo *pCopyImageToImageInfo) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::CopyImageToImageEXT(*dispatch, device, pCopyImageToImageInfo);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_CopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfo *pCopyImageToMemoryInfo) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::CopyImageToMemory(*dispatch, device, pCopyImageToMemoryInfo);
     return ret;
   }
 
@@ -8570,6 +8968,13 @@ namespace vkroots {
   static VkResult wrap_CopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::CopyMemoryToAccelerationStructureKHR(*dispatch, device, deferredOperation, pInfo);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_CopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfo *pCopyMemoryToImageInfo) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::CopyMemoryToImage(*dispatch, device, pCopyMemoryToImageInfo);
     return ret;
   }
 
@@ -9646,6 +10051,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    DeviceOverrides::GetDeviceImageSubresourceLayout(*dispatch, device, pInfo, pLayout);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfo *pInfo, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     DeviceOverrides::GetDeviceImageSubresourceLayoutKHR(*dispatch, device, pInfo, pLayout);
@@ -9846,6 +10257,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    DeviceOverrides::GetImageSubresourceLayout2(*dispatch, device, image, pSubresource, pLayout);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2 *pSubresource, VkSubresourceLayout2 *pLayout) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     DeviceOverrides::GetImageSubresourceLayout2EXT(*dispatch, device, image, pSubresource, pLayout);
@@ -9918,6 +10335,15 @@ namespace vkroots {
   }
 
 #endif
+#ifdef VK_USE_PLATFORM_OHOS
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS *pInfo, struct OH_NativeBuffer **pBuffer) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetMemoryNativeBufferOHOS(*dispatch, device, pInfo, pBuffer);
+    return ret;
+  }
+
+#endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV *pMemoryGetRemoteAddressInfo, VkRemoteAddressNV *pAddress) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
@@ -9976,10 +10402,26 @@ namespace vkroots {
     DeviceOverrides::GetMicromapBuildSizesEXT(*dispatch, device, buildType, pBuildInfo, pSizeInfo);
   }
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer *buffer, VkNativeBufferPropertiesOHOS *pProperties) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetNativeBufferPropertiesOHOS(*dispatch, device, buffer, pProperties);
+    return ret;
+  }
+
+#endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV *pInfo, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV(*dispatch, device, pInfo, pSizeInfo);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT *pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT *pPastPresentationTimingProperties) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetPastPresentationTimingEXT(*dispatch, device, pPastPresentationTimingInfo, pPastPresentationTimingProperties);
+    return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -10131,6 +10573,12 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static void wrap_GetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    DeviceOverrides::GetRenderingAreaGranularity(*dispatch, device, pRenderingAreaInfo, pGranularity);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static void wrap_GetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfo *pRenderingAreaInfo, VkExtent2D *pGranularity) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     DeviceOverrides::GetRenderingAreaGranularityKHR(*dispatch, device, pRenderingAreaInfo, pGranularity);
@@ -10224,6 +10672,15 @@ namespace vkroots {
     return ret;
   }
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t *grallocUsage) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetSwapchainGrallocUsageOHOS(*dispatch, device, format, imageUsage, grallocUsage);
+    return ret;
+  }
+
+#endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_GetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t *pSwapchainImageCount, VkImage *pSwapchainImages) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
@@ -10235,6 +10692,20 @@ namespace vkroots {
   static VkResult wrap_GetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::GetSwapchainStatusKHR(*dispatch, device, swapchain);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT *pSwapchainTimeDomainProperties, uint64_t *pTimeDomainsCounter) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetSwapchainTimeDomainPropertiesEXT(*dispatch, device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_GetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT *pSwapchainTimingProperties, uint64_t *pSwapchainTimingPropertiesCounter) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::GetSwapchainTimingPropertiesEXT(*dispatch, device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter);
     return ret;
   }
 
@@ -10342,6 +10813,13 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_MapMemory2(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::MapMemory2(*dispatch, device, pMemoryMapInfo, ppData);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_MapMemory2KHR(VkDevice device, const VkMemoryMapInfo *pMemoryMapInfo, void **ppData) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::MapMemory2KHR(*dispatch, device, pMemoryMapInfo, ppData);
@@ -10407,6 +10885,15 @@ namespace vkroots {
     return ret;
   }
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_QueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore *pWaitSemaphores, VkImage image, int32_t *pNativeFenceFd) {
+    const VkQueueDispatch* dispatch = LookupDispatch(queue);
+    VkResult ret = DeviceOverrides::QueueSignalReleaseImageOHOS(*dispatch, queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd);
+    return ret;
+  }
+
+#endif
   template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo *pSubmits, VkFence fence) {
     const VkQueueDispatch* dispatch = LookupDispatch(queue);
@@ -10624,6 +11111,13 @@ namespace vkroots {
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_SetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::SetSwapchainPresentTimingQueueSizeEXT(*dispatch, device, swapchain, size);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
   static VkResult wrap_SignalSemaphore(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::SignalSemaphore(*dispatch, device, pSignalInfo);
@@ -10634,6 +11128,13 @@ namespace vkroots {
   static VkResult wrap_SignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfo *pSignalInfo) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     VkResult ret = DeviceOverrides::SignalSemaphoreKHR(*dispatch, device, pSignalInfo);
+    return ret;
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_TransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfo *pTransitions) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::TransitionImageLayout(*dispatch, device, transitionCount, pTransitions);
     return ret;
   }
 
@@ -10666,6 +11167,13 @@ namespace vkroots {
   static void wrap_UnmapMemory(VkDevice device, VkDeviceMemory memory) {
     const VkDeviceDispatch* dispatch = LookupDispatch(device);
     DeviceOverrides::UnmapMemory(*dispatch, device, memory);
+  }
+
+  template <typename InstanceOverrides, typename DeviceOverrides>
+  static VkResult wrap_UnmapMemory2(VkDevice device, const VkMemoryUnmapInfo *pMemoryUnmapInfo) {
+    const VkDeviceDispatch* dispatch = LookupDispatch(device);
+    VkResult ret = DeviceOverrides::UnmapMemory2(*dispatch, device, pMemoryUnmapInfo);
+    return ret;
   }
 
   template <typename InstanceOverrides, typename DeviceOverrides>
@@ -11004,6 +11512,12 @@ namespace vkroots {
     if constexpr (HasEnumeratePhysicalDeviceGroupsKHR) {
       if (!std::strcmp("vkEnumeratePhysicalDeviceGroupsKHR", name))
         return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceGroupsKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM; };
+    if constexpr (HasEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM) {
+      if (!std::strcmp("vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM", name))
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR; };
@@ -11557,6 +12071,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_EnumerateDeviceLayerProperties<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM; };
+    if constexpr (HasEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM) {
+      if (!std::strcmp("vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM", name))
+        return (PFN_vkVoidFunction) &wrap_EnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = requires(const InstanceOverrides& t) { &InstanceOverrides::EnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR; };
     if constexpr (HasEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) {
       if (!std::strcmp("vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR", name))
@@ -12048,6 +12568,14 @@ namespace vkroots {
     }
 #endif
 
+#ifdef VK_USE_PLATFORM_OHOS
+    constexpr bool HasAcquireImageOHOS = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireImageOHOS; };
+    if constexpr (HasAcquireImageOHOS) {
+      if (!std::strcmp("vkAcquireImageOHOS", name))
+        return (PFN_vkVoidFunction) &wrap_AcquireImageOHOS<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
     constexpr bool HasAcquireNextImage2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::AcquireNextImage2KHR; };
     if constexpr (HasAcquireNextImage2KHR) {
       if (!std::strcmp("vkAcquireNextImage2KHR", name))
@@ -12081,6 +12609,7 @@ namespace vkroots {
       constexpr bool HasAnyCmdBufferOverrides = false
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::BeginCommandBuffer; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginConditionalRenderingEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginCustomResolveEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginDebugUtilsLabelEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginPerTileExecutionQCOM; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginQuery; } )
@@ -12096,8 +12625,10 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBuffersEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindInvocationMaskHUAWEI; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindPipeline; } )
@@ -12138,8 +12669,10 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2KHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToMicromapEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMicromapEXT; } )
@@ -12153,6 +12686,8 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerEndEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerInsertEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecodeVideoKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatch; } )
@@ -12202,6 +12737,7 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderPass2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2EXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderingKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndTransformFeedbackEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndVideoCodingKHR; } )
@@ -12223,9 +12759,14 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2KHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetEvent; } )
@@ -12290,6 +12831,7 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFace; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFaceEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineRasterizationModeEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStipple; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEnableEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleKHR; } )
@@ -12311,7 +12853,9 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnable; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnableEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocations; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndices; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetSampleLocationsEXT; } )
@@ -12470,6 +13014,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdBeginConditionalRenderingEXT<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdBeginCustomResolveEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginCustomResolveEXT; };
+    if constexpr (HasCmdBeginCustomResolveEXT) {
+      if (!std::strcmp("vkCmdBeginCustomResolveEXT", name))
+        return (PFN_vkVoidFunction) &wrap_CmdBeginCustomResolveEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdBeginDebugUtilsLabelEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginDebugUtilsLabelEXT; };
     if constexpr (HasCmdBeginDebugUtilsLabelEXT) {
       if (!std::strcmp("vkCmdBeginDebugUtilsLabelEXT", name))
@@ -12560,6 +13110,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdBindDescriptorSets2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2; };
+    if constexpr (HasCmdBindDescriptorSets2) {
+      if (!std::strcmp("vkCmdBindDescriptorSets2", name))
+        return (PFN_vkVoidFunction) &wrap_CmdBindDescriptorSets2<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdBindDescriptorSets2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2KHR; };
     if constexpr (HasCmdBindDescriptorSets2KHR) {
       if (!std::strcmp("vkCmdBindDescriptorSets2KHR", name))
@@ -12570,6 +13126,12 @@ namespace vkroots {
     if constexpr (HasCmdBindIndexBuffer) {
       if (!std::strcmp("vkCmdBindIndexBuffer", name))
         return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdBindIndexBuffer2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2; };
+    if constexpr (HasCmdBindIndexBuffer2) {
+      if (!std::strcmp("vkCmdBindIndexBuffer2", name))
+        return (PFN_vkVoidFunction) &wrap_CmdBindIndexBuffer2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdBindIndexBuffer2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2KHR; };
@@ -12812,6 +13374,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdCopyImageToBuffer2KHR<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdCopyMemoryIndirectKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectKHR; };
+    if constexpr (HasCmdCopyMemoryIndirectKHR) {
+      if (!std::strcmp("vkCmdCopyMemoryIndirectKHR", name))
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryIndirectKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdCopyMemoryIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectNV; };
     if constexpr (HasCmdCopyMemoryIndirectNV) {
       if (!std::strcmp("vkCmdCopyMemoryIndirectNV", name))
@@ -12822,6 +13390,12 @@ namespace vkroots {
     if constexpr (HasCmdCopyMemoryToAccelerationStructureKHR) {
       if (!std::strcmp("vkCmdCopyMemoryToAccelerationStructureKHR", name))
         return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdCopyMemoryToImageIndirectKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectKHR; };
+    if constexpr (HasCmdCopyMemoryToImageIndirectKHR) {
+      if (!std::strcmp("vkCmdCopyMemoryToImageIndirectKHR", name))
+        return (PFN_vkVoidFunction) &wrap_CmdCopyMemoryToImageIndirectKHR<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdCopyMemoryToImageIndirectNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectNV; };
@@ -12890,6 +13464,18 @@ namespace vkroots {
     if constexpr (HasCmdDecodeVideoKHR) {
       if (!std::strcmp("vkCmdDecodeVideoKHR", name))
         return (PFN_vkVoidFunction) &wrap_CmdDecodeVideoKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdDecompressMemoryEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryEXT; };
+    if constexpr (HasCmdDecompressMemoryEXT) {
+      if (!std::strcmp("vkCmdDecompressMemoryEXT", name))
+        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdDecompressMemoryIndirectCountEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountEXT; };
+    if constexpr (HasCmdDecompressMemoryIndirectCountEXT) {
+      if (!std::strcmp("vkCmdDecompressMemoryIndirectCountEXT", name))
+        return (PFN_vkVoidFunction) &wrap_CmdDecompressMemoryIndirectCountEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdDecompressMemoryIndirectCountNV = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountNV; };
@@ -13156,6 +13742,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdEndRendering2EXT<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdEndRendering2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2KHR; };
+    if constexpr (HasCmdEndRendering2KHR) {
+      if (!std::strcmp("vkCmdEndRendering2KHR", name))
+        return (PFN_vkVoidFunction) &wrap_CmdEndRendering2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdEndRenderingKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderingKHR; };
     if constexpr (HasCmdEndRenderingKHR) {
       if (!std::strcmp("vkCmdEndRenderingKHR", name))
@@ -13272,10 +13864,28 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdPushConstants<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdPushConstants2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2; };
+    if constexpr (HasCmdPushConstants2) {
+      if (!std::strcmp("vkCmdPushConstants2", name))
+        return (PFN_vkVoidFunction) &wrap_CmdPushConstants2<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdPushConstants2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2KHR; };
     if constexpr (HasCmdPushConstants2KHR) {
       if (!std::strcmp("vkCmdPushConstants2KHR", name))
         return (PFN_vkVoidFunction) &wrap_CmdPushConstants2KHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdPushDescriptorSet = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet; };
+    if constexpr (HasCmdPushDescriptorSet) {
+      if (!std::strcmp("vkCmdPushDescriptorSet", name))
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSet<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdPushDescriptorSet2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2; };
+    if constexpr (HasCmdPushDescriptorSet2) {
+      if (!std::strcmp("vkCmdPushDescriptorSet2", name))
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSet2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSet2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2KHR; };
@@ -13288,6 +13898,18 @@ namespace vkroots {
     if constexpr (HasCmdPushDescriptorSetKHR) {
       if (!std::strcmp("vkCmdPushDescriptorSetKHR", name))
         return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdPushDescriptorSetWithTemplate = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate; };
+    if constexpr (HasCmdPushDescriptorSetWithTemplate) {
+      if (!std::strcmp("vkCmdPushDescriptorSetWithTemplate", name))
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplate<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdPushDescriptorSetWithTemplate2 = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2; };
+    if constexpr (HasCmdPushDescriptorSetWithTemplate2) {
+      if (!std::strcmp("vkCmdPushDescriptorSetWithTemplate2", name))
+        return (PFN_vkVoidFunction) &wrap_CmdPushDescriptorSetWithTemplate2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdPushDescriptorSetWithTemplate2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR; };
@@ -13674,6 +14296,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdSetLineRasterizationModeEXT<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdSetLineStipple = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStipple; };
+    if constexpr (HasCmdSetLineStipple) {
+      if (!std::strcmp("vkCmdSetLineStipple", name))
+        return (PFN_vkVoidFunction) &wrap_CmdSetLineStipple<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdSetLineStippleEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEXT; };
     if constexpr (HasCmdSetLineStippleEXT) {
       if (!std::strcmp("vkCmdSetLineStippleEXT", name))
@@ -13800,10 +14428,22 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CmdSetRayTracingPipelineStackSizeKHR<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCmdSetRenderingAttachmentLocations = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocations; };
+    if constexpr (HasCmdSetRenderingAttachmentLocations) {
+      if (!std::strcmp("vkCmdSetRenderingAttachmentLocations", name))
+        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingAttachmentLocations<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCmdSetRenderingAttachmentLocationsKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR; };
     if constexpr (HasCmdSetRenderingAttachmentLocationsKHR) {
       if (!std::strcmp("vkCmdSetRenderingAttachmentLocationsKHR", name))
         return (PFN_vkVoidFunction) &wrap_CmdSetRenderingAttachmentLocationsKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCmdSetRenderingInputAttachmentIndices = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndices; };
+    if constexpr (HasCmdSetRenderingInputAttachmentIndices) {
+      if (!std::strcmp("vkCmdSetRenderingInputAttachmentIndices", name))
+        return (PFN_vkVoidFunction) &wrap_CmdSetRenderingInputAttachmentIndices<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCmdSetRenderingInputAttachmentIndicesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR; };
@@ -14088,10 +14728,22 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_CopyAccelerationStructureToMemoryKHR<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasCopyImageToImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToImage; };
+    if constexpr (HasCopyImageToImage) {
+      if (!std::strcmp("vkCopyImageToImage", name))
+        return (PFN_vkVoidFunction) &wrap_CopyImageToImage<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasCopyImageToImageEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToImageEXT; };
     if constexpr (HasCopyImageToImageEXT) {
       if (!std::strcmp("vkCopyImageToImageEXT", name))
         return (PFN_vkVoidFunction) &wrap_CopyImageToImageEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCopyImageToMemory = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToMemory; };
+    if constexpr (HasCopyImageToMemory) {
+      if (!std::strcmp("vkCopyImageToMemory", name))
+        return (PFN_vkVoidFunction) &wrap_CopyImageToMemory<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyImageToMemoryEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyImageToMemoryEXT; };
@@ -14104,6 +14756,12 @@ namespace vkroots {
     if constexpr (HasCopyMemoryToAccelerationStructureKHR) {
       if (!std::strcmp("vkCopyMemoryToAccelerationStructureKHR", name))
         return (PFN_vkVoidFunction) &wrap_CopyMemoryToAccelerationStructureKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasCopyMemoryToImage = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMemoryToImage; };
+    if constexpr (HasCopyMemoryToImage) {
+      if (!std::strcmp("vkCopyMemoryToImage", name))
+        return (PFN_vkVoidFunction) &wrap_CopyMemoryToImage<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasCopyMemoryToImageEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::CopyMemoryToImageEXT; };
@@ -14801,6 +15459,7 @@ namespace vkroots {
       constexpr bool HasAnyCmdBufferOverrides = false
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::BeginCommandBuffer; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginConditionalRenderingEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginCustomResolveEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginDebugUtilsLabelEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginPerTileExecutionQCOM; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBeginQuery; } )
@@ -14816,8 +15475,10 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBufferEmbeddedSamplersEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorBuffersEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindDescriptorSets2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindIndexBuffer2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindInvocationMaskHUAWEI; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdBindPipeline; } )
@@ -14858,8 +15519,10 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyImageToBuffer2KHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryIndirectNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToAccelerationStructureKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToImageIndirectNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMemoryToMicromapEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdCopyMicromapEXT; } )
@@ -14873,6 +15536,8 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerEndEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDebugMarkerInsertEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecodeVideoKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryIndirectCountNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDecompressMemoryNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdDispatch; } )
@@ -14922,6 +15587,7 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderPass2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2EXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRendering2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndRenderingKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndTransformFeedbackEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdEndVideoCodingKHR; } )
@@ -14943,9 +15609,14 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPreprocessGeneratedCommandsNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushConstants2KHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSet2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplate2KHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdPushDescriptorSetWithTemplateKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdResetEvent; } )
@@ -15010,6 +15681,7 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFace; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetFrontFaceEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineRasterizationModeEXT; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStipple; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleEnableEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetLineStippleKHR; } )
@@ -15031,7 +15703,9 @@ namespace vkroots {
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnable; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRasterizerDiscardEnableEXT; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRayTracingPipelineStackSizeKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocations; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingAttachmentLocationsKHR; } )
+        || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndices; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRenderingInputAttachmentIndicesKHR; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetRepresentativeFragmentTestEnableNV; } )
         || ( requires(const DeviceOverrides& t) { &DeviceOverrides::CmdSetSampleLocationsEXT; } )
@@ -15378,6 +16052,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetDeviceImageSparseMemoryRequirementsKHR<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasGetDeviceImageSubresourceLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageSubresourceLayout; };
+    if constexpr (HasGetDeviceImageSubresourceLayout) {
+      if (!std::strcmp("vkGetDeviceImageSubresourceLayout", name))
+        return (PFN_vkVoidFunction) &wrap_GetDeviceImageSubresourceLayout<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasGetDeviceImageSubresourceLayoutKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetDeviceImageSubresourceLayoutKHR; };
     if constexpr (HasGetDeviceImageSubresourceLayoutKHR) {
       if (!std::strcmp("vkGetDeviceImageSubresourceLayoutKHR", name))
@@ -15567,6 +16247,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasGetImageSubresourceLayout2 = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout2; };
+    if constexpr (HasGetImageSubresourceLayout2) {
+      if (!std::strcmp("vkGetImageSubresourceLayout2", name))
+        return (PFN_vkVoidFunction) &wrap_GetImageSubresourceLayout2<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasGetImageSubresourceLayout2EXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetImageSubresourceLayout2EXT; };
     if constexpr (HasGetImageSubresourceLayout2EXT) {
       if (!std::strcmp("vkGetImageSubresourceLayout2EXT", name))
@@ -15633,6 +16319,14 @@ namespace vkroots {
     }
 #endif
 
+#ifdef VK_USE_PLATFORM_OHOS
+    constexpr bool HasGetMemoryNativeBufferOHOS = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryNativeBufferOHOS; };
+    if constexpr (HasGetMemoryNativeBufferOHOS) {
+      if (!std::strcmp("vkGetMemoryNativeBufferOHOS", name))
+        return (PFN_vkVoidFunction) &wrap_GetMemoryNativeBufferOHOS<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
     constexpr bool HasGetMemoryRemoteAddressNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetMemoryRemoteAddressNV; };
     if constexpr (HasGetMemoryRemoteAddressNV) {
       if (!std::strcmp("vkGetMemoryRemoteAddressNV", name))
@@ -15685,10 +16379,24 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetMicromapBuildSizesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
+#ifdef VK_USE_PLATFORM_OHOS
+    constexpr bool HasGetNativeBufferPropertiesOHOS = requires(const DeviceOverrides& t) { &DeviceOverrides::GetNativeBufferPropertiesOHOS; };
+    if constexpr (HasGetNativeBufferPropertiesOHOS) {
+      if (!std::strcmp("vkGetNativeBufferPropertiesOHOS", name))
+        return (PFN_vkVoidFunction) &wrap_GetNativeBufferPropertiesOHOS<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
     constexpr bool HasGetPartitionedAccelerationStructuresBuildSizesNV = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPartitionedAccelerationStructuresBuildSizesNV; };
     if constexpr (HasGetPartitionedAccelerationStructuresBuildSizesNV) {
       if (!std::strcmp("vkGetPartitionedAccelerationStructuresBuildSizesNV", name))
         return (PFN_vkVoidFunction) &wrap_GetPartitionedAccelerationStructuresBuildSizesNV<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetPastPresentationTimingEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPastPresentationTimingEXT; };
+    if constexpr (HasGetPastPresentationTimingEXT) {
+      if (!std::strcmp("vkGetPastPresentationTimingEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetPastPresentationTimingEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetPastPresentationTimingGOOGLE = requires(const DeviceOverrides& t) { &DeviceOverrides::GetPastPresentationTimingGOOGLE; };
@@ -15823,6 +16531,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetRenderAreaGranularity<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasGetRenderingAreaGranularity = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRenderingAreaGranularity; };
+    if constexpr (HasGetRenderingAreaGranularity) {
+      if (!std::strcmp("vkGetRenderingAreaGranularity", name))
+        return (PFN_vkVoidFunction) &wrap_GetRenderingAreaGranularity<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasGetRenderingAreaGranularityKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetRenderingAreaGranularityKHR; };
     if constexpr (HasGetRenderingAreaGranularityKHR) {
       if (!std::strcmp("vkGetRenderingAreaGranularityKHR", name))
@@ -15907,6 +16621,14 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_GetSwapchainCounterEXT<InstanceOverrides, DeviceOverrides>;
     }
 
+#ifdef VK_USE_PLATFORM_OHOS
+    constexpr bool HasGetSwapchainGrallocUsageOHOS = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainGrallocUsageOHOS; };
+    if constexpr (HasGetSwapchainGrallocUsageOHOS) {
+      if (!std::strcmp("vkGetSwapchainGrallocUsageOHOS", name))
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainGrallocUsageOHOS<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
+
     constexpr bool HasGetSwapchainImagesKHR = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainImagesKHR; };
     if constexpr (HasGetSwapchainImagesKHR) {
       if (!std::strcmp("vkGetSwapchainImagesKHR", name))
@@ -15917,6 +16639,18 @@ namespace vkroots {
     if constexpr (HasGetSwapchainStatusKHR) {
       if (!std::strcmp("vkGetSwapchainStatusKHR", name))
         return (PFN_vkVoidFunction) &wrap_GetSwapchainStatusKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetSwapchainTimeDomainPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainTimeDomainPropertiesEXT; };
+    if constexpr (HasGetSwapchainTimeDomainPropertiesEXT) {
+      if (!std::strcmp("vkGetSwapchainTimeDomainPropertiesEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainTimeDomainPropertiesEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasGetSwapchainTimingPropertiesEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::GetSwapchainTimingPropertiesEXT; };
+    if constexpr (HasGetSwapchainTimingPropertiesEXT) {
+      if (!std::strcmp("vkGetSwapchainTimingPropertiesEXT", name))
+        return (PFN_vkVoidFunction) &wrap_GetSwapchainTimingPropertiesEXT<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasGetTensorMemoryRequirementsARM = requires(const DeviceOverrides& t) { &DeviceOverrides::GetTensorMemoryRequirementsARM; };
@@ -16009,6 +16743,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_MapMemory<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasMapMemory2 = requires(const DeviceOverrides& t) { &DeviceOverrides::MapMemory2; };
+    if constexpr (HasMapMemory2) {
+      if (!std::strcmp("vkMapMemory2", name))
+        return (PFN_vkVoidFunction) &wrap_MapMemory2<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasMapMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::MapMemory2KHR; };
     if constexpr (HasMapMemory2KHR) {
       if (!std::strcmp("vkMapMemory2KHR", name))
@@ -16068,6 +16808,14 @@ namespace vkroots {
       if (!std::strcmp("vkQueueSetPerformanceConfigurationINTEL", name))
         return (PFN_vkVoidFunction) &wrap_QueueSetPerformanceConfigurationINTEL<InstanceOverrides, DeviceOverrides>;
     }
+
+#ifdef VK_USE_PLATFORM_OHOS
+    constexpr bool HasQueueSignalReleaseImageOHOS = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSignalReleaseImageOHOS; };
+    if constexpr (HasQueueSignalReleaseImageOHOS) {
+      if (!std::strcmp("vkQueueSignalReleaseImageOHOS", name))
+        return (PFN_vkVoidFunction) &wrap_QueueSignalReleaseImageOHOS<InstanceOverrides, DeviceOverrides>;
+    }
+#endif
 
     constexpr bool HasQueueSubmit = requires(const DeviceOverrides& t) { &DeviceOverrides::QueueSubmit; };
     if constexpr (HasQueueSubmit) {
@@ -16261,6 +17009,12 @@ namespace vkroots {
         return (PFN_vkVoidFunction) &wrap_SetPrivateDataEXT<InstanceOverrides, DeviceOverrides>;
     }
 
+    constexpr bool HasSetSwapchainPresentTimingQueueSizeEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::SetSwapchainPresentTimingQueueSizeEXT; };
+    if constexpr (HasSetSwapchainPresentTimingQueueSizeEXT) {
+      if (!std::strcmp("vkSetSwapchainPresentTimingQueueSizeEXT", name))
+        return (PFN_vkVoidFunction) &wrap_SetSwapchainPresentTimingQueueSizeEXT<InstanceOverrides, DeviceOverrides>;
+    }
+
     constexpr bool HasSignalSemaphore = requires(const DeviceOverrides& t) { &DeviceOverrides::SignalSemaphore; };
     if constexpr (HasSignalSemaphore) {
       if (!std::strcmp("vkSignalSemaphore", name))
@@ -16271,6 +17025,12 @@ namespace vkroots {
     if constexpr (HasSignalSemaphoreKHR) {
       if (!std::strcmp("vkSignalSemaphoreKHR", name))
         return (PFN_vkVoidFunction) &wrap_SignalSemaphoreKHR<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasTransitionImageLayout = requires(const DeviceOverrides& t) { &DeviceOverrides::TransitionImageLayout; };
+    if constexpr (HasTransitionImageLayout) {
+      if (!std::strcmp("vkTransitionImageLayout", name))
+        return (PFN_vkVoidFunction) &wrap_TransitionImageLayout<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasTransitionImageLayoutEXT = requires(const DeviceOverrides& t) { &DeviceOverrides::TransitionImageLayoutEXT; };
@@ -16301,6 +17061,12 @@ namespace vkroots {
     if constexpr (HasUnmapMemory) {
       if (!std::strcmp("vkUnmapMemory", name))
         return (PFN_vkVoidFunction) &wrap_UnmapMemory<InstanceOverrides, DeviceOverrides>;
+    }
+
+    constexpr bool HasUnmapMemory2 = requires(const DeviceOverrides& t) { &DeviceOverrides::UnmapMemory2; };
+    if constexpr (HasUnmapMemory2) {
+      if (!std::strcmp("vkUnmapMemory2", name))
+        return (PFN_vkVoidFunction) &wrap_UnmapMemory2<InstanceOverrides, DeviceOverrides>;
     }
 
     constexpr bool HasUnmapMemory2KHR = requires(const DeviceOverrides& t) { &DeviceOverrides::UnmapMemory2KHR; };
@@ -16492,6 +17258,16 @@ namespace vkroots {
       }
     }
 
+    template <> constexpr const char* enumString<VkAddressCopyFlagBitsKHR>(VkAddressCopyFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_ADDRESS_COPY_SPARSE_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_ADDRESS_COPY_PROTECTED_BIT_KHR";
+        case static_cast<uint64_t>(2147483647): return "VK_ADDRESS_COPY_FLAG_BITS_KHR_MAX_ENUM";
+        default: return "VkAddressCopyFlagBitsKHR_UNKNOWN";
+      }
+    }
+
     template <> constexpr const char* enumString<VkAntiLagModeAMD>(VkAntiLagModeAMD type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(0): return "VK_ANTI_LAG_MODE_DRIVER_CONTROL_AMD";
@@ -16515,6 +17291,8 @@ namespace vkroots {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(1): return "VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT";
         case static_cast<uint64_t>(2147483647): return "VK_ATTACHMENT_DESCRIPTION_FLAG_BITS_MAX_ENUM";
+        case static_cast<uint64_t>(2): return "VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_ATTACHMENT_DESCRIPTION_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
         default: return "VkAttachmentDescriptionFlagBits_UNKNOWN";
       }
     }
@@ -16720,6 +17498,7 @@ namespace vkroots {
         case static_cast<uint64_t>(256): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_OPACITY_MICROMAP_DATA_UPDATE_BIT_EXT";
         case static_cast<uint64_t>(512): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV";
         case static_cast<uint64_t>(2048): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR";
+        case static_cast<uint64_t>(4096): return "VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV";
         default: return "VkBuildAccelerationStructureFlagBitsKHR_UNKNOWN";
       }
     }
@@ -16988,6 +17767,16 @@ namespace vkroots {
       }
     }
 
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+    template <> constexpr const char* enumString<VkCompressedTriangleFormatAMDX>(VkCompressedTriangleFormatAMDX type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_COMPRESSED_TRIANGLE_FORMAT_DGF1_AMDX";
+        case static_cast<uint64_t>(2147483647): return "VK_COMPRESSED_TRIANGLE_FORMAT_AMDX_MAX_ENUM";
+        default: return "VkCompressedTriangleFormatAMDX_UNKNOWN";
+      }
+    }
+#endif
+
     template <> constexpr const char* enumString<VkConditionalRenderingFlagBitsEXT>(VkConditionalRenderingFlagBitsEXT type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(1): return "VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT";
@@ -17078,6 +17867,14 @@ namespace vkroots {
         case static_cast<uint64_t>(3): return "VK_CULL_MODE_FRONT_AND_BACK";
         case static_cast<uint64_t>(2147483647): return "VK_CULL_MODE_FLAG_BITS_MAX_ENUM";
         default: return "VkCullModeFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkDataGraphModelCacheTypeQCOM>(VkDataGraphModelCacheTypeQCOM type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(0): return "VK_DATA_GRAPH_MODEL_CACHE_TYPE_GENERIC_BINARY_QCOM";
+        case static_cast<uint64_t>(2147483647): return "VK_DATA_GRAPH_MODEL_CACHE_TYPE_QCOM_MAX_ENUM";
+        default: return "VkDataGraphModelCacheTypeQCOM_UNKNOWN";
       }
     }
 
@@ -17487,6 +18284,7 @@ namespace vkroots {
         case static_cast<uint64_t>(25): return "VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA";
         case static_cast<uint64_t>(26): return "VK_DRIVER_ID_MESA_HONEYKRISP";
         case static_cast<uint64_t>(27): return "VK_DRIVER_ID_VULKAN_SC_EMULATION_ON_VULKAN";
+        case static_cast<uint64_t>(28): return "VK_DRIVER_ID_MESA_KOSMICKRISP";
         case static_cast<uint64_t>(2147483647): return "VK_DRIVER_ID_MAX_ENUM";
         default: return "VkDriverId_UNKNOWN";
       }
@@ -17651,6 +18449,7 @@ namespace vkroots {
         case static_cast<uint64_t>(256): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT";
         case static_cast<uint64_t>(2048): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA";
         case static_cast<uint64_t>(4096): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV";
+        case static_cast<uint64_t>(32768): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_OH_NATIVE_BUFFER_BIT_OHOS";
         case static_cast<uint64_t>(16384): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX";
         case static_cast<uint64_t>(65536): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT";
         case static_cast<uint64_t>(131072): return "VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT";
@@ -18136,6 +18935,7 @@ namespace vkroots {
         case static_cast<uint64_t>(2147483647): return "VK_GEOMETRY_TYPE_KHR_MAX_ENUM";
         case static_cast<uint64_t>(1000429004): return "VK_GEOMETRY_TYPE_SPHERES_NV";
         case static_cast<uint64_t>(1000429005): return "VK_GEOMETRY_TYPE_LINEAR_SWEPT_SPHERES_NV";
+        case static_cast<uint64_t>(1000478000): return "VK_GEOMETRY_TYPE_DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX";
         default: return "VkGeometryTypeKHR_UNKNOWN";
       }
     }
@@ -18675,8 +19475,8 @@ namespace vkroots {
         case static_cast<uint64_t>(24): return "VK_OBJECT_TYPE_FRAMEBUFFER";
         case static_cast<uint64_t>(25): return "VK_OBJECT_TYPE_COMMAND_POOL";
         case static_cast<uint64_t>(2147483647): return "VK_OBJECT_TYPE_MAX_ENUM";
-        case static_cast<uint64_t>(1000156000): return "VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION";
         case static_cast<uint64_t>(1000085000): return "VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE";
+        case static_cast<uint64_t>(1000156000): return "VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION";
         case static_cast<uint64_t>(1000295000): return "VK_OBJECT_TYPE_PRIVATE_DATA_SLOT";
         case static_cast<uint64_t>(1000000000): return "VK_OBJECT_TYPE_SURFACE_KHR";
         case static_cast<uint64_t>(1000001000): return "VK_OBJECT_TYPE_SWAPCHAIN_KHR";
@@ -18833,6 +19633,15 @@ namespace vkroots {
       }
     }
 
+    template <> constexpr const char* enumString<VkPastPresentationTimingFlagBitsEXT>(VkPastPresentationTimingFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PAST_PRESENTATION_TIMING_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkPastPresentationTimingFlagBitsEXT_UNKNOWN";
+      }
+    }
+
     template <> constexpr const char* enumString<VkPeerMemoryFeatureFlagBits>(VkPeerMemoryFeatureFlagBits type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(1): return "VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT";
@@ -18936,6 +19745,8 @@ namespace vkroots {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(0): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_SPIRV_EXTENDED_INSTRUCTION_SET_ARM";
         case static_cast<uint64_t>(2147483647): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_ARM_MAX_ENUM";
+        case static_cast<uint64_t>(1000629000): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_NEURAL_MODEL_QCOM";
+        case static_cast<uint64_t>(1000629001): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_BUILTIN_MODEL_QCOM";
         default: return "VkPhysicalDeviceDataGraphOperationTypeARM_UNKNOWN";
       }
     }
@@ -18944,6 +19755,8 @@ namespace vkroots {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(0): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_DEFAULT_ARM";
         case static_cast<uint64_t>(2147483647): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_ARM_MAX_ENUM";
+        case static_cast<uint64_t>(1000629000): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_NEURAL_QCOM";
+        case static_cast<uint64_t>(1000629001): return "VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_COMPUTE_QCOM";
         default: return "VkPhysicalDeviceDataGraphProcessingEngineTypeARM_UNKNOWN";
       }
     }
@@ -18998,6 +19811,7 @@ namespace vkroots {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(1): return "VK_PIPELINE_CACHE_HEADER_VERSION_ONE";
         case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CACHE_HEADER_VERSION_MAX_ENUM";
+        case static_cast<uint64_t>(1000629000): return "VK_PIPELINE_CACHE_HEADER_VERSION_DATA_GRAPH_QCOM";
         default: return "VkPipelineCacheHeaderVersion_UNKNOWN";
       }
     }
@@ -19016,8 +19830,8 @@ namespace vkroots {
         case static_cast<uint64_t>(2): return "VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT";
         case static_cast<uint64_t>(4): return "VK_PIPELINE_CREATE_DERIVATIVE_BIT";
         case static_cast<uint64_t>(2147483647): return "VK_PIPELINE_CREATE_FLAG_BITS_MAX_ENUM";
-        case static_cast<uint64_t>(8): return "VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
         case static_cast<uint64_t>(16): return "VK_PIPELINE_CREATE_DISPATCH_BASE_BIT";
+        case static_cast<uint64_t>(8): return "VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT";
         case static_cast<uint64_t>(256): return "VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT";
         case static_cast<uint64_t>(512): return "VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT";
         case static_cast<uint64_t>(134217728): return "VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT";
@@ -19205,6 +20019,26 @@ namespace vkroots {
       }
     }
 
+    template <> constexpr const char* enumString<VkPresentStageFlagBitsEXT>(VkPresentStageFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PRESENT_STAGE_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkPresentStageFlagBitsEXT_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkPresentTimingInfoFlagBitsEXT>(VkPresentTimingInfoFlagBitsEXT type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT";
+        case static_cast<uint64_t>(2): return "VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_PRESENT_TIMING_INFO_FLAG_BITS_EXT_MAX_ENUM";
+        default: return "VkPresentTimingInfoFlagBitsEXT_UNKNOWN";
+      }
+    }
+
     template <> constexpr const char* enumString<VkPrimitiveTopology>(VkPrimitiveTopology type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(0): return "VK_PRIMITIVE_TOPOLOGY_POINT_LIST";
@@ -19360,12 +20194,12 @@ namespace vkroots {
       }
     }
 
-    template <> constexpr const char* enumString<VkRayTracingInvocationReorderModeNV>(VkRayTracingInvocationReorderModeNV type) {
+    template <> constexpr const char* enumString<VkRayTracingInvocationReorderModeEXT>(VkRayTracingInvocationReorderModeEXT type) {
       switch(static_cast<uint64_t>(type)) {
-        case static_cast<uint64_t>(0): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_NONE_NV";
-        case static_cast<uint64_t>(1): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_NV";
-        case static_cast<uint64_t>(2147483647): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_NV_MAX_ENUM";
-        default: return "VkRayTracingInvocationReorderModeNV_UNKNOWN";
+        case static_cast<uint64_t>(0): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_NONE_EXT";
+        case static_cast<uint64_t>(1): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_EXT";
+        case static_cast<uint64_t>(2147483647): return "VK_RAY_TRACING_INVOCATION_REORDER_MODE_EXT_MAX_ENUM";
+        default: return "VkRayTracingInvocationReorderModeEXT_UNKNOWN";
       }
     }
 
@@ -19406,6 +20240,16 @@ namespace vkroots {
       }
     }
 
+    template <> constexpr const char* enumString<VkRenderingAttachmentFlagBitsKHR>(VkRenderingAttachmentFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_RENDERING_ATTACHMENT_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_RENDERING_ATTACHMENT_INPUT_ATTACHMENT_FEEDBACK_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+        case static_cast<uint64_t>(4): return "VK_RENDERING_ATTACHMENT_RESOLVE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
+        default: return "VkRenderingAttachmentFlagBitsKHR_UNKNOWN";
+      }
+    }
+
     template <> constexpr const char* enumString<VkRenderingFlagBits>(VkRenderingFlagBits type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(1): return "VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT";
@@ -19415,7 +20259,19 @@ namespace vkroots {
         case static_cast<uint64_t>(8): return "VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT";
         case static_cast<uint64_t>(16): return "VK_RENDERING_CONTENTS_INLINE_BIT_KHR";
         case static_cast<uint64_t>(32): return "VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE";
+        case static_cast<uint64_t>(64): return "VK_RENDERING_FRAGMENT_REGION_BIT_EXT";
+        case static_cast<uint64_t>(128): return "VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT";
+        case static_cast<uint64_t>(256): return "VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR";
         default: return "VkRenderingFlagBits_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkResolveImageFlagBitsKHR>(VkResolveImageFlagBitsKHR type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(2147483647): return "VK_RESOLVE_IMAGE_FLAG_BITS_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1): return "VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR";
+        case static_cast<uint64_t>(2): return "VK_RESOLVE_IMAGE_ENABLE_TRANSFER_FUNCTION_BIT_KHR";
+        default: return "VkResolveImageFlagBitsKHR_UNKNOWN";
       }
     }
 
@@ -19428,6 +20284,7 @@ namespace vkroots {
         case static_cast<uint64_t>(8): return "VK_RESOLVE_MODE_MAX_BIT";
         case static_cast<uint64_t>(2147483647): return "VK_RESOLVE_MODE_FLAG_BITS_MAX_ENUM";
         case static_cast<uint64_t>(16): return "VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID";
+        case static_cast<uint64_t>(32): return "VK_RESOLVE_MODE_CUSTOM_BIT_EXT";
         default: return "VkResolveModeFlagBits_UNKNOWN";
       }
     }
@@ -19454,10 +20311,11 @@ namespace vkroots {
         case static_cast<uint64_t>(-12): return "VK_ERROR_FRAGMENTED_POOL";
         case static_cast<uint64_t>(-13): return "VK_ERROR_UNKNOWN";
         case static_cast<uint64_t>(2147483647): return "VK_RESULT_MAX_ENUM";
+        case static_cast<uint64_t>(-1000011001): return "VK_ERROR_VALIDATION_FAILED";
         case static_cast<uint64_t>(-1000069000): return "VK_ERROR_OUT_OF_POOL_MEMORY";
         case static_cast<uint64_t>(-1000072003): return "VK_ERROR_INVALID_EXTERNAL_HANDLE";
-        case static_cast<uint64_t>(-1000161000): return "VK_ERROR_FRAGMENTATION";
         case static_cast<uint64_t>(-1000257000): return "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS";
+        case static_cast<uint64_t>(-1000161000): return "VK_ERROR_FRAGMENTATION";
         case static_cast<uint64_t>(1000297000): return "VK_PIPELINE_COMPILE_REQUIRED";
         case static_cast<uint64_t>(-1000174001): return "VK_ERROR_NOT_PERMITTED";
         case static_cast<uint64_t>(-1000000000): return "VK_ERROR_SURFACE_LOST_KHR";
@@ -19465,7 +20323,6 @@ namespace vkroots {
         case static_cast<uint64_t>(1000001003): return "VK_SUBOPTIMAL_KHR";
         case static_cast<uint64_t>(-1000001004): return "VK_ERROR_OUT_OF_DATE_KHR";
         case static_cast<uint64_t>(-1000003001): return "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR";
-        case static_cast<uint64_t>(-1000011001): return "VK_ERROR_VALIDATION_FAILED_EXT";
         case static_cast<uint64_t>(-1000012000): return "VK_ERROR_INVALID_SHADER_NV";
         case static_cast<uint64_t>(-1000023000): return "VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR";
         case static_cast<uint64_t>(-1000023001): return "VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR";
@@ -19474,6 +20331,7 @@ namespace vkroots {
         case static_cast<uint64_t>(-1000023004): return "VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR";
         case static_cast<uint64_t>(-1000023005): return "VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR";
         case static_cast<uint64_t>(-1000158000): return "VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT";
+        case static_cast<uint64_t>(-1000208000): return "VK_ERROR_PRESENT_TIMING_QUEUE_FULL_EXT";
         case static_cast<uint64_t>(-1000255000): return "VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT";
         case static_cast<uint64_t>(1000268000): return "VK_THREAD_IDLE_KHR";
         case static_cast<uint64_t>(1000268001): return "VK_THREAD_DONE_KHR";
@@ -19623,6 +20481,7 @@ namespace vkroots {
         case static_cast<uint64_t>(32): return "VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT";
         case static_cast<uint64_t>(64): return "VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT";
         case static_cast<uint64_t>(128): return "VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT";
+        case static_cast<uint64_t>(32768): return "VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT";
         default: return "VkShaderCreateFlagBitsEXT_UNKNOWN";
       }
     }
@@ -19805,14 +20664,11 @@ namespace vkroots {
         case static_cast<uint64_t>(47): return "VK_STRUCTURE_TYPE_LOADER_INSTANCE_CREATE_INFO";
         case static_cast<uint64_t>(48): return "VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO";
         case static_cast<uint64_t>(2147483647): return "VK_STRUCTURE_TYPE_MAX_ENUM";
-        case static_cast<uint64_t>(1000094000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES";
         case static_cast<uint64_t>(1000157000): return "VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO";
         case static_cast<uint64_t>(1000157001): return "VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO";
-        case static_cast<uint64_t>(1000083000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES";
         case static_cast<uint64_t>(1000127000): return "VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS";
         case static_cast<uint64_t>(1000127001): return "VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO";
         case static_cast<uint64_t>(1000060000): return "VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO";
-        case static_cast<uint64_t>(1000060003): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO";
         case static_cast<uint64_t>(1000060004): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO";
         case static_cast<uint64_t>(1000060005): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO";
         case static_cast<uint64_t>(1000060006): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_BIND_SPARSE_INFO";
@@ -19834,25 +20690,11 @@ namespace vkroots {
         case static_cast<uint64_t>(1000059006): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2";
         case static_cast<uint64_t>(1000059007): return "VK_STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2";
         case static_cast<uint64_t>(1000059008): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2";
-        case static_cast<uint64_t>(1000117000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES";
-        case static_cast<uint64_t>(1000117001): return "VK_STRUCTURE_TYPE_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO";
         case static_cast<uint64_t>(1000117002): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO";
-        case static_cast<uint64_t>(1000117003): return "VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO";
-        case static_cast<uint64_t>(1000053000): return "VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO";
-        case static_cast<uint64_t>(1000053001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES";
-        case static_cast<uint64_t>(1000053002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES";
-        case static_cast<uint64_t>(1000120000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES";
         case static_cast<uint64_t>(1000145000): return "VK_STRUCTURE_TYPE_PROTECTED_SUBMIT_INFO";
         case static_cast<uint64_t>(1000145001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES";
         case static_cast<uint64_t>(1000145002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES";
         case static_cast<uint64_t>(1000145003): return "VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2";
-        case static_cast<uint64_t>(1000156000): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO";
-        case static_cast<uint64_t>(1000156001): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO";
-        case static_cast<uint64_t>(1000156002): return "VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO";
-        case static_cast<uint64_t>(1000156003): return "VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO";
-        case static_cast<uint64_t>(1000156004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES";
-        case static_cast<uint64_t>(1000156005): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES";
-        case static_cast<uint64_t>(1000085000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO";
         case static_cast<uint64_t>(1000071000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO";
         case static_cast<uint64_t>(1000071001): return "VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES";
         case static_cast<uint64_t>(1000071002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO";
@@ -19867,47 +20709,33 @@ namespace vkroots {
         case static_cast<uint64_t>(1000077000): return "VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO";
         case static_cast<uint64_t>(1000076000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO";
         case static_cast<uint64_t>(1000076001): return "VK_STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES";
+        case static_cast<uint64_t>(1000094000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES";
+        case static_cast<uint64_t>(1000083000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES";
+        case static_cast<uint64_t>(1000120000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES";
+        case static_cast<uint64_t>(1000085000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO";
         case static_cast<uint64_t>(1000168000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES";
         case static_cast<uint64_t>(1000168001): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT";
+        case static_cast<uint64_t>(1000156000): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO";
+        case static_cast<uint64_t>(1000156001): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_INFO";
+        case static_cast<uint64_t>(1000156002): return "VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO";
+        case static_cast<uint64_t>(1000156003): return "VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO";
+        case static_cast<uint64_t>(1000156004): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES";
+        case static_cast<uint64_t>(1000156005): return "VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES";
+        case static_cast<uint64_t>(1000060003): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_RENDER_PASS_BEGIN_INFO";
+        case static_cast<uint64_t>(1000117000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES";
+        case static_cast<uint64_t>(1000117001): return "VK_STRUCTURE_TYPE_RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO";
+        case static_cast<uint64_t>(1000117003): return "VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(1000053000): return "VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO";
+        case static_cast<uint64_t>(1000053001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES";
+        case static_cast<uint64_t>(1000053002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES";
         case static_cast<uint64_t>(1000063000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES";
         case static_cast<uint64_t>(49): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES";
         case static_cast<uint64_t>(50): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES";
         case static_cast<uint64_t>(51): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES";
         case static_cast<uint64_t>(52): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES";
         case static_cast<uint64_t>(1000147000): return "VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO";
-        case static_cast<uint64_t>(1000109000): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2";
-        case static_cast<uint64_t>(1000109001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2";
-        case static_cast<uint64_t>(1000109002): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2";
-        case static_cast<uint64_t>(1000109003): return "VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2";
-        case static_cast<uint64_t>(1000109004): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2";
-        case static_cast<uint64_t>(1000109005): return "VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO";
-        case static_cast<uint64_t>(1000109006): return "VK_STRUCTURE_TYPE_SUBPASS_END_INFO";
-        case static_cast<uint64_t>(1000177000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES";
         case static_cast<uint64_t>(1000196000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES";
-        case static_cast<uint64_t>(1000180000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES";
-        case static_cast<uint64_t>(1000082000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES";
-        case static_cast<uint64_t>(1000197000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES";
-        case static_cast<uint64_t>(1000161000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO";
-        case static_cast<uint64_t>(1000161001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES";
-        case static_cast<uint64_t>(1000161002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES";
-        case static_cast<uint64_t>(1000161003): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO";
-        case static_cast<uint64_t>(1000161004): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT";
-        case static_cast<uint64_t>(1000199000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES";
-        case static_cast<uint64_t>(1000199001): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE";
-        case static_cast<uint64_t>(1000221000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES";
-        case static_cast<uint64_t>(1000246000): return "VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO";
-        case static_cast<uint64_t>(1000130000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES";
-        case static_cast<uint64_t>(1000130001): return "VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO";
         case static_cast<uint64_t>(1000211000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES";
-        case static_cast<uint64_t>(1000108000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES";
-        case static_cast<uint64_t>(1000108001): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO";
-        case static_cast<uint64_t>(1000108002): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO";
-        case static_cast<uint64_t>(1000108003): return "VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO";
-        case static_cast<uint64_t>(1000253000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES";
-        case static_cast<uint64_t>(1000175000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES";
-        case static_cast<uint64_t>(1000241000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES";
-        case static_cast<uint64_t>(1000241001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT";
-        case static_cast<uint64_t>(1000241002): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT";
         case static_cast<uint64_t>(1000261000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES";
         case static_cast<uint64_t>(1000207000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES";
         case static_cast<uint64_t>(1000207001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES";
@@ -19920,16 +20748,43 @@ namespace vkroots {
         case static_cast<uint64_t>(1000257002): return "VK_STRUCTURE_TYPE_BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO";
         case static_cast<uint64_t>(1000257003): return "VK_STRUCTURE_TYPE_MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO";
         case static_cast<uint64_t>(1000257004): return "VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO";
+        case static_cast<uint64_t>(1000177000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES";
+        case static_cast<uint64_t>(1000180000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES";
+        case static_cast<uint64_t>(1000082000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES";
+        case static_cast<uint64_t>(1000197000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES";
+        case static_cast<uint64_t>(1000161000): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO";
+        case static_cast<uint64_t>(1000161001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES";
+        case static_cast<uint64_t>(1000161002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES";
+        case static_cast<uint64_t>(1000161003): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO";
+        case static_cast<uint64_t>(1000161004): return "VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT";
+        case static_cast<uint64_t>(1000221000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES";
+        case static_cast<uint64_t>(1000130000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES";
+        case static_cast<uint64_t>(1000130001): return "VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO";
+        case static_cast<uint64_t>(1000253000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES";
+        case static_cast<uint64_t>(1000175000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES";
+        case static_cast<uint64_t>(1000109000): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2";
+        case static_cast<uint64_t>(1000109001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2";
+        case static_cast<uint64_t>(1000109002): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2";
+        case static_cast<uint64_t>(1000109003): return "VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2";
+        case static_cast<uint64_t>(1000109004): return "VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2";
+        case static_cast<uint64_t>(1000109005): return "VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO";
+        case static_cast<uint64_t>(1000109006): return "VK_STRUCTURE_TYPE_SUBPASS_END_INFO";
+        case static_cast<uint64_t>(1000199000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES";
+        case static_cast<uint64_t>(1000199001): return "VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE";
+        case static_cast<uint64_t>(1000246000): return "VK_STRUCTURE_TYPE_IMAGE_STENCIL_USAGE_CREATE_INFO";
+        case static_cast<uint64_t>(1000108000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES";
+        case static_cast<uint64_t>(1000108001): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENTS_CREATE_INFO";
+        case static_cast<uint64_t>(1000108002): return "VK_STRUCTURE_TYPE_FRAMEBUFFER_ATTACHMENT_IMAGE_INFO";
+        case static_cast<uint64_t>(1000108003): return "VK_STRUCTURE_TYPE_RENDER_PASS_ATTACHMENT_BEGIN_INFO";
+        case static_cast<uint64_t>(1000241000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES";
+        case static_cast<uint64_t>(1000241001): return "VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT";
+        case static_cast<uint64_t>(1000241002): return "VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT";
         case static_cast<uint64_t>(53): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES";
         case static_cast<uint64_t>(54): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES";
-        case static_cast<uint64_t>(1000192000): return "VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO";
-        case static_cast<uint64_t>(1000215000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES";
         case static_cast<uint64_t>(1000245000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES";
-        case static_cast<uint64_t>(1000276000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES";
         case static_cast<uint64_t>(1000295000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES";
         case static_cast<uint64_t>(1000295001): return "VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO";
         case static_cast<uint64_t>(1000295002): return "VK_STRUCTURE_TYPE_PRIVATE_DATA_SLOT_CREATE_INFO";
-        case static_cast<uint64_t>(1000297000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES";
         case static_cast<uint64_t>(1000314000): return "VK_STRUCTURE_TYPE_MEMORY_BARRIER_2";
         case static_cast<uint64_t>(1000314001): return "VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER_2";
         case static_cast<uint64_t>(1000314002): return "VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2";
@@ -19938,19 +20793,25 @@ namespace vkroots {
         case static_cast<uint64_t>(1000314005): return "VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO";
         case static_cast<uint64_t>(1000314006): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO";
         case static_cast<uint64_t>(1000314007): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES";
-        case static_cast<uint64_t>(1000325000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES";
-        case static_cast<uint64_t>(1000335000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES";
         case static_cast<uint64_t>(1000337000): return "VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2";
         case static_cast<uint64_t>(1000337001): return "VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2";
         case static_cast<uint64_t>(1000337002): return "VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2";
         case static_cast<uint64_t>(1000337003): return "VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2";
-        case static_cast<uint64_t>(1000337004): return "VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2";
-        case static_cast<uint64_t>(1000337005): return "VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2";
         case static_cast<uint64_t>(1000337006): return "VK_STRUCTURE_TYPE_BUFFER_COPY_2";
         case static_cast<uint64_t>(1000337007): return "VK_STRUCTURE_TYPE_IMAGE_COPY_2";
-        case static_cast<uint64_t>(1000337008): return "VK_STRUCTURE_TYPE_IMAGE_BLIT_2";
         case static_cast<uint64_t>(1000337009): return "VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2";
-        case static_cast<uint64_t>(1000337010): return "VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2";
+        case static_cast<uint64_t>(1000066000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES";
+        case static_cast<uint64_t>(1000360000): return "VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3";
+        case static_cast<uint64_t>(1000413000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES";
+        case static_cast<uint64_t>(1000413001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES";
+        case static_cast<uint64_t>(1000413002): return "VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS";
+        case static_cast<uint64_t>(1000413003): return "VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS";
+        case static_cast<uint64_t>(1000192000): return "VK_STRUCTURE_TYPE_PIPELINE_CREATION_FEEDBACK_CREATE_INFO";
+        case static_cast<uint64_t>(1000215000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES";
+        case static_cast<uint64_t>(1000276000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES";
+        case static_cast<uint64_t>(1000297000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES";
+        case static_cast<uint64_t>(1000325000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES";
+        case static_cast<uint64_t>(1000335000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES";
         case static_cast<uint64_t>(1000225000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES";
         case static_cast<uint64_t>(1000225001): return "VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO";
         case static_cast<uint64_t>(1000225002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES";
@@ -19958,60 +20819,35 @@ namespace vkroots {
         case static_cast<uint64_t>(1000138001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES";
         case static_cast<uint64_t>(1000138002): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK";
         case static_cast<uint64_t>(1000138003): return "VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO";
-        case static_cast<uint64_t>(1000066000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES";
+        case static_cast<uint64_t>(1000280000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES";
+        case static_cast<uint64_t>(1000280001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES";
+        case static_cast<uint64_t>(1000281001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES";
+        case static_cast<uint64_t>(1000337004): return "VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337005): return "VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2";
+        case static_cast<uint64_t>(1000337008): return "VK_STRUCTURE_TYPE_IMAGE_BLIT_2";
+        case static_cast<uint64_t>(1000337010): return "VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2";
         case static_cast<uint64_t>(1000044000): return "VK_STRUCTURE_TYPE_RENDERING_INFO";
         case static_cast<uint64_t>(1000044001): return "VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO";
         case static_cast<uint64_t>(1000044002): return "VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO";
         case static_cast<uint64_t>(1000044003): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES";
         case static_cast<uint64_t>(1000044004): return "VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO";
-        case static_cast<uint64_t>(1000280000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES";
-        case static_cast<uint64_t>(1000280001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES";
-        case static_cast<uint64_t>(1000281001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES";
-        case static_cast<uint64_t>(1000360000): return "VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3";
-        case static_cast<uint64_t>(1000413000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES";
-        case static_cast<uint64_t>(1000413001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES";
-        case static_cast<uint64_t>(1000413002): return "VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS";
-        case static_cast<uint64_t>(1000413003): return "VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS";
         case static_cast<uint64_t>(55): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES";
         case static_cast<uint64_t>(56): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_PROPERTIES";
         case static_cast<uint64_t>(1000174000): return "VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO";
         case static_cast<uint64_t>(1000388000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES";
         case static_cast<uint64_t>(1000388001): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES";
-        case static_cast<uint64_t>(1000416000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES";
-        case static_cast<uint64_t>(1000528000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES";
-        case static_cast<uint64_t>(1000544000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES";
-        case static_cast<uint64_t>(1000259000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES";
-        case static_cast<uint64_t>(1000259001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO";
-        case static_cast<uint64_t>(1000259002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES";
-        case static_cast<uint64_t>(1000525000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES";
-        case static_cast<uint64_t>(1000190001): return "VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO";
-        case static_cast<uint64_t>(1000190002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES";
         case static_cast<uint64_t>(1000265000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES";
         case static_cast<uint64_t>(1000271000): return "VK_STRUCTURE_TYPE_MEMORY_MAP_INFO";
         case static_cast<uint64_t>(1000271001): return "VK_STRUCTURE_TYPE_MEMORY_UNMAP_INFO";
         case static_cast<uint64_t>(1000470000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES";
         case static_cast<uint64_t>(1000470001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES";
-        case static_cast<uint64_t>(1000470003): return "VK_STRUCTURE_TYPE_RENDERING_AREA_INFO";
         case static_cast<uint64_t>(1000470004): return "VK_STRUCTURE_TYPE_DEVICE_IMAGE_SUBRESOURCE_INFO";
         case static_cast<uint64_t>(1000338002): return "VK_STRUCTURE_TYPE_SUBRESOURCE_LAYOUT_2";
         case static_cast<uint64_t>(1000338003): return "VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2";
-        case static_cast<uint64_t>(1000470005): return "VK_STRUCTURE_TYPE_PIPELINE_CREATE_FLAGS_2_CREATE_INFO";
         case static_cast<uint64_t>(1000470006): return "VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO";
-        case static_cast<uint64_t>(1000080000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES";
-        case static_cast<uint64_t>(1000232000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES";
-        case static_cast<uint64_t>(1000232001): return "VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_LOCATION_INFO";
-        case static_cast<uint64_t>(1000232002): return "VK_STRUCTURE_TYPE_RENDERING_INPUT_ATTACHMENT_INDEX_INFO";
         case static_cast<uint64_t>(1000545000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_6_FEATURES";
         case static_cast<uint64_t>(1000545001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_6_PROPERTIES";
         case static_cast<uint64_t>(1000545002): return "VK_STRUCTURE_TYPE_BIND_MEMORY_STATUS";
-        case static_cast<uint64_t>(1000545003): return "VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_SETS_INFO";
-        case static_cast<uint64_t>(1000545004): return "VK_STRUCTURE_TYPE_PUSH_CONSTANTS_INFO";
-        case static_cast<uint64_t>(1000545005): return "VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_INFO";
-        case static_cast<uint64_t>(1000545006): return "VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO";
-        case static_cast<uint64_t>(1000466000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES";
-        case static_cast<uint64_t>(1000068000): return "VK_STRUCTURE_TYPE_PIPELINE_ROBUSTNESS_CREATE_INFO";
-        case static_cast<uint64_t>(1000068001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES";
-        case static_cast<uint64_t>(1000068002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES";
         case static_cast<uint64_t>(1000270000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES";
         case static_cast<uint64_t>(1000270001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES";
         case static_cast<uint64_t>(1000270002): return "VK_STRUCTURE_TYPE_MEMORY_TO_IMAGE_COPY";
@@ -20022,6 +20858,29 @@ namespace vkroots {
         case static_cast<uint64_t>(1000270007): return "VK_STRUCTURE_TYPE_COPY_IMAGE_TO_IMAGE_INFO";
         case static_cast<uint64_t>(1000270008): return "VK_STRUCTURE_TYPE_SUBRESOURCE_HOST_MEMCPY_SIZE";
         case static_cast<uint64_t>(1000270009): return "VK_STRUCTURE_TYPE_HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY";
+        case static_cast<uint64_t>(1000416000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_ROTATE_FEATURES";
+        case static_cast<uint64_t>(1000528000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES";
+        case static_cast<uint64_t>(1000544000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_EXPECT_ASSUME_FEATURES";
+        case static_cast<uint64_t>(1000470005): return "VK_STRUCTURE_TYPE_PIPELINE_CREATE_FLAGS_2_CREATE_INFO";
+        case static_cast<uint64_t>(1000080000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES";
+        case static_cast<uint64_t>(1000545003): return "VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_SETS_INFO";
+        case static_cast<uint64_t>(1000545004): return "VK_STRUCTURE_TYPE_PUSH_CONSTANTS_INFO";
+        case static_cast<uint64_t>(1000545005): return "VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_INFO";
+        case static_cast<uint64_t>(1000545006): return "VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO";
+        case static_cast<uint64_t>(1000466000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES";
+        case static_cast<uint64_t>(1000068000): return "VK_STRUCTURE_TYPE_PIPELINE_ROBUSTNESS_CREATE_INFO";
+        case static_cast<uint64_t>(1000068001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES";
+        case static_cast<uint64_t>(1000068002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES";
+        case static_cast<uint64_t>(1000259000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES";
+        case static_cast<uint64_t>(1000259001): return "VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(1000259002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES";
+        case static_cast<uint64_t>(1000525000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES";
+        case static_cast<uint64_t>(1000190001): return "VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO";
+        case static_cast<uint64_t>(1000190002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES";
+        case static_cast<uint64_t>(1000470003): return "VK_STRUCTURE_TYPE_RENDERING_AREA_INFO";
+        case static_cast<uint64_t>(1000232000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES";
+        case static_cast<uint64_t>(1000232001): return "VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_LOCATION_INFO";
+        case static_cast<uint64_t>(1000232002): return "VK_STRUCTURE_TYPE_RENDERING_INPUT_ATTACHMENT_INDEX_INFO";
         case static_cast<uint64_t>(1000001000): return "VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR";
         case static_cast<uint64_t>(1000001001): return "VK_STRUCTURE_TYPE_PRESENT_INFO_KHR";
         case static_cast<uint64_t>(1000060007): return "VK_STRUCTURE_TYPE_DEVICE_GROUP_PRESENT_CAPABILITIES_KHR";
@@ -20256,6 +21115,16 @@ namespace vkroots {
         case static_cast<uint64_t>(1000206001): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV";
         case static_cast<uint64_t>(1000314008): return "VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV";
         case static_cast<uint64_t>(1000314009): return "VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV";
+        case static_cast<uint64_t>(1000208000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT";
+        case static_cast<uint64_t>(1000208001): return "VK_STRUCTURE_TYPE_SWAPCHAIN_TIMING_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000208002): return "VK_STRUCTURE_TYPE_SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000208003): return "VK_STRUCTURE_TYPE_PRESENT_TIMINGS_INFO_EXT";
+        case static_cast<uint64_t>(1000208004): return "VK_STRUCTURE_TYPE_PRESENT_TIMING_INFO_EXT";
+        case static_cast<uint64_t>(1000208005): return "VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_INFO_EXT";
+        case static_cast<uint64_t>(1000208006): return "VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000208007): return "VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_EXT";
+        case static_cast<uint64_t>(1000208008): return "VK_STRUCTURE_TYPE_PRESENT_TIMING_SURFACE_CAPABILITIES_EXT";
+        case static_cast<uint64_t>(1000208009): return "VK_STRUCTURE_TYPE_SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT";
         case static_cast<uint64_t>(1000209000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL";
         case static_cast<uint64_t>(1000210000): return "VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL";
         case static_cast<uint64_t>(1000210001): return "VK_STRUCTURE_TYPE_INITIALIZE_PERFORMANCE_API_INFO_INTEL";
@@ -20467,6 +21336,11 @@ namespace vkroots {
         case static_cast<uint64_t>(1000381001): return "VK_STRUCTURE_TYPE_PIPELINE_COLOR_WRITE_CREATE_INFO_EXT";
         case static_cast<uint64_t>(1000382000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT";
         case static_cast<uint64_t>(1000386000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR";
+        case static_cast<uint64_t>(1000387000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR";
+        case static_cast<uint64_t>(1000390000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_RGB_CONVERSION_FEATURES_VALVE";
+        case static_cast<uint64_t>(1000390001): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_RGB_CONVERSION_CAPABILITIES_VALVE";
+        case static_cast<uint64_t>(1000390002): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_PROFILE_RGB_CONVERSION_INFO_VALVE";
+        case static_cast<uint64_t>(1000390003): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_RGB_CONVERSION_CREATE_INFO_VALVE";
         case static_cast<uint64_t>(1000391000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT";
         case static_cast<uint64_t>(1000391001): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT";
         case static_cast<uint64_t>(1000392000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT";
@@ -20509,9 +21383,6 @@ namespace vkroots {
         case static_cast<uint64_t>(1000424003): return "VK_STRUCTURE_TYPE_RENDER_PASS_STRIPE_INFO_ARM";
         case static_cast<uint64_t>(1000424004): return "VK_STRUCTURE_TYPE_RENDER_PASS_STRIPE_SUBMIT_INFO_ARM";
         case static_cast<uint64_t>(1000426000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV";
-        case static_cast<uint64_t>(1000426001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV";
-        case static_cast<uint64_t>(1000427000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV";
-        case static_cast<uint64_t>(1000427001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV";
         case static_cast<uint64_t>(1000428000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV";
         case static_cast<uint64_t>(1000428001): return "VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV";
         case static_cast<uint64_t>(1000428002): return "VK_STRUCTURE_TYPE_PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV";
@@ -20526,6 +21397,12 @@ namespace vkroots {
         case static_cast<uint64_t>(1000440002): return "VK_STRUCTURE_TYPE_IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM";
         case static_cast<uint64_t>(1000451000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT";
         case static_cast<uint64_t>(1000451001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000452000): return "VK_STRUCTURE_TYPE_NATIVE_BUFFER_USAGE_OHOS";
+        case static_cast<uint64_t>(1000452001): return "VK_STRUCTURE_TYPE_NATIVE_BUFFER_PROPERTIES_OHOS";
+        case static_cast<uint64_t>(1000452002): return "VK_STRUCTURE_TYPE_NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS";
+        case static_cast<uint64_t>(1000452003): return "VK_STRUCTURE_TYPE_IMPORT_NATIVE_BUFFER_INFO_OHOS";
+        case static_cast<uint64_t>(1000452004): return "VK_STRUCTURE_TYPE_MEMORY_GET_NATIVE_BUFFER_INFO_OHOS";
+        case static_cast<uint64_t>(1000452005): return "VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_OHOS";
         case static_cast<uint64_t>(1000453000): return "VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT";
         case static_cast<uint64_t>(1000455000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT";
         case static_cast<uint64_t>(1000455001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT";
@@ -20578,6 +21455,8 @@ namespace vkroots {
         case static_cast<uint64_t>(1000476000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD";
         case static_cast<uint64_t>(1000476001): return "VK_STRUCTURE_TYPE_ANTI_LAG_DATA_AMD";
         case static_cast<uint64_t>(1000476002): return "VK_STRUCTURE_TYPE_ANTI_LAG_PRESENTATION_INFO_AMD";
+        case static_cast<uint64_t>(1000478000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX";
+        case static_cast<uint64_t>(1000478001): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX";
         case static_cast<uint64_t>(1000479000): return "VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_ID_2_KHR";
         case static_cast<uint64_t>(1000479001): return "VK_STRUCTURE_TYPE_PRESENT_ID_2_KHR";
         case static_cast<uint64_t>(1000479002): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR";
@@ -20715,6 +21594,13 @@ namespace vkroots {
         case static_cast<uint64_t>(1000547002): return "VK_STRUCTURE_TYPE_TILE_MEMORY_REQUIREMENTS_QCOM";
         case static_cast<uint64_t>(1000547003): return "VK_STRUCTURE_TYPE_TILE_MEMORY_BIND_INFO_QCOM";
         case static_cast<uint64_t>(1000547004): return "VK_STRUCTURE_TYPE_TILE_MEMORY_SIZE_INFO_QCOM";
+        case static_cast<uint64_t>(1000426001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000549000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR";
+        case static_cast<uint64_t>(1000549002): return "VK_STRUCTURE_TYPE_COPY_MEMORY_INDIRECT_INFO_KHR";
+        case static_cast<uint64_t>(1000549003): return "VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR";
+        case static_cast<uint64_t>(1000427000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT";
+        case static_cast<uint64_t>(1000427001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT";
+        case static_cast<uint64_t>(1000550002): return "VK_STRUCTURE_TYPE_DECOMPRESS_MEMORY_INFO_EXT";
         case static_cast<uint64_t>(1000551000): return "VK_STRUCTURE_TYPE_DISPLAY_SURFACE_STEREO_CREATE_INFO_NV";
         case static_cast<uint64_t>(1000551001): return "VK_STRUCTURE_TYPE_DISPLAY_MODE_STEREO_PROPERTIES_NV";
         case static_cast<uint64_t>(1000552000): return "VK_STRUCTURE_TYPE_VIDEO_ENCODE_INTRA_REFRESH_CAPABILITIES_KHR";
@@ -20781,6 +21667,9 @@ namespace vkroots {
         case static_cast<uint64_t>(1000575000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA";
         case static_cast<uint64_t>(1000575001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA";
         case static_cast<uint64_t>(1000575002): return "VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA";
+        case static_cast<uint64_t>(1000579000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR";
+        case static_cast<uint64_t>(1000581000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT";
+        case static_cast<uint64_t>(1000581001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT";
         case static_cast<uint64_t>(1000582000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT";
         case static_cast<uint64_t>(1000582001): return "VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT";
         case static_cast<uint64_t>(1000584000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR";
@@ -20790,7 +21679,10 @@ namespace vkroots {
         case static_cast<uint64_t>(1000586001): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_INLINE_SESSION_PARAMETERS_INFO_KHR";
         case static_cast<uint64_t>(1000586002): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_INLINE_SESSION_PARAMETERS_INFO_KHR";
         case static_cast<uint64_t>(1000586003): return "VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_INLINE_SESSION_PARAMETERS_INFO_KHR";
-        case static_cast<uint64_t>(1000587000): return "VK_STRUCTURE_TYPE_OH_SURFACE_CREATE_INFO_OHOS";
+        case static_cast<uint64_t>(1000685000): return "VK_STRUCTURE_TYPE_SURFACE_CREATE_INFO_OHOS";
+        case static_cast<uint64_t>(1000453001): return "VK_STRUCTURE_TYPE_NATIVE_BUFFER_OHOS";
+        case static_cast<uint64_t>(1000453002): return "VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_OHOS";
+        case static_cast<uint64_t>(1000453003): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS";
         case static_cast<uint64_t>(1000590000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI";
         case static_cast<uint64_t>(1000590001): return "VK_STRUCTURE_TYPE_HDR_VIVID_DYNAMIC_METADATA_HUAWEI";
         case static_cast<uint64_t>(1000593000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV";
@@ -20801,6 +21693,11 @@ namespace vkroots {
         case static_cast<uint64_t>(1000602001): return "VK_STRUCTURE_TYPE_MEMORY_METAL_HANDLE_PROPERTIES_EXT";
         case static_cast<uint64_t>(1000602002): return "VK_STRUCTURE_TYPE_MEMORY_GET_METAL_HANDLE_INFO_EXT";
         case static_cast<uint64_t>(1000421000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR";
+        case static_cast<uint64_t>(1000605000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM";
+        case static_cast<uint64_t>(1000605001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM";
+        case static_cast<uint64_t>(1000605002): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_ARM";
+        case static_cast<uint64_t>(1000605003): return "VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_ARM";
+        case static_cast<uint64_t>(1000605004): return "VK_STRUCTURE_TYPE_RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM";
         case static_cast<uint64_t>(1000608000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT";
         case static_cast<uint64_t>(1000609000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FORMAT_PACK_FEATURES_ARM";
         case static_cast<uint64_t>(1000611000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_LAYERED_FEATURES_VALVE";
@@ -20813,10 +21710,21 @@ namespace vkroots {
         case static_cast<uint64_t>(1000425000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_EXT";
         case static_cast<uint64_t>(1000425001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_EXT";
         case static_cast<uint64_t>(1000425002): return "VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT";
-        case static_cast<uint64_t>(1000619003): return "VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT";
         case static_cast<uint64_t>(1000620000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT";
         case static_cast<uint64_t>(1000361000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR";
+        case static_cast<uint64_t>(1000627000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT";
+        case static_cast<uint64_t>(1000628000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT";
+        case static_cast<uint64_t>(1000628001): return "VK_STRUCTURE_TYPE_BEGIN_CUSTOM_RESOLVE_INFO_EXT";
+        case static_cast<uint64_t>(1000628002): return "VK_STRUCTURE_TYPE_CUSTOM_RESOLVE_CREATE_INFO_EXT";
+        case static_cast<uint64_t>(1000629000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM";
+        case static_cast<uint64_t>(1000629001): return "VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM";
+        case static_cast<uint64_t>(1000619003): return "VK_STRUCTURE_TYPE_RENDERING_END_INFO_KHR";
+        case static_cast<uint64_t>(1000630000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR";
+        case static_cast<uint64_t>(1000630001): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR";
+        case static_cast<uint64_t>(1000630002): return "VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_FLAGS_INFO_KHR";
+        case static_cast<uint64_t>(1000630004): return "VK_STRUCTURE_TYPE_RESOLVE_IMAGE_MODE_INFO_KHR";
         case static_cast<uint64_t>(1000637000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC";
+        case static_cast<uint64_t>(1000642000): return "VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT";
         case static_cast<uint64_t>(1000150007): return "VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR";
         case static_cast<uint64_t>(1000150000): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR";
         case static_cast<uint64_t>(1000150002): return "VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR";
@@ -20883,13 +21791,13 @@ namespace vkroots {
     template <> constexpr const char* enumString<VkSubpassDescriptionFlagBits>(VkSubpassDescriptionFlagBits type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(2147483647): return "VK_SUBPASS_DESCRIPTION_FLAG_BITS_MAX_ENUM";
-        case static_cast<uint64_t>(4): return "VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM";
-        case static_cast<uint64_t>(8): return "VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM";
         case static_cast<uint64_t>(256): return "VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM";
         case static_cast<uint64_t>(16): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT";
         case static_cast<uint64_t>(32): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT";
         case static_cast<uint64_t>(64): return "VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT";
         case static_cast<uint64_t>(128): return "VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT";
+        case static_cast<uint64_t>(4): return "VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT";
+        case static_cast<uint64_t>(8): return "VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT";
         default: return "VkSubpassDescriptionFlagBits_UNKNOWN";
       }
     }
@@ -20945,12 +21853,23 @@ namespace vkroots {
         case static_cast<uint64_t>(1): return "VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR";
         case static_cast<uint64_t>(2): return "VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR";
         case static_cast<uint64_t>(4): return "VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR";
+        case static_cast<uint64_t>(512): return "VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT";
         case static_cast<uint64_t>(64): return "VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR";
         case static_cast<uint64_t>(128): return "VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR";
         case static_cast<uint64_t>(8): return "VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR";
         default: return "VkSwapchainCreateFlagBitsKHR_UNKNOWN";
       }
     }
+
+#ifdef VK_USE_PLATFORM_OHOS
+    template <> constexpr const char* enumString<VkSwapchainImageUsageFlagBitsOHOS>(VkSwapchainImageUsageFlagBitsOHOS type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_SWAPCHAIN_IMAGE_USAGE_SHARED_BIT_OHOS";
+        case static_cast<uint64_t>(2147483647): return "VK_SWAPCHAIN_IMAGE_USAGE_FLAG_BITS_OHOS_MAX_ENUM";
+        default: return "VkSwapchainImageUsageFlagBitsOHOS_UNKNOWN";
+      }
+    }
+#endif
 
     template <> constexpr const char* enumString<VkSystemAllocationScope>(VkSystemAllocationScope type) {
       switch(static_cast<uint64_t>(type)) {
@@ -20998,6 +21917,8 @@ namespace vkroots {
         case static_cast<uint64_t>(2): return "VK_TIME_DOMAIN_CLOCK_MONOTONIC_RAW_KHR";
         case static_cast<uint64_t>(3): return "VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR";
         case static_cast<uint64_t>(2147483647): return "VK_TIME_DOMAIN_KHR_MAX_ENUM";
+        case static_cast<uint64_t>(1000208000): return "VK_TIME_DOMAIN_PRESENT_STAGE_LOCAL_EXT";
+        case static_cast<uint64_t>(1000208001): return "VK_TIME_DOMAIN_SWAPCHAIN_LOCAL_EXT";
         default: return "VkTimeDomainKHR_UNKNOWN";
       }
     }
@@ -21438,6 +22359,36 @@ namespace vkroots {
       }
     }
 
+    template <> constexpr const char* enumString<VkVideoEncodeRgbChromaOffsetFlagBitsVALVE>(VkVideoEncodeRgbChromaOffsetFlagBitsVALVE type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_COSITED_EVEN_BIT_VALVE";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_MIDPOINT_BIT_VALVE";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_RGB_CHROMA_OFFSET_FLAG_BITS_VALVE_MAX_ENUM";
+        default: return "VkVideoEncodeRgbChromaOffsetFlagBitsVALVE_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkVideoEncodeRgbModelConversionFlagBitsVALVE>(VkVideoEncodeRgbModelConversionFlagBitsVALVE type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_RGB_IDENTITY_BIT_VALVE";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_IDENTITY_BIT_VALVE";
+        case static_cast<uint64_t>(4): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_709_BIT_VALVE";
+        case static_cast<uint64_t>(8): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_601_BIT_VALVE";
+        case static_cast<uint64_t>(16): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_YCBCR_2020_BIT_VALVE";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_RGB_MODEL_CONVERSION_FLAG_BITS_VALVE_MAX_ENUM";
+        default: return "VkVideoEncodeRgbModelConversionFlagBitsVALVE_UNKNOWN";
+      }
+    }
+
+    template <> constexpr const char* enumString<VkVideoEncodeRgbRangeCompressionFlagBitsVALVE>(VkVideoEncodeRgbRangeCompressionFlagBitsVALVE type) {
+      switch(static_cast<uint64_t>(type)) {
+        case static_cast<uint64_t>(1): return "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FULL_RANGE_BIT_VALVE";
+        case static_cast<uint64_t>(2): return "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_NARROW_RANGE_BIT_VALVE";
+        case static_cast<uint64_t>(2147483647): return "VK_VIDEO_ENCODE_RGB_RANGE_COMPRESSION_FLAG_BITS_VALVE_MAX_ENUM";
+        default: return "VkVideoEncodeRgbRangeCompressionFlagBitsVALVE_UNKNOWN";
+      }
+    }
+
     template <> constexpr const char* enumString<VkVideoEncodeTuningModeKHR>(VkVideoEncodeTuningModeKHR type) {
       switch(static_cast<uint64_t>(type)) {
         case static_cast<uint64_t>(0): return "VK_VIDEO_ENCODE_TUNING_MODE_DEFAULT_KHR";
@@ -21515,6 +22466,11 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureCreateInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureCreateInfoNV>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_NV; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureDenseGeometryFormatTrianglesDataAMDX>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX; }
+  template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureDenseGeometryFormatTrianglesDataAMDX>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX; }
+#endif
 
   template <> constexpr VkStructureType ResolveSType<VkAccelerationStructureDeviceAddressInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkAccelerationStructureDeviceAddressInfoKHR>() { return VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR; }
@@ -21625,6 +22581,9 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkAttachmentSampleCountInfoAMD>() { return VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD; }
   template <> constexpr VkStructureType ResolveSType<const VkAttachmentSampleCountInfoAMD>() { return VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD; }
+
+  template <> constexpr VkStructureType ResolveSType<VkBeginCustomResolveInfoEXT>() { return VK_STRUCTURE_TYPE_BEGIN_CUSTOM_RESOLVE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkBeginCustomResolveInfoEXT>() { return VK_STRUCTURE_TYPE_BEGIN_CUSTOM_RESOLVE_INFO_EXT; }
 
   template <> constexpr VkStructureType ResolveSType<VkBindAccelerationStructureMemoryInfoNV>() { return VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkBindAccelerationStructureMemoryInfoNV>() { return VK_STRUCTURE_TYPE_BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV; }
@@ -21848,8 +22807,14 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkCopyImageToMemoryInfo>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_TO_MEMORY_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkCopyImageToMemoryInfo>() { return VK_STRUCTURE_TYPE_COPY_IMAGE_TO_MEMORY_INFO; }
 
+  template <> constexpr VkStructureType ResolveSType<VkCopyMemoryIndirectInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_INDIRECT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryIndirectInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_INDIRECT_INFO_KHR; }
+
   template <> constexpr VkStructureType ResolveSType<VkCopyMemoryToAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryToAccelerationStructureInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkCopyMemoryToImageIndirectInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryToImageIndirectInfoKHR>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkCopyMemoryToImageInfo>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkCopyMemoryToImageInfo>() { return VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INFO; }
@@ -21881,10 +22846,16 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<const VkCudaModuleCreateInfoNV>() { return VK_STRUCTURE_TYPE_CUDA_MODULE_CREATE_INFO_NV; }
 #endif
 
+  template <> constexpr VkStructureType ResolveSType<VkCustomResolveCreateInfoEXT>() { return VK_STRUCTURE_TYPE_CUSTOM_RESOLVE_CREATE_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkCustomResolveCreateInfoEXT>() { return VK_STRUCTURE_TYPE_CUSTOM_RESOLVE_CREATE_INFO_EXT; }
+
 #ifdef VK_USE_PLATFORM_WIN32_KHR
   template <> constexpr VkStructureType ResolveSType<VkD3D12FenceSubmitInfoKHR>() { return VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkD3D12FenceSubmitInfoKHR>() { return VK_STRUCTURE_TYPE_D3D12_FENCE_SUBMIT_INFO_KHR; }
 #endif
+
+  template <> constexpr VkStructureType ResolveSType<VkDataGraphPipelineBuiltinModelCreateInfoQCOM>() { return VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkDataGraphPipelineBuiltinModelCreateInfoQCOM>() { return VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM; }
 
   template <> constexpr VkStructureType ResolveSType<VkDataGraphPipelineCompilerControlCreateInfoARM>() { return VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_COMPILER_CONTROL_CREATE_INFO_ARM; }
   template <> constexpr VkStructureType ResolveSType<const VkDataGraphPipelineCompilerControlCreateInfoARM>() { return VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_COMPILER_CONTROL_CREATE_INFO_ARM; }
@@ -21957,6 +22928,9 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkDebugUtilsObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkDebugUtilsObjectTagInfoEXT>() { return VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkDecompressMemoryInfoEXT>() { return VK_STRUCTURE_TYPE_DECOMPRESS_MEMORY_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkDecompressMemoryInfoEXT>() { return VK_STRUCTURE_TYPE_DECOMPRESS_MEMORY_INFO_EXT; }
 
   template <> constexpr VkStructureType ResolveSType<VkDedicatedAllocationBufferCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkDedicatedAllocationBufferCreateInfoNV>() { return VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV; }
@@ -22272,6 +23246,11 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<const VkExternalFormatANDROID>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID; }
 #endif
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkExternalFormatOHOS>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkExternalFormatOHOS>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_OHOS; }
+#endif
+
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
   template <> constexpr VkStructureType ResolveSType<VkExternalFormatQNX>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_QNX; }
   template <> constexpr VkStructureType ResolveSType<const VkExternalFormatQNX>() { return VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_QNX; }
@@ -22570,6 +23549,11 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<const VkImportMetalTextureInfoEXT>() { return VK_STRUCTURE_TYPE_IMPORT_METAL_TEXTURE_INFO_EXT; }
 #endif
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkImportNativeBufferInfoOHOS>() { return VK_STRUCTURE_TYPE_IMPORT_NATIVE_BUFFER_INFO_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkImportNativeBufferInfoOHOS>() { return VK_STRUCTURE_TYPE_IMPORT_NATIVE_BUFFER_INFO_OHOS; }
+#endif
+
 #ifdef VK_USE_PLATFORM_SCREEN_QNX
   template <> constexpr VkStructureType ResolveSType<VkImportScreenBufferInfoQNX>() { return VK_STRUCTURE_TYPE_IMPORT_SCREEN_BUFFER_INFO_QNX; }
   template <> constexpr VkStructureType ResolveSType<const VkImportScreenBufferInfoQNX>() { return VK_STRUCTURE_TYPE_IMPORT_SCREEN_BUFFER_INFO_QNX; }
@@ -22684,6 +23668,11 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<const VkMemoryGetMetalHandleInfoEXT>() { return VK_STRUCTURE_TYPE_MEMORY_GET_METAL_HANDLE_INFO_EXT; }
 #endif
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkMemoryGetNativeBufferInfoOHOS>() { return VK_STRUCTURE_TYPE_MEMORY_GET_NATIVE_BUFFER_INFO_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkMemoryGetNativeBufferInfoOHOS>() { return VK_STRUCTURE_TYPE_MEMORY_GET_NATIVE_BUFFER_INFO_OHOS; }
+#endif
+
   template <> constexpr VkStructureType ResolveSType<VkMemoryGetRemoteAddressInfoNV>() { return VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkMemoryGetRemoteAddressInfoNV>() { return VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV; }
 
@@ -22766,8 +23755,23 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<const VkMutableDescriptorTypeCreateInfoEXT>() { return VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT; }
 
 #ifdef VK_USE_PLATFORM_OHOS
-  template <> constexpr VkStructureType ResolveSType<VkOHSurfaceCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_OH_SURFACE_CREATE_INFO_OHOS; }
-  template <> constexpr VkStructureType ResolveSType<const VkOHSurfaceCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_OH_SURFACE_CREATE_INFO_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<VkNativeBufferFormatPropertiesOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkNativeBufferFormatPropertiesOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_FORMAT_PROPERTIES_OHOS; }
+#endif
+
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkNativeBufferOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkNativeBufferOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_OHOS; }
+#endif
+
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkNativeBufferPropertiesOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_PROPERTIES_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkNativeBufferPropertiesOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_PROPERTIES_OHOS; }
+#endif
+
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkNativeBufferUsageOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_USAGE_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkNativeBufferUsageOHOS>() { return VK_STRUCTURE_TYPE_NATIVE_BUFFER_USAGE_OHOS; }
 #endif
 
   template <> constexpr VkStructureType ResolveSType<VkOpaqueCaptureDescriptorDataCreateInfoEXT>() { return VK_STRUCTURE_TYPE_OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT; }
@@ -22797,6 +23801,15 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPartitionedAccelerationStructureInstancesInputNV>() { return VK_STRUCTURE_TYPE_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCES_INPUT_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPartitionedAccelerationStructureInstancesInputNV>() { return VK_STRUCTURE_TYPE_PARTITIONED_ACCELERATION_STRUCTURE_INSTANCES_INPUT_NV; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPastPresentationTimingEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPastPresentationTimingEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPastPresentationTimingInfoEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPastPresentationTimingInfoEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPastPresentationTimingPropertiesEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPastPresentationTimingPropertiesEXT>() { return VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_PROPERTIES_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPerTileBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_PER_TILE_BEGIN_INFO_QCOM; }
   template <> constexpr VkStructureType ResolveSType<const VkPerTileBeginInfoQCOM>() { return VK_STRUCTURE_TYPE_PER_TILE_BEGIN_INFO_QCOM; }
 
@@ -22805,6 +23818,12 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkPerformanceConfigurationAcquireInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL; }
   template <> constexpr VkStructureType ResolveSType<const VkPerformanceConfigurationAcquireInfoINTEL>() { return VK_STRUCTURE_TYPE_PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceCounterARM>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceCounterARM>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_ARM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPerformanceCounterDescriptionARM>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPerformanceCounterDescriptionARM>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_ARM; }
 
   template <> constexpr VkStructureType ResolveSType<VkPerformanceCounterDescriptionKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPerformanceCounterDescriptionKHR>() { return VK_STRUCTURE_TYPE_PERFORMANCE_COUNTER_DESCRIPTION_KHR; }
@@ -22932,11 +23951,14 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCooperativeVectorPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCooperativeVectorPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV; }
 
-  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV; }
-  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCopyMemoryIndirectPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCopyMemoryIndirectPropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCornerSampledImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCornerSampledImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV; }
@@ -22966,11 +23988,22 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCustomBorderColorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCustomBorderColorPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceCustomResolveFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceCustomResolveFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDataGraphFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_FEATURES_ARM; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDataGraphFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_FEATURES_ARM; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDataGraphModelFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDataGraphModelFeaturesQCOM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV; }
+
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDenseGeometryFormatFeaturesAMDX>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDenseGeometryFormatFeaturesAMDX>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX; }
+#endif
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceDepthBiasControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_BIAS_CONTROL_FEATURES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceDepthBiasControlFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_BIAS_CONTROL_FEATURES_EXT; }
@@ -23309,6 +24342,12 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceLinearColorAttachmentFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceLinearColorAttachmentFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance10FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance10FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance10PropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance10PropertiesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMaintenance3Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMaintenance3Properties>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES; }
 
@@ -23354,11 +24393,11 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryBudgetPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryBudgetPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT; }
 
-  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV; }
-  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV; }
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_EXT; }
 
-  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV; }
-  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV; }
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryDecompressionPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryDecompressionPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_EXT; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceMemoryPriorityFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceMemoryPriorityFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT; }
@@ -23438,6 +24477,12 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerStageDescriptorSetFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerStageDescriptorSetFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerformanceCountersByRegionFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerformanceCountersByRegionFeaturesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_FEATURES_ARM; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerformanceCountersByRegionPropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerformanceCountersByRegionPropertiesARM>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_COUNTERS_BY_REGION_PROPERTIES_ARM; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePerformanceQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePerformanceQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR; }
 
@@ -23507,11 +24552,19 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentModeFifoLatestReadyFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentModeFifoLatestReadyFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentTimingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentTimingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentWait2FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentWait2FeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_2_FEATURES_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentWaitFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentWaitFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR; }
+
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePresentationPropertiesOHOS>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePresentationPropertiesOHOS>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_OHOS; }
+#endif
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT; }
@@ -23555,8 +24608,14 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayQueryFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderPropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV; }
@@ -23624,6 +24683,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShader64BitIndexingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShader64BitIndexingFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderAtomicFloat16VectorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderAtomicFloat16VectorFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV; }
 
@@ -23688,6 +24750,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderFloatControls2Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderFloatControls2Features>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT_CONTROLS_2_FEATURES; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderFmaFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderFmaFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR; }
+
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT; }
 
@@ -23750,6 +24815,12 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderTileImagePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderTileImagePropertiesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShaderUntypedPointersFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShaderUntypedPointersFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNTYPED_POINTERS_FEATURES_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceShadingRateImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceShadingRateImageFeaturesNV>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV; }
@@ -23870,6 +24941,9 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVideoEncodeQuantizationMapFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_QUANTIZATION_MAP_FEATURES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVideoEncodeQuantizationMapFeaturesKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_QUANTIZATION_MAP_FEATURES_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_RGB_CONVERSION_FEATURES_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_ENCODE_RGB_CONVERSION_FEATURES_VALVE; }
 
   template <> constexpr VkStructureType ResolveSType<VkPhysicalDeviceVideoFormatInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_FORMAT_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPhysicalDeviceVideoFormatInfoKHR>() { return VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_FORMAT_INFO_KHR; }
@@ -24127,6 +25201,15 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkPresentTimesInfoGOOGLE>() { return VK_STRUCTURE_TYPE_PRESENT_TIMES_INFO_GOOGLE; }
   template <> constexpr VkStructureType ResolveSType<const VkPresentTimesInfoGOOGLE>() { return VK_STRUCTURE_TYPE_PRESENT_TIMES_INFO_GOOGLE; }
 
+  template <> constexpr VkStructureType ResolveSType<VkPresentTimingInfoEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMING_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentTimingInfoEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMING_INFO_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentTimingSurfaceCapabilitiesEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMING_SURFACE_CAPABILITIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentTimingSurfaceCapabilitiesEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMING_SURFACE_CAPABILITIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkPresentTimingsInfoEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMINGS_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkPresentTimingsInfoEXT>() { return VK_STRUCTURE_TYPE_PRESENT_TIMINGS_INFO_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkPresentWait2InfoKHR>() { return VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkPresentWait2InfoKHR>() { return VK_STRUCTURE_TYPE_PRESENT_WAIT_2_INFO_KHR; }
 
@@ -24241,6 +25324,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkRenderPassMultiviewCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderPassMultiviewCreateInfo>() { return VK_STRUCTURE_TYPE_RENDER_PASS_MULTIVIEW_CREATE_INFO; }
 
+  template <> constexpr VkStructureType ResolveSType<VkRenderPassPerformanceCountersByRegionBeginInfoARM>() { return VK_STRUCTURE_TYPE_RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderPassPerformanceCountersByRegionBeginInfoARM>() { return VK_STRUCTURE_TYPE_RENDER_PASS_PERFORMANCE_COUNTERS_BY_REGION_BEGIN_INFO_ARM; }
+
   template <> constexpr VkStructureType ResolveSType<VkRenderPassSampleLocationsBeginInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderPassSampleLocationsBeginInfoEXT>() { return VK_STRUCTURE_TYPE_RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT; }
 
@@ -24265,14 +25351,17 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkRenderingAreaInfo>() { return VK_STRUCTURE_TYPE_RENDERING_AREA_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderingAreaInfo>() { return VK_STRUCTURE_TYPE_RENDERING_AREA_INFO; }
 
+  template <> constexpr VkStructureType ResolveSType<VkRenderingAttachmentFlagsInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_FLAGS_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingAttachmentFlagsInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_FLAGS_INFO_KHR; }
+
   template <> constexpr VkStructureType ResolveSType<VkRenderingAttachmentInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderingAttachmentInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; }
 
   template <> constexpr VkStructureType ResolveSType<VkRenderingAttachmentLocationInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_LOCATION_INFO; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderingAttachmentLocationInfo>() { return VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_LOCATION_INFO; }
 
-  template <> constexpr VkStructureType ResolveSType<VkRenderingEndInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT; }
-  template <> constexpr VkStructureType ResolveSType<const VkRenderingEndInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<VkRenderingEndInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_END_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkRenderingEndInfoKHR>() { return VK_STRUCTURE_TYPE_RENDERING_END_INFO_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkRenderingFragmentDensityMapAttachmentInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkRenderingFragmentDensityMapAttachmentInfoEXT>() { return VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT; }
@@ -24288,6 +25377,9 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkResolveImageInfo2>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2; }
   template <> constexpr VkStructureType ResolveSType<const VkResolveImageInfo2>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2; }
+
+  template <> constexpr VkStructureType ResolveSType<VkResolveImageModeInfoKHR>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_MODE_INFO_KHR; }
+  template <> constexpr VkStructureType ResolveSType<const VkResolveImageModeInfoKHR>() { return VK_STRUCTURE_TYPE_RESOLVE_IMAGE_MODE_INFO_KHR; }
 
   template <> constexpr VkStructureType ResolveSType<VkSampleLocationsInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkSampleLocationsInfoEXT>() { return VK_STRUCTURE_TYPE_SAMPLE_LOCATIONS_INFO_EXT; }
@@ -24458,6 +25550,11 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkSurfaceCapabilitiesPresentWait2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_WAIT_2_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkSurfaceCapabilitiesPresentWait2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_WAIT_2_KHR; }
 
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkSurfaceCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_SURFACE_CREATE_INFO_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkSurfaceCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_SURFACE_CREATE_INFO_OHOS; }
+#endif
+
   template <> constexpr VkStructureType ResolveSType<VkSurfaceFormat2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkSurfaceFormat2KHR>() { return VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR; }
 
@@ -24483,6 +25580,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkSurfaceProtectedCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkSurfaceProtectedCapabilitiesKHR>() { return VK_STRUCTURE_TYPE_SURFACE_PROTECTED_CAPABILITIES_KHR; }
 
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainCalibratedTimestampInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainCalibratedTimestampInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT; }
+
   template <> constexpr VkStructureType ResolveSType<VkSwapchainCounterCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_COUNTER_CREATE_INFO_EXT; }
   template <> constexpr VkStructureType ResolveSType<const VkSwapchainCounterCreateInfoEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_COUNTER_CREATE_INFO_EXT; }
 
@@ -24491,6 +25591,11 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkSwapchainDisplayNativeHdrCreateInfoAMD>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD; }
   template <> constexpr VkStructureType ResolveSType<const VkSwapchainDisplayNativeHdrCreateInfoAMD>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD; }
+
+#ifdef VK_USE_PLATFORM_OHOS
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainImageCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_OHOS; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainImageCreateInfoOHOS>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_IMAGE_CREATE_INFO_OHOS; }
+#endif
 
   template <> constexpr VkStructureType ResolveSType<VkSwapchainLatencyCreateInfoNV>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV; }
   template <> constexpr VkStructureType ResolveSType<const VkSwapchainLatencyCreateInfoNV>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_LATENCY_CREATE_INFO_NV; }
@@ -24509,6 +25614,12 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkSwapchainPresentScalingCreateInfoKHR>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkSwapchainPresentScalingCreateInfoKHR>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainTimeDomainPropertiesEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainTimeDomainPropertiesEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT; }
+
+  template <> constexpr VkStructureType ResolveSType<VkSwapchainTimingPropertiesEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_TIMING_PROPERTIES_EXT; }
+  template <> constexpr VkStructureType ResolveSType<const VkSwapchainTimingPropertiesEXT>() { return VK_STRUCTURE_TYPE_SWAPCHAIN_TIMING_PROPERTIES_EXT; }
 
 #ifdef VK_USE_PLATFORM_FUCHSIA
   template <> constexpr VkStructureType ResolveSType<VkSysmemColorSpaceFUCHSIA>() { return VK_STRUCTURE_TYPE_SYSMEM_COLOR_SPACE_FUCHSIA; }
@@ -24805,6 +25916,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeIntraRefreshInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_INTRA_REFRESH_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeIntraRefreshInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_INTRA_REFRESH_INFO_KHR; }
 
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeProfileRgbConversionInfoVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_PROFILE_RGB_CONVERSION_INFO_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeProfileRgbConversionInfoVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_PROFILE_RGB_CONVERSION_INFO_VALVE; }
+
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeQualityLevelInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_QUALITY_LEVEL_INFO_KHR; }
 
@@ -24826,6 +25940,9 @@ namespace vkroots {
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeRateControlLayerInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeRateControlLayerInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR; }
 
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeRgbConversionCapabilitiesVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RGB_CONVERSION_CAPABILITIES_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeRgbConversionCapabilitiesVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_RGB_CONVERSION_CAPABILITIES_VALVE; }
+
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeSessionIntraRefreshCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_INTRA_REFRESH_CREATE_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeSessionIntraRefreshCreateInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_INTRA_REFRESH_CREATE_INFO_KHR; }
 
@@ -24834,6 +25951,9 @@ namespace vkroots {
 
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeSessionParametersGetInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_GET_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeSessionParametersGetInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_PARAMETERS_GET_INFO_KHR; }
+
+  template <> constexpr VkStructureType ResolveSType<VkVideoEncodeSessionRgbConversionCreateInfoVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_RGB_CONVERSION_CREATE_INFO_VALVE; }
+  template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeSessionRgbConversionCreateInfoVALVE>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_SESSION_RGB_CONVERSION_CREATE_INFO_VALVE; }
 
   template <> constexpr VkStructureType ResolveSType<VkVideoEncodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_USAGE_INFO_KHR; }
   template <> constexpr VkStructureType ResolveSType<const VkVideoEncodeUsageInfoKHR>() { return VK_STRUCTURE_TYPE_VIDEO_ENCODE_USAGE_INFO_KHR; }
