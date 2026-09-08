@@ -27,7 +27,7 @@ import urllib.request
 import sys
 from subprocess import call
 
-VK_XML_VERSION = "1.4.322"
+VK_XML_VERSION = "1.4.335"
 
 from vulkan_helpers import *
 
@@ -403,7 +403,7 @@ class VkGenerator(object):
                     self.print_object_platform_endif(f, struct)
 
 def download_vk_xml(filename):
-    url = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v{0}/xml/vk.xml".format(VK_XML_VERSION)
+    url = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/v{0}/registry/vk.xml".format(VK_XML_VERSION)
     if not os.path.isfile(filename):
         urllib.request.urlretrieve(url, filename)
 
