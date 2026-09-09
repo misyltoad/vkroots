@@ -621,8 +621,9 @@ namespace vkroots {
     void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks *pAllocator) const { m_DestroyDebugReportCallbackEXT(instance, callback, pAllocator); }
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, const VkAllocationCallbacks *pAllocator) const { m_DestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator); }
     void DestroyInstance(VkInstance object, const VkAllocationCallbacks* pAllocator) const {
+      auto destroy = m_DestroyInstance;
       vkroots::tables::DestroyDispatchTable(object);
-      m_DestroyInstance(object, pAllocator);
+      destroy(object, pAllocator);
     }
     void DestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks *pAllocator) const { m_DestroySurfaceKHR(instance, surface, pAllocator); }
     VkResult EnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice, const char *pLayerName, uint32_t *pPropertyCount, VkExtensionProperties *pProperties) const { return m_EnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pPropertyCount, pProperties); }
@@ -2312,8 +2313,9 @@ namespace vkroots {
     void DestroyDescriptorUpdateTemplate(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) const { m_DestroyDescriptorUpdateTemplate(device, descriptorUpdateTemplate, pAllocator); }
     void DestroyDescriptorUpdateTemplateKHR(VkDevice device, VkDescriptorUpdateTemplate descriptorUpdateTemplate, const VkAllocationCallbacks *pAllocator) const { m_DestroyDescriptorUpdateTemplateKHR(device, descriptorUpdateTemplate, pAllocator); }
     void DestroyDevice(VkDevice object, const VkAllocationCallbacks* pAllocator) const {
+      auto destroy = m_DestroyDevice;
       vkroots::tables::DestroyDispatchTable(object);
-      m_DestroyDevice(object, pAllocator);
+      destroy(object, pAllocator);
     }
     void DestroyEvent(VkDevice device, VkEvent event, const VkAllocationCallbacks *pAllocator) const { m_DestroyEvent(device, event, pAllocator); }
     void DestroyExternalComputeQueueNV(VkDevice device, VkExternalComputeQueueNV externalQueue, const VkAllocationCallbacks *pAllocator) const { m_DestroyExternalComputeQueueNV(device, externalQueue, pAllocator); }

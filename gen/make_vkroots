@@ -176,8 +176,9 @@ class VkGenerator(object):
 
                 if func.get_func_type() == dispatch_type and func_name_normalized == f"Destroy{dispatch_type}":
                     f.write(f"    void Destroy{dispatch_type}(Vk{dispatch_type} object, const VkAllocationCallbacks* pAllocator) const {{\n")
+                    f.write(f"      auto destroy = m_Destroy{dispatch_type};\n")
                     f.write(f"      vkroots::tables::DestroyDispatchTable(object);\n")
-                    f.write(f"      m_Destroy{dispatch_type}(object, pAllocator);\n")
+                    f.write(f"      destroy(object, pAllocator);\n")
                     f.write(f"    }}\n")
                 elif func.get_func_type() == dispatch_type and func_name_normalized == "CreateDevice":
                     write_include(f, "vkroots_replace_CreateDevice.h")
